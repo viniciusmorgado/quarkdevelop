@@ -34,7 +34,7 @@ namespace MonoDevelop.Components.AutoTest.Results
 	public class GtkTreeModelResult : GtkWidgetResult
 	{
 		Widget ParentWidget;
-		TreeModel TModel;
+		ITreeModel TModel;
 		int Column;
 		TreeIter? resultIter;
 		string DesiredText;

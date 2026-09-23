@@ -98,7 +98,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 	}
 
 	[Obsolete]
-	class ListWidget : Gtk.DrawingArea
+	class ListWidget : Gtk.DrawingArea, Gtk.IScrollableImplementor
 	{
 		const int minSize = 400;
 		const int maxListWidth = 800;
@@ -212,16 +212,31 @@ namespace MonoDevelop.Ide.CodeCompletion
 			}
 		}
 
-		protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj)
-		{
-			if (this.vadj != null)
-				this.vadj.ValueChanged -= HandleValueChanged;
-			this.vadj = vadj;
-			base.OnSetScrollAdjustments (hadj, vadj);
-			if (this.vadj != null) {
-				this.vadj.ValueChanged += HandleValueChanged;
-				SetAdjustments ();
+		// GTK3: scrolled windows hand their adjustments to Gtk.IScrollable children through the
+		// hadjustment/vadjustment properties (GTK2 used the set-scroll-adjustments signal).
+		public Adjustment Hadjustment { get; set; }
+
+		public Adjustment Vadjustment {
+			get { return vadj; }
+			set {
+				if (this.vadj != null)
+					this.vadj.ValueChanged -= HandleValueChanged;
+				this.vadj = value;
+				if (this.vadj != null) {
+					this.vadj.ValueChanged += HandleValueChanged;
+					SetAdjustments ();
+				}
 			}
+		}
+
+		public ScrollablePolicy HscrollPolicy { get; set; }
+
+		public ScrollablePolicy VscrollPolicy { get; set; }
+
+		public bool GetBorder (out Gtk.Border border)
+		{
+			border = default (Gtk.Border);
+			return false;
 		}
 
 		void HandleValueChanged (object sender, EventArgs e)

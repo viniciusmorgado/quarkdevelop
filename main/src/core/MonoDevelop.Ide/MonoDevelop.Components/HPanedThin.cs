@@ -36,7 +36,8 @@ namespace MonoDevelop.Components
 {
 	public class HPanedThin: Gtk.HPaned
 	{
-		static HashSet<int> stylesParsed = new HashSet<int> ();
+		static Dictionary<int, Gtk.CssProvider> handleStyles = new Dictionary<int, Gtk.CssProvider> ();
+		const string HandleStyleKey = "MonoDevelop.ThinPanedHandle.Style";
 
 		CustomPanedHandle handle;
 
@@ -66,12 +67,20 @@ namespace MonoDevelop.Components
 
 		internal static void InitStyle (Gtk.Paned paned, int size)
 		{
-			string id = "MonoDevelop.ThinPanedHandle.s" + size;
-			if (stylesParsed.Add (size)) {
-				Gtk.Rc.ParseString ("style \"" + id + "\" {\n GtkPaned::handle-size = " + size + "\n }\n");
-				Gtk.Rc.ParseString ("widget \"*." + id + "\" style  \"" + id + "\"\n");
+			// GTK3 ignores gtkrc and the GtkPaned::handle-size style property: the handle is the
+			// paned's "separator" CSS node, sized by its min-width/min-height.
+			if (!handleStyles.TryGetValue (size, out var provider)) {
+				provider = new Gtk.CssProvider ();
+				provider.LoadFromData ("paned > separator { min-width: " + size + "px; min-height: " + size + "px; background-image: none; }");
+				handleStyles [size] = provider;
 			}
-			paned.Name = id;
+			var current = paned.Data [HandleStyleKey] as Gtk.CssProvider;
+			if (current == provider)
+				return;
+			if (current != null)
+				paned.StyleContext.RemoveProvider (current);
+			paned.StyleContext.AddProvider (provider, Gtk.StyleProviderPriority.Application);
+			paned.Data [HandleStyleKey] = provider;
 		}
 
 		protected override void ForAll (bool include_internals, Gtk.Callback callback)
@@ -87,11 +96,15 @@ namespace MonoDevelop.Components
 			base.OnDrawn (gtk3cr);
 
 			if (Child1 != null && Child1.Visible && Child2 != null && Child2.Visible) {
-				var gc = new Gdk.GC (evnt.Window);
-				gc.RgbFgColor = Styles.ThinSplitterColor.ToGdkColor ();
-				var x = Child1.Allocation.X + Child1.Allocation.Width;
-				evnt.Window.DrawLine (gc, x, Allocation.Y, x, Allocation.Y + Allocation.Height);
-				gc.Dispose ();
+				using (var ctx = evnt.CreateContext ()) {
+					var x = Child1.Allocation.X + Child1.Allocation.Width;
+					// a 1px GDK line covers the pixel column: stroke through its center
+					ctx.MoveTo (x + 0.5, Allocation.Y);
+					ctx.LineTo (x + 0.5, Allocation.Y + Allocation.Height);
+					ctx.LineWidth = 1;
+					ctx.SetSourceColor (Styles.ThinSplitterColor.ToCairoColor ());
+					ctx.Stroke ();
+				}
 			}
 
 			return true;
@@ -111,23 +124,21 @@ namespace MonoDevelop.Components
 		protected CustomPanedHandle (Gtk.Paned parent)
 		{
 			ParentPaned = parent;
-			ParentPaned.SizeRequested += HandleSizeRequested;
+			// GTK2 measured the handle from the parent's size-request signal; GTK3 has no such
+			// signal, so the handle is measured right before it is allocated (see Allocate).
 			ParentPaned.SizeAllocated += HandleSizeAllocated;
 			Parent = parent;
-		}
-
-		protected virtual void OnParentSizeRequested (Gtk.SizeRequestedArgs args)
-		{
-			SizeRequest ();
 		}
 
 		protected virtual void OnParentSizeAllocated (Gtk.SizeAllocatedArgs args)
 		{
 		}
 
-		void HandleSizeRequested (object o, Gtk.SizeRequestedArgs args)
+		/// <summary>Measures and allocates the handle (GTK3 requires a size request before an allocation).</summary>
+		protected void Allocate (Gdk.Rectangle allocation)
 		{
-			OnParentSizeRequested (args);
+			SizeRequest ();
+			SizeAllocate (allocation);
 		}
 
 		void HandleSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
@@ -138,7 +149,6 @@ namespace MonoDevelop.Components
 		protected override void OnDestroyed ()
 		{
             if (ParentPaned != null) {
-				ParentPaned.SizeRequested -= HandleSizeRequested;
 				ParentPaned.SizeAllocated -= HandleSizeAllocated;
 				ParentPaned = null;
 			}
@@ -293,20 +303,15 @@ namespace MonoDevelop.Components
 			HandleWidget = null;
 		}
 
-		void HandleSizeRequested (object o, Gtk.SizeRequestedArgs args)
-		{
-			SizeRequest ();
-		}
-
 		protected override void OnParentSizeAllocated (Gtk.SizeAllocatedArgs args)
 		{
 			if (ParentPaned.Child1 != null && ParentPaned.Child1.Visible && ParentPaned.Child2 != null && ParentPaned.Child2.Visible) {
 				Show ();
 				int centerSize = Child == null ? GrabAreaSize / 2 : 0;
 				if (horizontal)
-					SizeAllocate (new Gdk.Rectangle (ParentPaned.Child1.Allocation.X + ParentPaned.Child1.Allocation.Width - centerSize, args.Allocation.Y, GrabAreaSize, args.Allocation.Height));
+					Allocate (new Gdk.Rectangle (ParentPaned.Child1.Allocation.X + ParentPaned.Child1.Allocation.Width - centerSize, args.Allocation.Y, GrabAreaSize, args.Allocation.Height));
 				else
-					SizeAllocate (new Gdk.Rectangle (args.Allocation.X, ParentPaned.Child1.Allocation.Y + ParentPaned.Child1.Allocation.Height - centerSize, args.Allocation.Width, GrabAreaSize));
+					Allocate (new Gdk.Rectangle (args.Allocation.X, ParentPaned.Child1.Allocation.Y + ParentPaned.Child1.Allocation.Height - centerSize, args.Allocation.Width, GrabAreaSize));
 			} else
 				Hide ();
 			base.OnParentSizeAllocated (args);

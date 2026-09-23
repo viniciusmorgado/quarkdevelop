@@ -152,7 +152,7 @@ namespace MonoDevelop.Components.AutoTest.Results
 			return null;
 		}
 
-		protected TreeModel ModelFromWidget (Widget widget)
+		protected ITreeModel ModelFromWidget (Widget widget)
 		{
 			TreeView tv = widget as TreeView;
 			if (tv != null) {
@@ -490,7 +490,7 @@ namespace MonoDevelop.Components.AutoTest.Results
 
 		bool flashState;
 
-		void OnFlashWidget (object o, ExposeEventArgs args)
+		void OnFlashWidget (object o, DrawnArgs args)
 		{
 			flashState = !flashState;
 
@@ -498,13 +498,13 @@ namespace MonoDevelop.Components.AutoTest.Results
 				return;
 			}
 
-			using (var cr = Gdk.CairoHelper.Create (resultWidget.GdkWindow)) {
-				cr.SetSourceRGB (1.0, 0.0, 0.0);
-
-				Gdk.Rectangle allocation = resultWidget.Allocation;
-				Gdk.CairoHelper.Rectangle (cr, allocation);
-				cr.Stroke ();
-			}
+			// GTK3 hands a context in widget coordinates (GTK2 drew the allocation on the GdkWindow)
+			var cr = args.Cr;
+			cr.Save ();
+			cr.SetSourceRGB (1.0, 0.0, 0.0);
+			cr.Rectangle (0, 0, resultWidget.AllocatedWidth, resultWidget.AllocatedHeight);
+			cr.Stroke ();
+			cr.Restore ();
 		}
 
 		public override void Flash ()
@@ -512,14 +512,14 @@ namespace MonoDevelop.Components.AutoTest.Results
 			int flashCount = 10;
 
 			flashState = true;
-			resultWidget.ExposeEvent += OnFlashWidget;
+			resultWidget.Drawn += OnFlashWidget;
 
 			GLib.Timeout.Add (1000, () => {
 				resultWidget.QueueDraw ();
 				flashCount--;
 
 				if (flashCount == 0) {
-					resultWidget.ExposeEvent -= OnFlashWidget;
+					resultWidget.Drawn -= OnFlashWidget;
 					return false;
 				}
 				return true;

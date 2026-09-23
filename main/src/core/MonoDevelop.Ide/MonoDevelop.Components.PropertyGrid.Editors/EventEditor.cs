@@ -79,16 +79,18 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 		
 	}
 	
-	class EventEditor: ComboBoxEntry, IPropertyEditor
+	class EventEditor: ComboBoxText, IPropertyEditor
 	{
 		bool isNull;
 		PropertyDescriptor prop;
 		IEventBindingService evtBind;
 		object component;
-		
-		public EventEditor (IEventBindingService evtBind, string[] ops): base (ops)
+
+		public EventEditor (IEventBindingService evtBind, string[] ops): base (true)
 		{
 			this.evtBind = evtBind;
+			foreach (string op in ops)
+				AppendText (op);
 		}
 		
 		public void Initialize (EditSession session)

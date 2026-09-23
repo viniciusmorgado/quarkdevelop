@@ -952,12 +952,12 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 				return false;
 			}
 
-			protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+			protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 			{
 				if (string.IsNullOrEmpty (Text))
 					return;
 
-				using (var cr = Gdk.CairoHelper.Create (window)) {
+				using (var cr = gtk3cr.CreateSharedContext ()) {
 					using (var layout = new Pango.Layout (widget.PangoContext)) {
 						var xpad = (int)Xpad;
 						int w, h;
@@ -1001,9 +1001,9 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 				}
 			}
 
-			public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 			{
-				base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+				Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 				x_offset = y_offset = 0;
 				if (string.IsNullOrEmpty (Text)) {
 					width = 0;
@@ -1028,11 +1028,45 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 				}
 			}
 
-			protected override void OnDestroyed()
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
 			{
-				keyBindingsPanel = null;
-				HideConflictTooltip ();
-				base.OnDestroyed();
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+			}
+
+			void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			{
+				base.OnGetPreferredWidth (widget, out _, out width);
+				base.OnGetPreferredHeightForWidth (widget, width, out _, out height);
+				MonoDevelop.Components.Gtk3CompatExtensions.Gtk3CalcOffset (this, widget, cell_area, width, height, out x_offset, out y_offset);
+			}
+
+			// GTK3 cell renderers are not Gtk.Object and have no destroy signal: release on dispose.
+			protected override void Dispose (bool disposing)
+			{
+				if (disposing) {
+					keyBindingsPanel = null;
+					HideConflictTooltip ();
+				}
+				base.Dispose (disposing);
 			}
 		}
 	}

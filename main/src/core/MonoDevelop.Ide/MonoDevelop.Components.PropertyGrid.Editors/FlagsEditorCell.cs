@@ -41,30 +41,24 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors {
 		internal static int CheckSpacing = 3;
 		static int indicatorSize;
 		static int indicatorSpacing;
-		static Gtk.Style style;
+		static bool styleInitialized;
 
 		static FlagsEditorCell ()
 		{
 			// reinit style
-			MonoDevelop.Ide.Gui.Styles.Changed += (sender, e) => style = null;
+			MonoDevelop.Ide.Gui.Styles.Changed += (sender, e) => styleInitialized = false;
 		}
 
-		// we can't override Initialize () or use the default constructor for this,
-		// because a valid Gdk.Window is required for full Gtk.Style initialization
-		static void InitializeStyle (Gtk.Widget container)
+		// GTK3 style properties can be read without a realized widget
+		static void InitializeStyle ()
 		{
-			if (style == null && container.GdkWindow != null) {
-				Gtk.CheckButton cb = new BooleanEditor (); // use the BooleanEditor style for the checks
-				cb.GdkWindow = container.GdkWindow;
-				cb.Parent = container;
-				cb.Realize ();
-				style = cb.Style;
-				style.Attach (container.GdkWindow);
-				indicatorSize = (int)cb.StyleGetProperty ("indicator-size");
-				indicatorSpacing = (int)cb.StyleGetProperty ("indicator-spacing");
-				style.Detach ();
-				cb.Dispose ();
-			}
+			if (styleInitialized)
+				return;
+			Gtk.CheckButton cb = new BooleanEditor (); // use the BooleanEditor style for the checks
+			indicatorSize = (int)cb.StyleGetProperty ("indicator-size");
+			indicatorSpacing = (int)cb.StyleGetProperty ("indicator-spacing");
+			cb.Destroy ();
+			styleInitialized = true;
 		}
 
 		protected override string GetValueText ()
@@ -87,12 +81,11 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors {
 			return txt;
 		}
 
-		public override void Render (Gdk.Drawable window, Cairo.Context ctx, Gdk.Rectangle bounds, Gtk.StateType state)
+		public override void Render (Cairo.Context ctx, Gdk.Rectangle bounds, Gtk.StateType state)
 		{
 			var values = Enum.GetValues (Property.PropertyType);
 			if (values.Length < MaxCheckCount) {
-				if (style == null)
-					InitializeStyle (Container);
+				InitializeStyle ();
 
 				var container = (Widget)Container;
 				using (var layout = new Pango.Layout (container.PangoContext)) {
@@ -103,17 +96,17 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors {
 					int dy = 2;
 					foreach (var val in values) {
 						ulong uintVal = Convert.ToUInt64 (val);
-						Gtk.ShadowType sh = (value & uintVal) != 0 ? Gtk.ShadowType.In : Gtk.ShadowType.Out;
+						bool active = (value & uintVal) != 0;
 						if (value == 0 && uintVal == 0)
-							sh = Gtk.ShadowType.In;
+							active = true;
 						int s = indicatorSize - 1;
-						Gtk.Style.PaintCheck (style, window, state, sh, bounds, Container, "checkbutton", bounds.X + indicatorSpacing - 1, bounds.Y + dy, s, s);
+						BooleanEditorCell.RenderCheck (container, ctx, state, active, bounds.X + indicatorSpacing - 1, bounds.Y + dy, s);
 
 						layout.SetText (val.ToString ());
 						int tw, th;
 						layout.GetPixelSize (out tw, out th);
 						ctx.Save ();
-						ctx.SetSourceColor (container.Style.Text (state).ToCairoColor ());
+						ctx.SetSourceColor (container.GetStyleTextColor (state));
 						ctx.MoveTo (bounds.X + indicatorSize + indicatorSpacing, dy + bounds.Y + ((indicatorSize - th) / 2));
 						Pango.CairoHelper.ShowLayout (ctx, layout);
 						ctx.Restore ();
@@ -122,7 +115,7 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors {
 					}
 				}
 			} else {
-				base.Render (window, ctx, bounds, state);
+				base.Render (ctx, bounds, state);
 				return;
 			}
 		}
@@ -138,8 +131,7 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors {
 
 			var values = Enum.GetValues (Property.PropertyType);
 			if (values.Length < MaxCheckCount) {
-				if (style == null)
-					InitializeStyle (Container);
+				InitializeStyle ();
 				height = 4 + (indicatorSize * values.Length) + (CheckSpacing * (values.Length - 1));
 			}
 		}

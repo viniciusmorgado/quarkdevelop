@@ -715,14 +715,14 @@ namespace MonoDevelop.Components
 		{
 			private SearchEntry parent;
 			private Pango.Layout layout;
-			private Gdk.GC text_gc;
+			private Cairo.Color? textColor;
 
 			public FramelessEntry (SearchEntry parent) : base()
 			{
 				this.parent = parent;
 				HasFrame = false;
 
-				parent.StyleSet += OnParentStyleSet;
+				parent.StyleUpdated += OnParentStyleSet;
 				WidthChars = 1;
 
 				GtkWorkarounds.SetTransparentBgHint (this, true);
@@ -736,8 +736,7 @@ namespace MonoDevelop.Components
 
 			private void RefreshGC ()
 			{
-				text_gc?.Dispose ();
-				text_gc = null;
+				textColor = null;
 			}
 
 			protected override void OnDestroyed ()
@@ -747,62 +746,26 @@ namespace MonoDevelop.Components
 					layout.Dispose ();
 					layout = null;
 				}
-				parent.StyleSet -= OnParentStyleSet;
+				parent.StyleUpdated -= OnParentStyleSet;
 				base.OnDestroyed ();
 			}
 
-			public static Gdk.Color ColorBlend (Gdk.Color a, Gdk.Color b)
+			// Halfway between the parent's background and text colors (the placeholder color)
+			static Cairo.Color ColorBlend (Gdk.RGBA a, Gdk.RGBA b)
 			{
-				// at some point, might be nice to allow any blend?
-				double blend = 0.5;
-
-				if (blend < 0.0 || blend > 1.0) {
-					throw new ApplicationException ("blend < 0.0 || blend > 1.0");
-				}
-
-				double blendRatio = 1.0 - blend;
-
-				int aR = a.Red >> 8;
-				int aG = a.Green >> 8;
-				int aB = a.Blue >> 8;
-
-				int bR = b.Red >> 8;
-				int bG = b.Green >> 8;
-				int bB = b.Blue >> 8;
-
-				double mR = aR + bR;
-				double mG = aG + bG;
-				double mB = aB + bB;
-
-				double blR = mR * blendRatio;
-				double blG = mG * blendRatio;
-				double blB = mB * blendRatio;
-
-				Gdk.Color color = new Gdk.Color ((byte)blR, (byte)blG, (byte)blB);
-				Gdk.Colormap.System.AllocColor (ref color, true, true);
-				return color;
+				return new Cairo.Color ((a.Red + b.Red) / 2, (a.Green + b.Green) / 2, (a.Blue + b.Blue) / 2);
 			}
 
 			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
-				var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
-				// The Entry's GdkWindow is the top level window onto which
-				// the frame is drawn; the actual text entry is drawn into a
-				// separate window, so we can ensure that for themes that don't
-				// respect HasFrame, we never ever allow the base frame drawing
-				// to happen
-				if (evnt.Window == GdkWindow) {
-					return true;
-				}
-
+				// GTK2 drew the entry frame and the text into separate GdkWindows and skipped the frame
+				// one here, for themes ignoring HasFrame. GTK3 draws the whole entry in one pass and
+				// honours HasFrame (the "flat" style class).
 				bool ret = base.OnDrawn (gtk3cr);
 
-				if (text_gc == null) {
-					text_gc = new Gdk.GC (evnt.Window);
-					text_gc.Copy (Style.TextGC (StateType.Normal));
-					Gdk.Color color_a = parent.Style.Base (StateType.Normal);
-					Gdk.Color color_b = parent.Style.Text (StateType.Normal);
-					text_gc.RgbFgColor = ColorBlend (color_a, color_b);
+				if (textColor == null) {
+					var style = parent.StyleContext;
+					textColor = ColorBlend (style.GetBackgroundColor (Gtk.StateFlags.Normal), style.GetColor (Gtk.StateFlags.Normal));
 				}
 
 				if (Text.Length > 0 || HasFocus || parent.EmptyMessage == null) {
@@ -817,7 +780,13 @@ namespace MonoDevelop.Components
 				int width, height;
 				layout.SetMarkup (parent.EmptyMessage);
 				layout.GetPixelSize (out width, out height);
-				evnt.Window.DrawLayout (text_gc, 2, (SizeRequest ().Height - height) / 2, layout);
+				// GTK2 coordinates were relative to the text area window: start after the entry padding
+				var padding = StyleContext.GetPadding (StateFlags);
+				gtk3cr.Save ();
+				gtk3cr.SetSourceColor (textColor.Value);
+				gtk3cr.MoveTo (padding.Left + 2, (AllocatedHeight - height) / 2);
+				Pango.CairoHelper.ShowLayout (gtk3cr, layout);
+				gtk3cr.Restore ();
 
 				return ret;
 			}

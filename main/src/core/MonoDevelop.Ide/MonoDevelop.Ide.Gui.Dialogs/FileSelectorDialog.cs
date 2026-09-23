@@ -48,9 +48,10 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		int firstEncIndex;
 		
 		Gtk.Label encodingLabel;
-		Gtk.OptionMenu encodingMenu;
+		Gtk.ComboBoxText encodingMenu;
 		Gtk.Label viewerLabel;
-		Gtk.ComboBox viewerSelector;
+		Gtk.ComboBoxText viewerSelector;
+		const string SeparatorId = "--";
 		Gtk.CheckButton closeWorkspaceCheck;
 		List<FileViewer> currentViewers = new List<FileViewer> ();
 		
@@ -71,9 +72,12 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			encodingLabel.Xalign = 0;
 			table.Attach (encodingLabel, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, 0, 0);
 			
-			encodingMenu = new Gtk.OptionMenu ();
+			// GTK3 has no OptionMenu: a combo box whose rows keep the old menu item indices
+			// (separators included, drawn through the row separator function)
+			encodingMenu = new Gtk.ComboBoxText ();
+			encodingMenu.RowSeparatorFunc = (model, iter) => (string) model.GetValue (iter, encodingMenu.IdColumn) == SeparatorId;
 			FillEncodings ();
-			encodingMenu.SetHistory (0);
+			encodingMenu.Active = 0;
 			table.Attach (encodingMenu, 1, 2, 0, 1, AttachOptions.Expand|AttachOptions.Fill, AttachOptions.Expand|AttachOptions.Fill, 0, 0);
 
 			encodingMenu.Changed += EncodingChanged;
@@ -84,7 +88,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			table.Attach (viewerLabel, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, 0, 0);
 			
 			Gtk.HBox box = new HBox (false, 6);
-			viewerSelector = Gtk.ComboBox.NewText ();
+			viewerSelector = new Gtk.ComboBoxText ();
 			box.PackStart (viewerSelector, true, true, 0);
 			closeWorkspaceCheck = new CheckButton (GettextCatalog.GetString ("Close current workspace"));
 			closeWorkspaceCheck.Active = true;
@@ -112,21 +116,18 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			get {
 				if (!ShowEncodingSelector)
 					return null;
-				else if (encodingMenu.History < firstEncIndex || encodingMenu.History == selectOption)
+				else if (encodingMenu.Active < firstEncIndex || encodingMenu.Active == selectOption)
 					return null;
-				return TextEncoding.ConversionEncodings [encodingMenu.History - firstEncIndex];
+				return TextEncoding.ConversionEncodings [encodingMenu.Active - firstEncIndex];
 			}
 			set {
-				for (uint n=0; n < TextEncoding.ConversionEncodings.Length; n++) {
+				for (int n=0; n < TextEncoding.ConversionEncodings.Length; n++) {
 					if (TextEncoding.ConversionEncodings [n] == value) {
-						encodingMenu.SetHistory (n + (uint)firstEncIndex);
-						Menu menu = (Menu)encodingMenu.Menu;
-						RadioMenuItem rm = (RadioMenuItem) menu.Children [n + firstEncIndex];
-						rm.Active = true;
+						encodingMenu.Active = n + firstEncIndex;
 						return;
 					}
 				}
-				encodingMenu.SetHistory (0);
+				encodingMenu.Active = 0;
 			}
 		}
 		
@@ -147,55 +148,35 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		void FillEncodings ()
 		{
 			selectOption = -1;
-			RadioMenuItem defaultActivated = null;
-			
-			Gtk.Menu menu = new Menu ();
-			
+			encodingMenu.RemoveAll ();
+
 			// Don't show the auto-detection option when saving
-			
+
 			if (Action != Gtk.FileChooserAction.Save) {
-				RadioMenuItem autodetect = new RadioMenuItem (GettextCatalog.GetString ("Auto Detected"));
-				autodetect.Group = new GLib.SList (typeof(object));
-				menu.Append (autodetect);
-				menu.Append (new Gtk.SeparatorMenuItem ());
-				autodetect.Active = true;
-				defaultActivated = autodetect;
+				encodingMenu.AppendText (GettextCatalog.GetString ("Auto Detected"));
+				encodingMenu.Append (SeparatorId, string.Empty);
 				firstEncIndex = 2;
 			} else
 				firstEncIndex = 0;
-			
+
 			foreach (var textEncoding in TextEncoding.ConversionEncodings) {
 				var enc = textEncoding.Encoding;
-				RadioMenuItem mitem = new RadioMenuItem (enc.EncodingName + " (" + enc.WebName + ")");
-				menu.Append (mitem);
-				if (defaultActivated == null) {
-					defaultActivated = mitem;
-					defaultActivated.Group = new GLib.SList (typeof(object));
-				} else {
-					mitem.Group = defaultActivated.Group;
-				}
-				mitem.Active = false;
+				encodingMenu.AppendText (enc.EncodingName + " (" + enc.WebName + ")");
 			}
-			
-			if (defaultActivated != null)
-				defaultActivated.Active = true;
-			
-			menu.Append (new Gtk.SeparatorMenuItem ());
-			
-			MenuItem select = new MenuItem (GettextCatalog.GetString ("Add or _Remove..."));
-			menu.Append (select);
-			
-			menu.ShowAll ();
-			encodingMenu.Menu = menu;
-			
-			encodingMenu.SetHistory (0);
-					
+
+			encodingMenu.Append (SeparatorId, string.Empty);
+
+			// combo box rows have no mnemonics
+			encodingMenu.AppendText (GettextCatalog.GetString ("Add or _Remove...").Replace ("_", ""));
+
+			encodingMenu.Active = 0;
+
 			selectOption = firstEncIndex + TextEncoding.ConversionEncodings.Length + 1;
 		}
-		
+
 		void EncodingChanged (object s, EventArgs args)
 		{
-			if (encodingMenu.History == selectOption) {
+			if (selectOption >= 0 && encodingMenu.Active == selectOption) {
 				using (var dlg = new SelectEncodingsDialog ())
 					MessageService.ShowCustomDialog (dlg, this);
 				FillEncodings ();
@@ -204,7 +185,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		
 		void FillViewers ()
 		{
-			((Gtk.ListStore)viewerSelector.Model).Clear ();
+			viewerSelector.RemoveAll ();
 			currentViewers.Clear ();
 			
 			if (Filenames.Length == 0 || Filename.Length == 0 || System.IO.Directory.Exists (Filename))

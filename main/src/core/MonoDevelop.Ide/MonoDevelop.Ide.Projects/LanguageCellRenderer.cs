@@ -99,9 +99,9 @@ namespace MonoDevelop.Ide.Projects
 			return languageRect;
 		}
 
-		public override void GetSize (Widget widget, ref Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
-			base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+			Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 
 			textWidth = GetTextWidth (widget);
 			int languageRectangleWidth = textWidth + languageLeftHandPadding;
@@ -113,6 +113,37 @@ namespace MonoDevelop.Ide.Projects
 			}
 
 			width = languageRectangleWidth + rightHandCellPadding;
+		}
+
+		protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+		{
+			OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+		}
+
+		protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+		{
+			OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+		}
+
+		void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		{
+			base.OnGetPreferredWidth (widget, out _, out width);
+			base.OnGetPreferredHeightForWidth (widget, width, out _, out height);
+			MonoDevelop.Components.Gtk3CompatExtensions.Gtk3CalcOffset (this, widget, cell_area, width, height, out x_offset, out y_offset);
 		}
 
 		int GetTextWidth (Widget widget)
@@ -136,7 +167,7 @@ namespace MonoDevelop.Ide.Projects
 			}
 		}
 
-		protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+		protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 		{
 			if (Template == null) {
 				return;
@@ -146,14 +177,14 @@ namespace MonoDevelop.Ide.Projects
 				return;
 			}
 
-			using (var ctx = CairoHelper.Create (window)) {
+			using (var ctx = gtk3cr.CreateSharedContext ()) {
 				using (var layout = new Pango.Layout (widget.PangoContext)) {
 					int textHeight = 0;
 
 					SetMarkup (layout, GetSelectedLanguage ());
 					layout.GetPixelSize (out textWidth, out textHeight);
 
-					languageRect = GetLanguageButtonRectangle (window, widget, cell_area, textHeight, textWidth);
+					languageRect = GetLanguageButtonRectangle (widget, cell_area, textHeight, textWidth);
 
 					StateType state = StateType.Normal;
 					if (!RenderRecentTemplate) {
@@ -168,7 +199,7 @@ namespace MonoDevelop.Ide.Projects
 					int languageTextX = languageRect.X + ((languageRect.Width - tw) / 2);
 					int languageTextY = languageRect.Y + (languageRect.Height - textHeight) / 2;
 
-					window.DrawLayout (widget.Style.TextGC (state), languageTextX, languageTextY, layout);
+					gtk3cr.DrawLayout (widget, state, languageTextX, languageTextY, layout);
 
 					if (TemplateHasMultipleLanguages ()) {
 						int triangleX = languageTextX + textWidth + languageRightHandPadding;
@@ -192,7 +223,7 @@ namespace MonoDevelop.Ide.Projects
 			ctx.Fill ();
 		}
 
-		Rectangle GetLanguageButtonRectangle (Drawable window, Widget widget, Rectangle cell_area, int textHeight, int textWidth)
+		Rectangle GetLanguageButtonRectangle (Widget widget, Rectangle cell_area, int textHeight, int textWidth)
 		{
 			int languageRectangleHeight = cell_area.Height - 8;
 			int languageRectangleWidth = textWidth + languageLeftHandPadding;
@@ -232,7 +263,7 @@ namespace MonoDevelop.Ide.Projects
 			return !RenderRecentTemplate && Template != null && Template.AvailableLanguages.Count > 1;
 		}
 
-		static StateType GetState (Widget widget, CellRendererState flags)
+		new static StateType GetState (Widget widget, CellRendererState flags)
 		{
 			StateType stateType = StateType.Normal;
 			if ((flags & CellRendererState.Prelit) != 0)

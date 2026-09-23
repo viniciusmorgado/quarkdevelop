@@ -22,25 +22,11 @@ namespace MonoDevelop.Components
 
 		public static BinContainer Attach (Gtk.Bin bin)
 		{
+			// GTK2's GtkBin had no size negotiation, so Stetic forwarded size requests and
+			// allocations to the child here. GTK3's GtkBin measures and allocates its child itself.
 			BinContainer bc = new BinContainer ();
-			bin.SizeRequested += new Gtk.SizeRequestedHandler (bc.OnSizeRequested);
-			bin.SizeAllocated += new Gtk.SizeAllocatedHandler (bc.OnSizeAllocated);
 			bin.Added += new Gtk.AddedHandler (bc.OnAdded);
 			return bc;
-		}
-
-		private void OnSizeRequested (object sender, Gtk.SizeRequestedArgs args)
-		{
-			if ((this.child != null)) {
-				args.Requisition = this.child.SizeRequest ();
-			}
-		}
-
-		private void OnSizeAllocated (object sender, Gtk.SizeAllocatedArgs args)
-		{
-			if ((this.child != null)) {
-				this.child.Allocation = args.Allocation;
-			}
 		}
 
 		private void OnAdded (object sender, Gtk.AddedArgs args)

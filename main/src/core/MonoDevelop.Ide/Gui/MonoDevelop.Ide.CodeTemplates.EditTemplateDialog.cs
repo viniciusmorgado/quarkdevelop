@@ -9,11 +9,11 @@ namespace MonoDevelop.Ide.CodeTemplates
 		private global::Gtk.HBox hbox1;
 		private global::Gtk.Entry entryDescription;
 		private global::Gtk.Label label2;
-		private global::Gtk.ComboBoxEntry comboboxentryMime;
+		private global::Gtk.ComboBoxText comboboxentryMime;
 		private global::Gtk.HBox hbox2;
 		private global::Gtk.Entry entryShortcut1;
 		private global::Gtk.Label label5;
-		private global::Gtk.ComboBoxEntry comboboxentryGroups;
+		private global::Gtk.ComboBoxText comboboxentryGroups;
 		private global::Gtk.HBox hbox5;
 		private global::Gtk.CheckButton checkbuttonExpansion;
 		private global::Gtk.CheckButton checkbuttonSurroundWith;
@@ -26,7 +26,7 @@ namespace MonoDevelop.Ide.CodeTemplates
 		private global::Gtk.CheckButton checkbuttonWhiteSpaces;
 		private global::Gtk.ScrolledWindow scrolledwindow1;
 		private global::Gtk.VBox vbox4;
-		private global::Gtk.ComboBox comboboxVariables;
+		private global::Gtk.ComboBoxText comboboxVariables;
 		private global::Gtk.ScrolledWindow scrolledwindow2;
 		private global::Gtk.TreeView treeviewVariable;
 		private global::Gtk.Button buttonCancel;
@@ -87,7 +87,7 @@ namespace MonoDevelop.Ide.CodeTemplates
 			w3.Expand = false;
 			w3.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.comboboxentryMime = global::Gtk.ComboBoxEntry.NewText ();
+			this.comboboxentryMime = global::Gtk.ComboBoxText.NewWithEntry ();
 			this.comboboxentryMime.Name = "comboboxentryMime";
 			this.hbox1.Add (this.comboboxentryMime);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.comboboxentryMime]));
@@ -127,7 +127,7 @@ namespace MonoDevelop.Ide.CodeTemplates
 			w7.Expand = false;
 			w7.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.comboboxentryGroups = global::Gtk.ComboBoxEntry.NewText ();
+			this.comboboxentryGroups = global::Gtk.ComboBoxText.NewWithEntry ();
 			this.comboboxentryGroups.Name = "comboboxentryGroups";
 			this.hbox2.Add (this.comboboxentryGroups);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.comboboxentryGroups]));
@@ -259,7 +259,7 @@ namespace MonoDevelop.Ide.CodeTemplates
 			this.vbox4.Name = "vbox4";
 			this.vbox4.Spacing = 6;
 			// Container child vbox4.Gtk.Box+BoxChild
-			this.comboboxVariables = global::Gtk.ComboBox.NewText ();
+			this.comboboxVariables = new global::Gtk.ComboBoxText ();
 			this.comboboxVariables.Name = "comboboxVariables";
 			this.vbox4.Add (this.comboboxVariables);
 			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.comboboxVariables]));

@@ -130,7 +130,7 @@ namespace MonoDevelop.Components
 
 		bool? ignoreSelection;
 
-		protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, Gtk.CellRendererState flags)
+		protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 		{
 			// In light theme:
 			// On the Mac, the default unfocused selection background is lighter, so the icon should be black
@@ -141,7 +141,8 @@ namespace MonoDevelop.Components
 			if (!ignoreSelection.HasValue) {
 				if (Platform.IsMac) {
 					if (IdeTheme.UserInterfaceTheme == Theme.Light) {
-						var baseColor = widget.Style.Base (widget.State).ToXwtColor ();
+						var bg = widget.StyleContext.GetBackgroundColor (widget.StateFlags);
+						var baseColor = new Xwt.Drawing.Color (bg.Red, bg.Green, bg.Blue, bg.Alpha);
 						ignoreSelection = baseColor.Brightness == 1;
 					} else {
 						ignoreSelection = false;
@@ -161,7 +162,7 @@ namespace MonoDevelop.Components
 			if (!img.HasFixedSize)
 				img = img.WithSize (Gtk.IconSize.Menu);
 			
-			using (var ctx = Gdk.CairoHelper.Create (window)) {
+			using (var ctx = gtk3cr.CreateSharedContext ()) {
 				var x = cell_area.X + cell_area.Width / 2 - (int)(img.Width / 2);
 				var y = cell_area.Y + cell_area.Height / 2 - (int)(img.Height / 2);
 				ctx.DrawImage (widget, img, x, y);
@@ -180,7 +181,7 @@ namespace MonoDevelop.Components
 			}
 		}
 
-		public override void GetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
 			var img = GetImage ();
 			if (img != null) {
@@ -196,6 +197,30 @@ namespace MonoDevelop.Components
 			height += (int)Ypad * 2;
 			x_offset = (int)(cell_area.Width / 2 - (width / 2));
 			y_offset = (int)(cell_area.Height / 2 - (height / 2));
+		}
+
+		protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+		{
+			OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+		}
+
+		protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+		{
+			OnGetPreferredWidth (widget, out minimum_width, out natural_width);
 		}
 
 		Image GetImage ()

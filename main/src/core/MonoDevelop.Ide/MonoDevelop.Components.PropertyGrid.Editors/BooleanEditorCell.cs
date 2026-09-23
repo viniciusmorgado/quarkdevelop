@@ -36,46 +36,36 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 	{
 		static int indicatorSize;
 		static int indicatorSpacing;
-		static Gtk.Style style;
+		static bool styleInitialized;
 
 		static BooleanEditorCell ()
 		{
 			// reinit style
-			MonoDevelop.Ide.Gui.Styles.Changed += (sender, e) => style = null;
+			MonoDevelop.Ide.Gui.Styles.Changed += (sender, e) => styleInitialized = false;
 		}
 
-		// we can't override Initialize () or use the default constructor for this,
-		// because a valid Gdk.Window is required for full Gtk.Style initialization
-		static void InitializeStyle (Gtk.Widget container)
+		// GTK3 style properties can be read without a realized widget
+		static void InitializeStyle ()
 		{
-			if (style == null && container.GdkWindow != null) {
-				Gtk.CheckButton cb = new BooleanEditor ();
-				cb.GdkWindow = container.GdkWindow;
-				cb.Parent = container;
-				cb.Realize ();
-				style = cb.Style;
-				style.Attach (container.GdkWindow);
-				indicatorSize = (int) cb.StyleGetProperty ("indicator-size");
-				indicatorSpacing = (int) cb.StyleGetProperty ("indicator-spacing");
-				style.Detach ();
-				cb.Dispose ();
-			}
+			if (styleInitialized)
+				return;
+			var cb = new BooleanEditor ();
+			indicatorSize = (int) cb.StyleGetProperty ("indicator-size");
+			indicatorSpacing = (int) cb.StyleGetProperty ("indicator-spacing");
+			cb.Destroy ();
+			styleInitialized = true;
 		}
-		
+
 		public override void GetSize (int availableWidth, out int width, out int height)
 		{
-			if (style == null)
-				InitializeStyle (Container);
+			InitializeStyle ();
 			width = indicatorSize;
 			height = indicatorSize;
 		}
-		
-		public override void Render (Gdk.Drawable window, Cairo.Context ctx, Gdk.Rectangle bounds, Gtk.StateType state)
+
+		public override void Render (Cairo.Context ctx, Gdk.Rectangle bounds, Gtk.StateType state)
 		{
-			if (style == null)
-				InitializeStyle (Container);
-			
-			Gtk.ShadowType sh = (bool) Value ? Gtk.ShadowType.In : Gtk.ShadowType.Out;
+			InitializeStyle ();
 
 			int s = indicatorSize - 1;
 			if (s > bounds.Height)
@@ -83,7 +73,23 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 			if (s > bounds.Width)
 				s = bounds.Width;
 
-			Gtk.Style.PaintCheck (style, window, state, sh, bounds, Container, "checkbutton", bounds.X + indicatorSpacing - 1, bounds.Y + (bounds.Height - s)/2, s, s);
+			RenderCheck (Container, ctx, state, (bool) Value, bounds.X + indicatorSpacing - 1, bounds.Y + (bounds.Height - s) / 2, s);
+		}
+
+		/// <summary>Draws a check box the way GtkCellRendererToggle does (GTK2 used Style.PaintCheck).</summary>
+		internal static void RenderCheck (Gtk.Widget container, Cairo.Context ctx, Gtk.StateType state, bool active, int x, int y, int size)
+		{
+			var flags = state.ToStateFlags ();
+			if (active)
+				flags |= Gtk.StateFlags.Checked;
+			var sc = container.StyleContext;
+			sc.Save ();
+			sc.AddClass ("check");
+			sc.State = flags;
+			sc.RenderBackground (ctx, x, y, size, size);
+			sc.RenderFrame (ctx, x, y, size, size);
+			sc.RenderCheck (ctx, x, y, size, size);
+			sc.Restore ();
 		}
 		
 		protected override IPropertyEditor CreateEditor (Gdk.Rectangle cell_area, Gtk.StateType state)

@@ -73,28 +73,33 @@ namespace MonoDevelop.Components
 		{
 			return new Gtk3DrawContext (cr, -OffsetX, -OffsetY);
 		}
+	}
 
-		sealed class Gtk3DrawContext : Cairo.Context
+	/// <summary>
+	/// A context drawing on the same target as another one. The owner's state is saved on creation and
+	/// restored on dispose, and disposing it only drops a reference, so ported code can keep its
+	/// <c>using (var ctx = CairoHelper.Create (window))</c> blocks around the context GTK3 hands out.
+	/// </summary>
+	sealed class Gtk3DrawContext : Cairo.Context
+	{
+		readonly Cairo.Context owner;
+		bool restored;
+
+		public Gtk3DrawContext (Cairo.Context owner, double dx, double dy) : base (owner.Handle, false)
 		{
-			readonly Cairo.Context owner;
-			bool restored;
+			this.owner = owner;
+			owner.Save ();
+			if (dx != 0 || dy != 0)
+				owner.Translate (dx, dy);
+		}
 
-			public Gtk3DrawContext (Cairo.Context owner, double dx, double dy) : base (owner.Handle, false)
-			{
-				this.owner = owner;
-				owner.Save ();
-				if (dx != 0 || dy != 0)
-					owner.Translate (dx, dy);
+		protected override void Dispose (bool disposing)
+		{
+			if (!restored) {
+				restored = true;
+				owner.Restore ();
 			}
-
-			protected override void Dispose (bool disposing)
-			{
-				if (!restored) {
-					restored = true;
-					owner.Restore ();
-				}
-				base.Dispose (disposing);
-			}
+			base.Dispose (disposing);
 		}
 	}
 
@@ -106,6 +111,77 @@ namespace MonoDevelop.Components
 		{
 			widget.GetPreferredSize (out _, out Gtk.Requisition natural);
 			return natural;
+		}
+
+		/// <summary>
+		/// A context on the same target as <paramref name="cr"/> whose state is restored when it is disposed;
+		/// stands in for GTK2's <c>CairoHelper.Create (drawable)</c> in code that receives a context from GTK3.
+		/// </summary>
+		public static Cairo.Context CreateSharedContext (this Cairo.Context cr)
+		{
+			return new Gtk3DrawContext (cr, 0, 0);
+		}
+
+		/// <summary>The GTK3 state flags matching a GTK2 state type.</summary>
+		public static Gtk.StateFlags ToStateFlags (this Gtk.StateType state)
+		{
+			switch (state) {
+			case Gtk.StateType.Active:
+				return Gtk.StateFlags.Active;
+			case Gtk.StateType.Prelight:
+				return Gtk.StateFlags.Prelight;
+			case Gtk.StateType.Selected:
+				return Gtk.StateFlags.Selected;
+			case Gtk.StateType.Insensitive:
+				return Gtk.StateFlags.Insensitive;
+			case Gtk.StateType.Inconsistent:
+				return Gtk.StateFlags.Inconsistent;
+			case Gtk.StateType.Focused:
+				return Gtk.StateFlags.Focused;
+			default:
+				return Gtk.StateFlags.Normal;
+			}
+		}
+
+		/// <summary>The foreground (text) color of <paramref name="widget"/> in a GTK2 state (GTK2 <c>Style.Text/Fg</c>).</summary>
+		public static Cairo.Color GetStyleTextColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			var c = widget.StyleContext.GetColor (state.ToStateFlags ());
+			return new Cairo.Color (c.Red, c.Green, c.Blue, c.Alpha);
+		}
+
+		/// <summary>
+		/// GTK2 <c>drawable.DrawLayout (widget.Style.TextGC (state), x, y, layout)</c>: renders the layout with
+		/// the widget's style in the given state.
+		/// </summary>
+		public static void DrawLayout (this Cairo.Context cr, Gtk.Widget widget, Gtk.StateType state, double x, double y, Pango.Layout layout)
+		{
+			var style = widget.StyleContext;
+			style.Save ();
+			style.State = state.ToStateFlags ();
+			style.RenderLayout (cr, x, y, layout);
+			style.Restore ();
+		}
+
+		/// <summary>
+		/// GTK2 <c>gtk_cell_renderer_get_size</c> (deprecated in GTK3, not bound by GtkSharp): the renderer's
+		/// natural size and its offsets inside <paramref name="cellArea"/> (which may be empty).
+		/// </summary>
+		public static void GetSize (this Gtk.CellRenderer cell, Gtk.Widget widget, ref Gdk.Rectangle cellArea, out int xOffset, out int yOffset, out int width, out int height)
+		{
+			cell.GetPreferredWidth (widget, out _, out width);
+			cell.GetPreferredHeightForWidth (widget, width, out _, out height);
+			cell.Gtk3CalcOffset (widget, cellArea, width, height, out xOffset, out yOffset);
+		}
+
+		/// <summary>GTK's <c>_gtk_cell_renderer_calc_offset</c>: where a cell of the given size goes inside <paramref name="cellArea"/>.</summary>
+		public static void Gtk3CalcOffset (this Gtk.CellRenderer cell, Gtk.Widget widget, Gdk.Rectangle cellArea, int width, int height, out int xOffset, out int yOffset)
+		{
+			cell.GetAlignment (out float xalign, out float yalign);
+			if (widget != null && widget.Direction == Gtk.TextDirection.Rtl)
+				xalign = 1.0f - xalign;
+			xOffset = Math.Max ((int)(xalign * (cellArea.Width - width)), 0);
+			yOffset = Math.Max ((int)(yalign * (cellArea.Height - height)), 0);
 		}
 	}
 }

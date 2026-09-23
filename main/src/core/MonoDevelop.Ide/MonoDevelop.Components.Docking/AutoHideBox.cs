@@ -146,7 +146,7 @@ namespace MonoDevelop.Components.Docking
 			sepBox.ButtonPressEvent += OnSizeButtonPress;
 			sepBox.ButtonReleaseEvent += OnSizeButtonRelease;
 			sepBox.MotionNotifyEvent += OnSizeMotion;
-			sepBox.ExposeEvent += OnGripExpose;
+			sepBox.Drawn += OnGripExpose;
 			sepBox.EnterNotifyEvent += delegate { insideGrip = true; sepBox.QueueDraw (); };
 			sepBox.LeaveNotifyEvent += delegate { insideGrip = false; sepBox.QueueDraw (); };
 		}
@@ -358,15 +358,17 @@ namespace MonoDevelop.Components.Docking
 			}
 		}
 		
-		void OnGripExpose (object sender, Gtk.ExposeEventArgs args)
+		void OnGripExpose (object sender, Gtk.DrawnArgs args)
 		{
 			var w = (EventBox) sender;
 			StateType s = insideGrip ? StateType.Prelight : StateType.Normal;
-			
-			using (var ctx = CairoHelper.Create (args.Event.Window)) {
-				ctx.SetSourceColor (w.Style.Background (s).ToCairoColor ());
-				ctx.Paint ();
-			}
+
+			// GTK2 painted the whole window with Style.Background (s); GTK3 renders the CSS background
+			var style = w.StyleContext;
+			style.Save ();
+			style.State = s.ToStateFlags ();
+			style.RenderBackground (args.Cr, 0, 0, w.AllocatedWidth, w.AllocatedHeight);
+			style.Restore ();
 		}
 	}
 	

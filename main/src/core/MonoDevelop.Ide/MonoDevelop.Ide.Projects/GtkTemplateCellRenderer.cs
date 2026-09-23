@@ -94,9 +94,9 @@ namespace MonoDevelop.Ide.Projects
 			return Platform.IsMac && (Platform.OSVersion >= MacSystemInformation.Yosemite);
 		}
 
-		public override void GetSize (Widget widget, ref Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
-			base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+			Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 			if (TemplateIcon != null) {
 				height = (int)TemplateIcon.Height + ((int)Ypad * 2);
 			} else {
@@ -104,26 +104,57 @@ namespace MonoDevelop.Ide.Projects
 			}
 		}
 
-		protected override void Render (Drawable window, Widget widget, Rectangle background_area, Rectangle cell_area, Rectangle expose_area, CellRendererState flags)
+		protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+		{
+			OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+		}
+
+		protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+		{
+			OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+		}
+
+		void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		{
+			base.OnGetPreferredWidth (widget, out _, out width);
+			base.OnGetPreferredHeightForWidth (widget, width, out _, out height);
+			MonoDevelop.Components.Gtk3CompatExtensions.Gtk3CalcOffset (this, widget, cell_area, width, height, out x_offset, out y_offset);
+		}
+
+		protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 		{
 			if (Template == null) {
-				DrawTemplateCategoryText (window, widget, cell_area, flags);
+				DrawTemplateCategoryText (gtk3cr, widget, cell_area, flags);
 				return;
 			}
 
-			using (var ctx = CairoHelper.Create (window)) {
+			using (var ctx = gtk3cr.CreateSharedContext ()) {
 				using (var layout = new Pango.Layout (widget.PangoContext)) {
 
 					Rectangle iconRect = DrawIcon (ctx, widget, cell_area, flags);
 
-					DrawTemplateNameText (window, widget, cell_area, iconRect, flags);
+					DrawTemplateNameText (ctx, widget, cell_area, iconRect, flags);
 					if (RenderRecentTemplate)
 						DrawCategoryText (ctx, widget, cell_area, iconRect, flags);
 				}
 			}
 		}
 
-		void DrawTemplateCategoryText (Drawable window, Widget widget, Rectangle cell_area, CellRendererState flags)
+		void DrawTemplateCategoryText (Cairo.Context cr, Widget widget, Rectangle cell_area, CellRendererState flags)
 		{
 			StateType state = GetState (widget, flags);
 
@@ -140,7 +171,7 @@ namespace MonoDevelop.Ide.Projects
 
 				int textX = cell_area.X + (int)Xpad + categoryTextPaddingX;
 				int textY = cell_area.Y + (cell_area.Height - h) / 2 + groupTemplateHeadingYOffset;
-				window.DrawLayout (widget.Style.TextGC (state), textX, textY, layout);
+				cr.DrawLayout (widget, state, textX, textY, layout);
 			}
 		}
 
@@ -156,7 +187,7 @@ namespace MonoDevelop.Ide.Projects
 			return iconRect;
 		}
 
-		void DrawTemplateNameText (Drawable window, Widget widget, Rectangle cell_area, Rectangle iconRect, CellRendererState flags)
+		void DrawTemplateNameText (Cairo.Context cr, Widget widget, Rectangle cell_area, Rectangle iconRect, CellRendererState flags)
 		{
 			StateType state = GetState (widget, flags);
 
@@ -172,7 +203,7 @@ namespace MonoDevelop.Ide.Projects
 				layout.GetPixelSize (out w, out h);
 				int textY = cell_area.Y + (RenderRecentTemplate ? (2) : (cell_area.Height - h) / 2);
 
-				window.DrawLayout (widget.Style.TextGC (state), iconRect.Right + iconTextPadding, textY, layout);
+				cr.DrawLayout (widget, state, iconRect.Right + iconTextPadding, textY, layout);
 			}
 		}
 
@@ -200,7 +231,7 @@ namespace MonoDevelop.Ide.Projects
 			}
 		}
 
-		static StateType GetState (Widget widget, CellRendererState flags)
+		new static StateType GetState (Widget widget, CellRendererState flags)
 		{
 			StateType stateType = StateType.Normal;
 			if ((flags & CellRendererState.Prelit) != 0)

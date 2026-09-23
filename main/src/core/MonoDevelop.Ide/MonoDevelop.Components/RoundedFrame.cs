@@ -35,7 +35,7 @@ using MonoDevelop.Components.Theming;
 
 namespace MonoDevelop.Components
 {
-	public class RoundedFrame : Bin
+	public class RoundedFrame : Bin, IScrollableImplementor
 	{
 		private Theme theme;
 
@@ -146,11 +146,21 @@ namespace MonoDevelop.Components
 			child.SizeAllocate (child_allocation);
 		}
 
-		protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj)
+		// Gtk.IScrollable is implemented to satisfy GtkScrolledWindow, which would otherwise wrap
+		// this non-scrollable child in a viewport (GTK2 complained instead); the adjustments are
+		// only stored, as GTK2's set-scroll-adjustments handler ignored them.
+		public Adjustment Hadjustment { get; set; }
+
+		public Adjustment Vadjustment { get; set; }
+
+		public ScrollablePolicy HscrollPolicy { get; set; }
+
+		public ScrollablePolicy VscrollPolicy { get; set; }
+
+		public bool GetBorder (out Gtk.Border border)
 		{
-			// This is to satisfy the gtk_widget_set_scroll_adjustments
-			// inside of GtkScrolledWindow so it doesn't complain about
-			// its child not being scrollable.
+			border = default (Gtk.Border);
+			return false;
 		}
 
 		protected override bool OnDrawn (Cairo.Context gtk3cr)

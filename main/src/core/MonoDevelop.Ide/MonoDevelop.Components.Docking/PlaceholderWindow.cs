@@ -36,7 +36,7 @@ namespace MonoDevelop.Components.Docking
 {
 	internal class PlaceholderWindow: Gtk.Window
 	{
-		Gdk.GC redgc;
+		Cairo.Color frameColor;
 		uint anim;
 		int rx, ry, rw, rh;
 		bool allowDocking;
@@ -60,17 +60,11 @@ namespace MonoDevelop.Components.Docking
 			// Create the mask for the arrow
 			
 			Realize ();
-			redgc = new Gdk.GC (GdkWindow);
-	   		redgc.RgbFgColor = frame.Style.Background (StateType.Selected);
-		}
-
-		protected override void OnDestroyed ()
-		{
-			if (redgc != null) {
-				redgc.Dispose ();
-				redgc = null;
-			}
-			base.OnDestroyed ();
+			// GTK2 used the theme's selected background (Style.Background (StateType.Selected))
+			Gdk.RGBA selected;
+			if (!frame.StyleContext.LookupColor ("theme_selected_bg_color", out selected))
+				selected = frame.StyleContext.GetBackgroundColor (StateFlags.Selected);
+			frameColor = new Cairo.Color (selected.Red, selected.Green, selected.Blue);
 		}
 
 		protected override void OnRealized ()
@@ -81,23 +75,11 @@ namespace MonoDevelop.Components.Docking
 		
 		void CreateShape (int width, int height)
 		{
-			Gdk.Color black, white;
-			black = new Gdk.Color (0, 0, 0);
-			black.Pixel = 1;
-			white = new Gdk.Color (255, 255, 255);
-			white.Pixel = 0;
-
-			using (Gdk.Pixmap pm = new Pixmap (this.GdkWindow, width, height, 1)) {
-				using (Gdk.GC gc = new Gdk.GC (pm)) {
-					gc.Background = white;
-					gc.Foreground = white;
-					pm.DrawRectangle (gc, true, 0, 0, width, height);
-
-					gc.Foreground = black;
-					pm.DrawRectangle (gc, false, 0, 0, width - 1, height - 1);
-					pm.DrawRectangle (gc, false, 1, 1, width - 3, height - 3);
-				}
-				this.ShapeCombineMask (pm, 0, 0);
+			// Only the 2px frame is visible (GTK2 used a 1-bit pixmap mask)
+			using (var region = new Cairo.Region (new Cairo.RectangleInt { X = 0, Y = 0, Width = width, Height = height })) {
+				if (width > 4 && height > 4)
+					region.SubtractRectangle (new Cairo.RectangleInt { X = 2, Y = 2, Width = width - 4, Height = height - 4 });
+				this.ShapeCombineRegion (region);
 			}
 		}
 		
@@ -110,12 +92,14 @@ namespace MonoDevelop.Components.Docking
 		
 		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			var args = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			//base.OnDrawn (gtk3cr);
 			int w, h;
 			this.GetSize (out w, out h);
-			this.GdkWindow.DrawRectangle (redgc, false, 0, 0, w-1, h-1);
-			this.GdkWindow.DrawRectangle (redgc, false, 1, 1, w-3, h-3);
+			// two 1px GDK rectangle outlines: a 2px frame
+			gtk3cr.Rectangle (1, 1, w - 2, h - 2);
+			gtk3cr.LineWidth = 2;
+			gtk3cr.SetSourceColor (frameColor);
+			gtk3cr.Stroke ();
 	  		return true;
 		}
 		

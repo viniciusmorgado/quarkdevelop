@@ -99,7 +99,7 @@ namespace MonoDevelop.Components.MainToolbar
 			return runtime == null || runtime.IsSeparator;
 		}
 
-		void RuntimeRenderCell (CellLayout layout, CellRenderer cell, ITreeModel model, TreeIter iter)
+		void RuntimeRenderCell (ICellLayout layout, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			var runtime = (IRuntimeModel)model.GetValue (iter, 0);
 			var renderer = (CellRendererText) cell;

@@ -44,15 +44,46 @@ namespace MonoDevelop.Ide.Projects
 		const int iconTextXPadding = 1;
 		const int iconYOffset = -1;
 
-		public override void GetSize (Widget widget, ref Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
-			base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+			Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 			if (CategoryIcon != null) {
 				height = (int)CategoryIcon.Height + ((int)Ypad * 2) + topLevelTemplateHeadingTotalYPadding;
 			}
 		}
 
-		protected override void Render (Drawable window, Widget widget, Rectangle background_area, Rectangle cell_area, Rectangle expose_area, CellRendererState flags)
+		protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+		{
+			OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+		}
+
+		protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+		{
+			OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+		}
+
+		void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		{
+			base.OnGetPreferredWidth (widget, out _, out width);
+			base.OnGetPreferredHeightForWidth (widget, width, out _, out height);
+			MonoDevelop.Components.Gtk3CompatExtensions.Gtk3CalcOffset (this, widget, cell_area, width, height, out x_offset, out y_offset);
+		}
+
+		protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 		{
 			StateType state = GetState (widget, flags);
 			var isSelected = state == StateType.Selected || state == StateType.Active;
@@ -60,14 +91,14 @@ namespace MonoDevelop.Ide.Projects
 			int textYOffset = 0;
 			Rectangle iconRect = GetIconRect (cell_area);
 
-			using (var ctx = CairoHelper.Create (window)) {
+			using (var ctx = gtk3cr.CreateSharedContext ()) {
 				if (CategoryIcon != null) {
 					iconRect = DrawIcon (ctx, widget, cell_area, flags);
 					iconTextPadding = topLevelIconTextXPadding;
 					textYOffset = (Category == null ? 0 : topLevelTemplateHeadingYOffset);
 				}
 
-				DrawTemplateCategoryText (window, widget, cell_area, iconRect, iconTextPadding, textYOffset, flags);
+				DrawTemplateCategoryText (ctx, widget, cell_area, iconRect, iconTextPadding, textYOffset, flags);
 				if (Category == null && !isSelected) {
 						ctx.MoveTo (cell_area.X + (int)Xpad, cell_area.Y + cell_area.Height + 1);
 						ctx.SetSourceColor (Gui.Styles.ThinSplitterColor.ToCairoColor ());
@@ -83,7 +114,7 @@ namespace MonoDevelop.Ide.Projects
 			return new Rectangle (cell_area.X + (int)Xpad, cell_area.Y + (int)Ypad + iconYOffset, CategoryIconWidth, CategoryIconWidth);
 		}
 
-		static StateType GetState (Widget widget, CellRendererState flags)
+		new static StateType GetState (Widget widget, CellRendererState flags)
 		{
 			StateType stateType = StateType.Normal;
 			if ((flags & CellRendererState.Prelit) != 0)
@@ -109,7 +140,7 @@ namespace MonoDevelop.Ide.Projects
 			return iconRect;
 		}
 
-		void DrawTemplateCategoryText (Drawable window, Widget widget, Rectangle cell_area, Rectangle iconRect, int iconTextPadding, int textYOffset, CellRendererState flags)
+		void DrawTemplateCategoryText (Cairo.Context cr, Widget widget, Rectangle cell_area, Rectangle iconRect, int iconTextPadding, int textYOffset, CellRendererState flags)
 		{
 			StateType state = GetState (widget, flags);
 
@@ -125,7 +156,7 @@ namespace MonoDevelop.Ide.Projects
 				layout.GetPixelSize (out w, out h);
 				int textY = cell_area.Y + (cell_area.Height - h) / 2 + textYOffset;
 
-				window.DrawLayout (widget.Style.TextGC (state), iconRect.Right + iconTextPadding, textY, layout);
+				cr.DrawLayout (widget, state, iconRect.Right + iconTextPadding, textY, layout);
 			}
 		}
 	}

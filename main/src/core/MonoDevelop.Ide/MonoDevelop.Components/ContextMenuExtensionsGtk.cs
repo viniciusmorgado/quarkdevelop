@@ -79,13 +79,13 @@ namespace MonoDevelop.Components
 			public PoupHandlerWrapper (ContextMenu menu, Gtk.Menu gtkMenu)
 			{
 				this.menu = menu;
-				gtkMenu.ExposeEvent += HandleExposeEvent;
+				gtkMenu.Drawn += HandleExposeEvent;
 			}
 
-			void HandleExposeEvent (object o, Gtk.ExposeEventArgs args)
+			void HandleExposeEvent (object o, Gtk.DrawnArgs args)
 			{
 				var gtkMenu = (Gtk.Menu)o;
-				gtkMenu.ExposeEvent -= HandleExposeEvent;
+				gtkMenu.Drawn -= HandleExposeEvent;
 				int ox, oy;
 				gtkMenu.ParentWindow.GetOrigin (out ox, out oy);
 				int rx, ry;

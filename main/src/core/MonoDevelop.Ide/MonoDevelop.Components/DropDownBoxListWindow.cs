@@ -222,7 +222,7 @@ namespace MonoDevelop.Components
 			return base.OnEnterNotifyEvent (evnt);
 		}
 
-		internal class ListWidget: DrawingArea
+		internal class ListWidget: DrawingArea, IScrollableImplementor
 		{
 			const int leftXAlignment = 1;
 			const int padding = 4;
@@ -622,17 +622,39 @@ namespace MonoDevelop.Components
 			Adjustment hAdjustment;
 			Adjustment vAdjustment;
 
-			protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj)
+			// GTK3: scrolled windows hand their adjustments to Gtk.IScrollable children through the
+			// hadjustment/vadjustment properties (GTK2 used the set-scroll-adjustments signal).
+			public Adjustment Hadjustment {
+				get { return hAdjustment; }
+				set { hAdjustment = value; }
+			}
+
+			public Adjustment Vadjustment {
+				get { return vAdjustment; }
+				set {
+					if (vAdjustment != null)
+						vAdjustment.ValueChanged -= HandleVadjustmentValueChanged;
+					vAdjustment = value;
+					if (vAdjustment != null)
+						vAdjustment.ValueChanged += HandleVadjustmentValueChanged;
+				}
+			}
+
+			public ScrollablePolicy HscrollPolicy { get; set; }
+
+			public ScrollablePolicy VscrollPolicy { get; set; }
+
+			public bool GetBorder (out Border border)
 			{
-				hAdjustment = hadj;
-				vAdjustment = vadj;
-				if (vAdjustment != null)
-					vAdjustment.ValueChanged += delegate {
-						if (selection > -1)
-							Selection = GetRowByPosition (curMouseY);
-						QueueDraw ();
-					};
-				base.OnSetScrollAdjustments (hadj, vadj);
+				border = default (Border);
+				return false;
+			}
+
+			void HandleVadjustmentValueChanged (object sender, EventArgs e)
+			{
+				if (selection > -1)
+					Selection = GetRowByPosition (curMouseY);
+				QueueDraw ();
 			}
 
 			internal virtual void OnSelectItem (EventArgs e)

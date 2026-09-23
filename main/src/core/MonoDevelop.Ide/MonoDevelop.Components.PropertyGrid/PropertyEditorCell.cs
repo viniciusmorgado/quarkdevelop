@@ -141,14 +141,14 @@ namespace MonoDevelop.Components.PropertyGrid
 			layout.GetPixelSize (out width, out height);
 		}
 
-		public virtual void Render (Drawable window, Cairo.Context ctx, Rectangle bounds, StateType state)
+		public virtual void Render (Cairo.Context ctx, Rectangle bounds, StateType state)
 		{
 			int w, h;
 			layout.GetPixelSize (out w, out h);
 			int dy = (bounds.Height - h) / 2;
 
 			ctx.Save ();
-			ctx.SetSourceColor (container.Style.Text (state).ToCairoColor ());
+			ctx.SetSourceColor (container.GetStyleTextColor (state));
 			ctx.MoveTo (bounds.X, dy + bounds.Y);
 			Pango.CairoHelper.ShowLayout (ctx, layout);
 			ctx.Restore ();
@@ -354,7 +354,7 @@ namespace MonoDevelop.Components.PropertyGrid
 			rect.Inflate (-3, 0);// Add some margin
 
 			using (Cairo.Context ctx = evnt.CreateContext ()) {
-				cell.Render (GdkWindow, ctx, rect, StateType.Normal);
+				cell.Render (ctx, rect, StateType.Normal);
 			}
 			return res;
 		}

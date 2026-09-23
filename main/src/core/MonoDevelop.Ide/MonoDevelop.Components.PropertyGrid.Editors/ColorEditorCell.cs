@@ -57,17 +57,23 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 				return String.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
 		}
 		
-		public override void Render (Gdk.Drawable window, Cairo.Context ctx, Gdk.Rectangle bounds, Gtk.StateType state)
+		public override void Render (Cairo.Context ctx, Gdk.Rectangle bounds, Gtk.StateType state)
 		{
-			using (Gdk.GC gc = new Gdk.GC (window)) {
-				gc.RgbFgColor = GetColor ();
-				int yd = (bounds.Height - ColorBoxSize) / 2;
-				window.DrawRectangle (gc, true, bounds.X, bounds.Y + yd, ColorBoxSize - 1, ColorBoxSize - 1);
-				window.DrawRectangle (Container.GetNativeWidget<Gtk.Widget> ().Style.BlackGC, false, bounds.X, bounds.Y + yd, ColorBoxSize - 1, ColorBoxSize - 1);
-				bounds.X += ColorBoxSize + ColorBoxSpacing;
-				bounds.Width -= ColorBoxSize + ColorBoxSpacing;
-				base.Render (window, ctx, bounds, state);
-			}
+			var color = (System.Drawing.Color) Value;
+			int yd = (bounds.Height - ColorBoxSize) / 2;
+			ctx.Save ();
+			ctx.Rectangle (bounds.X, bounds.Y + yd, ColorBoxSize - 1, ColorBoxSize - 1);
+			ctx.SetSourceRGB (color.R / 255d, color.G / 255d, color.B / 255d);
+			ctx.Fill ();
+			// GDK's unfilled rectangle covered w+1 x h+1 pixels: stroke on pixel centers
+			ctx.Rectangle (bounds.X + 0.5, bounds.Y + yd + 0.5, ColorBoxSize - 1, ColorBoxSize - 1);
+			ctx.LineWidth = 1;
+			ctx.SetSourceRGB (0, 0, 0);
+			ctx.Stroke ();
+			ctx.Restore ();
+			bounds.X += ColorBoxSize + ColorBoxSpacing;
+			bounds.Width -= ColorBoxSize + ColorBoxSpacing;
+			base.Render (ctx, bounds, state);
 		}
 		
 		private Gdk.Color GetColor ()

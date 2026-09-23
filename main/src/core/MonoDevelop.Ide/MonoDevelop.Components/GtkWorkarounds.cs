@@ -1137,15 +1137,16 @@ namespace MonoDevelop.Components
 			return null;
 		}
 
-		[DllImport (PangoUtil.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_object_set_data (IntPtr raw, IntPtr key, IntPtr data);
+		// GTK3 has no GtkObject: gtk_object_set_data was a wrapper around g_object_set_data
+		[DllImport (PangoUtil.LIBGOBJECT, CallingConvention = CallingConvention.Cdecl)]
+		static extern void g_object_set_data (IntPtr raw, IntPtr key, IntPtr data);
 
-		public static void SetData<T> (Gtk.Object gtkobject, string key, T data) where T: struct
+		public static void SetData<T> (GLib.Object gtkobject, string key, T data) where T: struct
 		{
 			IntPtr pkey = GLib.Marshaller.StringToPtrGStrdup (key);
 			IntPtr pdata = Marshal.AllocHGlobal(Marshal.SizeOf(data));
 			Marshal.StructureToPtr(data, pdata, false);
-			gtk_object_set_data (gtkobject.Handle, pkey, pdata);
+			g_object_set_data (gtkobject.Handle, pkey, pdata);
 			Marshal.FreeHGlobal(pdata);
 			GLib.Marshaller.Free (pkey);
 			gtkobject.Data [key] = data;

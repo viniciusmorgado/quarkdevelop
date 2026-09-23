@@ -17,11 +17,11 @@ namespace MonoDevelop.Ide.FindInFiles
 		
 		private global::Gtk.Table tableFindAndReplace;
 		
-		private global::Gtk.ComboBoxEntry comboboxentryFind;
+		private global::Gtk.ComboBoxText comboboxentryFind;
 		
 		private global::Gtk.HBox hbox2;
 		
-		private global::Gtk.ComboBox comboboxScope;
+		private global::Gtk.ComboBoxText comboboxScope;
 		
 		private global::Gtk.Label labelFind;
 		
@@ -116,7 +116,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.tableFindAndReplace.RowSpacing = ((uint)(6));
 			this.tableFindAndReplace.ColumnSpacing = ((uint)(6));
 			// Container child tableFindAndReplace.Gtk.Table+TableChild
-			this.comboboxentryFind = global::Gtk.ComboBoxEntry.NewText ();
+			this.comboboxentryFind = global::Gtk.ComboBoxText.NewWithEntry ();
 			this.comboboxentryFind.Name = "comboboxentryFind";
 			this.tableFindAndReplace.Add (this.comboboxentryFind);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.tableFindAndReplace [this.comboboxentryFind]));
@@ -128,7 +128,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.hbox2.Name = "hbox2";
 			this.hbox2.Spacing = 6;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.comboboxScope = global::Gtk.ComboBox.NewText ();
+			this.comboboxScope = new global::Gtk.ComboBoxText ();
 			this.comboboxScope.Name = "comboboxScope";
 			this.hbox2.Add (this.comboboxScope);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.comboboxScope]));

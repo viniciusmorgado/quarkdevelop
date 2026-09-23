@@ -1410,7 +1410,7 @@ namespace MonoDevelop.Ide.Gui.Components
 			tree.SetCursor (store.GetPath (iter), complete_column, true);
 		}
 
-		Gtk.Editable currentLabelEditable;
+		Gtk.IEditable currentLabelEditable;
 		void HandleEditingStarted (object o, Gtk.EditingStartedArgs e)
 		{
 			currentLabelEditable = e.Editable as Gtk.Entry;
@@ -2537,7 +2537,7 @@ namespace MonoDevelop.Ide.Gui.Components
 				layout.SetMarkup (newmarkup);
 			}
 
-			protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, Gtk.CellRendererState flags)
+			protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 			{
 				Gtk.StateType st = Gtk.StateType.Normal;
 				if ((flags & Gtk.CellRendererState.Prelit) != 0)
@@ -2564,12 +2564,12 @@ namespace MonoDevelop.Ide.Gui.Components
 					if (st == Gtk.StateType.Selected)
 						img = img.WithStyles ("sel");
 					var x = tx + w + StatusIconSpacing;
-					using (var ctx = Gdk.CairoHelper.Create (window)) {
+					using (var ctx = gtk3cr.CreateSharedContext ()) {
 						ctx.DrawImage (widget, img, x, cell_area.Y + (cell_area.Height - img.Height) / 2);
 					}
 				}
 
-				window.DrawLayout (widget.Style.TextGC (st), tx, ty, layout);
+				gtk3cr.DrawLayout (widget, st, tx, ty, layout);
 
 				hasStatusIcon = false;
 			}
@@ -2587,7 +2587,7 @@ namespace MonoDevelop.Ide.Gui.Components
 				return new Gdk.Rectangle (x, cell_area.Y, (int) iconSize.Width, (int) cell_area.Height);
 			}
 
-			public override void GetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 			{
 				SetupLayout (widget);
 
@@ -2602,7 +2602,31 @@ namespace MonoDevelop.Ide.Gui.Components
 				}
 			}
 
-			protected override void OnEditingStarted (Gtk.CellEditable editable, string path)
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+			}
+
+			protected override void OnEditingStarted (Gtk.ICellEditable editable, string path)
 			{
 				var entry = editable as Gtk.Entry;
 				if (entry != null && scaledFont != null)
@@ -2630,13 +2654,20 @@ namespace MonoDevelop.Ide.Gui.Components
 
 			public Gdk.Point PointerPosition { get; set; }
 
-			protected override void OnDestroyed ()
+			// GTK3 cell renderers are not Gtk.Object and have no destroy signal: release on dispose.
+			protected override void Dispose (bool disposing)
 			{
-				base.OnDestroyed ();
-				if (scaledFont != null)
-					scaledFont.Dispose ();
-				if (layout != null)
-					layout.Dispose ();
+				if (disposing) {
+					if (scaledFont != null) {
+						scaledFont.Dispose ();
+						scaledFont = null;
+					}
+					if (layout != null) {
+						layout.Dispose ();
+						layout = null;
+					}
+				}
+				base.Dispose (disposing);
 			}
 		}
 	}
@@ -2815,9 +2846,9 @@ namespace MonoDevelop.Ide.Gui.Components
 			return resized;
 		}
 
-		public override void GetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
-			base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+			Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 			/*			if (overlayBottomLeft != null || overlayBottomRight != null)
 				height += overlayOverflow;
 			if (overlayTopLeft != null || overlayTopRight != null)
@@ -2826,11 +2857,40 @@ namespace MonoDevelop.Ide.Gui.Components
 				width += overlayOverflow;*/
 		}
 
+		protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+		{
+			OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+		}
+
+		protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+		{
+			OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+		}
+
+		void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		{
+			base.OnGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+		}
+
 		const int overlayOverflow = 2;
 
-		protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, Gtk.CellRendererState flags)
+		protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 		{
-			base.Render (window, widget, background_area, cell_area, expose_area, flags);
+			base.OnRender (gtk3cr, widget, background_area, cell_area, flags);
 
 			if (overlayBottomLeft != null || overlayBottomRight != null || overlayTopLeft != null || overlayTopRight != null) {
 				int x, y;
@@ -2842,7 +2902,7 @@ namespace MonoDevelop.Ide.Gui.Components
 
 				bool selected = (flags & Gtk.CellRendererState.Selected) != 0;
 
-				using (var ctx = Gdk.CairoHelper.Create (window)) {
+				using (var ctx = gtk3cr.CreateSharedContext ()) {
 					if (overlayBottomLeft != null && overlayBottomLeft != NullImage) {
 						var img = selected ? overlayBottomLeft.WithStyles ("sel") : overlayBottomLeft;
 						ctx.DrawImage (widget, img, x - overlayOverflow, y + image.Height - img.Height + overlayOverflow);

@@ -1085,22 +1085,53 @@ namespace MonoDevelop.Ide.Gui.Pads
 		{
 			public int PreferedMaxWidth { get; set; }
 
-			public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 			{
 				int originalWrapWidth = WrapWidth;
 				WrapWidth = -1;
 				// First calculate Width with WrapWidth=-1 which will give us
 				// Width of text in one line(without wrapping)
-				base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+				Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 				int oneLineWidth = width;
 				WrapWidth = originalWrapWidth;
 				// originalWrapWidth(aka WrapWidth) equals to actual width of Column if oneLineWidth is bigger
 				// then column width/height we must recalculate, because Height is atm for one line
 				// and not multipline that WrapWidth creates...
 				if (oneLineWidth > originalWrapWidth) {
-					base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+					Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 				}
 				width = Math.Min (oneLineWidth, PreferedMaxWidth);
+			}
+
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+			}
+
+			void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			{
+				base.OnGetPreferredWidth (widget, out _, out width);
+				base.OnGetPreferredHeightForWidth (widget, width, out _, out height);
+				MonoDevelop.Components.Gtk3CompatExtensions.Gtk3CalcOffset (this, widget, cell_area, width, height, out x_offset, out y_offset);
 			}
 		}
 	}
