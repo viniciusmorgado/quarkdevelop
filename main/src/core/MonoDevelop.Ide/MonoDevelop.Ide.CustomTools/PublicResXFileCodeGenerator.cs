@@ -36,7 +36,6 @@ using System.Text;
 using MonoDevelop.Core;
 using MonoDevelop.Projects;
 using MonoDevelop.Ide.CustomTools;
-using System.Resources.Tools;
 using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 
