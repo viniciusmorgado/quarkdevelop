@@ -109,7 +109,7 @@ namespace MonoDevelop.Ide.Gui.Pads
 		void RowActivated (object o, EventArgs e)
 		{
 			Gtk.TreeIter iter;
-			Gtk.TreeModel model;
+			Gtk.ITreeModel model;
 				
 			if (tree_view.Selection.GetSelected (out model, out iter)) {
 				var path = store.GetPath (iter);

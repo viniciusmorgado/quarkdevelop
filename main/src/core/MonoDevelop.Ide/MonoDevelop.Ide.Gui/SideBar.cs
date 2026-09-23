@@ -286,12 +286,13 @@ namespace MonoDevelop.Ide.Gui
 			Add (align);
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (isActive || hilight) {
 				double x = Allocation.Left, y = Allocation.Top;
 				int w = Allocation.Width, h = Allocation.Height;
-				using (Cairo.Context ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+				using (Cairo.Context ctx = evnt.CreateContext ()) {
 					HslColor c1 = new HslColor (Style.Background (Gtk.StateType.Normal));
 					HslColor c2 = c1;
 					if (isActive)
@@ -314,7 +315,7 @@ namespace MonoDevelop.Ide.Gui
 //			Gtk.Style.PaintBox (Style, GdkWindow, StateType.Normal, ShadowType.Out, evnt.Area, this, isWindows? "button" : "",
 //			                    Allocation.Left, Allocation.Top, Allocation.Width, Allocation.Height);
 			
-			bool res = base.OnExposeEvent (evnt);
+			bool res = base.OnDrawn (gtk3cr);
 			return res;
 		}
 		

@@ -100,8 +100,9 @@ namespace MonoDevelop.Components
 			theme = MonoDevelop.Components.Theming.ThemeEngine.CreateTheme (this);
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			if (child != null && child.Visible) {
 				// Add the child's width/height
 				Requisition child_requisition = child.SizeRequest ();
@@ -115,6 +116,17 @@ namespace MonoDevelop.Components
 			// Add the frame border
 			requisition.Width += ((int)BorderWidth + frame_width) * 2;
 			requisition.Height += ((int)BorderWidth + frame_width) * 2;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -141,16 +153,17 @@ namespace MonoDevelop.Components
 			// its child not being scrollable.
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (!IsDrawable) {
 				return false;
 			}
 			
-			using (Context cr = Gdk.CairoHelper.Create (evnt.Window)) {
+			using (Context cr = evnt.CreateContext ()) {
 				DrawFrame (cr, evnt.Area);
 				if (child != null) 
-					PropagateExpose (child, evnt);
+					PropagateDraw (child, gtk3cr);
 				return false;
 			}
 		}

@@ -985,7 +985,7 @@ namespace MonoDevelop.Components
 
 		//the GTK# version of this has 'out' instead of 'ref', preventing passing the x,y values in
 		public static bool GetTooltipContext (this TreeView tree, ref int x, ref int y, bool keyboardTip,
-			out TreeModel model, out TreePath path, out Gtk.TreeIter iter)
+			out ITreeModel model, out TreePath path, out Gtk.TreeIter iter)
 		{
 			IntPtr intPtr = Marshal.AllocHGlobal (Marshal.SizeOf (typeof(TreeIter)));
 			IntPtr handle;

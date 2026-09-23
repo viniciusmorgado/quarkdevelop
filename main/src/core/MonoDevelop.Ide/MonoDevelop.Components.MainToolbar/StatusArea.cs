@@ -391,15 +391,35 @@ namespace MonoDevelop.Components.MainToolbar
 			ModifyFg (StateType.Normal, Styles.StatusBarTextColor.ToGdkColor ());
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			requisition.Height = 32;
-			base.OnSizeRequested (ref requisition);
+			requisition = Gtk3BaseSizeRequest ();
+			return requisition;
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
 		{
-			using (var context = Gdk.CairoHelper.Create (evnt.Window)) {
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
+		}
+
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
+		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var context = evnt.CreateContext ()) {
 				renderArg.Allocation            = Allocation;
 				renderArg.ChildAllocation       = messageBox.Allocation;
 				renderArg.MousePosition         = tracker.MousePosition;
@@ -407,7 +427,7 @@ namespace MonoDevelop.Components.MainToolbar
 
 				theme.Render (context, renderArg, this);
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 
@@ -899,9 +919,10 @@ namespace MonoDevelop.Components.MainToolbar
 
 	class StatusAreaSeparator: HBox
 	{
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (var ctx = Gdk.CairoHelper.Create (this.GdkWindow)) {
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var ctx = evnt.CreateContext ()) {
 				var alloc = Allocation;
 				//alloc.Inflate (0, -2);
 				ctx.Rectangle (alloc.X, alloc.Y, 1, alloc.Height);
@@ -918,10 +939,29 @@ namespace MonoDevelop.Components.MainToolbar
 			return true;
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			requisition.Width = 1;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 	}
 }

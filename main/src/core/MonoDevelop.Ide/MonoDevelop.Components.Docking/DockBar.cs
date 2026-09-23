@@ -186,9 +186,10 @@ namespace MonoDevelop.Components.Docking
 		{
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 
 			if (ShowBorder) {
 				// Add space for the separator
@@ -197,6 +198,24 @@ namespace MonoDevelop.Components.Docking
 				else
 					requisition.Height++;
 			}
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -213,20 +232,21 @@ namespace MonoDevelop.Components.Docking
 			}
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			var alloc = Allocation;
-			using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+			using (var ctx = evnt.CreateContext ()) {
 				ctx.Rectangle (alloc.X, alloc.Y, alloc.X + alloc.Width, alloc.Y + alloc.Height);
 				ctx.SetSourceColor (Styles.DockBarBackground.ToCairoColor ());
 				ctx.Fill ();
 			}
 
 			if (Child != null)
-				PropagateExpose (Child, evnt);
+				PropagateDraw (Child, gtk3cr);
 
 			if (ShowBorder) {
-				using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+				using (var ctx = evnt.CreateContext ()) {
 					ctx.LineWidth = 1;
 
 					// Dark separator

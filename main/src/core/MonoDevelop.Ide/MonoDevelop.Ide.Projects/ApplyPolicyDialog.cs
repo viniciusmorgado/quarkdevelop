@@ -212,17 +212,18 @@ namespace MonoDevelop.Ide.Projects
 			this.AppendColumn ("", new Gtk.CellRendererText (), "text", 0);
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (HasPolicies) {
-				return base.OnExposeEvent (evnt);
+				return base.OnDrawn (gtk3cr);
 			}
 			
 			var win = evnt.Window;
 			win.Clear ();
 			if (string.IsNullOrEmpty (message)) {
 				if (ShowEmptyItem)
-					return base.OnExposeEvent (evnt);
+					return base.OnDrawn (gtk3cr);
 				return true;
 			}
 			

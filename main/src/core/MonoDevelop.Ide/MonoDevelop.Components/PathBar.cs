@@ -300,11 +300,23 @@ namespace MonoDevelop.Components
 			}
 		}
 		
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			EnsureWidths ();
 			requisition.Width = Math.Max (WidthRequest, 0);
 			requisition.Height = height + topPadding + bottomPadding;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		int[] GetCurrentWidths (out bool widthReduced)
@@ -336,11 +348,12 @@ namespace MonoDevelop.Components
 			entry.Accessible.FrameInParent = rect;
 		}
 
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			Gdk.Rectangle focusRect = new Gdk.Rectangle (0, 0, 0, 0);
 
-			using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+			using (var ctx = evnt.CreateContext ()) {
 				int index = 0;
 				ctx.Rectangle (0, 0, Allocation.Width, Allocation.Height);
 				ctx.SetSourceColor (Styles.BreadcrumbBackgroundColor.ToCairoColor ());

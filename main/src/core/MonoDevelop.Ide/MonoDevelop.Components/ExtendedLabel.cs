@@ -39,8 +39,9 @@ namespace MonoDevelop.Components
 		{
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			Pango.Layout la = new Pango.Layout (PangoContext);
 			int w, h;
 			if (UseMarkup)
@@ -53,7 +54,7 @@ namespace MonoDevelop.Components
 			int tx = Allocation.X + (int) Xpad + (int) ((float)(Allocation.Width - (int)(Xpad*2) - w) * Xalign);
 			int ty = Allocation.Y + (int) Ypad + (int) ((float)(Allocation.Height - (int)(Ypad*2) - h) * Yalign);
 
-			using (var ctx = CairoHelper.Create (evnt.Window)) {
+			using (var ctx = evnt.CreateContext ()) {
 				ctx.SetSourceColor (Style.Text (State).ToCairoColor ());
 				ctx.MoveTo (tx, ty);
 

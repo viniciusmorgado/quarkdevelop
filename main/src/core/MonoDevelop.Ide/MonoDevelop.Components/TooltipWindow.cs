@@ -77,13 +77,14 @@ namespace MonoDevelop.Components
 			}
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			int winWidth, winHeight;
 			this.GetSize (out winWidth, out winHeight);
 			Gtk.Style.PaintFlatBox (Style, this.GdkWindow, StateType.Normal, ShadowType.Out, evnt.Area, this, "tooltip", 0, 0, winWidth, winHeight);
 			foreach (var child in this.Children)
-				this.PropagateExpose (child, evnt);
+				this.PropagateDraw (child, gtk3cr);
 			return false;
 		}
 		

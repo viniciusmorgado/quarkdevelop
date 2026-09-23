@@ -159,14 +159,15 @@ namespace MonoDevelop.Components
 				AnimatedResize (); //Desired size changed mid animation
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if ((position & PopupPosition.Top) != 0 || (position & PopupPosition.Bottom) != 0)
 				theme.ArrowOffset = Allocation.Width / 2;
 			else
 				theme.ArrowOffset = Allocation.Height / 2;
 
-			using (var context = Gdk.CairoHelper.Create (evnt.Window)) {
+			using (var context = evnt.CreateContext ()) {
 				context.Save ();
 				Theme.SetBorderPath (context, BorderAllocation, position);
 				context.Clip ();
@@ -185,7 +186,7 @@ namespace MonoDevelop.Components
 				Theme.RenderShadow (context, BorderAllocation, position);
 				context.Restore ();
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		protected virtual void OnDrawContent (Gdk.EventExpose evnt, Cairo.Context context)

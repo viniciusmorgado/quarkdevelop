@@ -103,13 +103,32 @@ namespace MonoDevelop.Ide.Gui
 			return rect;
 		}
 		
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			
 			// Ignore the size of top levels. They are supposed to fit the available space
 			foreach (TopLevelChild tchild in topLevels)
 				tchild.Child.SizeRequest ();
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)

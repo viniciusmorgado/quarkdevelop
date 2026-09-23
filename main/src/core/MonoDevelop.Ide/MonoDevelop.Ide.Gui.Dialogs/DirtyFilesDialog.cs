@@ -159,7 +159,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			Sensitive = false;
 
 			List<Task> saveTasks = new List<Task> ();
-			tsFiles.Foreach (delegate (TreeModel model, TreePath path, TreeIter iter) {
+			tsFiles.Foreach (delegate (ITreeModel model, TreePath path, TreeIter iter) {
 				var doc = tsFiles.GetValue (iter, 2) as Document;
 				if (doc == null)
 					return false;

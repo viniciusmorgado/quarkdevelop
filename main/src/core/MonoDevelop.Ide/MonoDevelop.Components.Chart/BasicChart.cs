@@ -450,8 +450,9 @@ namespace MonoDevelop.Components.Chart
 			return (((double) minTickStep) * (GetEnd (ad) - GetStart (ad))) / (double) GetAreaSize (ad);
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose args)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var args = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			Gdk.Window win = GdkWindow;
 			int rwidth, rheight;
 			

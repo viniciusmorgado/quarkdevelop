@@ -138,9 +138,10 @@ namespace MonoDevelop.Ide
 			return rect;
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			bool ret = base.OnExposeEvent (evnt);
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			bool ret = base.OnDrawn (gtk3cr);
 			if (HasResizeGrip) {
 				Gdk.Rectangle rect = GetGripRect ();
 				int w = rect.Width - Style.Xthickness;

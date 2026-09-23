@@ -142,14 +142,33 @@ namespace MonoDevelop.Components
 			base.OnStyleSet (previous_style);
 		}
 		
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			UpdateLayout ();
 			int lw, lh;
 			layout.GetPixelSize (out lw, out lh);
 			requisition.Height = lh;
 			requisition.Width = lw;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 		
 //		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -165,11 +184,12 @@ namespace MonoDevelop.Components
 //		}
 
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			UpdateLayout ();
 			if (evnt.Window != GdkWindow) {
-				return base.OnExposeEvent (evnt);
+				return base.OnDrawn (gtk3cr);
 			}
             
 			Gtk.Style.PaintLayout (Style, GdkWindow, State, false, evnt.Area, 

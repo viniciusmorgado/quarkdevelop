@@ -432,11 +432,12 @@ namespace MonoDevelop.Components
 			CheckScreenColormap ();
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			bool retVal;
 			bool changed;
-			using (var context = Gdk.CairoHelper.Create (evnt.Window)) {
+			using (var context = evnt.CreateContext ()) {
 				context.Save ();
 				if (SupportsAlpha) {
 					context.Operator = Cairo.Operator.Source;
@@ -449,7 +450,7 @@ namespace MonoDevelop.Components
 				context.Restore ();
 
 				OnDrawContent (evnt, context); // Draw content first so we can easily clip it
-				retVal = base.OnExposeEvent (evnt);
+				retVal = base.OnDrawn (gtk3cr);
 
 				changed = Theme.SetBorderPath (context, BorderAllocation, position);
 				context.Operator = Cairo.Operator.DestIn;

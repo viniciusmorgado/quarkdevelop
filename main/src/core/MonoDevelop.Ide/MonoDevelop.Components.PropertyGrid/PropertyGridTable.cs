@@ -448,8 +448,9 @@ namespace MonoDevelop.Components.PropertyGrid
 			}
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			requisition.Width = 20;
 
 			int dx = (int)((double)Allocation.Width * dividerPosition) - PropertyContentLeftPadding;
@@ -460,6 +461,17 @@ namespace MonoDevelop.Components.PropertyGrid
 
 			foreach (var c in children)
 				c.Key.SizeRequest ();
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -528,9 +540,10 @@ namespace MonoDevelop.Components.PropertyGrid
 			layout.Dispose ();
 		}
 
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (Cairo.Context ctx = CairoHelper.Create (evnt.Window)) {
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (Cairo.Context ctx = evnt.CreateContext ()) {
 				int dx = (int)((double)Allocation.Width * dividerPosition);
 				ctx.LineWidth = 1;
 				ctx.Rectangle (0, 0, Allocation.Width, Allocation.Height);
@@ -544,7 +557,7 @@ namespace MonoDevelop.Components.PropertyGrid
 				int y = 0;
 				Draw (ctx, rows, dx, PropertyLeftPadding, ref y);
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		void Draw (Cairo.Context ctx, List<TableRow> rowList, int dividerX, int x, ref int y)

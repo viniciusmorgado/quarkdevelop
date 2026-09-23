@@ -93,13 +93,13 @@ namespace MonoDevelop.Components.MainToolbar
 			}
 		}
 
-		static bool RuntimeIsSeparator (TreeModel model, TreeIter iter)
+		static bool RuntimeIsSeparator (ITreeModel model, TreeIter iter)
 		{
 			var runtime = (IRuntimeModel)model.GetValue (iter, 0);
 			return runtime == null || runtime.IsSeparator;
 		}
 
-		void RuntimeRenderCell (CellLayout layout, CellRenderer cell, TreeModel model, TreeIter iter)
+		void RuntimeRenderCell (CellLayout layout, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			var runtime = (IRuntimeModel)model.GetValue (iter, 0);
 			var renderer = (CellRendererText) cell;
@@ -375,9 +375,10 @@ namespace MonoDevelop.Components.MainToolbar
 			contentBox.PackStart (widget, false, false, 0);
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (var context = Gdk.CairoHelper.Create (evnt.Window)) {
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var context = evnt.CreateContext ()) {
 				context.Rectangle (
 					evnt.Area.X,
 					evnt.Area.Y,
@@ -405,7 +406,7 @@ namespace MonoDevelop.Components.MainToolbar
 				context.SetSourceColor (Styles.ToolbarBottomBorderColor.ToCairoColor ());
 				context.Stroke ();
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		void HandleStartButtonClicked (object sender, EventArgs e)

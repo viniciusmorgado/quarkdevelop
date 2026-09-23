@@ -182,8 +182,9 @@ namespace MonoDevelop.Components
 			base.OnDestroyed ();
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			int width, height;
 			layout.GetPixelSize (out width, out height);
 			
@@ -201,6 +202,17 @@ namespace MonoDevelop.Components
 			
 			requisition.Width = FixedWidth > 0 ? FixedWidth : width + arrowWidth + leftSpacing;
 			requisition.Height = FixedHeight >0 ? FixedHeight : height + ySpacing * 2;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 		
 		protected override bool OnFocusOutEvent (Gdk.EventFocus evnt)
@@ -279,8 +291,9 @@ namespace MonoDevelop.Components
 			return base.OnMotionNotifyEvent (e);
 		}
 	
-		protected override bool OnExposeEvent (Gdk.EventExpose args)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var args = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			Gdk.Drawable win = args.Window;
 		
 			int width, height;

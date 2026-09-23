@@ -174,18 +174,38 @@ namespace MonoDevelop.Components.MainToolbar
 			}
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			requisition.Width = VisibleButtons.Sum (b => b.Visible ? (!b.IsSeparator ? (int)btnNormalOriginal[0].Width : SeparatorSpacing) : 0);
 			requisition.Height = (int)btnNormalOriginal[0].Height;
+			return requisition;
 		}
 
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
 		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
+		}
+
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
+		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			ScaleImages (Allocation.Height);
 
-			using (var context = Gdk.CairoHelper.Create (evnt.Window)) {
+			using (var context = evnt.CreateContext ()) {
 				double x = Allocation.X, y = Allocation.Y;
 				for (int i = 0; i < VisibleButtons.Length; i++) {
 					bool nextIsSeparator = (i < VisibleButtons.Length - 1 && VisibleButtons[i + 1].IsSeparator) || i == VisibleButtons.Length - 1;
@@ -209,7 +229,7 @@ namespace MonoDevelop.Components.MainToolbar
 					x += img.Width;
 				}
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		Xwt.Drawing.Image ExpandImageVertically (Xwt.Drawing.Image img, int newHeight)

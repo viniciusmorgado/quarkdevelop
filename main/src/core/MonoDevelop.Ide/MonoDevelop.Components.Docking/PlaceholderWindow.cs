@@ -108,9 +108,10 @@ namespace MonoDevelop.Components.Docking
 		}
 
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose args)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			//base.OnExposeEvent (args);
+			var args = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			//base.OnDrawn (gtk3cr);
 			int w, h;
 			this.GetSize (out w, out h);
 			this.GdkWindow.DrawRectangle (redgc, false, 0, 0, w-1, h-1);

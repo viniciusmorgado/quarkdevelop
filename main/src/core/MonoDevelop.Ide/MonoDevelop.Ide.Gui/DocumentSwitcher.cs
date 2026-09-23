@@ -161,10 +161,11 @@ namespace MonoDevelop.Ide
 		}
 		
 		const int upperGradientHeight = 16;
-		protected override bool OnExposeEvent (Gdk.EventExpose e)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var e = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			
-			using (Cairo.Context cr = Gdk.CairoHelper.Create (e.Window)) {
+			using (Cairo.Context cr = e.CreateContext ()) {
 				double xPos = padding, yPos = padding;
 				var layout = PangoUtil.CreateLayout (this);
 				int w, h;
@@ -497,8 +498,9 @@ namespace MonoDevelop.Ide
 			return cat;
 		}
 		
-		protected override void OnSizeRequested (ref Requisition req)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var req = new Gtk.Requisition ();
 			maxLength = 15;
 			foreach (var cat in categories) {
 				foreach (var item in cat.Items) {
@@ -516,7 +518,7 @@ namespace MonoDevelop.Ide
 
 			var firstNonEmptyCat = categories.FirstOrDefault (c => c.Items.Count > 0);
 			if (firstNonEmptyCat == null)
-				return;
+				return req;
 			var icon = firstNonEmptyCat.Items[0].Icon;
 			var iconHeight = Math.Max (h, (int)icon.Height + 2) + itemPadding * 2;
 			var iconWidth = (int) icon.Width + 2 + w  + itemPadding * 2;
@@ -528,6 +530,17 @@ namespace MonoDevelop.Ide
 			}
 			req.Width = totalWidth + padding * 2 + (categories.Count - 1) * padding;
 			req.Height = totalHeight + padding * 2;
+			return req;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 		
 		public class Item
@@ -775,9 +788,10 @@ namespace MonoDevelop.Ide
 			IdeApp.CommandService.IsEnabled = true;
 		}
 		
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			base.OnExposeEvent (evnt);
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			base.OnDrawn (gtk3cr);
 			
 			int winWidth, winHeight;
 			this.GetSize (out winWidth, out winHeight);

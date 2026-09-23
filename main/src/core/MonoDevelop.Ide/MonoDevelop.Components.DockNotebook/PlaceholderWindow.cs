@@ -248,12 +248,13 @@ namespace MonoDevelop.Components.DockNotebook
 			base.OnRealized ();
 			GdkWindow.Opacity = 0.4;
 		}
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			int w, h;
 			GetSize (out w, out h);
 
-			using (var ctx = CairoHelper.Create (evnt.Window)) {
+			using (var ctx = evnt.CreateContext ()) {
 				ctx.SetSourceColor (new Cairo.Color (0.17, 0.55, 0.79));
 				ctx.Rectangle (Allocation.ToCairoRect ());
 				ctx.Fill ();

@@ -208,13 +208,32 @@ namespace MonoDevelop.Components
 			ShowHideButtons ();
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			if (HeightRequest != -1 && box.HeightRequest != HeightRequest)
 				box.HeightRequest = HeightRequest;
 			if (box.HeightRequest != -1 && HeightRequest == -1)
 				box.HeightRequest = -1;
-			base.OnSizeRequested (ref requisition);
+			requisition = Gtk3BaseSizeRequest ();
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		Gtk.EventBox statusLabelEventBox;
@@ -431,8 +450,9 @@ namespace MonoDevelop.Components
 			return base.OnKeyPressEvent (evnt);
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			var alloc = new Gdk.Rectangle (alignment.Allocation.X, box.Allocation.Y, alignment.Allocation.Width, box.Allocation.Height);
 
 			if (hasFrame && (!roundedShape || (roundedShape && !customRoundedShapeDrawing))) {
@@ -441,7 +461,7 @@ namespace MonoDevelop.Components
 					                    evnt.Area, this, "entry_bg", alloc.X + 2, alloc.Y + 2, alloc.Width - 4, alloc.Height - 4);
 				Style.PaintShadow (entry.Style, GdkWindow, entry.State, entry.ShadowType,
 				                   evnt.Area, entry, "entry", alloc.X, alloc.Y, alloc.Width, alloc.Height);
-/*				using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+/*				using (var ctx = evnt.CreateContext ()) {
 					ctx.LineWidth = 1;
 					ctx.Rectangle (alloc.X + 0.5, alloc.Y + 0.5, alloc.Width - 1, alloc.Height - 1);
 					ctx.Color = new Cairo.Color (1,0,0);
@@ -449,24 +469,24 @@ namespace MonoDevelop.Components
 				}*/
 			}
 			else if (!roundedShape) {
-				using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+				using (var ctx = evnt.CreateContext ()) {
 					CairoExtensions.RoundedRectangle (ctx, alloc.X + 0.5, alloc.Y + 0.5, alloc.Width - 1, alloc.Height - 1, 4);
 					ctx.SetSourceColor (entry.Style.Base (Gtk.StateType.Normal).ToCairoColor ());
 					ctx.Fill ();
 				}
 			}
 			else {
-				using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+				using (var ctx = evnt.CreateContext ()) {
 					RoundBorder (ctx, alloc.X + 0.5, alloc.Y + 0.5, alloc.Width - 1, alloc.Height - 1);
 					ctx.SetSourceColor (entry.Style.Base (Gtk.StateType.Normal).ToCairoColor ());
 					ctx.Fill ();
 				}
 			}
 
-			PropagateExpose (Child, evnt);
+			PropagateDraw (Child, gtk3cr);
 
 			if (hasFrame && roundedShape && customRoundedShapeDrawing) {
-				using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+				using (var ctx = evnt.CreateContext ()) {
 					RoundBorder (ctx, alloc.X + 0.5, alloc.Y + 0.5, alloc.Width - 1, alloc.Height - 1);
 					ctx.SetSourceColor (Styles.WidgetBorderColor.ToCairoColor ());
 					ctx.LineWidth = 1;
@@ -763,8 +783,9 @@ namespace MonoDevelop.Components
 				return color;
 			}
 
-			protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
+				var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 				// The Entry's GdkWindow is the top level window onto which
 				// the frame is drawn; the actual text entry is drawn into a
 				// separate window, so we can ensure that for themes that don't
@@ -774,7 +795,7 @@ namespace MonoDevelop.Components
 					return true;
 				}
 
-				bool ret = base.OnExposeEvent (evnt);
+				bool ret = base.OnDrawn (gtk3cr);
 
 				if (text_gc == null) {
 					text_gc = new Gdk.GC (evnt.Window);

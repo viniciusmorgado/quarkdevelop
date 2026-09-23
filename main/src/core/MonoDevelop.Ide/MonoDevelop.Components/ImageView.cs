@@ -91,14 +91,26 @@ namespace MonoDevelop.Components
 			}
 		}
 
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			requisition.Width = Xpad * 2;
 			requisition.Height = Ypad * 2;
 			if (image != null) {
 				requisition.Width += (int)(image.Width);
 				requisition.Height += (int)(image.Height);
 			}
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		bool IsParentDisabled ()
@@ -116,12 +128,13 @@ namespace MonoDevelop.Components
 			return false;
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (image != null) {
 				var alloc = Allocation;
 				alloc.Inflate (-Xpad, -Ypad);
-				using (var ctx = CairoHelper.Create (evnt.Window)) {
+				using (var ctx = evnt.CreateContext ()) {
 					var x = Math.Round (alloc.X + (alloc.Width - image.Width) * Xalign);
 					var y = Math.Round (alloc.Y + (alloc.Height - image.Height) * Yalign);
 					ctx.Save ();

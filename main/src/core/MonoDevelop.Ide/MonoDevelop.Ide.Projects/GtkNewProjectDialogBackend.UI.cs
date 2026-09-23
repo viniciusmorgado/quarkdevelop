@@ -373,15 +373,34 @@ namespace MonoDevelop.Ide.Projects
 		/// widgets which will sometimes shrink the dialog. The size also changes
 		/// on moving from page to page so override the requisition if it is too small.
 		/// </summary>
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 
 			if (requisition.Height < DefaultHeight)
 				requisition.Height = DefaultHeight;
 
 			if (requisition.Width < DefaultWidth)
 				requisition.Width = DefaultWidth;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 	}
 }

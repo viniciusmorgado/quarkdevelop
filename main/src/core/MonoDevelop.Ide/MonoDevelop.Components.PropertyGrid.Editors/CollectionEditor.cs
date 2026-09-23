@@ -347,7 +347,7 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 		}
 
 		//generally useful function... why not in model already?
-		static bool IterPrev (TreeModel model, ref TreeIter iter)
+		static bool IterPrev (ITreeModel model, ref TreeIter iter)
 		{
 			TreePath tp = model.GetPath (iter);
 			return tp.Prev() && model.GetIter (out iter, tp);

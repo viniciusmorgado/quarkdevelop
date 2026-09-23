@@ -222,7 +222,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			DefaultHeight = 680;
 		}
 
-		static void PixbufCellDataFunc (TreeViewColumn col, CellRenderer cell, TreeModel model, TreeIter iter)
+		static void PixbufCellDataFunc (TreeViewColumn col, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			TreeIter parent;
 			bool toplevel = !model.IterParent (out parent, iter);
@@ -252,7 +252,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			}
 		}
 		
-		static void TextCellDataFunc (TreeViewColumn col, CellRenderer cell, TreeModel model, TreeIter iter)
+		static void TextCellDataFunc (TreeViewColumn col, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			TreeIter parent;
 			bool toplevel = !model.IterParent (out parent, iter);

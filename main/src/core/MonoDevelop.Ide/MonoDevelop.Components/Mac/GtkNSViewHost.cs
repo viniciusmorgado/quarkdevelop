@@ -268,14 +268,15 @@ namespace Gtk
 			}
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			LogEnter ();
 			try {
 				if (view == null) {
 					Log ("Calling base. 'view' is null");
-					base.OnSizeRequested (ref requisition);
-					return;
+					requisition = Gtk3BaseSizeRequest ();
+					return requisition;
 				}
 
 				var fittingSize = view.FittingSize;
@@ -285,6 +286,24 @@ namespace Gtk
 			} finally {
 				LogExit ();
 			}
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)

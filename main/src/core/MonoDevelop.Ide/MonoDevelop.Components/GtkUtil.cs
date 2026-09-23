@@ -986,9 +986,10 @@ namespace MonoDevelop.Components
 			SetSizeRequest (x, th + 2);
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			base.OnExposeEvent (evnt);
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			base.OnDrawn (gtk3cr);
 
 			Gdk.Rectangle expose = Allocation;
 			Gdk.Color save = Gdk.Color.Zero;

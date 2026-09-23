@@ -452,9 +452,10 @@ namespace MonoDevelop.Components
 				return base.OnScrollEvent (evnt);
 			}
 
-			protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
-				base.OnExposeEvent (evnt);
+				var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+				base.OnDrawn (gtk3cr);
 				DrawList ();
 				return false;
 			}

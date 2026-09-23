@@ -120,7 +120,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 				schemeCombo.AppendText (s.Name);
 			
 			if (schemes.Count > 0) {
-				schemeCombo.RowSeparatorFunc = (TreeModel model, TreeIter iter) => {
+				schemeCombo.RowSeparatorFunc = (ITreeModel model, TreeIter iter) => {
 					if (model.GetValue (iter, 0) as string == "---")
 						return true;
 					return false;
@@ -360,7 +360,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 		void OnKeysTreeViewSelectionChange (object sender, EventArgs e)
 		{
 			TreeSelection sel = sender as TreeSelection;
-			TreeModel model;
+			ITreeModel model;
 			TreeIter iter;
 			Command selCommand = null;
 			if (sel.GetSelected (out model, out iter) && model.GetValue (iter, commandCol) != null) {
@@ -650,7 +650,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 		List<Command> FindBindings (string accel)
 		{
 			List<Command> bindings = new List<Command> ();
-			TreeModel model = (TreeModel) keyStore;
+			ITreeModel model = (ITreeModel) keyStore;
 			TreeIter iter;
 			if (!model.GetIterFirst (out iter))
 				return bindings;

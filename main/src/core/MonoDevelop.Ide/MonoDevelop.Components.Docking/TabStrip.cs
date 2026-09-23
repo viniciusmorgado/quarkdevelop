@@ -219,15 +219,34 @@ namespace MonoDevelop.Components.Docking
 			base.OnSizeAllocated (allocation);
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 
 			int minWidth = 0;
 			foreach (var tab in box.Children.Cast<DockItemTitleTab> ())
 					 minWidth += tab.MinWidth;
 
 			requisition.Width = minWidth;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 		
 		void UpdateEllipsize (Gdk.Rectangle allocation)
@@ -320,14 +339,15 @@ namespace MonoDevelop.Components.Docking
 			public TabStrip TabStrip;
 			static Xwt.Drawing.Image tabbarBackImage = Xwt.Drawing.Image.FromResource ("tabbar-back.9.png");
 
-			protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
+				var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 				if (TabStrip.VisualStyle.TabStyle == DockTabStyle.Normal) {
-					using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+					using (var ctx = evnt.CreateContext ()) {
 						ctx.DrawImage (this, tabbarBackImage.WithSize (Allocation.Width, Allocation.Height), 0, 0);
 					}
 				}	
-				return base.OnExposeEvent (evnt);
+				return base.OnDrawn (gtk3cr);
 			}
 		}
 		

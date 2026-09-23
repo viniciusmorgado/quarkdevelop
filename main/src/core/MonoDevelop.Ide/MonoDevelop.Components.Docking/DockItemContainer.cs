@@ -179,15 +179,16 @@ namespace MonoDevelop.Components.Docking
 			}
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (VisualStyle.TabStyle == DockTabStyle.Normal) {
 				Gdk.GC gc = new Gdk.GC (GdkWindow);
 				gc.RgbFgColor = VisualStyle.PadBackgroundColor.Value.ToGdkColor ();
 				evnt.Window.DrawRectangle (gc, true, Allocation);
 				gc.Dispose ();
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 	}
 
@@ -264,8 +265,9 @@ namespace MonoDevelop.Components.Docking
 			child = null;
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			if (child != null) {
 				requisition = child.SizeRequest ();
 				requisition.Width += leftMargin + rightMargin + leftPadding + rightPadding;
@@ -274,6 +276,17 @@ namespace MonoDevelop.Components.Docking
 				requisition.Width = 0;
 				requisition.Height = 0;
 			}
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -291,15 +304,16 @@ namespace MonoDevelop.Components.Docking
 				child.SizeAllocate (allocation);
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			Gdk.Rectangle rect = Allocation;
 			
 			//Gdk.Rectangle.Right and Bottom are inconsistent
 			int right = rect.X + rect.Width, bottom = rect.Y + rect.Height;
 
 			var bcolor = backgroundColorSet ? BackgroundColor : Style.Background (Gtk.StateType.Normal);
-			using (Cairo.Context cr = Gdk.CairoHelper.Create (evnt.Window)) {
+			using (Cairo.Context cr = evnt.CreateContext ()) {
 			
 				if (GradientBackround) {
 					cr.NewPath ();
@@ -331,9 +345,9 @@ namespace MonoDevelop.Components.Docking
 				}
 			
 			}
-			base.OnExposeEvent (evnt);
+			base.OnDrawn (gtk3cr);
 
-			using (Cairo.Context cr = Gdk.CairoHelper.Create (evnt.Window)) {
+			using (Cairo.Context cr = evnt.CreateContext ()) {
 				cr.SetSourceColor (BorderColor.ToCairoColor ());
 				
 				double y = rect.Y + topMargin / 2d;

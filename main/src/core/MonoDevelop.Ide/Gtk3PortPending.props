@@ -16,39 +16,39 @@
     <Compile Remove="Gui/MonoDevelop.Ide.Execution.CustomExecutionModeWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Execution.MonoExecutionParametersPreview.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Execution.MonoExecutionParametersWidget.cs" /> <!-- CS0234: The type or namespace name 'PropertyGrid' does not exist in the namespace 'MonoDevelop.Components.PropertyGrid' (are you missing an assembly -->
-    <Compile Remove="Gui/MonoDevelop.Ide.ExternalTools.ExternalToolPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.ExternalTools.ExternalToolPanelWidget.cs" /> <!-- CS1061: 'ExternalToolPanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of typ -->
     <Compile Remove="Gui/MonoDevelop.Ide.FindInFiles.FindInFilesDialog.cs" /> <!-- CS0234: The type or namespace name 'ComboBoxEntry' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Fonts.FontChooserPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.Components.ExecutionModeComboBox.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.Components.PriorityList.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.Components.ProjectSelectorWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.AddinLoadErrorDialog.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.AddinLoadErrorDialog.cs" /> <!-- CS0266: Cannot implicitly convert type 'Gtk.ButtonBox' to 'Gtk.HButtonBox'. An explicit conversion exists (are you missing a cast?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.MultiMessageDialog.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.MultiTaskProgressDialog.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.NewLayoutDialog.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.ProgressDialog.cs" /> <!-- CS0266: Cannot implicitly convert type 'Gtk.ButtonBox' to 'Gtk.HButtonBox'. An explicit conversion exists (are you missing a cast?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.SelectFileFormatDialog.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.TipOfTheDayWindow.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.SelectFileFormatDialog.cs" /> <!-- CS0117: 'ComboBox' does not contain a definition for 'NewText' -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.Dialogs.TipOfTheDayWindow.cs" /> <!-- CS1061: 'TipOfTheDayWindow' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of type 'Tip -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.AddInsPanelWidget.cs" /> <!-- CS0029: Cannot implicitly convert type 'GLib.SList' to 'Gtk.RadioButton[]' -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.AuthorInformationPanelWidget.cs" /> <!-- CS1061: 'AuthorInformationPanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument o -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.BuildMessagePanelWidget.cs" /> <!-- CS1061: 'BuildMessagePanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of typ -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.AuthorInformationPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.BuildMessagePanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.BuildPanelWidget.cs" /> <!-- CS0117: 'ComboBox' does not contain a definition for 'NewText' -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.GlobalAuthorInformationPanelWidget.cs" /> <!-- CS1061: 'GlobalAuthorInformationPanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argu -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.IDEStyleOptionsPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.GlobalAuthorInformationPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.IDEStyleOptionsPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.KeyBindingsPanel.cs" /> <!-- CS0234: The type or namespace name 'SearchEntry' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.LoadSavePanelWidget.cs" /> <!-- CS1061: 'LoadSavePanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of type 'L -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.LoadSavePanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.MaintenanceOptionsPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.MonoRuntimePanelWidget.cs" /> <!-- CS1061: 'MonoRuntimePanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of type -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.TasksPanelWidget.cs" /> <!-- CS1061: 'TasksPanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of type 'Task -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.TextStylePolicyPanelWidget.cs" /> <!-- CS1061: 'TextStylePolicyPanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of  -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.AddExternalFileDialog.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.AddMimeTypeDialog.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.ApplyPolicyDialog.cs" /> <!-- CS1061: 'ApplyPolicyDialog' does not contain a definition for 'ActionArea' and no accessible extension method 'ActionArea' accepting a first argumen -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.MonoRuntimePanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.TasksPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Gui.OptionPanels.TextStylePolicyPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.AddExternalFileDialog.cs" /> <!-- CS0029: Cannot implicitly convert type 'GLib.SList' to 'Gtk.RadioButton[]' -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.AddMimeTypeDialog.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.ApplyPolicyDialog.cs" /> <!-- CS0266: Cannot implicitly convert type 'Gtk.ButtonBox' to 'Gtk.HButtonBox'. An explicit conversion exists (are you missing a cast?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.ConfirmProjectDeleteDialog.cs" /> <!-- CS0266: Cannot implicitly convert type 'Gtk.ButtonBox' to 'Gtk.HButtonBox'. An explicit conversion exists (are you missing a cast?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.DeleteConfigDialog.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.ExportProjectPolicyDialog.cs" /> <!-- CS1061: 'ExportProjectPolicyDialog' does not contain a definition for 'ActionArea' and no accessible extension method 'ActionArea' accepting a first -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.DeleteConfigDialog.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.ExportProjectPolicyDialog.cs" /> <!-- CS0266: Cannot implicitly convert type 'Gtk.ButtonBox' to 'Gtk.HButtonBox'. An explicit conversion exists (are you missing a cast?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.ExportSolutionDialog.cs" /> <!-- CS0266: Cannot implicitly convert type 'Gtk.ButtonBox' to 'Gtk.HButtonBox'. An explicit conversion exists (are you missing a cast?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.GtkProjectConfigurationWidget.cs" /> <!-- CS1061: 'GtkProjectFolderPreviewWidget' does not contain a definition for 'WidthRequest' and no accessible extension method 'WidthRequest' accepting -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.GtkProjectConfigurationWidget.cs" /> <!-- CS1061: 'GtkProjectConfigurationWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument  -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.GtkProjectFolderPreviewWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.ImportProjectPolicyDialog.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.IncludeNewFilesDialog.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
@@ -62,17 +62,17 @@
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.CombineInformationWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.CommonAssemblySigningPreferences.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.CustomCommandPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.CustomCommandWidget.cs" /> <!-- CS0234: The type or namespace name 'StringTagSelectorButton' does not exist in the namespace 'MonoDevelop.Ide.Gui.Components' (are you missing an as -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.GeneralProjectOptionsWidget.cs" /> <!-- CS1061: 'GeneralProjectOptionsWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.NamespaceSynchronisationPanelWidget.cs" /> <!-- CS1061: 'NamespaceSynchronisationPanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first arg -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.OutputOptionsPanelWidget.cs" /> <!-- CS1061: 'OutputOptionsPanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of ty -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.RunOptionsPanelWidget.cs" /> <!-- CS1061: 'RunOptionsPanelWidget' does not contain a definition for 'Add' and no accessible extension method 'Add' accepting a first argument of type  -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.CustomCommandWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.GeneralProjectOptionsWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.NamespaceSynchronisationPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.OutputOptionsPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.RunOptionsPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.OptionPanels.RuntimeOptionsPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.ProjectFileSelectorDialog.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.ProjectFileSelectorDialog.cs" /> <!-- CS0117: 'ComboBox' does not contain a definition for 'NewText' -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.ProjectSelectorDialog.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.Projects.RenameConfigDialog.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.Projects.SelectReferenceDialog.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="Gui/MonoDevelop.Ide.SelectEncodingsDialog.cs" /> <!-- CS0234: The type or namespace name 'ImageView' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="Gui/MonoDevelop.Ide.Projects.SelectReferenceDialog.cs" /> <!-- CS1061: 'SelectReferenceDialog' does not contain a definition for 'ActionArea' and no accessible extension method 'ActionArea' accepting a first arg -->
+    <Compile Remove="Gui/MonoDevelop.Ide.SelectEncodingsDialog.cs" /> <!-- CS0266: Cannot implicitly convert type 'Gtk.ButtonBox' to 'Gtk.HButtonBox'. An explicit conversion exists (are you missing a cast?) -->
     <Compile Remove="Gui/MonoDevelop.Ide.StandardHeader.StandardHeaderPolicyPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'Gui' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="Gui/generated.cs" /> <!-- CS0234: The type or namespace name 'SizeRequestedArgs' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
   </ItemGroup>
@@ -82,27 +82,27 @@
     <Compile Remove="MonoDevelop.Components/CellRendererComboBox.cs" /> <!-- CS0115: 'CellRendererComboBox.GetSize(Widget, ref Rectangle, out int, out int, out int, out int)': no suitable method found to override -->
     <Compile Remove="MonoDevelop.Components/CellRendererImage.cs" /> <!-- CS0234: The type or namespace name 'Drawable' does not exist in the namespace 'Gdk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/CheckBoxContextMenuItem.cs" /> <!-- CS0246: The type or namespace name 'ContextMenuItem' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/CompactScrolledWindow.cs" /> <!-- CS0115: 'CompactScrolledWindow.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/CompactScrolledWindow.cs" /> <!-- CS1061: 'Gtk3ExposeEvent' does not contain a definition for 'Region' and no accessible extension method 'Region' accepting a first argument of type  -->
     <Compile Remove="MonoDevelop.Components/ConsoleView.cs" /> <!-- CS1061: 'PopulatePopupArgs' does not contain a definition for 'Menu' and no accessible extension method 'Menu' accepting a first argument of type 'P -->
     <Compile Remove="MonoDevelop.Components/ContextMenu.cs" /> <!-- CS0103: The name 'ContextMenuExtensionsGtk' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Components/ContextMenuExtensionsGtk.cs" /> <!-- CS0234: The type or namespace name 'ExposeEventArgs' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/ContextMenuItem.cs" /> <!-- CS0246: The type or namespace name 'ContextMenu' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/ContextMenuItemCollection.cs" /> <!-- CS0246: The type or namespace name 'ContextMenuItem' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/ContextMenuTreeView.cs" /> <!-- CS0234: The type or namespace name 'TreeModel' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components/ContextMenuTreeView.cs" /> <!-- CS1061: 'EventButton' does not contain a definition for 'TriggersContextMenu' and no accessible extension method 'TriggersContextMenu' accepting a f -->
     <Compile Remove="MonoDevelop.Components/Control.cs" /> <!-- CS0246: The type or namespace name 'CommandRouterContainer' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/Dialog.cs" /> <!-- CS0246: The type or namespace name 'Window' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/DropDownBox.cs" /> <!-- CS0115: 'DropDownBox.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components/DropDownBoxListWindow.cs" /> <!-- CS0115: 'DropDownBoxListWindow.ListWidget.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/DropDownBox.cs" /> <!-- CS0246: The type or namespace name 'DropDownBoxListWindow' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components/DropDownBoxListWindow.cs" /> <!-- CS0115: 'DropDownBoxListWindow.ListWidget.OnSetScrollAdjustments(Adjustment, Adjustment)': no suitable method found to override -->
     <Compile Remove="MonoDevelop.Components/EnvironmentVariableCollectionEditor.cs" /> <!-- CS0234: The type or namespace name 'AtkCocoaHelper' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference? -->
-    <Compile Remove="MonoDevelop.Components/EventBoxTooltip.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components/EventBoxTooltip.cs" /> <!-- CS0246: The type or namespace name 'PopupPosition' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/ExtendedHeaderBox.cs" /> <!-- CS0103: The name 'Styles' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Components/ExtendedLabel.cs" /> <!-- CS0115: 'ExtendedLabel.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/ExtendedLabel.cs" /> <!-- CS1061: 'Style' does not contain a definition for 'Text' and no accessible extension method 'Text' accepting a first argument of type 'Style' could  -->
     <Compile Remove="MonoDevelop.Components/ExtendedTitleBarDialog.cs" /> <!-- CS0246: The type or namespace name 'IExtendedTitleBarDialogBackend' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/ExtendedTitleBarWindow.cs" /> <!-- CS0246: The type or namespace name 'IExtendedTitleBarWindowBackend' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/FileEntry.cs" /> <!-- CS0246: The type or namespace name 'BaseFileEntry' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/FileFilterSet.cs" /> <!-- CS0246: The type or namespace name 'SelectFileDialogFilter' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/FileSelector.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Components/FixedWidthWrapLabel.cs" /> <!-- CS0115: 'FixedWidthWrapLabel.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/FixedWidthWrapLabel.cs" /> <!-- CS0117: 'Style' does not contain a definition for 'PaintLayout' -->
     <Compile Remove="MonoDevelop.Components/FolderDialog.cs" /> <!-- CS0246: The type or namespace name 'FileSelector' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/FolderEntry.cs" /> <!-- CS0246: The type or namespace name 'BaseFileEntry' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/FolderListSelector.cs" /> <!-- CS0234: The type or namespace name 'AtkCocoaHelper' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference? -->
@@ -110,39 +110,39 @@
     <Compile Remove="MonoDevelop.Components/GtkUtil.cs" /> <!-- CS0246: The type or namespace name 'HslColor' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/GtkWorkarounds.cs" /> <!-- CS0234: The type or namespace name 'Object' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/HPanedThin.cs" /> <!-- CS0234: The type or namespace name 'SizeRequestedArgs' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/HeaderBox.cs" /> <!-- CS0115: 'HeaderBox.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components/HoverImageButton.cs" /> <!-- CS0115: 'HoverImageButton.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/HeaderBox.cs" /> <!-- CS1061: 'Style' does not contain a definition for 'Background' and no accessible extension method 'Background' accepting a first argument of type 'S -->
+    <Compile Remove="MonoDevelop.Components/HoverImageButton.cs" /> <!-- CS1061: 'Style' does not contain a definition for 'PaintFocus' and no accessible extension method 'PaintFocus' accepting a first argument of type 'S -->
     <Compile Remove="MonoDevelop.Components/HslColor.cs" /> <!-- CS0234: The type or namespace name 'GC' does not exist in the namespace 'Gdk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/IdeDialog.cs" /> <!-- CS0103: The name 'IdeTheme' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Components/IdeTheme.cs" /> <!-- CS0246: The type or namespace name 'Theme' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/IdeWindow.cs" /> <!-- CS0103: The name 'IdeTheme' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Components/ImageButton.cs" /> <!-- CS0115: 'ImageButton.OnExposeEvent(EventExpose)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components/ImageView.cs" /> <!-- CS0115: 'ImageView.OnExposeEvent(EventExpose)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components/InfoBar.cs" /> <!-- CS0115: 'InfoBar.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/ImageButton.cs" /> <!-- CS0117: 'Style' does not contain a definition for 'PaintFocus' -->
+    <Compile Remove="MonoDevelop.Components/ImageView.cs" /> <!-- CS1061: 'Context' does not contain a definition for 'DrawImage' and no accessible extension method 'DrawImage' accepting a first argument of type 'C -->
+    <Compile Remove="MonoDevelop.Components/InfoBar.cs" /> <!-- CS1061: 'Style' does not contain a definition for 'PaintFlatBox' and no accessible extension method 'PaintFlatBox' accepting a first argument of typ -->
     <Compile Remove="MonoDevelop.Components/InformationPopoverWidget.cs" /> <!-- CS0246: The type or namespace name 'PopupPosition' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/MDSpinner.cs" /> <!-- CS0246: The type or namespace name 'AnimatedIcon' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/MenuButton.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components/MDSpinner.cs" /> <!-- CS0103: The name 'ImageService' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Components/MenuButton.cs" /> <!-- CS0200: Property or indexer 'Widget.State' cannot be assigned to - it is read only -->
     <Compile Remove="MonoDevelop.Components/MenuButtonEntry.cs" /> <!-- CS0246: The type or namespace name 'CommandManager' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/MiniButton.cs" /> <!-- CS1061: 'EventButton' does not contain a definition for 'TriggersContextMenu' and no accessible extension method 'TriggersContextMenu' accepting a f -->
-    <Compile Remove="MonoDevelop.Components/PathBar.cs" /> <!-- CS0115: 'PathBar.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components/PopoverWidget.cs" /> <!-- CS0115: 'PopoverWidget.OnExposeEvent(EventExpose)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components/PopoverWindow.cs" /> <!-- CS0115: 'PopoverWindow.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/PathBar.cs" /> <!-- CS0103: The name 'Styles' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Components/PopoverWidget.cs" /> <!-- CS0246: The type or namespace name 'PopupPosition' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components/PopoverWindow.cs" /> <!-- CS0246: The type or namespace name 'PopupPosition' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/PopoverWindowTheme.cs" /> <!-- CS0246: The type or namespace name 'EditorTheme' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/RadioButtonContextMenuItem.cs" /> <!-- CS0246: The type or namespace name 'ContextMenuItem' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/RestartPanel.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/RoundedFrame.cs" /> <!-- CS0115: 'RoundedFrame.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/RestartPanel.cs" /> <!-- CS0234: The type or namespace name 'AtkCocoaHelper' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference? -->
+    <Compile Remove="MonoDevelop.Components/RoundedFrame.cs" /> <!-- CS0115: 'RoundedFrame.OnSetScrollAdjustments(Adjustment, Adjustment)': no suitable method found to override -->
     <Compile Remove="MonoDevelop.Components/RoundedFrameBox.cs" /> <!-- CS0103: The name 'Styles' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Components/SearchEntry.cs" /> <!-- CS0115: 'SearchEntry.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components/SectionList.cs" /> <!-- CS0115: 'SectionList.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/SearchEntry.cs" /> <!-- CS0234: The type or namespace name 'GC' does not exist in the namespace 'Gdk' (are you missing an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components/SectionList.cs" /> <!-- CS0234: The type or namespace name 'WindowClass' does not exist in the namespace 'Gdk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/SelectFileDialog.cs" /> <!-- CS0308: The non-generic type 'SelectFileDialog' cannot be used with type arguments -->
     <Compile Remove="MonoDevelop.Components/SelectFolderDialog.cs" /> <!-- CS0308: The non-generic type 'SelectFileDialog' cannot be used with type arguments -->
     <Compile Remove="MonoDevelop.Components/SeparatorContextMenuItem.cs" /> <!-- CS0246: The type or namespace name 'ContextMenuItem' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/TabLabel.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/Tabstrip.cs" /> <!-- CS0115: 'Tabstrip.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/TabLabel.cs" /> <!-- CS1061: 'ImageView' does not contain a definition for 'ToGtkWidget' and no accessible extension method 'ToGtkWidget' accepting a first argument of t -->
+    <Compile Remove="MonoDevelop.Components/Tabstrip.cs" /> <!-- CS0103: The name 'Styles' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Components/TooltipPopoverWindow.cs" /> <!-- CS0246: The type or namespace name 'XwtThemedPopup' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components/TooltipWindow.cs" /> <!-- CS0115: 'TooltipWindow.OnExposeEvent(EventExpose)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components/TreeViewCellContainer.cs" /> <!-- CS0115: 'TreeViewCellContainer.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components/VPanedThin.cs" /> <!-- CS0115: 'VPanedThin.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components/TooltipWindow.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Components/TreeViewCellContainer.cs" /> <!-- CS0200: Property or indexer 'Widget.Allocation' cannot be assigned to - it is read only -->
+    <Compile Remove="MonoDevelop.Components/VPanedThin.cs" /> <!-- CS0246: The type or namespace name 'CustomPanedHandle' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/Window.cs" /> <!-- CS0246: The type or namespace name 'Control' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/Xwt/XwtPopup.cs" /> <!-- CS0246: The type or namespace name 'PopupPosition' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components/Xwt/XwtPopupWindowTheme.cs" /> <!-- CS0246: The type or namespace name 'EditorTheme' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -191,7 +191,7 @@
   <!-- MonoDevelop.Components.Chart: 7 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Components.Chart/Axis.cs" /> <!-- CS0246: The type or namespace name 'ChartWidget' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Chart/BasicChart.cs" /> <!-- CS0115: 'ChartWidget.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.Chart/BasicChart.cs" /> <!-- CS0234: The type or namespace name 'GC' does not exist in the namespace 'Gdk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Chart/ChartCursor.cs" /> <!-- CS0246: The type or namespace name 'Axis' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Chart/DateTimeAxis.cs" /> <!-- CS0246: The type or namespace name 'Axis' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Chart/IntegerAxis.cs" /> <!-- CS0246: The type or namespace name 'Axis' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -210,14 +210,14 @@
     <Compile Remove="MonoDevelop.Components.Commands/CommandHandler.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Commands/CommandInfo.cs" /> <!-- CS0246: The type or namespace name 'Command' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Commands/CommandInfoSet.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Commands/CommandManager.cs" /> <!-- CS0246: The type or namespace name 'CommandMenu' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Commands/CommandMenu.cs" /> <!-- CS0115: 'CommandMenu.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components.Commands/CommandMenuBar.cs" /> <!-- CS0115: 'CommandMenuBar.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.Commands/CommandManager.cs" /> <!-- CS0246: The type or namespace name 'KeyboardShortcut' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Commands/CommandMenu.cs" /> <!-- CS0246: The type or namespace name 'CommandManager' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Commands/CommandMenuBar.cs" /> <!-- CS0246: The type or namespace name 'CommandManager' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Commands/CommandMenuItem.cs" /> <!-- CS0246: The type or namespace name 'CommandManager' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Commands/CommandRouterContainer.cs" /> <!-- CS0234: The type or namespace name 'AtkCocoaHelper' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference? -->
     <Compile Remove="MonoDevelop.Components.Commands/CommandSelectedEventArgs.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Commands/CommandToggleToolButton.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Commands/CommandToolButton.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Commands/CommandToggleToolButton.cs" /> <!-- CS0246: The type or namespace name 'CommandManager' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Commands/CommandToolButton.cs" /> <!-- CS0246: The type or namespace name 'CommandManager' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Commands/CustomCommand.cs" /> <!-- CS0246: The type or namespace name 'Command' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Commands/CustomCommandTargetAttribute.cs" /> <!-- CS0246: The type or namespace name 'Command' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Commands/CustomCommandUpdaterAttribute.cs" /> <!-- CS0246: The type or namespace name 'ICommandUpdateHandler' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -245,45 +245,45 @@
   <!-- MonoDevelop.Components.DockNotebook: 7 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Components.DockNotebook/DockNotebook.cs" /> <!-- CS0246: The type or namespace name 'TabStrip' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.DockNotebook/DockNotebookContainer.cs" /> <!-- CS0118: 'DockNotebook' is a namespace but is used like a type -->
+    <Compile Remove="MonoDevelop.Components.DockNotebook/DockNotebookContainer.cs" /> <!-- CS0246: The type or namespace name 'DockWindow' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.DockNotebook/DockNotebookTab.cs" /> <!-- CS0246: The type or namespace name 'TabStrip' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.DockNotebook/DockWindow.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.DockNotebook/PlaceholderWindow.cs" /> <!-- CS0115: 'PlaceholderWindow.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.DockNotebook/PlaceholderWindow.cs" /> <!-- CS0246: The type or namespace name 'DockDelegate' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.DockNotebook/TabEventArgs.cs" /> <!-- CS0246: The type or namespace name 'DockNotebookTab' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.DockNotebook/TabStrip.cs" /> <!-- CS0115: 'TabStrip.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.DockNotebook/TabStrip.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
   <!-- MonoDevelop.Components.Docking: 17 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Components.Docking/AutoHideBox.cs" /> <!-- CS0234: The type or namespace name 'ExposeEventArgs' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Docking/DockBar.cs" /> <!-- CS0115: 'DockBar.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components.Docking/DockBarItem.cs" /> <!-- CS0115: 'CrossfadeIcon.OnExposeEvent(EventExpose)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components.Docking/DockContainer.cs" /> <!-- CS0115: 'DockContainer.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components.Docking/DockFrame.cs" /> <!-- CS0115: 'DockFrame.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.Docking/DockBar.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Docking/DockBarItem.cs" /> <!-- CS0246: The type or namespace name 'AutoHideBox' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Docking/DockContainer.cs" /> <!-- CS0246: The type or namespace name 'PlaceholderWindow' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Docking/DockFrame.cs" /> <!-- CS0246: The type or namespace name 'AutoHideBox' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Docking/DockFrameTopLevel.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Docking/DockGroup.cs" /> <!-- CS0246: The type or namespace name 'TabStrip' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Docking/DockGroup.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Docking/DockGroupItem.cs" /> <!-- CS0246: The type or namespace name 'DockDelegate' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Docking/DockItem.cs" /> <!-- CS0246: The type or namespace name 'DockItemTitleTab' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Docking/DockItemContainer.cs" /> <!-- CS0115: 'DockItemContainer.OnExposeEvent(EventExpose)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components.Docking/DockItemTitleTab.cs" /> <!-- CS0115: 'DockItemTitleTab.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Components.Docking/DockItemToolbar.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Docking/DockItem.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Docking/DockItemContainer.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Docking/DockItemTitleTab.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Docking/DockItemToolbar.cs" /> <!-- CS0246: The type or namespace name 'DockItem' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Docking/DockLayout.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Docking/DockObject.cs" /> <!-- CS0234: The type or namespace name 'DockFrame' does not exist in the namespace 'MonoDevelop.Components.Docking' (are you missing an assembly referen -->
-    <Compile Remove="MonoDevelop.Components.Docking/PlaceholderWindow.cs" /> <!-- CS0115: 'PlaceholderWindow.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.Docking/PlaceholderWindow.cs" /> <!-- CS0234: The type or namespace name 'GC' does not exist in the namespace 'Gdk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Docking/SplitterWidgetWrapper.cs" /> <!-- CS0246: The type or namespace name 'DockGroup' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Docking/TabStrip.cs" /> <!-- CS0115: 'TabStrip.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.Docking/TabStrip.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
   <!-- MonoDevelop.Components.Extensions: 6 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Components.Extensions/AlertDialog.cs" /> <!-- CS0246: The type or namespace name 'MessageDescription' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.Extensions/IExtendedTitleBarDialogBackend.cs" /> <!-- CS0122: 'HeaderBox' is inaccessible due to its protection level -->
-    <Compile Remove="MonoDevelop.Components.Extensions/IExtendedTitleBarWindowBackend.cs" /> <!-- CS0122: 'HeaderBox' is inaccessible due to its protection level -->
+    <Compile Remove="MonoDevelop.Components.Extensions/IExtendedTitleBarDialogBackend.cs" /> <!-- CS0246: The type or namespace name 'ThemedGtkDialogBackend' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.Extensions/IExtendedTitleBarWindowBackend.cs" /> <!-- CS0246: The type or namespace name 'ThemedGtkWindowBackend' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Extensions/ISelectFileDialog.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Components.Extensions/PlatformDialog.cs" /> <!-- CS0246: The type or namespace name 'Window' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.Extensions/TextQuestionDialog.cs" /> <!-- CS0117: 'Dialog' does not contain a definition for 'HasSeparator' -->
   </ItemGroup>
-  <!-- MonoDevelop.Components.MainToolbar: 23 -->
+  <!-- MonoDevelop.Components.MainToolbar: 22 -->
   <ItemGroup>
-    <Compile Remove="MonoDevelop.Components.MainToolbar/ButtonBar.cs" /> <!-- CS0115: 'ButtonBar.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.MainToolbar/ButtonBar.cs" /> <!-- CS0200: Property or indexer 'Widget.State' cannot be assigned to - it is read only -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/CommandSearchCategory.cs" /> <!-- CS0246: The type or namespace name 'Command' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/FileSearchCategory.cs" /> <!-- CS0246: The type or namespace name 'MatchResult' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/IMainToolbarView.cs" /> <!-- CS0246: The type or namespace name 'SearchEntryCommandArgs' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -291,21 +291,20 @@
     <Compile Remove="MonoDevelop.Components.MainToolbar/MainStatusBarContextImpl.cs" /> <!-- CS0246: The type or namespace name 'Pad' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/MainToolbar.cs" /> <!-- CS0246: The type or namespace name 'CellLayout' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/MainToolbarCommandHandlers.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.MainToolbar/MainToolbarController.cs" /> <!-- CS0246: The type or namespace name 'SearchPopupWindow' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.MainToolbar/MainToolbarController.cs" /> <!-- CS0246: The type or namespace name 'ActionCommand' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/ResultsDataSource.cs" /> <!-- CS0246: The type or namespace name 'SearchResult' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/RoslynSearchCategory.DeclaredSymbolInfoResult.cs" /> <!-- CS0246: The type or namespace name 'SearchResult' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/RoslynSearchCategory.ShimNavigateToSearchService.cs" /> <!-- CS0246: The type or namespace name 'INavigateToSearchService_RemoveInterfaceAboveAndRenameThisAfterInternalsVisibleToUsersUpdate' could not be found -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/RoslynSearchCategory.cs" /> <!-- CS0246: The type or namespace name 'INavigateToSearchService_RemoveInterfaceAboveAndRenameThisAfterInternalsVisibleToUsersUpdate' could not be found -->
-    <Compile Remove="MonoDevelop.Components.MainToolbar/RoundButton.cs" /> <!-- CS0115: 'RoundButton.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.MainToolbar/RoundButton.cs" /> <!-- CS0246: The type or namespace name 'OperationIcon' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/SearchCategory.cs" /> <!-- CS0246: The type or namespace name 'SearchResult' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/SearchInSolutionSearchCategory.cs" /> <!-- CS0246: The type or namespace name 'SearchResult' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.MainToolbar/SearchPopupWindow.cs" /> <!-- CS0246: The type or namespace name 'TooltipInformationWindow' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.MainToolbar/SearchPopupWindow.cs" /> <!-- CS0246: The type or namespace name 'SearchResult' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/SearchResult.cs" /> <!-- CS0246: The type or namespace name 'CommandTargetRoute' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.MainToolbar/StatusArea.cs" /> <!-- CS0115: 'StatusArea.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.MainToolbar/StatusArea.cs" /> <!-- CS0246: The type or namespace name 'Pad' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/StatusAreaBuildTheme.cs" /> <!-- CS0246: The type or namespace name 'StatusAreaTheme' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/StatusAreaTheme.cs" /> <!-- CS0246: The type or namespace name 'StatusArea' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.MainToolbar/StatusBarContextHandler.cs" /> <!-- CS0246: The type or namespace name 'MainStatusBarContextImpl' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.MainToolbar/StyledProgressBar.cs" /> <!-- CS0115: 'StyledProgressBar.OnExposeEvent(EventExpose)': no suitable method found to override -->
   </ItemGroup>
   <!-- MonoDevelop.Components.PropertyGrid: 7 -->
   <ItemGroup>
@@ -314,14 +313,14 @@
     <Compile Remove="MonoDevelop.Components.PropertyGrid/EventPropertyTab.cs" /> <!-- CS0246: The type or namespace name 'PropertyTab' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.PropertyGrid/IPropertyGrid.cs" /> <!-- CS0234: The type or namespace name 'PropertyGrid' does not exist in the namespace 'MonoDevelop.Components.PropertyGrid' (are you missing an assembly -->
     <Compile Remove="MonoDevelop.Components.PropertyGrid/PropertyEditorCell.cs" /> <!-- CS0246: The type or namespace name 'Drawable' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.PropertyGrid/PropertyGrid.cs" /> <!-- CS0246: The type or namespace name 'PropertyGridTable' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.PropertyGrid/PropertyGridTable.cs" /> <!-- CS0115: 'PropertyGridTable.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Components.PropertyGrid/PropertyGrid.cs" /> <!-- CS0246: The type or namespace name 'EditorManager' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.PropertyGrid/PropertyGridTable.cs" /> <!-- CS0246: The type or namespace name 'EditSession' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
   <!-- MonoDevelop.Components.PropertyGrid.Editors: 16 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Components.PropertyGrid.Editors/BooleanEditorCell.cs" /> <!-- CS0234: The type or namespace name 'Drawable' does not exist in the namespace 'Gdk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.PropertyGrid.Editors/CharPropertyEditor.cs" /> <!-- CS0246: The type or namespace name 'IPropertyEditor' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Components.PropertyGrid.Editors/CollectionEditor.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Components.PropertyGrid.Editors/CollectionEditor.cs" /> <!-- CS0246: The type or namespace name 'PropertyEditorCell' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.PropertyGrid.Editors/ColorEditorCell.cs" /> <!-- CS0234: The type or namespace name 'Drawable' does not exist in the namespace 'Gdk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.PropertyGrid.Editors/DateTimeEditor.cs" /> <!-- CS0246: The type or namespace name 'PropertyEditorCell' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Components.PropertyGrid.Editors/DefaultEditor.cs" /> <!-- CS0246: The type or namespace name 'PropertyEditorCell' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -344,13 +343,12 @@
     <Compile Remove="MonoDevelop.Components.Theming/ThemeContext.cs" /> <!-- CS0103: The name 'Theme' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Components.Theming/ThemeEngine.cs" /> <!-- CS0246: The type or namespace name 'Theme' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
-  <!-- MonoDevelop.Ide: 19 -->
+  <!-- MonoDevelop.Ide: 18 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide/DefaultWebCertificateProvider.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide/DesktopService.cs" /> <!-- CS0234: The type or namespace name 'CommandManager' does not exist in the namespace 'MonoDevelop.Components.Commands' (are you missing an assembly r -->
-    <Compile Remove="MonoDevelop.Ide/DispatchService.cs" /> <!-- CS0246: The type or namespace name 'GuiSyncContext' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide/HelpOperations.cs" /> <!-- CS0246: The type or namespace name 'Monodoc' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide/Ide.cs" /> <!-- CS0246: The type or namespace name 'Workbench' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide/Ide.cs" /> <!-- CS0246: The type or namespace name 'CommandManager' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide/IdeInstanceConnection.cs" /> <!-- CS0246: The type or namespace name 'StartupInfo' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide/IdePreferences.cs" /> <!-- CS0246: The type or namespace name 'EditorPreferences' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide/IdeServices.cs" /> <!-- CS0246: The type or namespace name 'HelpOperations' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -373,7 +371,7 @@
     <Compile Remove="MonoDevelop.Ide.BuildOutputView/BuildOutputProcessor.cs" /> <!-- CS0246: The type or namespace name 'BuildOutputNode' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.BuildOutputView/BuildOutputTreeCellView.cs" /> <!-- CS0234: The type or namespace name 'Styles' does not exist in the namespace 'MonoDevelop.Ide.Gui' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.BuildOutputView/BuildOutputViewContent.cs" /> <!-- CS0246: The type or namespace name 'BuildOutputWidget' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.BuildOutputView/BuildOutputWidget.cs" /> <!-- CS0246: The type or namespace name 'PathEntry' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.BuildOutputView/BuildOutputWidget.cs" /> <!-- CS0246: The type or namespace name 'SearchEntry' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.BuildOutputView/MSBuildOutputProcessor.cs" /> <!-- CS0246: The type or namespace name 'BuildOutputProcessor' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.CodeCompletion: 23 -->
@@ -395,12 +393,12 @@
     <Compile Remove="MonoDevelop.Ide.CodeCompletion/MutableCompletionDataList.cs" /> <!-- CS0246: The type or namespace name 'ICompletionDataList' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeCompletion/ParameterHintingData.cs" /> <!-- CS0246: The type or namespace name 'TextEditor' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeCompletion/ParameterHintingResult.cs" /> <!-- CS0246: The type or namespace name 'ParameterHintingData' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.CodeCompletion/ParameterInformationWindow.cs" /> <!-- CS0234: The type or namespace name 'FixedWidthWrapLabel' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly refer -->
-    <Compile Remove="MonoDevelop.Ide.CodeCompletion/ParameterInformationWindowManager.cs" /> <!-- CS0246: The type or namespace name 'ParameterInformationWindow' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.CodeCompletion/ParameterInformationWindow.cs" /> <!-- CS0246: The type or namespace name 'CompletionTextEditorExtension' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.CodeCompletion/ParameterInformationWindowManager.cs" /> <!-- CS0246: The type or namespace name 'CompletionTextEditorExtension' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeCompletion/RoslynCompletionData.cs" /> <!-- CS0234: The type or namespace name 'Shared' does not exist in the namespace 'Microsoft.CodeAnalysis.Editor' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeCompletion/SignatureHelpParameterHintingData.cs" /> <!-- CS0246: The type or namespace name 'TextEditor' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeCompletion/TaggedTextUtil.cs" /> <!-- CS0246: The type or namespace name 'EditorTheme' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.CodeCompletion/TooltipInformationWindow.cs" /> <!-- CS0246: The type or namespace name 'FixedWidthWrapLabel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.CodeCompletion/TooltipInformationWindow.cs" /> <!-- CS0246: The type or namespace name 'XwtThemedPopup' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.CodeFormatting: 6 -->
   <ItemGroup>
@@ -416,7 +414,7 @@
     <Compile Remove="MonoDevelop.Ide.CodeTemplates/CodeTemplate.cs" /> <!-- CS0246: The type or namespace name 'TemplateContext' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeTemplates/CodeTemplateCompletionData.cs" /> <!-- CS0246: The type or namespace name 'CodeTemplate' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeTemplates/CodeTemplateListDataProvider.cs" /> <!-- CS0103: The name 'ImageService' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.CodeTemplates/CodeTemplatePanel.cs" /> <!-- CS0234: The type or namespace name 'TreeModel' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.CodeTemplates/CodeTemplatePanel.cs" /> <!-- CS0246: The type or namespace name 'CellRendererImage' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeTemplates/CodeTemplateService.cs" /> <!-- CS0246: The type or namespace name 'ExpansionObject' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeTemplates/EditTemplateDialog.cs" /> <!-- CS0246: The type or namespace name 'CodeTemplate' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.CodeTemplates/ExpansionObject.cs" /> <!-- CS0234: The type or namespace name 'SessionState' does not exist in the namespace 'System.Web' (are you missing an assembly reference?) -->
@@ -438,7 +436,7 @@
     <Compile Remove="MonoDevelop.Ide.Commands/CustomStringTagProvider.cs" /> <!-- CS0246: The type or namespace name 'Workbench' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Commands/EditCommands.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Commands/FileCommands.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Commands/FileTabCommands.cs" /> <!-- CS0246: The type or namespace name 'DockNotebookTab' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Commands/FileTabCommands.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Commands/HelpCommands.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Commands/NavigationCommands.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Commands/ProjectCommands.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -573,7 +571,7 @@
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.Editor.TextMate/IIndentEngine.cs" /> <!-- CS0246: The type or namespace name 'IReadonlyTextDocument' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Editor.TextMate/ShowTextMateScopesHandler.cs" /> <!-- CS0246: The type or namespace name 'CommandHandler' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Editor.TextMate/TextMateBundleOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Editor.TextMate/TextMateBundleOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'TextMateBundleOptionsPanelWidget' could not be found (are you missing a using directive or an assembly reference -->
     <Compile Remove="MonoDevelop.Ide.Editor.TextMate/TextMateBundleOptionsPanelWidget.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Editor.TextMate/TextMateCompletionTextEditorExtension.cs" /> <!-- CS0246: The type or namespace name 'ICompletionDataList' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Editor.TextMate/TextMateDocumentIndentEngine.cs" /> <!-- CS0246: The type or namespace name 'TextEditor' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -620,26 +618,26 @@
   <!-- MonoDevelop.Ide.ExternalTools: 3 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.ExternalTools/ExternalTool.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.ExternalTools/ExternalToolPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.ExternalTools/ExternalToolPanel.cs" /> <!-- CS0246: The type or namespace name 'EventBoxTooltip' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.ExternalTools/ExternalToolService.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.FindInFiles: 11 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.FindInFiles/Commands.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.FindInFiles/FileProvider.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.FindInFiles/FindInFilesDialog.cs" /> <!-- CS0115: 'FindInFilesDialog.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.FindInFiles/FindInFilesDialog.cs" /> <!-- CS0246: The type or namespace name 'ComboBoxEntry' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.FindInFiles/FindReplace.cs" /> <!-- CS0246: The type or namespace name 'SearchResult' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.FindInFiles/ISearchProgressMonitor.cs" /> <!-- CS0246: The type or namespace name 'PathMode' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.FindInFiles/MemberReference.cs" /> <!-- CS0234: The type or namespace name 'HslColor' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.FindInFiles/Scope.cs" /> <!-- CS0246: The type or namespace name 'PathMode' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.FindInFiles/SearchProgressMonitor.cs" /> <!-- CS0246: The type or namespace name 'PathMode' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.FindInFiles/SearchResult.cs" /> <!-- CS0246: The type or namespace name 'SearchResultWidget' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.FindInFiles/SearchResultPad.cs" /> <!-- CS0246: The type or namespace name 'SearchResultWidget' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.FindInFiles/SearchResultWidget.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.FindInFiles/SearchResult.cs" /> <!-- CS0234: The type or namespace name 'HslColor' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.FindInFiles/SearchResultPad.cs" /> <!-- CS0246: The type or namespace name 'PathMode' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.FindInFiles/SearchResultWidget.cs" /> <!-- CS0246: The type or namespace name 'HslColor' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.Fonts: 3 -->
   <ItemGroup>
-    <Compile Remove="MonoDevelop.Ide.Fonts/FontChooserPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Fonts/FontChooserPanel.cs" /> <!-- CS0246: The type or namespace name 'FontChooserPanelWidget' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Fonts/FontChooserPanelWidget.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Fonts/FontService.cs" /> <!-- CS0246: The type or namespace name 'DesktopService' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
@@ -652,24 +650,24 @@
     <Compile Remove="MonoDevelop.Ide.GettingStarted/GettingStartedNodeCommandHandler.cs" /> <!-- CS0246: The type or namespace name 'NodeCommandHandler' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.GettingStarted/GettingStartedProjectExtension.cs" /> <!-- CS0246: The type or namespace name 'GettingStartedNode' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.GettingStarted/GettingStartedProvider.cs" /> <!-- CS0246: The type or namespace name 'GettingStartedViewContent' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.GettingStarted/GettingStartedViewContent.cs" /> <!-- CS0246: The type or namespace name 'DocumentViewContent' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.GettingStarted/GettingStartedViewContent.cs" /> <!-- CS0246: The type or namespace name 'DocumentController' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
-  <!-- MonoDevelop.Ide.Gui: 38 -->
+  <!-- MonoDevelop.Ide.Gui: 36 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.Gui/BackgroundProgressMonitor.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui/ConfigurationComboBox.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui/DisplayBindingService.cs" /> <!-- CS0246: The type or namespace name 'DesktopService' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui/DockItemToolbarLoader.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui/DockItemToolbarLoader.cs" /> <!-- CS0246: The type or namespace name 'CommandTargetRoute' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/Document.cs" /> <!-- CS0246: The type or namespace name 'TextEditor' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/DocumentRegistry.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui/DocumentSwitcher.cs" /> <!-- CS0115: 'DocumentList.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.Gui/DocumentSwitcher.cs" /> <!-- CS0246: The type or namespace name 'KeyboardShortcut' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/FileOpenInformation.cs" /> <!-- CS0246: The type or namespace name 'OpenDocumentOptions' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/FileViewer.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/GuiSyncObject.cs" /> <!-- CS0616: 'SyncContext' is not an attribute class -->
-    <Compile Remove="MonoDevelop.Ide.Gui/IPadContainer.cs" /> <!-- CS0246: The type or namespace name 'DockItemToolbar' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui/IPadContainer.cs" /> <!-- CS0246: The type or namespace name 'VisibilityChangeEventArgs' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/IWorkbenchWindow.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/LayoutComboBox.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Gui/MonoDevelopStatusBar.cs" /> <!-- CS0115: 'MonoDevelopStatusBar.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.Gui/MonoDevelopStatusBar.cs" /> <!-- CS1061: 'Style' does not contain a definition for 'XThickness' and no accessible extension method 'XThickness' accepting a first argument of type 'S -->
     <Compile Remove="MonoDevelop.Ide.Gui/Pad.cs" /> <!-- CS0246: The type or namespace name 'DefaultWorkbench' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/PadCollection.cs" /> <!-- CS0246: The type or namespace name 'Pad' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/PadContent.cs" /> <!-- CS0246: The type or namespace name 'IPadWindow' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -678,7 +676,7 @@
     <Compile Remove="MonoDevelop.Ide.Gui/ProgressMonitors.cs" /> <!-- CS0246: The type or namespace name 'SearchProgressMonitor' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/ProjectLoadProgressMonitor.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui/RoslynDocumentExtension.cs" /> <!-- CS0246: The type or namespace name 'ParsedDocument' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui/Split.cs" /> <!-- CS0246: The type or namespace name 'DockNotebookContainer' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui/Split.cs" /> <!-- CS0234: The type or namespace name 'DockNotebook' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/StartupAssetType.cs" /> <!-- CS0234: The type or namespace name 'UI' does not exist in the namespace 'System.Web' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/StatusBar.cs" /> <!-- CS0246: The type or namespace name 'Pad' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/StatusBarContext.cs" /> <!-- CS0246: The type or namespace name 'Pad' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -689,14 +687,14 @@
     <Compile Remove="MonoDevelop.Ide.Gui/SyncContextAttribute.cs" /> <!-- CS0246: The type or namespace name 'IMethodMessage' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/ToolbarComboBox.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui/ViewCommandHandlers.cs" /> <!-- CS0246: The type or namespace name 'TextEditor' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui/Workbench.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui/Workbench.cs" /> <!-- CS0246: The type or namespace name 'AlertButton' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui/WorkbenchStatusBar.cs" /> <!-- CS0246: The type or namespace name 'Pad' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui/WorkbenchWindow.cs" /> <!-- CS0115: 'WorkbenchWindow.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.Gui/WorkbenchWindow.cs" /> <!-- CS0117: 'GtkWorkarounds' does not contain a definition for 'FixContainerLeak' -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.Gui.Components: 23 -->
   <ItemGroup>
-    <Compile Remove="MonoDevelop.Ide.Gui.Components/AnimatedIcon.cs" /> <!-- CS0103: The name 'DispatchService' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Components/ExecutionModeComboBox.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Components/AnimatedIcon.cs" /> <!-- CS0103: The name 'ImageService' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Components/ExecutionModeComboBox.cs" /> <!-- CS0103: The name 'ExecutionModeCommandService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Components/ExtensibleTreeView.cs" /> <!-- CS0234: The type or namespace name 'Editable' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Components/ITreeBuilder.cs" /> <!-- CS0246: The type or namespace name 'ITreeNavigator' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Components/ITreeBuilderContext.cs" /> <!-- CS0246: The type or namespace name 'ITreeNavigator' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -707,9 +705,9 @@
     <Compile Remove="MonoDevelop.Ide.Gui.Components/NodeBuilderExtension.cs" /> <!-- CS0246: The type or namespace name 'NodeBuilder' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Components/NodeCommandHandler.cs" /> <!-- CS0246: The type or namespace name 'Command' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Components/NodeState.cs" /> <!-- CS0246: The type or namespace name 'ITreeNavigator' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Components/PadTreeView.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Components/PadTreeView.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Components/PriorityList.cs" /> <!-- CS0103: The name 'treeview' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Components/ProjectFileEntry.cs" /> <!-- CS0246: The type or namespace name 'ProjectFileSelectorDialog' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Components/ProjectFileEntry.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Components/ProjectSelectorWidget.cs" /> <!-- CS0246: The type or namespace name 'RootWorkspace' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Components/StringTagSelectorButton.cs" /> <!-- CS0234: The type or namespace name 'MenuButton' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Components/TransactedTreeBuilder.cs" /> <!-- CS0246: The type or namespace name 'NodeBuilder' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -730,48 +728,48 @@
   <!-- MonoDevelop.Ide.Gui.Dialogs: 27 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/AboutMonoDevelopTabPage.cs" /> <!-- CS0103: The name 'IdeTheme' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/AddinLoadErrorDialog.cs" /> <!-- CS0103: The name 'Build' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/AddinLoadErrorDialog.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/CommonAboutDialog.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/DirtyFilesDialog.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/FileSelectorDialog.cs" /> <!-- CS0234: The type or namespace name 'OptionMenu' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/GtkAlertDialog.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/GtkAlertDialog.cs" /> <!-- CS0246: The type or namespace name 'MessageDescription' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/IOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/ItemOptionsDialog.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/ItemOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MimeTypePolicyOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'IOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MimeTypePolicyOptionsSection.cs" /> <!-- CS0234: The type or namespace name 'OptionsDialog' does not exist in the namespace 'MonoDevelop.Ide.Gui.Dialogs' (are you missing an assembly refere -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MimeTypePolicyOptionsPanel.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MimeTypePolicyOptionsSection.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MultiConfigItemOptionsDialog.cs" /> <!-- CS0115: 'MultiConfigItemOptionsDialog.ApplyChanges()': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MultiConfigItemOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MultiMessageDialog.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MultiConfigItemOptionsPanel.cs" /> <!-- CS0117: 'ComboBox' does not contain a definition for 'NewText' -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MultiMessageDialog.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/MultiTaskProgressDialog.cs" /> <!-- CS0103: The name 'title' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/NewConfigurationDialog.cs" /> <!-- CS0246: The type or namespace name 'InformationPopoverWidget' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/NewFolderDialog.cs" /> <!-- CS0246: The type or namespace name 'InformationPopoverWidget' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/NewLayoutDialog.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/OpenFileDialog.cs" /> <!-- CS0246: The type or namespace name 'FileViewer' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/OptionsDialog.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/OptionsDialog.cs" /> <!-- CS1061: 'Style' does not contain a definition for 'Base' and no accessible extension method 'Base' accepting a first argument of type 'Style' could  -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/OptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/PolicyOptionsPanel.cs" /> <!-- CS0234: The type or namespace name 'OptionsDialog' does not exist in the namespace 'MonoDevelop.Ide.Gui.Dialogs' (are you missing an assembly refere -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/PolicyOptionsPanel.cs" /> <!-- CS0103: The name 'BinContainer' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/ProgressDialog.cs" /> <!-- CS0234: The type or namespace name 'IdeTheme' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/SelectEncodingsDialog.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/SelectFileFormatDialog.cs" /> <!-- CS1061: 'SelectFileFormatDialog' does not contain a definition for 'Build' and no accessible extension method 'Build' accepting a first argument of  -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/SelectEncodingsDialog.cs" /> <!-- CS0103: The name 'listSelected' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/SelectFileFormatDialog.cs" /> <!-- CS1061: 'ComboBox' does not contain a definition for 'AppendText' and no accessible extension method 'AppendText' accepting a first argument of type -->
     <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/TipOfTheDay.cs" /> <!-- CS0246: The type or namespace name 'CommandHandler' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/VersionInformationTabPage.cs" /> <!-- CS0234: The type or namespace name 'CompactScrolledWindow' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly ref -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Dialogs/VersionInformationTabPage.cs" /> <!-- CS7036: There is no argument given that corresponds to the required parameter 'expand' of 'Box.PackStart(Widget, bool, bool, uint)' -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.Gui.Documents: 24 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentCloseEventArgs.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentController.cs" /> <!-- CS0246: The type or namespace name 'DocumentViewContent' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentController.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentControllerDescription.cs" /> <!-- CS0246: The type or namespace name 'DocumentController' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentControllerExtension.cs" /> <!-- CS0246: The type or namespace name 'DocumentView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentControllerExtension.cs" /> <!-- CS0246: The type or namespace name 'DocumentController' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentControllerFactory.cs" /> <!-- CS0246: The type or namespace name 'DocumentController' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentControllerService.cs" /> <!-- CS0246: The type or namespace name 'FileDocumentController' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentManager.cs" /> <!-- CS0246: The type or namespace name 'OpenDocumentMetadata' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentManager.cs" /> <!-- CS0246: The type or namespace name 'DocumentEventArgs' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentModel.cs" /> <!-- CS0246: The type or namespace name 'DocumentModelRegistry' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentModelRegistry.cs" /> <!-- CS0246: The type or namespace name 'FileModel' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentToolbar.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentView.cs" /> <!-- CS0246: The type or namespace name 'DocumentViewContent' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentViewContainer.cs" /> <!-- CS0246: The type or namespace name 'DocumentView' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentViewContent.cs" /> <!-- CS0246: The type or namespace name 'DocumentToolbar' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentView.cs" /> <!-- CS0246: The type or namespace name 'IWorkbenchWindow' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentViewContainer.cs" /> <!-- CS0246: The type or namespace name 'IWorkbenchWindow' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentViewContent.cs" /> <!-- CS0246: The type or namespace name 'IWorkbenchWindow' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/DocumentViewContentCollection.cs" /> <!-- CS0246: The type or namespace name 'DocumentView' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/ExportDocumentControllerBaseAttribute.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.Documents/ExportDocumentControllerExtensionAttribute.cs" /> <!-- CS0246: The type or namespace name 'DocumentController' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -788,26 +786,26 @@
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/AddInsOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/AuthorInformationPanel.cs" /> <!-- CS0234: The type or namespace name 'OptionsDialog' does not exist in the namespace 'MonoDevelop.Ide.Gui.Dialogs' (are you missing an assembly refere -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/BuildMessagePanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/BuildPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/GlobalAuthorInformationPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/IDEStyleOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/BuildMessagePanel.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/BuildPanel.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/GlobalAuthorInformationPanel.cs" /> <!-- CS0234: The type or namespace name 'AtkCocoaHelper' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference? -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/IDEStyleOptionsPanel.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/KeyBindingsPanel.cs" /> <!-- CS0115: 'KeyBindingsPanel.CellRendererKeyButtons.GetSize(Widget, ref Rectangle, out int, out int, out int, out int)': no suitable method found to ov -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/LoadSavePanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/LogAgentOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/MaintenanceOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/MonoRuntimePanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/SdkLocationPanel.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/TasksOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/TextStylePolicyPanel.cs" /> <!-- CS0115: 'TextStylePolicyPanel.CreatePanelWidget()': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/LoadSavePanel.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/LogAgentOptionsPanel.cs" /> <!-- CS0103: The name 'BinContainer' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/MaintenanceOptionsPanel.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/MonoRuntimePanel.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/SdkLocationPanel.cs" /> <!-- CS7036: There is no argument given that corresponds to the required parameter 'expand' of 'Box.PackStart(Widget, bool, bool, uint)' -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/TasksOptionsPanel.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.OptionPanels/TextStylePolicyPanel.cs" /> <!-- CS1061: 'ComboBox' does not contain a definition for 'AppendText' and no accessible extension method 'AppendText' accepting a first argument of type -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.Gui.Pads: 6 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.Gui.Pads/DefaultMonitorPad.cs" /> <!-- CS0246: The type or namespace name 'LogView' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Pads/ErrorListPad.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Pads/ErrorListPad.cs" /> <!-- CS0115: 'ErrorListPad.DescriptionCellRendererText.GetSize(Widget, ref Rectangle, out int, out int, out int, out int)': no suitable method found to o -->
     <Compile Remove="MonoDevelop.Ide.Gui.Pads/MonodocTreePad.cs" /> <!-- CS0246: The type or namespace name 'Monodoc' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Pads/SolutionPad.cs" /> <!-- CS0246: The type or namespace name 'TreeViewPad' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Pads/TaskListPad.cs" /> <!-- CS0246: The type or namespace name 'DockItemToolbar' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Pads/TaskListPad.cs" /> <!-- CS0246: The type or namespace name 'IPadWindow' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Pads/TreeViewPad.cs" /> <!-- CS0246: The type or namespace name 'IPadWindow' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.Gui.Pads.ClassPad: 15 -->
@@ -839,7 +837,7 @@
     <Compile Remove="MonoDevelop.Ide.Gui.Pads.ProjectPad/ProjectNodeBuilder.cs" /> <!-- CS0115: 'ProjectNodeCommandHandler.RenameItem(string)': no suitable method found to override -->
     <Compile Remove="MonoDevelop.Ide.Gui.Pads.ProjectPad/ProjectReferenceFolderNodeBuilder.cs" /> <!-- CS0246: The type or namespace name 'NodeCommandHandler' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Pads.ProjectPad/ProjectReferenceNodeBuilder.cs" /> <!-- CS0246: The type or namespace name 'NodeCommandHandler' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Pads.ProjectPad/ProjectSolutionPad.cs" /> <!-- CS0115: 'ProjectSolutionPad.OnSelectionChanged(object, EventArgs)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Pads.ProjectPad/ProjectSolutionPad.cs" /> <!-- CS0246: The type or namespace name 'NodeBuilder' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Pads.ProjectPad/ShowAllFilesBuilderExtension.cs" /> <!-- CS0246: The type or namespace name 'NodeCommandHandler' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Pads.ProjectPad/SolutionFolderFileNodeBuilder.cs" /> <!-- CS0246: The type or namespace name 'NodeCommandHandler' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Pads.ProjectPad/SolutionFolderNodeBuilder.cs" /> <!-- CS0246: The type or namespace name 'NodeCommandHandler' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -850,19 +848,19 @@
   </ItemGroup>
   <!-- MonoDevelop.Ide.Gui.Shell: 13 -->
   <ItemGroup>
-    <Compile Remove="MonoDevelop.Ide.Gui.Shell/DefaultWorkbench.cs" /> <!-- CS0246: The type or namespace name 'MonoDevelopStatusBar' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkDocumentToolbar.cs" /> <!-- CS0115: 'GtkDocumentToolbar.ToolbarBox.OnExposeEvent(EventExpose)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewContainer.cs" /> <!-- CS0246: The type or namespace name 'Tab' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewContainerSplit.cs" /> <!-- CS0246: The type or namespace name 'IGtkShellDocumentViewContainer' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewContainerTabs.cs" /> <!-- CS0246: The type or namespace name 'Tab' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewContent.cs" /> <!-- CS0246: The type or namespace name 'GtkDocumentToolbar' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewItem.cs" /> <!-- CS0246: The type or namespace name 'GtkShellDocumentViewContainer' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Shell/DefaultWorkbench.cs" /> <!-- CS0246: The type or namespace name 'DockFrame' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkDocumentToolbar.cs" /> <!-- CS0103: The name 'Styles' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewContainer.cs" /> <!-- CS0246: The type or namespace name 'GtkShellDocumentViewItem' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewContainerSplit.cs" /> <!-- CS0246: The type or namespace name 'GtkShellDocumentViewItem' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewContainerTabs.cs" /> <!-- CS0246: The type or namespace name 'GtkShellDocumentViewItem' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewContent.cs" /> <!-- CS0246: The type or namespace name 'GtkShellDocumentViewItem' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Shell/GtkShellDocumentViewItem.cs" /> <!-- CS0246: The type or namespace name 'DocumentView' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Shell/IShell.cs" /> <!-- CS0246: The type or namespace name 'DefaultWorkbench' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Shell/IShellDocumentToolbar.cs" /> <!-- CS0246: The type or namespace name 'Control' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Shell/IShellDocumentViewContainer.cs" /> <!-- CS0246: The type or namespace name 'IShellDocumentViewItem' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Shell/IShellDocumentViewContent.cs" /> <!-- CS0246: The type or namespace name 'DocumentToolbarKind' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Shell/IShellDocumentViewContent.cs" /> <!-- CS0246: The type or namespace name 'IShellDocumentViewItem' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Gui.Shell/IShellDocumentViewItem.cs" /> <!-- CS0246: The type or namespace name 'DocumentView' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Gui.Shell/SdiWorkspaceWindow.cs" /> <!-- CS0246: The type or namespace name 'DockNotebook' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Gui.Shell/SdiWorkspaceWindow.cs" /> <!-- CS0246: The type or namespace name 'Document' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.Gui.Wizard: 5 -->
   <ItemGroup>
@@ -884,27 +882,27 @@
   <!-- MonoDevelop.Ide.ProgressMonitoring: 3 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.ProgressMonitoring/BaseProgressMonitor.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.ProgressMonitoring/MessageDialogProgressMonitor.cs" /> <!-- CS0103: The name 'DispatchService' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.ProgressMonitoring/MultiTaskDialogProgressMonitor.cs" /> <!-- CS0103: The name 'DispatchService' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.ProgressMonitoring/MessageDialogProgressMonitor.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.ProgressMonitoring/MultiTaskDialogProgressMonitor.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.Projects: 37 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.Projects/AddExternalFileDialog.cs" /> <!-- CS0234: The type or namespace name 'IdeTheme' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects/AddFileDialog.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/AddFileDialog.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Projects/AddMimeTypeDialog.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Projects/ApplyPolicyDialog.cs" /> <!-- CS0115: 'PoliciesListSummaryTree.OnExposeEvent(EventExpose)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Ide.Projects/AssemblyReferencePanel.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/ApplyPolicyDialog.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Projects/AssemblyReferencePanel.cs" /> <!-- CS0246: The type or namespace name 'IReferencePanel' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects/CombineOptionsDialog.cs" /> <!-- CS0246: The type or namespace name 'MultiConfigItemOptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects/ConfirmProjectDeleteDialog.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Projects/DefaultPolicyOptionsDialog.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/DefaultPolicyOptionsDialog.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Projects/DeleteConfigDialog.cs" /> <!-- CS0103: The name 'Build' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Projects/ExportProjectPolicyDialog.cs" /> <!-- CS0246: The type or namespace name 'PoliciesListSummaryTree' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/ExportProjectPolicyDialog.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Projects/ExportSolutionDialog.cs" /> <!-- CS1061: 'ComboBox' does not contain a definition for 'AppendText' and no accessible extension method 'AppendText' accepting a first argument of type -->
     <Compile Remove="MonoDevelop.Ide.Projects/FinalProjectConfigurationPage.cs" /> <!-- CS0246: The type or namespace name 'SolutionTemplate' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects/GtkNewProjectDialogBackend.UI.cs" /> <!-- CS0115: 'GtkNewProjectDialogBackend.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Ide.Projects/GtkNewProjectDialogBackend.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/GtkNewProjectDialogBackend.UI.cs" /> <!-- CS0246: The type or namespace name 'GtkTemplateCellRenderer' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/GtkNewProjectDialogBackend.cs" /> <!-- CS0115: 'GtkNewProjectDialogBackend.OnDestroyed()': no suitable method found to override -->
     <Compile Remove="MonoDevelop.Ide.Projects/GtkProjectConfigurationWidget.cs" /> <!-- CS0246: The type or namespace name 'EventBoxTooltip' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects/GtkProjectFolderPreviewWidget.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/GtkProjectFolderPreviewWidget.cs" /> <!-- CS0246: The type or namespace name 'CellRendererImage' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects/GtkTemplateCategoryCellRenderer.cs" /> <!-- CS0246: The type or namespace name 'Drawable' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects/GtkTemplateCellRenderer.cs" /> <!-- CS0246: The type or namespace name 'Drawable' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects/INewProjectController.cs" /> <!-- CS0246: The type or namespace name 'SolutionTemplate' could not be found (are you missing a using directive or an assembly reference?) -->
@@ -913,48 +911,48 @@
     <Compile Remove="MonoDevelop.Ide.Projects/ImportProjectPolicyDialog.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Projects/IncludeNewFilesDialog.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Projects/LanguageCellRenderer.cs" /> <!-- CS0115: 'LanguageCellRenderer.GetSize(Widget, ref Rectangle, out int, out int, out int, out int)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Ide.Projects/NewFileDialog.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/NewFileDialog.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Projects/NewPolicySetDialog.cs" /> <!-- CS1061: 'ComboBox' does not contain a definition for 'AppendText' and no accessible extension method 'AppendText' accepting a first argument of type -->
     <Compile Remove="MonoDevelop.Ide.Projects/NewProjectController.cs" /> <!-- CS0246: The type or namespace name 'TemplatingService' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects/NewProjectOptionsWidget.cs" /> <!-- CS0103: The name 'BinContainer' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Projects/PackageReferencePanel.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/PackageReferencePanel.cs" /> <!-- CS0246: The type or namespace name 'IReferencePanel' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects/ProjectConfigurationControl.cs" /> <!-- CS0246: The type or namespace name 'Control' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects/ProjectFileSelectorDialog.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects/ProjectOptionsDialog.cs" /> <!-- CS0246: The type or namespace name 'MultiConfigItemOptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects/ProjectReferencePanel.cs" /> <!-- CS0234: The type or namespace name 'TreeModel' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/ProjectFileSelectorDialog.cs" /> <!-- CS0246: The type or namespace name 'CellRendererImage' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/ProjectOptionsDialog.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Projects/ProjectReferencePanel.cs" /> <!-- CS0246: The type or namespace name 'IReferencePanel' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects/ProjectSelectorDialog.cs" /> <!-- CS1061: 'ProjectSelectorDialog' does not contain a definition for 'Build' and no accessible extension method 'Build' accepting a first argument of t -->
     <Compile Remove="MonoDevelop.Ide.Projects/RenameConfigDialog.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Projects/SelectReferenceDialog.cs" /> <!-- CS0115: 'CombinedBox.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Ide.Projects/TemplatePickerWidget.cs" /> <!-- CS0246: The type or namespace name 'TreeModel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/SelectReferenceDialog.cs" /> <!-- CS0234: The type or namespace name 'Drawable' does not exist in the namespace 'Gdk' (are you missing an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects/TemplatePickerWidget.cs" /> <!-- CS0234: The type or namespace name 'SearchEntry' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference?) -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.Projects.OptionPanels: 26 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/AssemblyRunConfigurationEditor.cs" /> <!-- CS0246: The type or namespace name 'InformationPopoverWidget' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/BaseDirectoryPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/BaseDirectoryPanel.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/BaseDirectoryPanelWidget.cs" /> <!-- CS0234: The type or namespace name 'AtkCocoaHelper' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference? -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CodeAnalysisPanel.cs" /> <!-- CS0246: The type or namespace name 'MultiConfigItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CodeFormattingPanel.cs" /> <!-- CS0234: The type or namespace name 'TreeModel' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CombineBuildOptions.cs" /> <!-- CS0246: The type or namespace name 'ItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CombineConfigurationPanel.cs" /> <!-- CS0234: The type or namespace name 'TreeModel' does not exist in the namespace 'Gtk' (are you missing an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CombineInformationPanel.cs" /> <!-- CS0246: The type or namespace name 'ItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CodeAnalysisPanel.cs" /> <!-- CS7036: There is no argument given that corresponds to the required parameter 'expand' of 'Box.PackStart(Widget, bool, bool, uint)' -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CodeFormattingPanel.cs" /> <!-- CS0246: The type or namespace name 'CellRendererComboBox' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CombineBuildOptions.cs" /> <!-- CS0234: The type or namespace name 'AtkCocoaHelper' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference? -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CombineConfigurationPanel.cs" /> <!-- CS0246: The type or namespace name 'ComboSelectionChangedArgs' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CombineInformationPanel.cs" /> <!-- CS0234: The type or namespace name 'AtkCocoaHelper' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference? -->
     <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CommonAssemblySigningPreferences.cs" /> <!-- CS0246: The type or namespace name 'MultiConfigItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CustomCommandPanel.cs" /> <!-- CS0246: The type or namespace name 'MultiConfigItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CustomCommandPanelWidget.cs" /> <!-- CS0246: The type or namespace name 'CustomCommandWidget' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CustomCommandWidget.cs" /> <!-- CS0103: The name 'tagSelectorCommand' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/CustomCommandWidget.cs" /> <!-- CS1061: 'ComboBox' does not contain a definition for 'RemoveText' and no accessible extension method 'RemoveText' accepting a first argument of type -->
     <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/GeneralProjectOptions.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/NamespaceSynchronisationPanel.cs" /> <!-- CS0246: The type or namespace name 'PolicyOptionsPanel&lt;&gt;' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/OutputOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'MultiConfigItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/PortableRuntimeOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'ItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/PortableRuntimeSelectorDialog.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/NamespaceSynchronisationPanel.cs" /> <!-- CS0246: The type or namespace name 'CellRendererImage' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/OutputOptionsPanel.cs" /> <!-- CS0103: The name 'MessageService' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/PortableRuntimeOptionsPanel.cs" /> <!-- CS7036: There is no argument given that corresponds to the required parameter 'expand' of 'Box.PackStart(Widget, bool, bool, uint)' -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/PortableRuntimeSelectorDialog.cs" /> <!-- CS0120: An object reference is required for the non-static field, method, or property 'Box.PackStart(Widget, bool, bool, uint)' -->
     <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/ProcessRunConfigurationEditor.cs" /> <!-- CS0246: The type or namespace name 'EnvironmentVariableCollectionEditor' could not be found (are you missing a using directive or an assembly refere -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/RunConfigurationPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/RunConfigurationPanel.cs" /> <!-- CS0246: The type or namespace name 'RunConfigInfo' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/RunConfigurationsList.cs" /> <!-- CS0103: The name 'ImageService' does not exist in the current context -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/RunConfigurationsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/RunConfigurationsPanel.cs" /> <!-- CS0103: The name 'AlertButton' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/RunOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'MultiConfigItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/RuntimeOptionsPanel.cs" /> <!-- CS0246: The type or namespace name 'ItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/SolutionItemConfigurationsPanel.cs" /> <!-- CS0246: The type or namespace name 'ItemOptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/SolutionRunConfigurationPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/SolutionRunConfigurationsPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsDialog' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/RuntimeOptionsPanel.cs" /> <!-- CS1061: 'ComboBox' does not contain a definition for 'AppendText' and no accessible extension method 'AppendText' accepting a first argument of type -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/SolutionItemConfigurationsPanel.cs" /> <!-- CS0246: The type or namespace name 'NewConfigurationDialog' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/SolutionRunConfigurationPanel.cs" /> <!-- CS0246: The type or namespace name 'SolutionRunConfigInfo' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.Projects.OptionPanels/SolutionRunConfigurationsPanel.cs" /> <!-- CS0103: The name 'AlertButton' does not exist in the current context -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.RoslynServices: 13 -->
   <ItemGroup>
@@ -982,7 +980,7 @@
   <!-- MonoDevelop.Ide.StandardHeader: 2 -->
   <ItemGroup>
     <Compile Remove="MonoDevelop.Ide.StandardHeader/StandardHeaderPolicyPanel.cs" /> <!-- CS0246: The type or namespace name 'PolicyOptionsPanel&lt;&gt;' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.StandardHeader/StandardHeaderService.cs" /> <!-- CS0246: The type or namespace name 'StandardHeaderPolicy' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.StandardHeader/StandardHeaderService.cs" /> <!-- CS0103: The name 'Document' does not exist in the current context -->
   </ItemGroup>
   <!-- MonoDevelop.Ide.Tasks: 10 -->
   <ItemGroup>
@@ -1092,28 +1090,28 @@
   </ItemGroup>
   <!-- MonoDevelop.Ide.WelcomePage: 23 -->
   <ItemGroup>
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/DefaultWelcomePage.cs" /> <!-- CS0246: The type or namespace name 'WelcomePageWidget' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/DefaultWelcomePage.cs" /> <!-- CS7036: There is no argument given that corresponds to the required parameter 'expand' of 'Box.PackStart(Widget, bool, bool, uint)' -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/IWelcomePageProvider.cs" /> <!-- CS0246: The type or namespace name 'Control' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/IWelcomeWindowProvider.cs" /> <!-- CS0246: The type or namespace name 'Window' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/Style.cs" /> <!-- CS0234: The type or namespace name 'Styles' does not exist in the namespace 'MonoDevelop.Ide.Gui' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageBarButton.cs" /> <!-- CS1061: 'ImageView' does not contain a definition for 'ToGtkWidget' and no accessible extension method 'ToGtkWidget' accepting a first argument of t -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageButtonBar.cs" /> <!-- CS0246: The type or namespace name 'WelcomePageBarButton' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageColumn.cs" /> <!-- CS0115: 'WelcomePageColumn.OnSizeRequested(ref Requisition)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageColumn.cs" /> <!-- CS0234: The type or namespace name 'AtkCocoaHelper' does not exist in the namespace 'MonoDevelop.Components' (are you missing an assembly reference? -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageCommands.cs" /> <!-- CS0246: The type or namespace name 'CommandInfo' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageFeedItem.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageFirstRun.cs" /> <!-- CS0115: 'WelcomePageFirstRun.OnExposeEvent(EventExpose)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageFrame.cs" /> <!-- CS0246: The type or namespace name 'HeaderBox' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageLinkButton.cs" /> <!-- CS0246: The type or namespace name 'ImageView' could not be found (are you missing a using directive or an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageFeedItem.cs" /> <!-- CS0234: The type or namespace name 'Styles' does not exist in the namespace 'MonoDevelop.Ide.Gui' (are you missing an assembly reference?) -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageFirstRun.cs" /> <!-- CS1061: 'Context' does not contain a definition for 'DrawImage' and no accessible extension method 'DrawImage' accepting a first argument of type 'C -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageFrame.cs" /> <!-- CS0234: The type or namespace name 'DocumentEventArgs' does not exist in the namespace 'MonoDevelop.Ide.Gui' (are you missing an assembly reference? -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageLinkButton.cs" /> <!-- CS0117: 'GtkWorkarounds' does not contain a definition for 'GetCurrentKeyModifiers' -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageLinksList.cs" /> <!-- CS0246: The type or namespace name 'WelcomePageSection' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageListButton.cs" /> <!-- CS0115: 'WelcomePageListButton.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageListButton.cs" /> <!-- CS0234: The type or namespace name 'Styles' does not exist in the namespace 'MonoDevelop.Ide.Gui' (are you missing an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageNewsFeed.cs" /> <!-- CS0246: The type or namespace name 'WelcomePageSection' could not be found (are you missing a using directive or an assembly reference?) -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageOptionPanel.cs" /> <!-- CS0246: The type or namespace name 'OptionsPanel' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageRecentProjectsList.cs" /> <!-- CS0246: The type or namespace name 'WelcomePageListButton' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageRow.cs" /> <!-- CS0115: 'WelcomePageRow.OnSizeRequested(ref Requisition)': no suitable method found to override -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageSection.cs" /> <!-- CS0115: 'WelcomePageSection.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageRecentProjectsList.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageRow.cs" /> <!-- CS0103: The name 'Styles' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageSection.cs" /> <!-- CS0117: 'GtkWorkarounds' does not contain a definition for 'GetCurrentKeyModifiers' -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageService.cs" /> <!-- CS0246: The type or namespace name 'WelcomePageFrame' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageTipOfTheDaySection.cs" /> <!-- CS0246: The type or namespace name 'WelcomePageSection' could not be found (are you missing a using directive or an assembly reference?) -->
-    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageWidget.cs" /> <!-- CS0115: 'WelcomePageWidget.WelcomePageWidgetBackground.OnExposeEvent(EventExpose)': no suitable method found to override -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageTipOfTheDaySection.cs" /> <!-- CS0103: The name 'IdeServices' does not exist in the current context -->
+    <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageWidget.cs" /> <!-- CS0103: The name 'IdeApp' does not exist in the current context -->
     <Compile Remove="MonoDevelop.Ide.WelcomePage/WelcomePageYoutubeFeed.cs" /> <!-- CS0246: The type or namespace name 'WelcomePageNewsFeed' could not be found (are you missing a using directive or an assembly reference?) -->
   </ItemGroup>
 </Project>

@@ -169,7 +169,7 @@ namespace MonoDevelop.Ide.Projects
 
 		void CategoryChange (object sender, EventArgs e)
 		{
-			TreeModel treeModel;
+			ITreeModel treeModel;
 			TreeIter treeIter;
 
 			if (catView.Selection.GetSelected (out treeModel, out treeIter)) {

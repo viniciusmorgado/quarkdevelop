@@ -60,11 +60,12 @@ namespace MonoDevelop.Components.MainToolbar
 
 		const int height = 14;
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (!showProgress)
-				return base.OnExposeEvent (evnt);
-			using (var ctx = Gdk.CairoHelper.Create (evnt.Window)) {
+				return base.OnDrawn (gtk3cr);
+			using (var ctx = evnt.CreateContext ()) {
 				ctx.LineWidth = 1;
 				ctx.MoveTo (Allocation.X + 0.5, Allocation.Y + 0.5);
 				ctx.RelLineTo (Allocation.Width, 0);
@@ -76,7 +77,7 @@ namespace MonoDevelop.Components.MainToolbar
 				ctx.SetSourceRGB (0.1, 0.1, 0.1);
 				ctx.Stroke ();
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 	}

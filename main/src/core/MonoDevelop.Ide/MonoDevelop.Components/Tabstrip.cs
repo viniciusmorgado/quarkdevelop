@@ -307,15 +307,28 @@ namespace MonoDevelop.Components
 			return base.OnLeaveNotifyEvent (evnt);
 		}
 		
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			requisition.Height = (int)Math.Ceiling (tabSizes.Max (p => p.Y));
 			requisition.Width = tabs.Count == 0 ? 10 : tabs.Where (t => t.Visible).Sum (t => (int)Math.Ceiling (t.Size.X));
+			return requisition;
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
 		{
-			using (var cr = Gdk.CairoHelper.Create (evnt.Window)) {
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
+		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var cr = evnt.CreateContext ()) {
 				cr.Rectangle (0, 0, Allocation.Width, Allocation.Height);
 				cr.SetSourceColor (Styles.SubTabBarBackgroundColor.ToCairoColor ());
 				cr.Fill ();
@@ -339,7 +352,7 @@ namespace MonoDevelop.Components
 				}
 			}
 
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		int focusedTab = -1;

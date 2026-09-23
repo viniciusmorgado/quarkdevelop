@@ -89,17 +89,37 @@ namespace MonoDevelop.Components.Docking
 			base.OnDestroyed ();
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 
 			requisition.Width = (int) primary.Width;
 			requisition.Height = (int) primary.Height;
+			return requisition;
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
 		{
-			using (Cairo.Context context = Gdk.CairoHelper.Create (evnt.Window)) {
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
+		}
+
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
+		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (Cairo.Context context = evnt.CreateContext ()) {
 				if (secondaryOpacity < 1.0f)
 					RenderIcon (context, primary, 1.0f - (float)Math.Pow (secondaryOpacity, 3.0f));
 
@@ -532,9 +552,10 @@ namespace MonoDevelop.Components.Docking
 			return true;
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (var context = Gdk.CairoHelper.Create (evnt.Window)) {
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var context = evnt.CreateContext ()) {
 				var alloc = Allocation;
 
 				// TODO: VV: Remove preflight gradient features and replace with a flat color
@@ -568,7 +589,7 @@ namespace MonoDevelop.Components.Docking
 			if (HasFocus) {
 				Gtk.Style.PaintFocus (Style, GdkWindow, State, Allocation, this, "button", Allocation.X + 2, Allocation.Y + 2, Allocation.Width - 4, Allocation.Height - 4);
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		protected override bool OnFocusInEvent (Gdk.EventFocus evnt)

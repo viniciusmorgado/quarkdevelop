@@ -111,11 +111,30 @@ namespace MonoDevelop.Components.MainToolbar
 			return Math.Sqrt (xr * xr + yr * yr) <= height / 2;
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			requisition.Width = (int) btnNormal.Size.Width;
 			requisition.Height = (int) btnNormal.Size.Height + 2;
-			base.OnSizeRequested (ref requisition);
+			requisition = Gtk3BaseSizeRequest ();
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		Xwt.Drawing.Image GetIcon()
@@ -142,14 +161,15 @@ namespace MonoDevelop.Components.MainToolbar
 			}
 		}
 
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (var context = Gdk.CairoHelper.Create (evnt.Window)) {
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var context = evnt.CreateContext ()) {
 				DrawBackground (context, Allocation, 15, State);
 				var icon = GetIcon();
 				context.DrawImage (this, icon, Allocation.X + Math.Max (0, (Allocation.Width - icon.Width) / 2), Allocation.Y + Math.Max (0, (Allocation.Height - icon.Height) / 2));
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		void DrawBackground (Cairo.Context context, Gdk.Rectangle region, int radius, StateType state)

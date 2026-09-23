@@ -169,7 +169,7 @@ namespace MonoDevelop.Components.AutoTest.Results
 
 		public override AppResult Model (string column)
 		{
-			TreeModel model = ModelFromWidget (resultWidget);
+			ITreeModel model = ModelFromWidget (resultWidget);
 			if (model == null) {
 				return null;
 			}
@@ -183,7 +183,7 @@ namespace MonoDevelop.Components.AutoTest.Results
 			return columnNumber == -1 ? null : DisposeWithResult (new GtkTreeModelResult (resultWidget, model, columnNumber) { SourceQuery = this.SourceQuery });
 		}
 
-		protected int GetColumnNumber (string column, TreeModel model)
+		protected int GetColumnNumber (string column, ITreeModel model)
 		{
 			Type modelType = model.GetType ();
 			SemanticModelAttribute attr = modelType.GetCustomAttribute<SemanticModelAttribute> ();

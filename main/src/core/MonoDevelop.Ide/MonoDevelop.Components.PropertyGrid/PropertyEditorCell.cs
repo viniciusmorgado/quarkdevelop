@@ -344,15 +344,16 @@ namespace MonoDevelop.Components.PropertyGrid
 			this.ModifyBg (StateType.Normal, this.Style.White);
 		}
 		
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			bool res = base.OnExposeEvent (evnt);
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			bool res = base.OnDrawn (gtk3cr);
 			cell.Initialize (this, em, context);
 			
 			Rectangle rect = Allocation;
 			rect.Inflate (-3, 0);// Add some margin
 
-			using (Cairo.Context ctx = CairoHelper.Create (GdkWindow)) {
+			using (Cairo.Context ctx = evnt.CreateContext ()) {
 				cell.Render (GdkWindow, ctx, rect, StateType.Normal);
 			}
 			return res;

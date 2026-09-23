@@ -131,12 +131,24 @@ namespace MonoDevelop.Components.Docking
 				layout.StoreAllocation ();
 		}
 		
-		protected override void OnSizeRequested (ref Requisition req)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var req = new Gtk.Requisition ();
 			if (layout != null) {
 				LayoutWidgets ();
 				req = layout.SizeRequest ();
 			}
+			return req;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 		
 		protected override void OnSizeAllocated (Gdk.Rectangle rect)
@@ -194,9 +206,10 @@ namespace MonoDevelop.Components.Docking
 					callback (s.Widget);
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			bool res = base.OnExposeEvent (evnt);
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			bool res = base.OnDrawn (gtk3cr);
 			
 			if (layout != null) {
 				layout.Draw (evnt.Area, null, 0);

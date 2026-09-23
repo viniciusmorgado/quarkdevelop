@@ -127,8 +127,9 @@ namespace MonoDevelop.Components
 			child = widget;
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			if (child != null) {
 				requisition = child.SizeRequest ();
 				requisition.Width += leftMargin + rightMargin + leftPadding + rightPadding;
@@ -137,6 +138,17 @@ namespace MonoDevelop.Components
 				requisition.Width = 0;
 				requisition.Height = 0;
 			}
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -154,15 +166,16 @@ namespace MonoDevelop.Components
 				child.SizeAllocate (allocation);
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			Gdk.Rectangle rect;
 			
 			if (GradientBackground) {
 				rect = new Gdk.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
 				var gcol = Style.Background (Gtk.StateType.Normal).ToXwtColor ();
 				
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow)) {
+				using (Cairo.Context cr = evnt.CreateContext ()) {
 					cr.NewPath ();
 					cr.MoveTo (rect.X, rect.Y);
 					cr.RelLineTo (rect.Width, 0);
@@ -183,20 +196,20 @@ namespace MonoDevelop.Components
 					}
 				}
 			} else if (BackgroundColor != null) {
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow)) {
+				using (Cairo.Context cr = evnt.CreateContext ()) {
 					cr.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
 					cr.SetSourceColor (BackgroundColor.Value.ToCairoColor ());
 					cr.Fill ();
 				}
 			} else if (useChildBackgroundColor && Child != null) {
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow)) {
+				using (Cairo.Context cr = evnt.CreateContext ()) {
 					cr.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
 					cr.SetSourceColor (Child.Style.Base (StateType.Normal).ToCairoColor ());
 					cr.Fill ();
 				}
 			}
 			
-			bool res = base.OnExposeEvent (evnt);
+			bool res = base.OnDrawn (gtk3cr);
 			
 			var borderColor = new Gdk.GC (GdkWindow);
 			borderColor.RgbFgColor = BorderColor != null ? BorderColor.Value : Style.Dark (Gtk.StateType.Normal);
@@ -216,7 +229,7 @@ namespace MonoDevelop.Components
 
 			if (showTopShadow) {
 				// FIXME: VV: Remove gradient features
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow)) {
+				using (Cairo.Context cr = evnt.CreateContext ()) {
 					cr.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, shadowSize);
 					using (Cairo.Gradient pat = new Cairo.LinearGradient (rect.X, rect.Y, rect.X, rect.Y + shadowSize)) {
 						pat.AddColorStop (0, new Cairo.Color (0, 0, 0, shadowStrengh));

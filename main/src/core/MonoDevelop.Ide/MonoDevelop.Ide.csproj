@@ -245,6 +245,7 @@
     <Compile Include="MonoDevelop.Components/FolderListSelector.cs" />
     <Compile Include="MonoDevelop.Components/InfoBar.cs" />
     <Compile Include="MonoDevelop.Components/GtkUtil.cs" />
+    <Compile Include="MonoDevelop.Components/Gtk3Compat.cs" />
     <Compile Include="MonoDevelop.Components/MiniButton.cs" />
     <Compile Include="MonoDevelop.Components/SearchEntry.cs" />
     <Compile Include="MonoDevelop.Components/HoverImageButton.cs" />

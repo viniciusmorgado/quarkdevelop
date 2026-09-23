@@ -214,8 +214,9 @@ namespace MonoDevelop.Components
 			base.OnShown ();
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			int wr = 0, hr = 0;
 			foreach (var section in sections) {
 				var req = section.Child.SizeRequest ();
@@ -235,6 +236,17 @@ namespace MonoDevelop.Components
 			
 			requisition.Height = hr;
 			requisition.Width = wr;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -281,8 +293,9 @@ namespace MonoDevelop.Components
 		}
 		
 		//FIXME: respect damage regions not just the whole areas, and skip more work when possible
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (sections.Count == 0)
 				return false;
 			
@@ -294,7 +307,7 @@ namespace MonoDevelop.Components
 			int w = alloc.Width - bw2;
 			int h = alloc.Height - bw2;
 			
-			using (var cr = CairoHelper.Create (evnt.Window)) {
+			using (var cr = evnt.CreateContext ()) {
 				CairoHelper.Region (cr, evnt.Region);
 				cr.Clip ();
 				
@@ -363,8 +376,8 @@ namespace MonoDevelop.Components
 				}
 			}
 			
-			PropagateExpose (sections[activeIndex].Child, evnt);
-			return true;// base.OnExposeEvent (evnt);
+			PropagateDraw (sections[activeIndex].Child, gtk3cr);
+			return true;// base.OnDrawn (gtk3cr);
 		}
 
 		protected override void ForAll (bool include_internals, Callback callback)

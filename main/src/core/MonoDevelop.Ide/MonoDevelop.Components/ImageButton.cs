@@ -99,14 +99,15 @@ namespace MonoDevelop.Components
 			}
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (HasFocus && image != null) {
 				Gtk.Style.PaintFocus (Style, GdkWindow, State, Allocation, this, "button",
 				                      Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
 			}
 
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		protected override bool OnEnterNotifyEvent (Gdk.EventCrossing evnt)

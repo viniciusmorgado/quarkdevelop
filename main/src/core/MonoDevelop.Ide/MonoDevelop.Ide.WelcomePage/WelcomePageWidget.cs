@@ -184,9 +184,10 @@ namespace MonoDevelop.Ide.WelcomePage
 				context.RenderTiled (this, Owner.BackgroundImage, Allocation, Allocation, 1);
 			}
 
-			protected override bool OnExposeEvent (EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
-				using (var context = CairoHelper.Create (evnt.Window)) {
+				var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+				using (var context = evnt.CreateContext ()) {
 					context.SetSourceRGB (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue);
 					context.Operator = Cairo.Operator.Source;
 					context.Paint ();
@@ -206,10 +207,10 @@ namespace MonoDevelop.Ide.WelcomePage
 				}
 				
 				foreach (Widget widget in Children)
-					PropagateExpose (widget, evnt);
+					PropagateDraw (widget, gtk3cr);
 
 				if (OverdrawOpacity > 0) {
-					using (var context = Gdk.CairoHelper.Create (evnt.Window)) {
+					using (var context = evnt.CreateContext ()) {
 						DrawOverdraw (context, OverdrawOpacity);
 					}
 				}

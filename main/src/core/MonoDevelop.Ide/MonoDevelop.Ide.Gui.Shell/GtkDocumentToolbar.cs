@@ -158,9 +158,10 @@ namespace MonoDevelop.Ide.Gui.Shell
 			{
 			}
 
-			protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
-				using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+				var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+				using (var ctx = evnt.CreateContext ()) {
 					ctx.Rectangle (0, 0, Allocation.Width, Allocation.Height);
 					ctx.SetSourceColor (Styles.BreadcrumbBackgroundColor.ToCairoColor ());
 					ctx.Fill ();
@@ -171,7 +172,7 @@ namespace MonoDevelop.Ide.Gui.Shell
 					ctx.LineWidth = 1;
 					ctx.Stroke ();
 				}
-				return base.OnExposeEvent (evnt);
+				return base.OnDrawn (gtk3cr);
 			}
 		}
 	}

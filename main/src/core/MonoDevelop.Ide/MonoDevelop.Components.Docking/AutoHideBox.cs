@@ -393,15 +393,34 @@ namespace MonoDevelop.Components.Docking
 			QueueResize ();
 		}
 		
-		protected override void OnSizeRequested (ref Requisition req)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref req);
+			var req = new Gtk.Requisition ();
+			req = Gtk3BaseSizeRequest ();
 			if (scrollMode || Child == null) {
 				req.Width = 0;
 				req.Height = 0;
 			}
 			else
 				req = Child.SizeRequest ();
+			return req;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		protected override void OnSizeAllocated (Rectangle alloc)

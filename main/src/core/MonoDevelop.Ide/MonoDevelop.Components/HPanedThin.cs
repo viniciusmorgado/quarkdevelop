@@ -81,9 +81,10 @@ namespace MonoDevelop.Components
 				callback (handle);
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			base.OnExposeEvent (evnt);
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			base.OnDrawn (gtk3cr);
 
 			if (Child1 != null && Child1.Visible && Child2 != null && Child2.Visible) {
 				var gc = new Gdk.GC (evnt.Window);
