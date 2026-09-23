@@ -287,3 +287,6 @@ main/tests/StressTest/bin
 
 # mdtool smoke samples build output
 /main/tests/linux-smoke/**/bin/
+
+# script outputs (tests, coverage, logs)
+/out/
