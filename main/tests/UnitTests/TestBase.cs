@@ -59,9 +59,10 @@ namespace UnitTests
 			return initialCwd;
 		}
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public async Task Simulate ()
 		{
+			TestHost.EnsureInitialized ();
 			if (firstRun) {
 				string rootDir = Path.Combine (Util.TestsRootDir, "config");
 				try {
@@ -100,7 +101,7 @@ namespace UnitTests
  		}
 
 		
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public virtual void TearDown ()
 		{
 			//Util.ClearTmpDir ();

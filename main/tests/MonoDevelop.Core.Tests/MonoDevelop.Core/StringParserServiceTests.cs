@@ -88,7 +88,7 @@ namespace MonoDevelop.Core
 				Assert.AreEqual ("MONO & .NET", StringParserService.Parse ("${UNENCODEDVALUE:UPPER}", model));
 
 				// Built-in string generators
-				Assert.That (StringParserService.Parse ("${YEAR:F4}", model), Is.StringEnding ("0000"));
+				Assert.That (StringParserService.Parse ("${YEAR:F4}", model), Does.EndWith ("0000"));
 			}
 		}
 

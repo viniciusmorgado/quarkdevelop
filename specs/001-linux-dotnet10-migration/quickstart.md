@@ -61,8 +61,8 @@ cat docs/evidence/M4/quarantine.md              # every excluded test has a reas
 ./scripts/pm xvfb-run -a dotnet main/build/bin/MonoDevelop.dll --smoke-test main/tests/linux-smoke/Smoke.sln   # exit 0
 ./scripts/pm xvfb-run -a dotnet test main/tests/Ide.Tests
 ./scripts/pm dotnet test main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests --filter FullyQualifiedName~NetCoreDbg
-./scripts/pm bash -lc 'weston --backend=headless-backend.so & sleep 2; GDK_BACKEND=wayland dotnet main/build/bin/MonoDevelop.dll --smoke-test main/tests/linux-smoke/Smoke.sln'
-./scripts/pm ./scripts/inventory.sh out/inventory.md && grep 'GTK2-only' out/inventory.md   # Linux-solution compile items: target 0
+./scripts/pm bash -lc 'export XDG_RUNTIME_DIR=$(mktemp -d); weston --backend=headless --socket=wayland-md & sleep 2; WAYLAND_DISPLAY=wayland-md GDK_BACKEND=wayland dotnet main/build/bin/MonoDevelop.dll --smoke-test main/tests/linux-smoke/Smoke.sln'
+./scripts/pm ./scripts/inventory.sh --linux-sln out/inventory-linux.md && grep 'GTK2-only' out/inventory-linux.md   # target 0
 ```
 
 ## M6 — CI/CD (US6)

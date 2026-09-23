@@ -42,7 +42,7 @@ namespace MonoDevelop.Projects
 	{
 		bool disableWhenDone;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUp ()
 		{
 			var ad = AddinManager.Registry.GetAddin ("MonoDevelop.Autotools");
@@ -51,7 +51,7 @@ namespace MonoDevelop.Projects
 				ad.Enabled = true;
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void Teardown ()
 		{
 			if (disableWhenDone) {

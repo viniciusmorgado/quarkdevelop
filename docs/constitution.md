@@ -52,9 +52,10 @@ same image power local work and CI.
 ### V. Quality Gates (NON-NEGOTIABLE)
 
 - Behavior changes ship with automated tests in the same commit or before it.
-- `dotnet format --verify-no-changes` (whitespace + style per `.editorconfig`) passes for migrated
-  projects; SDK analyzers run at `AnalysisLevel=latest-recommended`; new warnings in migrated
-  projects are errors.
+- `dotnet format` (whitespace per `.editorconfig`) passes for every C# file added by this fork;
+  legacy files are reformatted one project at a time in dedicated, behaviour-free commits. SDK
+  analyzers run at `AnalysisLevel=latest-recommended`; warnings are errors except legacy warning IDs
+  recorded in the project's generated baseline, which may never contain security rules (ADR 0018).
 - Line coverage is measured with coverlet on every test run. Targets: `MonoDevelop.Core` ≥ 60% and
   global ≥ 40% by the end of milestone M4; afterwards coverage may not drop (ratchet).
 - A failing legacy test may only be quarantined with `[Category("Quarantine")]` and an entry in
@@ -114,4 +115,4 @@ follows SemVer: MAJOR for removing or redefining a principle, MINOR for adding a
 materially expanding guidance, PATCH for clarifications. Every review and every the consistency analysis
 run checks compliance; deviations must be justified in the plan's Complexity Tracking table.
 
-**Version**: 1.0.1 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23
+**Version**: 1.1.0 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23

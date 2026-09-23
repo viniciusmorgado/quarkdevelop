@@ -181,29 +181,36 @@ namespace MonoDevelop.Projects
 
 		[TestCase ("base/child", "base", true)]
 		[TestCase ("/foo", "/foo", true)]
-		[TestCase ("/foo", "/foo", false, ExpectedException = typeof (InvalidOperationException))]
 		[TestCase ("/path/to/child", "/path/to", true)]
-		[TestCase ("base", "other", true, ExpectedException = typeof (InvalidOperationException))]
 		public void CanDeleteFolderWithBaseCheckWorks (string path, string requiredParentDirectory, bool canDeleteParent = true)
 		{
 			FileService.AssertCanDeleteDirectory (path, requiredParentDirectory, canDeleteParent);
 		}
 
-		[Test]
-		[ExpectedException (typeof (InvalidOperationException))]
-		public void CantDeleteSystemFolders ()
+		// NUnit 3 removed ExpectedException (ADR 0015): the throwing cases use Assert.Throws.
+		[TestCase ("/foo", "/foo", false)]
+		[TestCase ("base", "other", true)]
+		public void CanDeleteFolderWithBaseCheckThrows (string path, string requiredParentDirectory, bool canDeleteParent)
 		{
-			FileService.AssertCanDeleteDirectory (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData));
-			FileService.AssertCanDeleteDirectory (Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments));
-			FileService.AssertCanDeleteDirectory (Environment.GetFolderPath (Environment.SpecialFolder.UserProfile));
+			Assert.Throws<InvalidOperationException> (() => FileService.AssertCanDeleteDirectory (path, requiredParentDirectory, canDeleteParent));
 		}
 
 		[Test]
-		[ExpectedException (typeof (InvalidOperationException))]
+		public void CantDeleteSystemFolders ()
+		{
+			// As in the NUnit 2 version: the first system folder must already throw.
+			Assert.Throws<InvalidOperationException> (() => {
+				FileService.AssertCanDeleteDirectory (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData));
+				FileService.AssertCanDeleteDirectory (Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments));
+				FileService.AssertCanDeleteDirectory (Environment.GetFolderPath (Environment.SpecialFolder.UserProfile));
+			});
+		}
+
+		[Test]
 		public void CantDeleteRoot ()
 		{
 			string root = Platform.IsWindows ? "C:" : "/";
-			FileService.AssertCanDeleteDirectory (root);
+			Assert.Throws<InvalidOperationException> (() => FileService.AssertCanDeleteDirectory (root));
 		}
 	}
 }

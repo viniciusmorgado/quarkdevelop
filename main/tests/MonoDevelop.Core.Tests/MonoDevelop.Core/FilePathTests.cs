@@ -35,13 +35,13 @@ namespace MonoDevelop.Core
 	public class FilePathTests
 	{
 		string tempDirectory;
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void CreateTempDir ()
 		{
 			tempDirectory = FileService.CreateTempDirectory ();
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void CleanupTempDir ()
 		{
 			FileService.DeleteDirectory (tempDirectory);

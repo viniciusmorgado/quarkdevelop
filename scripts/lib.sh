@@ -22,3 +22,17 @@ md_require_container() {
 		md_die "run this inside the dev container: ./scripts/pm $0 $*  (set MD_ALLOW_HOST=1 to override)"
 	fi
 }
+
+# C# files added by this fork (relative to the upstream base commit, plus untracked files).
+# Formatting is enforced on these; legacy files are reformatted per project in dedicated commits
+# (constitution V, ADR 0018).
+md_new_cs_files() {
+	local base
+	base="$(git -C "$MD_ROOT" merge-base HEAD "${MD_BASE_REF:-main}" 2>/dev/null || true)"
+	{
+		if [[ -n "$base" ]]; then
+			git -C "$MD_ROOT" diff --diff-filter=A --name-only "$base" -- '*.cs'
+		fi
+		git -C "$MD_ROOT" ls-files --others --exclude-standard -- '*.cs'
+	} | grep -vE '^(spikes|main/external|main/vendor)/' | sort -u || true
+}

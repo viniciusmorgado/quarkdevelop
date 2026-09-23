@@ -358,8 +358,11 @@ namespace MonoDevelop.Core
 					}
 					
 					XmlSerializer serializer = new XmlSerializer (type);
-					using (StreamReader sr = new StreamReader (new MemoryStream (System.Text.Encoding.UTF8.GetBytes (xml)))) {
-						return serializer.Deserialize (sr);
+					// CA5369: no DTD processing and no resolver when deserializing stored properties.
+					var settings = new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null };
+					using (var sr = new StringReader (xml))
+					using (var reader = XmlReader.Create (sr, settings)) {
+						return serializer.Deserialize (reader);
 					}
 
 				} catch (Exception e) {

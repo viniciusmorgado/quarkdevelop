@@ -23,7 +23,7 @@ Use Mono.Addins, Mono.Addins.Setup and Mono.Addins.CecilReflector 1.4.1 from NuG
 per run (the test host is the entry assembly, so start-up directory heuristics differ).
 Vendor `mono-addins` only if a CoreCLR bug requires a patch.
 
-Evidence: spike T005 (`spikes/addins-host`, `spikes/addins-plugin`): root add-in declared by an
+Evidence: spike T007 (`spikes/addins-host`, `spikes/addins-plugin`): root add-in declared by an
 embedded manifest, `.addins` file pointing to `AddIns/`, plugin built separately; XML extension
 nodes and `TypeExtensionPoint` objects loaded on .NET 10.0.12; scan in-process in ~1 ms.
 

@@ -33,20 +33,20 @@ using System.IO;
 
 namespace MonoDevelop.Core.Execution
 {
-	class ProcessHostConsole: OperationConsole
+	class ProcessHostConsole : OperationConsole
 	{
 		public override TextReader In {
 			get { return Console.In; }
 		}
-		
+
 		public override TextWriter Out {
 			get { return Console.Out; }
 		}
-		
+
 		public override TextWriter Error {
 			get { return Console.Error; }
 		}
-		
+
 		public override TextWriter Log {
 			get { return Out; }
 		}

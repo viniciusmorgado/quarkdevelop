@@ -34,6 +34,16 @@ Compared with MonoDevelop 8.6:
 | Windows installer (`setup/WixSetup`) | removed |
 | `./configure`, `scripts/configure.*`, `winbuild*.bat`, autotools `make` targets | obsolete (use `scripts/*.sh`) |
 | `mdtool` tools `run-md-tests`, `update-perf-baseline`, `generate-makefiles`, `gsetup` | removed |
+| ASP.NET Core project support (`MonoDevelop.AspNetCore`) | deferred |
+| NuGet package authoring projects (`MonoDevelop.Packaging`) | deferred |
+| Deployment / packaging add-in (`Deployment`, `Deployment.Linux`) | deferred |
+| Connected Services (`MonoDevelop.ConnectedServices`) | removed |
+| NUnit 2/3 in-IDE runners (`MonoDevelop.UnitTesting.NUnit`) | replaced by VSTest-based test running |
+| Add-in development tooling (`MonoDeveloperExtensions`) | deferred |
+| MonoDoc documentation browser and help tree | removed (no MonoDoc on .NET 10) |
+| WS-Trust (STS) authentication for package feeds | removed (no WCF/WIF on .NET 10) |
+| Remote external-process objects (`ProcessService.CreateExternalProcessObject`) | throws `NotSupportedException` |
+| Binary instrumentation data files (mdmonitor) | removed; auto-save uses JSON |
 
 ## Add-in authors
 

@@ -49,7 +49,7 @@ namespace MonoDevelop.Projects
 			return sol.GetAllItems<SolutionItem>().FirstOrDefault ();
 		}
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void MigrationSetup ()
 		{
 			migrationHandler = new SimpleMigrator ();
@@ -66,7 +66,7 @@ namespace MonoDevelop.Projects
 			WorkspaceObject.RegisterCustomExtension (newFlavor);
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void MigrationTearDown ()
 		{
 			WorkspaceObject.UnregisterCustomExtension (migrator);

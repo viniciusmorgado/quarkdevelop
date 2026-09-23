@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Startup hook registering the SDK's MSBuild in test hosts (see StartupHook.cs, ADR 0008/0015). -->
+  <PropertyGroup>
+    <AssemblyName>MonoDevelop.TestStartupHook</AssemblyName>
+    <MDOutDir>$(MonoDevelopBuildDir)tests/</MDOutDir>
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="StartupHook.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Locator" />
+  </ItemGroup>
+</Project>

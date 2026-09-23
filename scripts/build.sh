@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Restore and build the Linux solution. Idempotent.
 # Usage: ./scripts/pm ./scripts/build.sh [-c Debug|Release] [--check]
-#   --check  also verify formatting (dotnet format --verify-no-changes)
+#   --check  also verify formatting of files added by this fork (dotnet format whitespace)
 set -euo pipefail
 # shellcheck source=scripts/lib.sh
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
@@ -23,8 +23,11 @@ md_log "dotnet build ($configuration)"
 dotnet build "$MD_SLN" -c "$configuration" --no-restore -nologo
 
 if [[ "$check" == 1 ]]; then
-	md_log "dotnet format --verify-no-changes"
-	dotnet format "$MD_SLN" --verify-no-changes --no-restore --verbosity minimal
+	mapfile -t new_files < <(md_new_cs_files)
+	if [[ ${#new_files[@]} -gt 0 ]]; then
+		md_log "dotnet format whitespace --verify-no-changes (${#new_files[@]} new files)"
+		(cd "$MD_ROOT" && dotnet format whitespace . --folder --verify-no-changes --include "${new_files[@]}")
+	fi
 fi
 
 md_log "build OK"

@@ -12,8 +12,8 @@ relied on Roslyn granting `InternalsVisibleTo` to MonoDevelop assemblies signed 
 
 ## Decision Drivers
 
-Spike T004: Roslyn 5.9.0 assemblies carry 408 IVT grants and **none** for MonoDevelop, Xamarin or
-VS for Mac, nor for MonoDevelop's public key. Spike T004b: Krafs.Publicizer 2.3.0 makes internal
+Spike T008: Roslyn 5.9.0 assemblies carry 408 IVT grants and **none** for MonoDevelop, Xamarin or
+VS for Mac, nor for MonoDevelop's public key. Spike T008 (b): Krafs.Publicizer 2.3.2 makes internal
 members callable at compile time and emits `IgnoresAccessChecksToAttribute`, which CoreCLR honours at
 run time (`SyntaxNodeExtensions.GetAncestor<T>`, `SyntaxTreeExtensions.IsInNonUserCode` verified).
 

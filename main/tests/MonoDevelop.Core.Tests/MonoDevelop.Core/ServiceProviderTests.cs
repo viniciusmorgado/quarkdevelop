@@ -92,7 +92,7 @@ namespace MonoDevelop.Core
 			var serviceProvider = new BasicServiceProvider ();
 			serviceProvider.RegisterServiceType<TestService, TestService2> ();
 			var s = await serviceProvider.GetService<TestService> ();
-			Assert.IsInstanceOfType (typeof (TestService2), s);
+			Assert.IsInstanceOf (typeof (TestService2), s);
 
 			Assert.IsTrue (TestService.Created);
 			Assert.IsFalse (TestService.Initialized);
@@ -105,7 +105,7 @@ namespace MonoDevelop.Core
 			var serviceProvider = new BasicServiceProvider ();
 			serviceProvider.RegisterServiceType<ServiceObject, ServiceObject2> ();
 			var s = await serviceProvider.GetService<ServiceObject> ();
-			Assert.IsInstanceOfType (typeof (ServiceObject2), s);
+			Assert.IsInstanceOf (typeof (ServiceObject2), s);
 		}
 
 		[Test]

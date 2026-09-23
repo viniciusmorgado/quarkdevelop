@@ -42,7 +42,7 @@ namespace MonoDevelop.Projects
 	[TestFixture]
 	public class ProjectLoadSaveTests: TestBase
 	{
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUp ()
 		{
 			string dir = Path.GetDirectoryName (typeof (Project).Assembly.Location);

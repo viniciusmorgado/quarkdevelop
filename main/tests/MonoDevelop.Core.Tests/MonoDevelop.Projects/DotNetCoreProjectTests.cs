@@ -157,7 +157,7 @@ namespace MonoDevelop.Projects
 		/// </summary>
 		[Test]
 		[Platform (Exclude = "Win")]
-		[Ignore]
+		[Ignore ("Ignored upstream (MonoDevelop 8.6)")]
 		public async Task BuildDotNetCoreProjectWithImportUsingMSBuildSDKsPathProperty ()
 		{
 			// This test is being ignored for now because relying on MSBuildSDKsPath is not entirely correct,

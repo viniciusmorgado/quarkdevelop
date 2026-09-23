@@ -26,9 +26,18 @@ Option 1:
 - `scripts/warnings-baseline.sh <project>` builds the project without warnings-as-errors and writes
   `main/msbuild/Linux/warning-baselines/<Project>.props` (`WarningsNotAsErrors`) plus
   `<Project>.counts.txt` (instances per ID). `Common.targets` imports it automatically.
-- IDs that may never be baselined: SYSLIB0011, SYSLIB0050, SYSLIB0051, NU1901–NU1904, CS8032, CS0006.
+- IDs that may never be baselined: SYSLIB0011, SYSLIB0050, SYSLIB0051, NU1901–NU1904, CS8032, CS0006
+  and every security rule (CA2100, CA23xx, CA3xxx, CA5xxx).
 - Baselines are regenerated only when a project is converted or when IDs are removed; counts are
   tracked in the evidence of each milestone and must go down (M8 target: shrink).
+
+### Formatting (constitution 1.1.0)
+
+`dotnet format --verify-no-changes` over the legacy tree reported ~25k whitespace and charset
+differences in 474 files of MonoDevelop.Core alone. Mass reformatting would bury migration diffs, so
+`scripts/build.sh --check` verifies whitespace formatting of every C# file **added by this fork**
+(`md_new_cs_files` in `scripts/lib.sh`); legacy files are reformatted per project in dedicated,
+behaviour-free commits (`scripts/format.sh <files>`).
 
 ### Consequences
 

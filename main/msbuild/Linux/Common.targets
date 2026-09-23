@@ -27,5 +27,7 @@
 
   <Import Project="$(MSBuildThisFileDirectory)warning-baselines/$(MSBuildProjectName).props" Condition="Exists('$(MSBuildThisFileDirectory)warning-baselines/$(MSBuildProjectName).props')" />
 
+  <Import Project="$(MSBuildThisFileDirectory)Test.targets" Condition="'$(IsTestProject)' == 'true'" />
+
   <Import Project="$(MSBuildThisFileDirectory)BuildVariables.targets" Condition="'$(GenerateMonoDevelopBuildVariables)' == 'true'" />
 </Project>

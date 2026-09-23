@@ -41,7 +41,7 @@ namespace MonoDevelop.Projects
 		CustomCapabilityNode capaNode;
 		string testAddinAssemblyPath;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUp ()
 		{
 			capaNode = new CustomCapabilityNode ();
@@ -58,7 +58,7 @@ namespace MonoDevelop.Projects
 			AddinManager.Registry.Update (null);
 		}
 	
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void Teardown ()
 		{
 			WorkspaceObject.UnregisterCustomExtension (capaNode);

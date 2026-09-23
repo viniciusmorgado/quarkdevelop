@@ -23,7 +23,7 @@ RUN apt-get update \
       git jq shellcheck python3 \
       libgtk-3-0t64 libgtk-3-bin librsvg2-common adwaita-icon-theme \
       fonts-dejavu-core dbus-x11 at-spi2-core \
-      xvfb xauth x11-utils imagemagick \
+      xvfb xauth x11-utils imagemagick weston \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=uv /uv /uvx /usr/local/bin/

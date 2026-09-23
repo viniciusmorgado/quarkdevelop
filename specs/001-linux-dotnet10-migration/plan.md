@@ -66,7 +66,7 @@ command runs inside the container; each commit keeps the Linux solution green; L
 | I | Linux-first, container-first | `Containerfile` + `scripts/pm`; all validation commands prefixed with `./scripts/pm` | PASS (T001 done) |
 | II | .NET 10 pinned | `global.json`, `net10.0` SDK-style projects, CPM, no Mono/GAC/dllmap | PASS (planned M2/M3) |
 | III | Reproducible builds | nuget.org only (+ADR-approved feeds), lock files, vendoring in `main/vendor/` | PASS (ADR 0004/0005) |
-| IV | Incremental & reversible | waves W0–W4, one task per commit, UI ported per area | PASS |
+| IV | Incremental & reversible | waves W0–W4, one task per commit, UI ported per area | PASS with deviations (see Complexity Tracking) |
 | V | Quality gates | NUnit + coverlet + format + analyzers; coverage 60%/40% by M4; quarantine record | PASS (M4) |
 | VI | Compatibility | add-in paths, sln/csproj formats, mdtool CLI preserved; `docs/BREAKING-CHANGES.md` | PASS |
 | VII | Security | vulnerable packages upgraded; BinaryFormatter/Remoting removed; NuGet audit | PASS (M3) |
@@ -185,8 +185,8 @@ sharpsvn-binary.
 | # | Risk | Mitigation |
 |---|---|---|
 | R1 | Volume of GTK2→GTK3 port (~1.2k files, custom drawing) | per-area commits, grep metric of remaining GTK2 APIs, Xvfb screenshots, WS-2 first |
-| R2 | Roslyn internals (~160 files) | Publicizer (proven in T004b), exact pin, rewrite to public API where cheap |
-| R3 | Mono.Addins under test hosts / ALC | proven in T005; per-run registry, single ALC; vendor if a patch is needed |
+| R2 | Roslyn internals (~160 files) | Publicizer (proven in T008), exact pin, rewrite to public API where cheap |
+| R3 | Mono.Addins under test hosts / ALC | proven in T007; per-run registry, single ALC; vendor if a patch is needed |
 | R4 | Custom MSBuild evaluator vs SDK 10 targets | evaluation diff test against `dotnet msbuild -getItem`; later `ProjectInstance` (B35) |
 | R5 | Archived submodules, dead feeds, private md-addins repo | vendor/NuGet per ADR 0005; drop `MdAddinsDirectory` |
 | R6 | No pre-migration test baseline | static inventory + first net10 run + tracked quarantine; smoke tests from M3 |
@@ -204,3 +204,7 @@ sharpsvn-binary.
 |-----------|------------|-------------------------------------|
 | Explicit `Compile` lists kept after SDK-style conversion (vs. default globs) | Source trees contain files that must not compile on Linux (Mac/Win folders, generated files, dead code) | Globs would pull in hundreds of excluded files; switch to globs per project once green |
 | Accessing Roslyn internals via Publicizer | MonoDevelop's C# support is built on ~160 files of internal Roslyn APIs | Rewriting all C# services to public APIs first would block the GUI milestone for months |
+| Some early commits covered several tasks (M2/M3 bootstrap) | the toolchain and the first Core compile were interdependent | splitting would have produced non-building intermediate commits; later tasks follow one-task-per-commit |
+| M2/M3 code landed while revision-2 analyze still had CRITICAL findings | autonomous execution; findings were fixed in the following commits and re-analyzed | pausing implementation would not have changed the findings, which were documentation/test gaps |
+| Warning baseline is per ID, not per instance | the SDK has no per-instance baseline; per-ID keeps legacy noise visible | per-instance tooling (SARIF diff) is not available in the container; counts are tracked per milestone |
+| Behaviour changes of T034–T036 preceded their tests | the test harness could only be built after Core compiled | covered retroactively by T132 before any further behaviour change |

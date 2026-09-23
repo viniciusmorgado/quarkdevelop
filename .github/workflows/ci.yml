@@ -20,7 +20,9 @@ env:
   CI: "true"
   ContinuousIntegrationBuild: "true"
   # Share the runner's NuGet cache (restored by actions/cache) with the dev container.
-  PM_PODMAN_ARGS: -v /home/runner/.nuget/packages:/home/dev/.nuget/packages -e CI -e ContinuousIntegrationBuild
+  # New files are compared against upstream main for the formatting check (ADR 0018).
+  MD_BASE_REF: origin/main
+  PM_PODMAN_ARGS: -v /home/runner/.nuget/packages:/home/dev/.nuget/packages -e CI -e ContinuousIntegrationBuild -e MD_BASE_REF
 
 jobs:
   build:

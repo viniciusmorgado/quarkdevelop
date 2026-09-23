@@ -21,7 +21,9 @@ counts="$out_dir/$name.counts.txt"
 mkdir -p "$out_dir" "$MD_OUT"
 
 # IDs that must never be accepted as legacy noise.
-forbidden='^(SYSLIB0011|SYSLIB0050|SYSLIB0051|NU190[1-4]|CS8032|CS0006)$'
+# SYSLIB serialization, NuGet audit, analyzer load failures and all security CA rules
+# (CA2100, CA23xx, CA3xxx, CA5xxx).
+forbidden='^(SYSLIB0011|SYSLIB0050|SYSLIB0051|NU190[1-4]|CS8032|CS0006|CA2100|CA23[0-9][0-9]|CA3[0-9]{3}|CA5[0-9]{3})$'
 
 log="$MD_OUT/warnings-$name.log"
 md_log "building $name without warnings-as-errors"
@@ -32,9 +34,11 @@ dotnet build "$project" -nologo -clp:NoSummary -p:TreatWarningsAsErrors=false --
 	md_die "build failed; fix errors before generating a baseline"
 }
 
-grep -oE 'warning [A-Z]+[0-9]+' "$log" | awk '{print $2}' | sort | uniq -c | sort -rn > "$counts.tmp"
+# Only warnings reported for this project (dependencies are built too and have their own baseline).
+project_abs="$(cd "$(dirname "$project")" && pwd)/$(basename "$project")"
+grep -F "[$project_abs" "$log" | grep -oE 'warning [A-Z]+[0-9]+' | awk '{print $2}' | sort | uniq -c | sort -rn > "$counts.tmp"
 if grep -qE "$forbidden" <(awk '{print $2}' "$counts.tmp"); then
-	grep -E " ($(echo "$forbidden" | tr -d '^$()'))$" "$counts.tmp" >&2 || true
+	awk '{print $2}' "$counts.tmp" | grep -E "$forbidden" >&2 || true
 	rm -f "$counts.tmp"
 	md_die "security-relevant warnings present; they cannot be baselined"
 fi

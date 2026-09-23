@@ -35,7 +35,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [x] T014 [P] M1: `docs/BREAKING-CHANGES.md` → file lists every ADR 0017 exclusion
 - [x] T015 M1: three independent reviews (analyze, feasibility, traceability) → `docs/evidence/M1/review-{A,B,C}.md`
 - [ ] T016 M1: apply review findings (this revision, constitution 1.0.1, ADR fixes, spec SC-002/003/005/007, quickstart/contract fixes) and re-run the consistency analysis → `docs/evidence/M1/analyze.md` with 0 CRITICAL
-- [ ] T017 [P] M1: ADR 0018 warning policy (TreatWarningsAsErrors + per-project `WarningsNotAsErrors` baseline) → `docs/adr/0018-warning-policy.md`
+- [x] T017 [P] M1: ADR 0018 warning policy (TreatWarningsAsErrors + per-project `WarningsNotAsErrors` baseline) → `docs/adr/0018-warning-policy.md`
 
 ---
 
@@ -54,7 +54,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [x] T028 M2: `InternalsVisibleTo` emitted with the MonoDevelop key (GenerateAssemblyInfo=true, legacy attributes off) → generated `obj/Debug/MonoDevelop.Core.AssemblyInfo.cs` contains the IVT lines
 - [x] T029 M2: per-project warning baseline (`scripts/warnings-baseline.sh`, `main/msbuild/Linux/warning-baselines/`), `TreatWarningsAsErrors=true`, security IDs never baselined → Core builds with 0 errors
 - [ ] T030 M2: `CONTRIBUTING.md` (container workflow, commit identity, spec/ADR flow, warning baseline) → file exists
-- [ ] T031 M2: fresh-clone check: `git clone . /tmp/fc && cd /tmp/fc && ./scripts/setup.sh && ./scripts/build.sh` → `docs/evidence/M2/fresh-clone.log` (SC-001)
+- [ ] T031 M2: fresh-clone check inside the container: `./scripts/pm bash -lc 'rm -rf ~/fc && git clone -q . ~/fc && cd ~/fc && ./scripts/setup.sh && ./scripts/build.sh'` → `docs/evidence/M2/fresh-clone.log` (SC-001)
 - [ ] T032 M2: evidence → `docs/evidence/M2/README.md` (versions, build ×2 logs, lint, actionlint)
 
 **Checkpoint**: toolchain and conventions ready.
@@ -68,7 +68,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 
 ### Core compiles (M3)
 
-- [x] T033 [US1] M3: SDK-style `MonoDevelop.Core.csproj` (543 explicit sources, CPM, only used packages: Mono.Addins(.Setup), Cecil, Mono.Unix, MSBuild* compile-only, Locator, CodeAnalysis.Common, Newtonsoft, ObjectPool, CodeDom, ConfigurationManager) in `MonoDevelop.Linux.sln` → `dotnet build main/src/core/MonoDevelop.Core` 0 errors
+- [x] T033 [US1] M3: SDK-style `MonoDevelop.Core.csproj` (545 explicit sources, CPM, only used packages: Mono.Addins(.Setup), Cecil, Mono.Unix, MSBuild* compile-only, Locator, CodeAnalysis.Common, Newtonsoft, ObjectPool, CodeDom, ConfigurationManager) in `MonoDevelop.Linux.sln` → `dotnet build main/src/core/MonoDevelop.Core` 0 errors
 - [x] T034 [US1] M3: Remoting removed from Core (RemotingService, ProcessHostController, DisposerFormatterSink out of the build; `ProcessHostConsole` extracted; `CreateExternalProcessObject` throws `NotSupportedException`; instrumentation autosave → JSON; remote/binary instrumentation → `PlatformNotSupportedException`) → no `System.Runtime.Remoting`/`BinaryFormatter` in Core compile items
 - [x] T035 [US1] M3: `CallContext` → `AsyncLocal` (`MonoDevelop.Projects/ItemInitializationContext.cs`) → covered by T046 tests
 - [x] T036 [US1] M3: `Debug.Listeners` → `Trace.Listeners`; `RegistryHive.DynData` removed; monodoc `HelpService` behind `#if MONODOC`; WCF STS behind `#if WCF_STS`; obsolete serialization members removed (SYSLIB0051/0003); unused Decompiler using removed → build clean of these IDs
@@ -76,9 +76,11 @@ tasks are split one project per task, new tasks for gaps found in review.
 
 ### Test harness first (M4 infrastructure, needed before further behaviour changes)
 
-- [ ] T038 [US1] M3: `main/tests/UnitTests/UnitTests.csproj` → SDK-style net10.0, NUnit 3.14, no GuiUnit; `TestHostSetup.cs` `[SetUpFixture]` calling `Runtime.Initialize(true)` with per-run `MONODEVELOP_*`/add-in registry dirs + synchronization context; `.addins` pointing to `../../AddIns` → `dotnet build main/tests/UnitTests`
-- [ ] T039 [US1] M3: `main/tests/MonoDevelop.Core.Tests.Addin` → SDK-style add-in test assembly → builds into `build/AddIns/…`
-- [ ] T040 [US1] M3: `main/tests/MonoDevelop.Core.Tests` → SDK-style, `TestFixtureSetUp`→`OneTimeSetUp`, `ExpectedException`→`Assert.Throws`, Moq/Castle current versions; tests needing Xwt/Ide quarantined → `dotnet test main/tests/MonoDevelop.Core.Tests --list-tests` lists ≥ 800 cases
+- [x] T038 [US1] M3: `main/tests/UnitTests/UnitTests.csproj` → SDK-style net10.0, NUnit 3.14, no GuiUnit; `TestHost.EnsureInitialized` (called from `TestBase`) initializes `Runtime` once on an emulated main loop with an isolated profile (`main/tests/config`); `MonoDevelop.Tests.addins` → `../AddIns` → `dotnet build main/tests/UnitTests`
+- [x] T039 [US1] M3: `main/tests/MonoDevelop.Core.Tests.Addin` → SDK-style test add-in, output next to the test assemblies (`build/tests/`) → builds
+- [x] T040 [US1] M3: `main/tests/MonoDevelop.Core.Tests` → SDK-style, `OneTimeSetUp`/`OneTimeTearDown`, `Assert.Throws` instead of `ExpectedException`, `Assert.IsInstanceOf`, `Does.EndWith`, Moq 4.20/Castle 5.2 → `dotnet test --list-tests` lists 860 cases
+- [ ] T132 [US1] M3: retroactive tests for T034–T036 (JSON instrumentation autosave round-trip, `CreateExternalProcessObject` throws `NotSupportedException`, `ItemInitializationContext` delays initialization across awaits) → tests pass
+- [x] T133 [US1] M3: test host infrastructure: `TestHost` (main-loop sync context, isolated profile), `MonoDevelop.TestStartupHook` (MSBuildLocator before discovery), generated `.runsettings`, `Mono.Addins.CecilReflector` → `dotnet test --list-tests` discovers ≥ 850 Core tests
 - [ ] T041 [US1] M3: first run + quarantine record (reason, owner, date, task) → `docs/evidence/M4/quarantine.md`; `./scripts/test.sh` green with `Category!=Quarantine`
 
 ### Runtime on .NET (M3) — each with tests
@@ -152,7 +154,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [ ] T079 [US3] M5b: port `Ide.Gui.Dialogs`, `Ide.Gui.OptionPanels`, `Ide.Gui.Wizard` → builds
 - [ ] T080 [US3] M5b: port `Ide.Projects*` (+ OptionPanels) → builds
 - [ ] T081 [US3] M5b: port `Ide.Editor*`, `Ide.CodeCompletion`, `Ide.CodeTemplates`, `Ide.Fonts` → builds
-- [ ] T082 [US3] M5b: port `Ide.Execution`, `Ide.FindInFiles`, `Ide.WelcomePage`, remaining areas; `Gtk3PortPending.props` empty → GTK2-API grep over Linux-solution compile items = 0
+- [ ] T082 [US3] M5b: port `Ide.Execution`, `Ide.FindInFiles`, `Ide.WelcomePage`, remaining areas; `Gtk3PortPending.props` empty → `./scripts/inventory.sh --linux-sln` reports 0 GTK2-only APIs
 - [ ] T083 [US3] M5b: GTK3 CSS themes (light/dark) in `MonoDevelop.Components/…/IdeTheme.cs` → screenshots light + dark
 - [ ] T084 [US3] M5b: NativeLibraryMap entries for gtk/gdk/glib/pango/cairo; `MonoDevelop.Ide.dll.config` deleted → test
 
@@ -177,7 +179,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [ ] T101 [US3] M5c: `MonoDevelop.UnitTesting` + VSTest → test discovers/runs NUnit + xUnit + MSTest samples (FR-011)
 - [ ] T102 [US3] M5c: `VersionControl` + `VersionControl.Git` on LibGit2Sharp 0.32 (reference DotDevelop `216f01c79f`, `2356bb926d`); libgit2/libgit-binary/libgit2sharp submodules removed → Git tests (status/diff/log on temp repo) pass (FR-009)
 - [ ] T103 [US3] M5c: `--smoke-test` in `IdeStartup.cs` per `contracts/smoke-test.md` → exit 0 under `xvfb-run`
-- [ ] T104 [US3] M5c: Wayland smoke (headless `weston`, `GDK_BACKEND=wayland`) → exit 0 (FR-006)
+- [ ] T104 [US3] M5c: Wayland smoke (weston headless backend in the container, `XDG_RUNTIME_DIR` set, `GDK_BACKEND=wayland`) → exit 0 (FR-006)
 - [ ] T105 [US3] M5c: error-list navigation test (build Broken; activate error; editor at line) (US3-3) → test passes
 - [ ] T106 [US3] M5c: main-loop stall probe during `MonoDevelop.Linux.sln` load (≤ 1 s) → evidence
 - [ ] T107 [US3] M5c: `Ide.Tests`, `IdeUnitTests`, `MonoDevelop.CSharpBinding.Tests` on NUnit 3.14 under Xvfb; quarantine per suite → `docs/evidence/M4/quarantine.md` updated
