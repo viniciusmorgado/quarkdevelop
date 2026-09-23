@@ -26,9 +26,8 @@ internal
 #endif
 class RegexMatchTimeoutException : TimeoutException {
 #else
-[Serializable]
 [Obsolete ("Old editor")]
-public class RegexMatchTimeoutException : TimeoutException, ISerializable {
+public class RegexMatchTimeoutException : TimeoutException {
 #endif
 
 
@@ -88,30 +87,7 @@ public class RegexMatchTimeoutException : TimeoutException, ISerializable {
     }
 
 
-    #if !SILVERLIGHT
-    /// <summary>
-    /// Initializes a new RegexMatchTimeoutException with serialized data.
-    /// </summary>
-    /// <param name="info">The SerializationInfo  that holds the serialized object data about the exception being thrown.</param>
-    /// <param name="context">The StreamingContext  that contains contextual information about the source or destination.</param>
-    [SecurityPermission(SecurityAction.LinkDemand, SerializationFormatter=true)]
-    protected RegexMatchTimeoutException(SerializationInfo info, StreamingContext context) :
-        base(info, context) {
-
-        string input = info.GetString("regexInput");
-        string pattern = info.GetString("regexPattern");
-        TimeSpan timeout = TimeSpan.FromTicks(info.GetInt64("timeoutTicks"));
-        Init(null, pattern, timeout);
-    }
-        
-    [SecurityPermission(SecurityAction.LinkDemand, SerializationFormatter=true)]
-    void ISerializable.GetObjectData(SerializationInfo si, StreamingContext context) {
-        base.GetObjectData(si, context);
-        si.AddValue("regexInput", this.regexInput);
-        si.AddValue("regexPattern", this.regexPattern);
-        si.AddValue("timeoutTicks", this.matchTimeout.Ticks);
-    }
-    #endif // !SILVERLIGHT
+    // MonoDevelop: formatter-based serialization members removed (SYSLIB0051; no BinaryFormatter on .NET).
 
     private void Init() {
         Init(null, "", TimeSpan.FromTicks(-1));
@@ -131,7 +107,6 @@ public class RegexMatchTimeoutException : TimeoutException, ISerializable {
     #if SILVERLIGHT
         [SecurityCritical]
     #else  // SILVERLIGHT
-        [PermissionSet(SecurityAction.LinkDemand, Unrestricted=true)]
     #endif  // SILVERLIGHT
         get { return regexPattern; }
     }
@@ -144,7 +119,6 @@ public class RegexMatchTimeoutException : TimeoutException, ISerializable {
     #if SILVERLIGHT
         [SecurityCritical]
     #else  // SILVERLIGHT
-        [PermissionSet(SecurityAction.LinkDemand, Unrestricted=true)]
     #endif  // SILVERLIGHT
         get { return regexInput; }
     }
@@ -157,7 +131,6 @@ public class RegexMatchTimeoutException : TimeoutException, ISerializable {
     #if SILVERLIGHT
         [SecurityCritical]
     #else  // SILVERLIGHT
-        [PermissionSet(SecurityAction.LinkDemand, Unrestricted=true)]
     #endif  // SILVERLIGHT
         get { return matchTimeout; }
     }

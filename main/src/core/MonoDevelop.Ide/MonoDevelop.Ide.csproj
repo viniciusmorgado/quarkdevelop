@@ -75,7 +75,6 @@
     <Compile Include="MonoDevelop.Ide.Gui.OptionPanels/LoadSavePanel.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.OptionPanels/AddInsOptionsPanel.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Pads/DefaultMonitorPad.cs" />
-    <Compile Include="MonoDevelop.Ide.Gui.Pads/MonodocTreePad.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad/SolutionFolderNodeBuilder.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad/FolderNodeBuilder.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad/ProjectFileNodeBuilder.cs" />
@@ -407,11 +406,9 @@
     <Compile Include="MonoDevelop.Ide.Gui/AsyncDispatchAttribute.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/FreeDispatchAttribute.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/GuiSyncContext.cs" />
-    <Compile Include="MonoDevelop.Ide.Gui/GuiSyncObject.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/IMementoCapable.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/StockIcons.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/SyncContext.cs" />
-    <Compile Include="MonoDevelop.Ide.Gui/SyncContextAttribute.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/SyncObject.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Components/ProjectFileEntry.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Dialogs/ItemOptionsDialog.cs" />

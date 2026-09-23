@@ -638,19 +638,23 @@ namespace MonoDevelop.Ide
 			}
 		}
 		
-		//The real GTK# code is wrapped in a GuiSyncObject to make calls synchronous on the GUI thread
-		class InternalMessageService : GuiSyncObject
+		// The dialogs run on the GUI thread. GuiSyncObject did this through Remoting context interception,
+		// which .NET does not have; the calls are marshalled explicitly instead.
+		class InternalMessageService
 		{
-			public AlertButton GenericAlert (Window parent, MessageDescription message)
+			static T OnGuiThread<T> (Func<T> func)
 			{
+				return Runtime.IsMainThread ? func () : Runtime.RunInMainThread (func).GetAwaiter ().GetResult ();
+			}
+
+			public AlertButton GenericAlert (Window parent, MessageDescription message) => OnGuiThread (() => {
 				var dialog = new AlertDialog (message) {
 					TransientFor = parent ?? IdeServices.DesktopService.GetFocusedTopLevelWindow ()
 				};
 				return dialog.Run ();
-			}
-			
-			public string GetTextResponse (Window parent, string question, string caption, string initialValue, bool isPassword)
-			{
+			});
+
+			public string GetTextResponse (Window parent, string question, string caption, string initialValue, bool isPassword) => OnGuiThread (() => {
 				var dialog = new TextQuestionDialog {
 					Question = question,
 					Caption = caption,
@@ -660,7 +664,7 @@ namespace MonoDevelop.Ide
 				if (dialog.Run ())
 					return dialog.Value;
 				return null;
-			}
+			});
 		}
 #endregion
 	}
