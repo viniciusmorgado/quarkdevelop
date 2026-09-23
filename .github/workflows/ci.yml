@@ -52,3 +52,6 @@ jobs:
 
       - name: Build (+ format check)
         run: ./scripts/pm ./scripts/build.sh -c Release --check
+
+      - name: Vulnerability audit (High/Critical fail)
+        run: ./scripts/pm ./scripts/audit.sh

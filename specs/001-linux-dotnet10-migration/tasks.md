@@ -95,7 +95,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [ ] T049 [US1] M3: `Type.GetType("Mono.Runtime")` checks and `Assembly.LoadFrom` sites in Core (`Runtime.cs`, `SdkResolution.cs`, `MonoRuntimeInfo.cs`) behave on CoreCLR → test `Platform`/runtime info reports CoreCLR
 - [ ] T050 [US1] M3: add-in failure resilience: an add-in with a missing dependency is skipped and logged → test with a broken test add-in
 - [ ] T051 [US1] M3: sln/csproj round-trip test (load + save `linux-smoke/Smoke.sln` and a fixture without diff) → test in Core.Tests
-- [ ] T052 [US1] M3: vulnerability gate `scripts/audit.sh` (fails on High/Critical in `dotnet list package --vulnerable --include-transitive`) → exit 0
+- [x] T052 [US1] M3: vulnerability gate `scripts/audit.sh` (fails on High/Critical in `dotnet list package --vulnerable --include-transitive`) → exit 0
 
 ### UI-free C# project support (M3)
 
