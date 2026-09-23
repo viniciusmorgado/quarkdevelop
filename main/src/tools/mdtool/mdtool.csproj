@@ -1,44 +1,32 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
-  <Import Project="..\..\..\MonoDevelop.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    mdtool: MonoDevelop's command-line tool host (contracts/mdtool-cli.md), net10.0 (task T062).
+    Output: main/build/bin/mdtool.dll, run with `dotnet mdtool.dll <tool> ...`.
+  -->
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{8A04FF99-5DFE-4E3D-A24F-72A621C8DDC6}</ProjectGuid>
+    <AssemblyName>mdtool</AssemblyName>
     <OutputType>Exe</OutputType>
-    <OutputPath>..\..\..\build\bin</OutputPath>
-    <TargetFrameworkVersion>$(MDFrameworkVersion)</TargetFrameworkVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' " />
+
   <ItemGroup>
-    <Reference Include="System" />
-    <ProjectReference Include="..\..\core\MonoDevelop.Core\MonoDevelop.Core.csproj">
-      <Project>{7525BB88-6142-4A26-93B9-A30C6983390A}</Project>
-      <Name>MonoDevelop.Core</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\external\mono-addins\Mono.Addins\Mono.Addins.csproj">
-      <Project>{91DD5A2D-9FE3-4C3C-9253-876141874DAD}</Project>
-      <Name>Mono.Addins</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\external\mono-addins\Mono.Addins.Setup\Mono.Addins.Setup.csproj">
-      <Project>{A85C9721-C054-4BD8-A1F3-0227615F0A36}</Project>
-      <Name>Mono.Addins.Setup</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <Compile Include="src/AssemblyInfo.cs" />
+    <Compile Include="src/mdtool.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="src\AssemblyInfo.cs" />
-    <Compile Include="src\mdtool.cs" />
-    <None Include="..\..\core\MonoDevelop.Startup\app.config">
-      <Link>app.config</Link>
-    </None>
-    <Compile Include="..\..\core\MonoDevelop.Ide\MonoDevelop.Components\Shared\GtkWorkarounds.cs">
-      <Link>src\GtkWorkarounds.cs</Link>
-    </Compile>
+    <!-- Tells Mono.Addins (startup directory = build/bin) where the add-ins are. -->
+    <None Include="mdtool.addins" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" />
+    <!-- Headless add-ins that mdtool needs at run time (build them; they are loaded from build/AddIns). -->
+    <ProjectReference Include="../../addins/CSharpBinding/MonoDevelop.CSharpBinding.Core/MonoDevelop.CSharpBinding.Core.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../../core/MonoDevelop.Projects.Formats.MSBuild/MonoDevelop.MSBuildBuilder.csproj" ReferenceOutputAssembly="false" />
+    <PackageReference Include="Mono.Addins" />
+    <PackageReference Include="Mono.Addins.Setup" />
+    <!-- The add-in scanner needs the Cecil reflector on CoreCLR. -->
+    <PackageReference Include="Mono.Addins.CecilReflector" />
+    <PackageReference Include="Microsoft.Build.Locator" />
+  </ItemGroup>
 </Project>

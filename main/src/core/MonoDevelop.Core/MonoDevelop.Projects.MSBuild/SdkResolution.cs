@@ -67,12 +67,15 @@ namespace MonoDevelop.Projects.MSBuild
 						var result = (SdkResultImpl)sdkResolver.Resolve (sdk, context, resultFactory);
 						if (result != null && result.Success) {
 							LogWarnings (logger, buildEventContext, projectFile, result);
-							return result.Path;
+							// MSBuild 17+ resolvers may succeed without any path (e.g. the workload
+							// resolver when no workload is installed): nothing to import.
+							return result.Path ?? string.Empty;
 						}
 
 						if (result != null)
 							results.Add (result);
 					} catch (Exception e) {
+						LoggingService.LogDebug ("SDK resolver " + sdkResolver.GetType ().FullName + " failed for " + sdk, e);
 						logger.LogFatalBuildError (buildEventContext, e, projectFile);
 					}
 				}
@@ -143,7 +146,9 @@ namespace MonoDevelop.Projects.MSBuild
 			foreach (var potentialResolver in potentialResolvers)
 				LoadResolvers (potentialResolver, logger, resolvers);
 
-			return resolvers.OrderBy (t => t.Priority).ToList ();
+			var ordered = resolvers.OrderBy (t => t.Priority).ToList ();
+			LoggingService.LogDebug ("MSBuild SDK resolvers: " + string.Join (", ", ordered.Select (r => r.GetType ().FullName)));
+			return ordered;
 		}
 
 		/// <summary>
@@ -239,6 +244,7 @@ namespace MonoDevelop.Projects.MSBuild
 			try {
 				assembly = Assembly.LoadFrom (resolverPath);
 			} catch (Exception e) {
+				LoggingService.LogWarning ("The SDK resolver assembly '" + resolverPath + "' could not be loaded", e);
 				logger.LogWarning (string.Format ("The SDK resolver assembly \"{0}\" could not be loaded. {1}", resolverPath, e.Message));
 				return;
 			}
@@ -309,6 +315,21 @@ namespace MonoDevelop.Projects.MSBuild
 				Warnings = warnings;
 			}
 
+			// MSBuild 17+ multi-path results (used by the .NET SDK workload resolver).
+			public SdkResultImpl (SdkReference sdkReference, IEnumerable<string> paths, string version,
+				IDictionary<string, string> propertiesToAdd, IDictionary<string, SdkResultItem> itemsToAdd, IEnumerable<string> warnings)
+			{
+				Success = true;
+				Sdk = sdkReference;
+				var list = paths?.Where (p => !string.IsNullOrEmpty (p)).ToList () ?? new List<string> ();
+				Path = list.FirstOrDefault ();
+				AdditionalPaths = list.Skip (1).ToList ();
+				Version = version;
+				PropertiesToAdd = propertiesToAdd;
+				ItemsToAdd = itemsToAdd;
+				Warnings = warnings;
+			}
+
 			public SdkReference Sdk { get; }
 
 			public IEnumerable<string> Errors { get; }
@@ -333,6 +354,21 @@ namespace MonoDevelop.Projects.MSBuild
 			public override SdkResult IndicateFailure (IEnumerable<string> errors, IEnumerable<string> warnings = null)
 			{
 				return new SdkResultImpl (_sdkReference, errors, warnings);
+			}
+
+			public override SdkResult IndicateSuccess (IEnumerable<string> paths, string version,
+				IDictionary<string, string> propertiesToAdd = null, IDictionary<string, SdkResultItem> itemsToAdd = null,
+				IEnumerable<string> warnings = null)
+			{
+				return new SdkResultImpl (_sdkReference, paths, version, propertiesToAdd, itemsToAdd, warnings);
+			}
+
+			// MSBuild 18 overload (environment variables are ignored by the in-process evaluator).
+			public override SdkResult IndicateSuccess (IEnumerable<string> paths, string version,
+				IDictionary<string, string> propertiesToAdd, IDictionary<string, SdkResultItem> itemsToAdd,
+				IEnumerable<string> warnings, IDictionary<string, string> environmentVariablesToAdd)
+			{
+				return new SdkResultImpl (_sdkReference, paths, version, propertiesToAdd, itemsToAdd, warnings);
 			}
 		}
 

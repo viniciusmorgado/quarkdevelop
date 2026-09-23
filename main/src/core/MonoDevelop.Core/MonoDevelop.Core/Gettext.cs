@@ -29,7 +29,7 @@
 using System;
 using System.IO;
 
-using Mono.Unix;
+using NGettext;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -41,6 +41,13 @@ namespace MonoDevelop.Core
 	public static class GettextCatalog
 	{
 		static Thread mainThread;
+
+		// .NET does not allow reading another thread's culture: remember the UI culture chosen at
+		// initialization instead of reading mainThread.CurrentUICulture later.
+		static CultureInfo uiCulture;
+
+		// Managed .mo reader (ADR 0014); an empty catalog returns the untranslated phrases.
+		static ICatalog catalog = new Catalog ();
 
 		[DllImport ("kernel32.dll", SetLastError = true)]
 		static extern int SetThreadUILanguage (int LangId);
@@ -94,6 +101,7 @@ namespace MonoDevelop.Core
 				if (Platform.IsWindows)
 					SetThreadUILanguage (ci.LCID);
 				mainThread.CurrentUICulture = ci;
+				uiCulture = ci;
 			}
 			if (!Platform.IsWindows)
 				Environment.SetEnvironmentVariable ("LANGUAGE", locale);
@@ -104,7 +112,7 @@ namespace MonoDevelop.Core
 			mainThread = Thread.CurrentThread;
 
 			//variable can be used to override where Gettext looks for the catalogues
-			string catalog = Environment.GetEnvironmentVariable ("MONODEVELOP_LOCALE_PATH");
+			string localeDir = Environment.GetEnvironmentVariable ("MONODEVELOP_LOCALE_PATH");
 
 			// Set the user defined language
 			var locale = UILocale = Runtime.Preferences.UserInterfaceLanguage;
@@ -112,13 +120,14 @@ namespace MonoDevelop.Core
 				locale = Environment.GetEnvironmentVariable ("MONODEVELOP_STUB_LANGUAGE");
 			if (!string.IsNullOrEmpty (locale))
 				SetLocale (locale);
+			uiCulture ??= Thread.CurrentThread.CurrentUICulture;
 			
-			if (string.IsNullOrEmpty (catalog) || !Directory.Exists (catalog)) {
+			if (string.IsNullOrEmpty (localeDir) || !Directory.Exists (localeDir)) {
 				string location = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 				location = Path.GetDirectoryName (location);
 				if (Platform.IsWindows) {
 					// On windows, load the catalog from a child dir
-					catalog = Path.Combine (location, "locale");
+					localeDir = Path.Combine (location, "locale");
 				}
 				else {
 					// MD is located at $prefix/lib/monodevelop/bin
@@ -129,11 +138,12 @@ namespace MonoDevelop.Core
 					//normalise it
 					prefix = Path.GetFullPath (prefix);
 					//catalogue is installed to "$prefix/share/locale" by default
-					catalog = Path.Combine (Path.Combine (prefix, "share"), "locale");
+					localeDir = Path.Combine (Path.Combine (prefix, "share"), "locale");
 				}
 			}
 			try {
-				Catalog.Init ("monodevelop", catalog);
+				// <localeDir>/<language>/LC_MESSAGES/monodevelop.mo, selected by the UI culture.
+				catalog = new Catalog ("monodevelop", localeDir, UICulture);
 			}
 			catch (Exception ex) {
 				Console.WriteLine (ex);
@@ -146,7 +156,7 @@ namespace MonoDevelop.Core
 		public static string UILocale { get; private set; }
 
 		public static CultureInfo UICulture {
-			get { return mainThread.CurrentUICulture; }
+			get { return uiCulture ?? (uiCulture = Thread.CurrentThread == mainThread ? Thread.CurrentThread.CurrentUICulture : CultureInfo.CurrentUICulture); }
 		}
 		
 		#region GetString
@@ -158,7 +168,7 @@ namespace MonoDevelop.Core
 				SetThreadUILanguage (UICulture.LCID);
 			}
 			try {
-				return Catalog.GetString (phrase);
+				return catalog.GetString (phrase);
 			} catch (Exception e) {
 				LoggingService.LogError ("Failed to localize string", e);
 				return phrase;
@@ -201,7 +211,7 @@ namespace MonoDevelop.Core
 				SetThreadUILanguage (UICulture.LCID);
 			}
 			try {
-				return Catalog.GetPluralString (singular, plural, number);
+				return catalog.GetPluralString (singular, plural, number);
 			} catch (Exception e) {
 				LoggingService.LogError ("Failed to localize string", e);
 				return number == 1 ? singular : plural;

@@ -115,6 +115,12 @@
         "resolved": "13.0.4",
         "contentHash": "pdgNNMai3zv51W5aq268sujXUyx7SNdE2bj1wZcWjAQrKMFZV260lbqYop1d2GM67JI1huLRwxo9ZqnfF/lC6A=="
       },
+      "NGettext": {
+        "type": "Direct",
+        "requested": "[0.6.7, )",
+        "resolved": "0.6.7",
+        "contentHash": "gT6bf5PVayvTuEIuM2XSNqthrtn9W+LlCX4RD//Nb4hrT3agohHvPdjpROgNGgyXDkjwE74F+EwDwqUgJCJG8A=="
+      },
       "System.CodeDom": {
         "type": "Direct",
         "requested": "[10.0.12, )",

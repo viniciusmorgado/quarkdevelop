@@ -45,6 +45,9 @@ class MonoDevelopProcessHost
 	[STAThread]
 	public static int Main (string[] args)
 	{
+		// Must run before any Microsoft.Build type is loaded (ADR 0008).
+		MonoDevelop.Core.Assemblies.MSBuildRegistration.EnsureRegistered ();
+
 		int exitCode = -1;
 		try {
 			var sc = new ConsoleSynchronizationContext ();
@@ -133,6 +136,13 @@ class MonoDevelopProcessHost
 				return exitCode;
 			}
 
+			if (listTools && toolName == null) {
+				// `mdtool -q` only lists the tools (contracts/mdtool-cli.md: exit code 0).
+				ShowAvailableTools ();
+				exitCode = 0;
+				return exitCode;
+			}
+
 			if (!showHelp && !badInput) {
 				var tool = Runtime.ApplicationService.GetApplication (toolName);
 				if (tool == null) {
@@ -162,8 +172,7 @@ class MonoDevelopProcessHost
 			exitCode = -1;
 		} finally {
 			try {
-				var terminate = exitCode == 0;
-				Shutdown (terminate);
+				Shutdown ();
 			} catch {
 				// Ignore shutdown exceptions
 			}
@@ -173,13 +182,9 @@ class MonoDevelopProcessHost
 		return exitCode;
 	}
 
-	static void Shutdown (bool terminate)
+	static void Shutdown ()
 	{
 		Runtime.Shutdown ();
-
-		if (terminate) {
-			MonoDevelop.Components.GtkWorkarounds.Terminate ();
-		}
 	}
 
 	static void ShowHelp (bool shortHelp, string exeName)
@@ -213,7 +218,7 @@ class MonoDevelopProcessHost
 				verbose = true;
 	
 		string startupDir, configDir, addinsDir, databaseDir;
-		string asmFile = new Uri (System.Reflection.Assembly.GetEntryAssembly ().CodeBase).LocalPath;
+		string asmFile = System.Reflection.Assembly.GetEntryAssembly ().Location;
 		startupDir = System.IO.Path.GetDirectoryName (asmFile);
 		Runtime.GetAddinRegistryLocation (out configDir, out addinsDir, out databaseDir);
 		SetupTool setupTool = new SetupTool (new AddinRegistry (configDir, startupDir, addinsDir, databaseDir));

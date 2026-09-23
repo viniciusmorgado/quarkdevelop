@@ -196,6 +196,7 @@
           "Mono.Addins.Setup": "[1.4.1, )",
           "Mono.Cecil": "[0.11.6, )",
           "Mono.Unix": "[7.1.0-final.1.21458.1, )",
+          "NGettext": "[0.6.7, )",
           "Newtonsoft.Json": "[13.0.4, )",
           "System.CodeDom": "[10.0.12, )",
           "System.Configuration.ConfigurationManager": "[10.0.12, )"
@@ -269,6 +270,12 @@
         "requested": "[13.0.4, )",
         "resolved": "13.0.4",
         "contentHash": "pdgNNMai3zv51W5aq268sujXUyx7SNdE2bj1wZcWjAQrKMFZV260lbqYop1d2GM67JI1huLRwxo9ZqnfF/lC6A=="
+      },
+      "NGettext": {
+        "type": "CentralTransitive",
+        "requested": "[0.6.7, )",
+        "resolved": "0.6.7",
+        "contentHash": "gT6bf5PVayvTuEIuM2XSNqthrtn9W+LlCX4RD//Nb4hrT3agohHvPdjpROgNGgyXDkjwE74F+EwDwqUgJCJG8A=="
       },
       "SharpZipLib": {
         "type": "CentralTransitive",

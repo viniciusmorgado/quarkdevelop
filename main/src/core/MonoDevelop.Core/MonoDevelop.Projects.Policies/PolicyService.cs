@@ -69,8 +69,12 @@ namespace MonoDevelop.Projects.Policies
 
 			PolicySet pset = GetPolicySetById ("Invariant");
 			pset.PolicyChanged += HandleInvariantPolicySetChanged;
-			foreach (var pol in pset.Policies)
-				invariantPolicies.InternalSet (pol.Key.PolicyType, pol.Key.Scope, pol.Value);
+			// The invariant policies are contributed by the IDE add-in; headless hosts (mdtool, core
+			// tests) have an empty set, whose dictionary is null.
+			if (pset.Policies != null) {
+				foreach (var pol in pset.Policies)
+					invariantPolicies.InternalSet (pol.Key.PolicyType, pol.Key.Scope, pol.Value);
+			}
 			invariantPolicies.ReadOnly = true;
 		}
 

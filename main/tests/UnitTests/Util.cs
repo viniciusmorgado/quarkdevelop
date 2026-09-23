@@ -234,7 +234,8 @@ namespace UnitTests
 
 		public static void RunMSBuild (string arguments)
 		{
-			using var process = Process.Start (new ProcessStartInfo ("msbuild", arguments) {
+			// There is no standalone `msbuild` on Linux/.NET 10: use the SDK's MSBuild (ADR 0008).
+			using var process = Process.Start (new ProcessStartInfo (MonoDevelop.Core.Assemblies.DotNetCoreSdkInfo.GetDotNetHostPath (), "msbuild " + arguments) {
 				RedirectStandardOutput = true,
 				RedirectStandardError = true,
 				UseShellExecute = false

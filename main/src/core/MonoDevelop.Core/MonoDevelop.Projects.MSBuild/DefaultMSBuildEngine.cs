@@ -1161,6 +1161,10 @@ namespace MonoDevelop.Projects.MSBuild
 				if (basePath == null) {
 					keepSearching = true;
 					return null;
+				} else if (basePath.Length == 0) {
+					// Resolved, but the resolver contributes no files (e.g. no workload installed).
+					keepSearching = false;
+					return Array.Empty<string> ();
 				} else
 					// We return here the value of $(MSBuildSDKsPath) where this SDK is located
 					resolvedSdksPath = ((FilePath)basePath).ParentDirectory.ParentDirectory;

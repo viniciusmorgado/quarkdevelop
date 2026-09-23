@@ -32,14 +32,6 @@
 		                 codeDomType = "Microsoft.CSharp.CSharpCodeProvider, System.CodeDom" />
 	</Extension>
 
-	<Extension path = "/MonoDevelop/Core/MimeTypes">
-		<MimeType id="text/x-csharp" _description="C# source code" icon="md-csharp-file" isText="true" roslynName="C#" contentType="CSharp">
-			<File pattern="*.cs" />
-			<File pattern="*.csx" />
-		</MimeType>
-		<MimeType id="application/x-csproject" _description="C# project file" baseType="application/x-msbuild">
-			<File pattern="*.csproj" />
-		</MimeType>
-	</Extension>
+	<!-- MIME types stay in the GUI binding: /MonoDevelop/Core/MimeTypes is defined by the IDE add-in. -->
 
 </ExtensionModel>

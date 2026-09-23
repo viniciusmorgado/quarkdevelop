@@ -288,7 +288,8 @@ namespace MonoDevelop.Projects.MSBuild
 						if (OperatingSystem.IsWindows ())
 							workThread.SetApartmentState (ApartmentState.STA);
 						workThread.IsBackground = true;
-						workThread.CurrentUICulture = uiCulture;
+						// The culture is applied by the thread itself (STARunner): .NET forbids setting
+						// another thread's culture.
 						workThread.Start ();
 					}
 					else
@@ -318,6 +319,8 @@ namespace MonoDevelop.Projects.MSBuild
 		
 		static void STARunner ()
 		{
+			if (uiCulture != null)
+				Thread.CurrentThread.CurrentUICulture = uiCulture;
 			try {
 				lock (threadLock) {
 					do {

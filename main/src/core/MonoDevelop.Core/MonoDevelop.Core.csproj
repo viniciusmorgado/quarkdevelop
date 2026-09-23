@@ -15,6 +15,7 @@
     <PackageReference Include="Mono.Addins.Setup" />
     <PackageReference Include="Mono.Cecil" />
     <PackageReference Include="Mono.Unix" />
+    <PackageReference Include="NGettext" />
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" PrivateAssets="all" />
@@ -127,6 +128,7 @@
     <Compile Include="MonoDevelop.Core.Execution/DotNetExecutionHandler.cs" />
     <Compile Include="MonoDevelop.Core.Assemblies/MsNetTargetRuntime.cs" />
     <Compile Include="MonoDevelop.Core.Assemblies/DotNetCoreTargetRuntime.cs" />
+    <Compile Include="MonoDevelop.Core.Assemblies/MSBuildRegistration.cs" />
     <Compile Include="MonoDevelop.Core.Assemblies/MsNetTargetRuntimeFactory.cs" />
     <Compile Include="MonoDevelop.Core.Execution/MsNetExecutionHandler.cs" />
     <Compile Include="MonoDevelop.Core.Assemblies/PcFileCache.cs" />

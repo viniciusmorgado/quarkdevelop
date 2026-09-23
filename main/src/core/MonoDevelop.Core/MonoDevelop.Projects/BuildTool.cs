@@ -46,6 +46,7 @@ namespace MonoDevelop.Projects
 		string config = null;
 		string command = ProjectService.BuildTarget;
 		string runtime;
+		bool noRestore;
 		
 		public async Task<int> Run (string[] arguments)
 		{
@@ -58,7 +59,8 @@ namespace MonoDevelop.Projects
 				Console.WriteLine ("-p --project:PROJECT  Name of the project to build.");
 				Console.WriteLine ("-t --target:TARGET    Name of the target: Build or Clean.");
 				Console.WriteLine ("-c --configuration:CONFIGURATION  Name of the solution configuration to build.");
-				Console.WriteLine ("-r --runtime:PREFIX   Prefix of the Mono runtime to build against.");
+				Console.WriteLine ("-r --runtime:PREFIX   Prefix of the Mono runtime to build against (ignored on .NET).");
+				Console.WriteLine ("--no-restore          Do not restore NuGet packages before building (.NET).");
 				Console.WriteLine ();
 				Console.WriteLine ("Supported targets:");
 				Console.WriteLine ("  {0}: build the project (the default target).", ProjectService.BuildTarget);
@@ -98,6 +100,11 @@ namespace MonoDevelop.Projects
 
 			TargetRuntime targetRuntime = null;
 			TargetRuntime defaultRuntime = Runtime.SystemAssemblyService.DefaultRuntime;
+			if (runtime != null && defaultRuntime is DotNetCoreTargetRuntime) {
+				// There are no Mono runtimes to select on .NET (contracts/mdtool-cli.md).
+				Console.Error.WriteLine ("warning: -r:{0} ignored; builds use the installed .NET SDK", runtime);
+				runtime = null;
+			}
 			if (runtime != null)
 			{
 				targetRuntime = MonoTargetRuntimeFactory.RegisterRuntime(new MonoRuntimeInfo(runtime));
@@ -136,6 +143,16 @@ namespace MonoDevelop.Projects
 				
 				monitor = new ConsoleProgressMonitor ();
 				BuildResult res = null;
+
+				// Like `dotnet build`, restore SDK-style projects first; the in-process project model
+				// does not restore NuGet packages on its own outside the IDE (task T062).
+				if (command == ProjectService.BuildTarget && !noRestore && defaultRuntime is DotNetCoreTargetRuntime) {
+					int restoreExitCode = await RestoreAsync (solFile ?? itemFile);
+					if (restoreExitCode != 0) {
+						Console.Error.WriteLine ("Restore failed with exit code {0}.", restoreExitCode);
+						return 1;
+					}
+				}
 				if (item is SolutionItem && ((SolutionItem)item).ParentSolution == null) {
 					ConfigurationSelector configuration = new ItemConfigurationSelector (config);
 					if (command == ProjectService.BuildTarget)
@@ -176,6 +193,21 @@ namespace MonoDevelop.Projects
 			}
 		}
 		
+		static async Task<int> RestoreAsync (string file)
+		{
+			var psi = new System.Diagnostics.ProcessStartInfo (DotNetCoreSdkInfo.GetDotNetHostPath ()) {
+				UseShellExecute = false,
+			};
+			psi.ArgumentList.Add ("restore");
+			psi.ArgumentList.Add (file);
+			psi.ArgumentList.Add ("-nologo");
+			psi.ArgumentList.Add ("-v:q");
+			using (var process = System.Diagnostics.Process.Start (psi)) {
+				await process.WaitForExitAsync ();
+				return process.ExitCode;
+			}
+		}
+
 		void ReadArgument (string argument)
 		{
 			string optionValuePair;
@@ -236,6 +268,10 @@ namespace MonoDevelop.Projects
 						throw new Exception ("Target name not specified (syntax is: -t:TARGET)");
 				    command = value;
 				    break;
+
+				case "no-restore":
+					noRestore = true;
+					break;
 
 				case "r":
 				case "runtime":
