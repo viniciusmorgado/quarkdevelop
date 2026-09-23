@@ -41,6 +41,9 @@ fi
 tty_args=()
 if [[ -t 0 && -t 1 ]]; then
 	tty_args=(-it)
+elif [[ ! -t 0 ]]; then
+	# stdin is a pipe/file (e.g. a heredoc script): forward it to the container.
+	tty_args=(-i)
 fi
 
 # shellcheck disable=SC2206

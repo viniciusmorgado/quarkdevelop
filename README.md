@@ -12,6 +12,27 @@ If you are interested in working on the project, even when archived you can stil
 <br/><br/><br/>
 
 
+## Linux / .NET 10 migration (this fork)
+
+This fork is migrating MonoDevelop to **.NET 10 LTS** and **GTK3**, Linux-first
+(macOS and Windows are not supported). Plan, constitution and progress:
+[`specs/001-linux-dotnet10-migration/`](specs/001-linux-dotnet10-migration/),
+decisions in [`docs/adr/`](docs/adr/), removed features in
+[`docs/BREAKING-CHANGES.md`](docs/BREAKING-CHANGES.md).
+
+Build requirements on the host: **podman** and **git** only — everything runs in the dev container:
+
+```bash
+./scripts/pm ./scripts/setup.sh
+./scripts/pm ./scripts/build.sh
+./scripts/pm ./scripts/test.sh
+```
+
+Full guide: [`docs/linux/setup.md`](docs/linux/setup.md). The `./configure; make` instructions below
+describe the original Mono-based build and no longer work.
+
+---
+
 **MonoDevelop** is a full-featured integrated development environment (IDE) for mono using Gtk#.
 
 The MonoDevelop core is also the foundation for Visual Studio for Mac.

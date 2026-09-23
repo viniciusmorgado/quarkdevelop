@@ -1,7 +1,13 @@
 <Project>
-  <Import Project="$(MSBuildThisFileDirectory)msbuild\RoslynVersion.props"/>
+  <!--
+    SDK-style projects (the Linux / .NET 10 build, ADR 0003) only use msbuild/Linux/*.
+    Everything below the Linux import is the legacy Mono/.NET Framework configuration.
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)msbuild/Linux/Common.props" Condition="'$(UsingMicrosoftNETSdk)' == 'true'" />
 
-  <PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)msbuild\RoslynVersion.props" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
+
+  <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' != 'true'">
     <RootDirectory>$(MSBuildThisFileDirectory)</RootDirectory>
     <PackagesDirectory>$(RootDirectory)packages</PackagesDirectory>
     <MdAddinsDirectory>$(MSBuildThisFileDirectory)..\..\md-addins\</MdAddinsDirectory>

@@ -1,0 +1,54 @@
+name: ci
+
+# Linux CI (constitution: CI/CD). Every step runs inside the same dev container image that
+# developers use locally through ./scripts/pm, built from ./Containerfile.
+
+on:
+  push:
+    branches: [main, "migration/**", dotnet-linux-migration]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: "true"
+  ContinuousIntegrationBuild: "true"
+  # Share the runner's NuGet cache (restored by actions/cache) with the dev container.
+  PM_PODMAN_ARGS: -v /home/runner/.nuget/packages:/home/dev/.nuget/packages -e CI -e ContinuousIntegrationBuild
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: NuGet cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', 'main/Directory.Packages.props', 'global.json') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Build dev image
+        run: |
+          mkdir -p ~/.nuget/packages
+          ./scripts/pm dotnet --info
+
+      - name: Setup
+        run: ./scripts/pm ./scripts/setup.sh
+
+      - name: Lint scripts and workflows
+        run: ./scripts/pm ./scripts/lint.sh
+
+      - name: Build (+ format check)
+        run: ./scripts/pm ./scripts/build.sh -c Release --check

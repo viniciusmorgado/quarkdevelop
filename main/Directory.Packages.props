@@ -1,0 +1,60 @@
+<Project>
+  <!--
+    Central package versions for the Linux / .NET 10 build (ADR 0004).
+    Only SDK-style projects (the ones in MonoDevelop.Linux.sln) use central package management;
+    legacy csproj files keep their own versions until they are converted.
+  -->
+  <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <!-- Roslyn internals are consumed through Krafs.Publicizer: pin exactly (ADR 0010). -->
+    <RoslynVersion>5.9.0</RoslynVersion>
+    <!-- Must not exceed the MSBuild shipped with the pinned SDK (18.9.x in SDK 10.0.4xx). -->
+    <MSBuildPackageVersion>18.9.6</MSBuildPackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
+    <!-- Add-in engine (ADR 0006) -->
+    <PackageVersion Include="Mono.Addins" Version="1.4.1" />
+    <PackageVersion Include="Mono.Addins.Setup" Version="1.4.1" />
+    <PackageVersion Include="Mono.Addins.CecilReflector" Version="1.4.1" />
+    <PackageVersion Include="Mono.Cecil" Version="0.11.6" />
+
+    <!-- Platform interop (ADR 0013, ADR 0014) -->
+    <PackageVersion Include="Mono.Unix" Version="7.1.0-final.1.21458.1" />
+    <PackageVersion Include="NGettext" Version="0.6.7" />
+
+    <!-- MSBuild hosting (ADR 0008) -->
+    <PackageVersion Include="Microsoft.Build" Version="$(MSBuildPackageVersion)" />
+    <PackageVersion Include="Microsoft.Build.Framework" Version="$(MSBuildPackageVersion)" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="$(MSBuildPackageVersion)" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="$(MSBuildPackageVersion)" />
+    <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
+
+    <!-- Roslyn (ADR 0010) -->
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="[$(RoslynVersion)]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="[$(RoslynVersion)]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="[$(RoslynVersion)]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="[$(RoslynVersion)]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Features" Version="[$(RoslynVersion)]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Features" Version="[$(RoslynVersion)]" />
+    <PackageVersion Include="Krafs.Publicizer" Version="2.3.2" />
+
+    <!-- Libraries used by the core -->
+    <PackageVersion Include="System.CodeDom" Version="10.0.12" />
+    <PackageVersion Include="StreamJsonRpc" Version="2.25.29" />
+    <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.13.41" />
+    <PackageVersion Include="Microsoft.VisualStudio.Threading" Version="18.7.23" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="SharpZipLib" Version="1.4.2" />
+    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.12" />
+
+    <!-- Tests (ADR 0015) -->
+    <PackageVersion Include="NUnit" Version="3.14.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageVersion Include="coverlet.collector" Version="10.0.1" />
+  </ItemGroup>
+</Project>
