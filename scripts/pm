@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Run a command inside the MonoDevelop development container (podman, rootless).
+#
+#   ./scripts/pm dotnet --info
+#   ./scripts/pm bash -lc 'dotnet build main/MonoDevelop.Linux.sln'
+#
+# The image is built from ./Containerfile on first use (tagged by the file's hash),
+# so the command is idempotent. The repository is mounted at the same absolute path
+# it has on the host; for git worktrees the main repository is mounted instead, so
+# the worktree's .git indirection keeps working inside the container.
+#
+# Environment:
+#   PM_IMAGE       use this image instead of building ./Containerfile
+#   PM_PODMAN_ARGS extra arguments for `podman run` (word-split)
+#   PM_REBUILD=1   force a rebuild of the development image
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Resolve the directory to mount: the repository root, or the main repository when
+# $here is a git worktree (.git is then a file: "gitdir: <main>/.git/worktrees/<name>").
+mount_root="$here"
+if [[ -f "$here/.git" ]]; then
+	gitdir="$(sed -n 's/^gitdir: //p' "$here/.git")"
+	case "$gitdir" in
+		*/.git/worktrees/*) mount_root="${gitdir%/.git/worktrees/*}" ;;
+	esac
+fi
+
+image="${PM_IMAGE:-}"
+if [[ -z "$image" ]]; then
+	hash="$(sha256sum "$here/Containerfile" | cut -c1-12)"
+	image="localhost/md-dev:$hash"
+	if [[ "${PM_REBUILD:-0}" == 1 ]] || ! podman image exists "$image"; then
+		echo "pm: building $image" >&2
+		podman build --pull=newer -t "$image" -f "$here/Containerfile" "$here" >&2
+		podman tag "$image" localhost/md-dev:latest
+	fi
+fi
+
+tty_args=()
+if [[ -t 0 && -t 1 ]]; then
+	tty_args=(-it)
+fi
+
+# shellcheck disable=SC2206
+extra_args=(${PM_PODMAN_ARGS:-})
+
+workdir="$PWD"
+case "$workdir" in
+	"$mount_root"|"$mount_root"/*) ;;
+	*) workdir="$here" ;;
+esac
+
+exec podman run --rm "${tty_args[@]}" \
+	--userns=keep-id \
+	--security-opt label=disable \
+	-v "$mount_root:$mount_root" \
+	-v md-home:/home/dev \
+	-e HOME=/home/dev \
+	-e DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+	-e DOTNET_NOLOGO=1 \
+	-e NUGET_PACKAGES=/home/dev/.nuget/packages \
+	-w "$workdir" \
+	"${extra_args[@]}" \
+	"$image" "$@"

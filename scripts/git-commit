@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Commit with the project's only allowed identity (GitHub no-reply address).
+# Usage (inside the container): ./scripts/git-commit -m "message" [git commit args...]
+set -euo pipefail
+readonly NAME="Vinicius Morgado"
+readonly EMAIL="34577818+viniciusmorgado@users.noreply.github.com"
+exec git -c user.name="$NAME" -c user.email="$EMAIL" commit "$@"
