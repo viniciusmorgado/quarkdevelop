@@ -52,13 +52,17 @@ if [[ ${#reports[@]} -gt 0 ]]; then
 		"-reporttypes:TextSummary;Cobertura" >/dev/null
 	cat "$MD_OUT/coverage/Summary.txt"
 
-	# Per-assembly line coverage: lines "<Assembly>   <percent>%" after the summary header.
+	# Per-assembly line coverage plus "total" = overall line coverage of the product assemblies
+	# (SC-003), with two decimals from the merged Cobertura report: Summary.txt truncates to one
+	# decimal, which made the 0.05 tolerance below useless against run-to-run noise (timing paths).
 	current="$MD_OUT/coverage/line-coverage.txt"
-	# plus "total" = overall line coverage of the product assemblies (SC-003).
-	{
-		awk '/^[A-Za-z][A-Za-z0-9.]+ +[0-9.]+%$/ { sub(/%$/, "", $2); print $1, $2 }' "$MD_OUT/coverage/Summary.txt"
-		awk -F': ' '/^  Line coverage:/ { sub(/%$/, "", $2); print "total", $2 }' "$MD_OUT/coverage/Summary.txt"
-	} | sort > "$current"
+	python3 - "$MD_OUT/coverage/Cobertura.xml" <<-'PY' | sort > "$current"
+		import sys, xml.etree.ElementTree as ET
+		root = ET.parse(sys.argv[1]).getroot()
+		for package in root.iter("package"):
+		    print(package.get("name"), "%.2f" % (100 * float(package.get("line-rate"))))
+		print("total", "%.2f" % (100 * float(root.get("line-rate"))))
+	PY
 	if [[ "$update_baseline" == true ]]; then
 		cp "$current" "$baseline"
 		md_log "coverage baseline updated: $baseline"
