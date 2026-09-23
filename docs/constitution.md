@@ -117,4 +117,4 @@ follows SemVer: MAJOR for removing or redefining a principle, MINOR for adding a
 materially expanding guidance, PATCH for clarifications. Every review and every the consistency analysis
 run checks compliance; deviations must be justified in the plan's Complexity Tracking table.
 
-**Version**: 1.2.1 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23 (amendment log: ADR 0001)
+**Version**: 1.3.0 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23 (amendment log: ADR 0001)

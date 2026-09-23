@@ -8,8 +8,11 @@
 #   - Staged changes to files that exist in the upstream base must not rewrite line endings (a diff
 #     much larger than its whitespace-insensitive version), unless the message has a line
 #     "Format-only: <reason>" and the commit changes nothing else.
-#   - While docs/evidence/M1/analyze.md reports CRITICAL issues, only commits for T016 (or with a
-#     line "Analyze-override: <reason>") are accepted.
+#   - While the committed docs/evidence/M1/analyze.md (HEAD) reports CRITICAL issues, only commits
+#     that fix analyze findings are accepted: a line "Analyze-fix: <finding IDs>" (or trailer task
+#     T016), or "Analyze-override: <reason>" for emergencies.
+#   Put Coupled:/Format-only:/Analyze-fix: lines in the same paragraph as Tasks: so git reads them as
+#   trailers (`git log --format='%(trailers)'`).
 #
 # Usage (inside the container): ./scripts/git-commit -m "message" [git commit args...]
 set -euo pipefail
@@ -50,14 +53,19 @@ if ! grep -qE '^Format-only: .+' <<< "$message"; then
 			fail "$file: $all changed lines but only ${ws:-0} ignoring whitespace (line-ending rewrite?). Keep the file's endings, or commit it alone with 'Format-only: <reason>'"
 		fi
 	done < <(git diff --cached --name-only --diff-filter=M)
+else
+	# A Format-only commit contains whitespace/line-ending changes only.
+	if [[ -n "$(git diff --cached -w --ignore-blank-lines --numstat | awk '$1 + $2 > 0')" ]]; then
+		fail "'Format-only:' commits may only change whitespace and line endings"
+	fi
 fi
 
-# Implementation stops while the cross-artifact analysis reports CRITICAL issues (Governance).
-analyze="$root/docs/evidence/M1/analyze.md"
-if [[ -f "$analyze" ]]; then
-	critical="$(sed -nE 's/^\*\*CRITICAL issues: ([0-9]+)\*\*.*/\1/p' "$analyze" | head -1)"
-	if [[ "${critical:-0}" -gt 0 ]] && ! grep -q 'T016' <<< "$trailer" && ! grep -qE '^Analyze-override: .+' <<< "$message"; then
-		fail "docs/evidence/M1/analyze.md reports $critical CRITICAL issue(s): only T016 commits (or 'Analyze-override: <reason>') are accepted"
+# Implementation stops while the committed cross-artifact analysis reports CRITICAL issues (Governance).
+if analyze="$(git -C "$root" show HEAD:docs/evidence/M1/analyze.md 2>/dev/null)"; then
+	critical="$(sed -nE 's/^\*\*CRITICAL issues: ([0-9]+)\*\*.*/\1/p' <<< "$analyze" | head -1)"
+	if [[ "${critical:-0}" -gt 0 ]] && ! grep -q 'T016' <<< "$trailer" \
+		&& ! grep -qE '^Analyze-(fix|override): .+' <<< "$message"; then
+		fail "the committed analyze.md reports $critical CRITICAL issue(s): only analyze fixes ('Analyze-fix: <IDs>', T016) or 'Analyze-override: <reason>' are accepted"
 	fi
 fi
 

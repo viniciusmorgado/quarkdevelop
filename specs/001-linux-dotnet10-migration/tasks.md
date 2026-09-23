@@ -207,8 +207,8 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 
 ## Phase 7: User Story 6 — CI/CD (P3) — M6
 
-- [ ] T115 [US6] M6: `scripts/ci.sh` (lint, build --check, test + coverage ratchet, audit, mdtool smoke, GUI smoke under Xvfb), timed → `out/ci/summary.txt`, ≤ 15 min (SC-007)
-- [ ] T116 [US6] M6: `ci.yml` runs `scripts/ci.sh` in the dev image; artifacts named `<version>+<sha>`; job summary → `actionlint` clean
+- [x] T115 [US6] M6: `scripts/ci.sh` (lint, build --check, test + coverage ratchet, audit, mdtool smoke, GUI smoke under Xvfb), timed → `out/ci/summary.txt`, ≤ 15 min (SC-007)
+- [x] T116 [US6] M6: `ci.yml` runs `scripts/ci.sh` in the dev image; artifacts named `<version>+<sha>`; job summary → `actionlint` clean
 - [ ] T117 [P] [US6] M6: ADR 0021 versioning (version.config + SHA) and release; `release.yml` on `v*` (least privilege, attaches Flatpak + sha256 + SBOM once M7 exists) → `actionlint` clean
 - [ ] T118 [P] [US6] M6: Dependabot (nuget, github-actions, docker) + CodeQL workflow → `actionlint` clean
 - [ ] T119 [US6] M6: evidence → `docs/evidence/M6/` (local `ci.sh` run + timing; hosted run only after push authorization)

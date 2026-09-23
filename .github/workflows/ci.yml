@@ -54,11 +54,16 @@ jobs:
         run: |
           { echo '### CI gate'; echo '```'; cat out/ci/summary.txt 2>/dev/null || echo 'no summary'; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Version
+        if: always()
+        id: version
+        run: echo "version=$(sed -nE 's/^Version=//p' version.config | head -1)" >> "$GITHUB_OUTPUT"
+
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ci-${{ github.run_number }}+${{ github.sha }}
+          name: monodevelop-ci-${{ steps.version.outputs.version }}+${{ github.sha }}
           path: |
             out/ci/
             out/coverage/

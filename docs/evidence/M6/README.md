@@ -4,7 +4,7 @@
 build `--check` (Release), duplicate-assembly check, tests with the coverage ratchet, vulnerability
 audit, mdtool smoke, and GUI smoke. `.github/workflows/ci.yml` runs the same script
 (`./scripts/pm ./scripts/ci.sh`), writes `out/ci/summary.txt` to the job summary, and uploads
-`out/ci`, `out/coverage` and the TRX files as the artifact `ci-<run>+<sha>`.
+`out/ci`, `out/coverage` and the TRX files as the artifact `monodevelop-ci-<version>+<sha>`.
 
 ## Local run (2026-09-23)
 
