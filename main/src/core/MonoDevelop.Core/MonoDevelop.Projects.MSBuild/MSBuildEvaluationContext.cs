@@ -120,6 +120,22 @@ namespace MonoDevelop.Projects.MSBuild
 			}
 		}
 
+		/// <summary>
+		/// Version of the Microsoft.Build assembly loaded in this process (the SDK's, via MSBuildLocator), from its
+		/// informational version ("18.9.11+commit"); null when it cannot be read.
+		/// </summary>
+		internal static Version GetLoadedMSBuildVersion ()
+		{
+			var assembly = typeof (Microsoft.Build.Evaluation.Project).Assembly;
+			var informational = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute> ()?.InformationalVersion;
+			if (informational != null) {
+				var plus = informational.IndexOfAny (new [] { '+', '-' });
+				if (Version.TryParse (plus == -1 ? informational : informational.Substring (0, plus), out var parsed))
+					return parsed;
+			}
+			return null;
+		}
+
 		static void InitEngineProperties (Core.Assemblies.TargetRuntime runtime, Dictionary<string, string> properties, out List<ImportSearchPathExtensionNode> searchPaths)
 		{
 			string toolsVersion = "Current";
@@ -132,16 +148,34 @@ namespace MonoDevelop.Projects.MSBuild
 				toolsPath = runtime.GetMSBuildToolsPath (toolsVersion);
 			}
 
+			// MSBuild of the .NET SDK (ADR 0008): the reserved properties must match the MSBuild that runs the
+			// build, since SDK targets compare them (e.g. '$(MSBuildVersion)' >= '17.0'). Adapted from DotDevelop
+			// 4518519b5e (https://github.com/dotdevelop/dotdevelop), which hard-coded MSBuildVersion=16.0.
+			string msbuildVersion = null;
+			if (runtime is Core.Assemblies.DotNetCoreTargetRuntime) {
+				var version = GetLoadedMSBuildVersion ();
+				if (version != null) {
+					msbuildVersion = version.ToString (3);
+					toolsVersion = version.Major + ".0";
+					visualStudioVersion = toolsVersion;
+				}
+			}
+
 			properties.Add ("MSBuildAssemblyVersion", toolsVersion);
 			//VisualStudioVersion is a property set by MSBuild itself
 			properties.Add ("VisualStudioVersion", visualStudioVersion);
+			if (msbuildVersion != null) {
+				properties.Add ("MSBuildVersion", msbuildVersion);
+				properties.Add ("MSBuildRuntimeType", "Core");
+				toolsVersion = "Current";
+			}
 
 			var msBuildBinPath = toolsPath;
 			var msBuildBinPathEscaped = MSBuildProjectService.ToMSBuildPath (null, msBuildBinPath);
 			properties.Add ("MSBuildBinPath", msBuildBinPathEscaped);
 			properties.Add ("MSBuildToolsPath", msBuildBinPathEscaped);
 			properties.Add ("MSBuildBinPath32", msBuildBinPathEscaped);
-			properties.Add ("MSBuildRuntimeVersion", "4.0.30319");
+			properties.Add ("MSBuildRuntimeVersion", msbuildVersion != null ? "" : "4.0.30319");
 
 			properties.Add ("MSBuildToolsRoot", MSBuildProjectService.ToMSBuildPath (null, Path.GetDirectoryName (toolsPath)));
 			properties.Add ("MSBuildToolsVersion", toolsVersion);
@@ -975,6 +1009,9 @@ namespace MonoDevelop.Projects.MSBuild
 				return Enum.Parse(parameterType, enumValue, ignoreCase: true);
 			}
 
+			if (sval != null && parameterType == typeof (Version))
+				return Version.Parse (sval);
+
 			if (sval != null && Path.DirectorySeparatorChar != '\\')
 				value = sval.Replace ('\\', Path.DirectorySeparatorChar);
 			
@@ -1031,6 +1068,33 @@ namespace MonoDevelop.Projects.MSBuild
 			.ToLookup (x => x.Name)
 			.ToDictionary(x => x.Key, x => x.ToArray (), StringComparer.OrdinalIgnoreCase);
 
+		// Property functions this evaluator does not implement (GetTargetFrameworkIdentifier, IsTargetFrameworkCompatible,
+		// VersionGreaterThanOrEquals, AreFeaturesEnabled … used by the .NET SDK targets) come from the IntrinsicFunctions
+		// of the MSBuild loaded in this process, i.e. the SDK's MSBuild. DotDevelop 7045264a30
+		// (https://github.com/dotdevelop/dotdevelop) takes all of them from there; here MonoDevelop's own
+		// implementations keep precedence because they convert paths for the IDE's project model.
+		static readonly Lazy<Dictionary<string, MethodInfo[]>> msbuildIntrinsicFunctions =
+			new Lazy<Dictionary<string, MethodInfo[]>> (LoadMSBuildIntrinsicFunctions);
+
+		internal static Dictionary<string, MethodInfo[]> LoadMSBuildIntrinsicFunctions ()
+		{
+			var type = typeof (Microsoft.Build.Evaluation.Project).Assembly.GetType ("Microsoft.Build.Evaluation.IntrinsicFunctions");
+			if (type == null)
+				return new Dictionary<string, MethodInfo[]> (StringComparer.OrdinalIgnoreCase);
+			// Overloads that take MSBuild-internal types (IFileSystem, LoggingContext) cannot be called from here.
+			return type.GetMethods (BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)
+				.Where (m => !m.IsSpecialName && m.GetParameters ().All (p => IsSupportedIntrinsicParameter (p.ParameterType)))
+				.ToLookup (m => m.Name, StringComparer.OrdinalIgnoreCase)
+				.ToDictionary (g => g.Key, g => g.ToArray (), StringComparer.OrdinalIgnoreCase);
+		}
+
+		static bool IsSupportedIntrinsicParameter (Type type)
+		{
+			if (type.IsArray)
+				type = type.GetElementType ();
+			return type.IsPrimitive || type == typeof (string) || type == typeof (object) || type == typeof (Version) || (type.IsEnum && type.IsPublic);
+		}
+
 		MemberInfo[] ResolveMember (Type type, string memberName, bool isStatic, MemberTypes memberTypes)
 		{
 			if (type == typeof (string)) {
@@ -1044,7 +1108,9 @@ namespace MonoDevelop.Projects.MSBuild
 			}
 
 			if (type == typeof(IntrinsicFunctions)) {
-				return cachedIntrinsicFunctions.TryGetValue (memberName, out var result) ? result : null;
+				if (cachedIntrinsicFunctions.TryGetValue (memberName, out var result))
+					return result;
+				return msbuildIntrinsicFunctions.Value.TryGetValue (memberName, out result) ? result : null;
 			}
 
 			var flags = isStatic ? BindingFlags.Static : BindingFlags.Instance;
