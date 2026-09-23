@@ -200,7 +200,7 @@ namespace MonoDevelop.Core.Execution
 		public override int Read ()
 		{
 			if (LoadCurrent (true))
-				return current [idx];
+				return current [idx++];
 			else
 				return -1;
 		}
@@ -222,16 +222,18 @@ namespace MonoDevelop.Core.Execution
 		public override string ReadLine ()
 		{
 			StringBuilder sb = StringBuilderCache.Allocate ();
+			bool readAny = false;
 			while (LoadCurrent (true)) {
+				readAny = true;
 				for (int i=idx; i < current.Length; i++) {
 					if (current[i] == '\n') {
+						sb.Append (current, idx, i - idx);
 						idx = i + 1;
-						sb.Append (current, 0, i);
 						return StringBuilderCache.ReturnAndFree (sb);
 					}
 					if (current[i] == '\r') {
+						sb.Append (current, idx, i - idx);
 						idx = i + 1;
-						sb.Append (current, 0, i);
 						if (LoadCurrent (true) && current [idx] == '\n')
 							idx++;
 						return StringBuilderCache.ReturnAndFree (sb);
@@ -240,7 +242,8 @@ namespace MonoDevelop.Core.Execution
 				sb.Append (current, idx, current.Length - idx);
 				current = null;
 			}
-			return StringBuilderCache.ReturnAndFree (sb);
+			var line = StringBuilderCache.ReturnAndFree (sb);
+			return readAny ? line : null;
 		}
 
 		public override string ReadToEnd ()

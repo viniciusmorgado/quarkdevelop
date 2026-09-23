@@ -120,7 +120,7 @@ namespace MonoDevelop.Projects
 			MoveNextNonSpace (line, ref messageStart);
 			int messageEnd = line.Length - 1;
 			MovePrevNonSpace (line, ref messageEnd, messageStart);
-			if (messageEnd > messageStart) {
+			if (messageEnd >= messageStart) {
 				result.Message = line.Substring (messageStart, messageEnd - messageStart + 1);
 			} else {
 				result.Message = "";

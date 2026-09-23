@@ -74,6 +74,17 @@
     <Compile Include="MonoDevelop.Core/AddinResilienceTests.cs" />
     <Compile Include="MonoDevelop.Core/MonoOptionsTests.cs" />
     <Compile Include="MonoDevelop.Core/TextFileUtilityTests.cs" />
+    <Compile Include="MonoDevelop.Projects/MSBuildErrorParserTests.cs" />
+    <Compile Include="MonoDevelop.Core.Text/NewLineAndSegmentTests.cs" />
+    <Compile Include="MonoDevelop.Core.Text/TextSourceTests.cs" />
+    <Compile Include="MonoDevelop.Core.Execution/ProcessArgumentBuilderTests.cs" />
+    <Compile Include="MonoDevelop.Core.Execution/OperationConsoleTests.cs" />
+    <Compile Include="MonoDevelop.Core.Assemblies/TargetFrameworkMonikerTests.cs" />
+    <Compile Include="MonoDevelop.Projects/EnvironmentVariableCollectionTests.cs" />
+    <Compile Include="MonoDevelop.Projects/CustomCommandTests.cs" />
+    <Compile Include="MonoDevelop.Projects/TextEncodingTests.cs" />
+    <Compile Include="MonoDevelop.Core/StringTableTests.cs" />
+    <Compile Include="MonoDevelop.Core/CoreUtilitiesTests.cs" />
     <Compile Include="MonoDevelop.Projects/MdtoolContractTests.cs" />
     <Compile Include="MonoDevelop.Projects/SdkRoundTripTests.cs" />
     <Compile Include="MonoDevelop.Projects/BuildCancellationTests.cs" />

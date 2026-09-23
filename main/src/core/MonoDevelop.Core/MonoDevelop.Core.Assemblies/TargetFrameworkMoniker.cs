@@ -148,7 +148,7 @@ namespace MonoDevelop.Core.Assemblies
 			} else {
 				identifier = value.Substring (0, i);
 
-				if (value.IndexOf (",Version=v", i, ",Version=v".Length, StringComparison.Ordinal) != i) {
+				if (string.CompareOrdinal (value, i, ",Version=v", 0, ",Version=v".Length) != 0) {
 					return false;
 				}
 				i += ",Version=v".Length;
@@ -193,7 +193,8 @@ namespace MonoDevelop.Core.Assemblies
 			if (cachedAssemblyDirectoryName == null) {
 				if (profile != null)
 					cachedAssemblyDirectoryName = System.IO.Path.Combine (identifier, "v" + version, "Profile", profile);
-				cachedAssemblyDirectoryName = System.IO.Path.Combine (identifier, "v" + version);
+				else
+					cachedAssemblyDirectoryName = System.IO.Path.Combine (identifier, "v" + version);
 			}
 			return cachedAssemblyDirectoryName;
 		}

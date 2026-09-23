@@ -91,7 +91,7 @@ namespace MonoDevelop.Projects.Text
 			get {
 				if (supported == null) {
 					var allSupported = new List<TextEncoding> ();
-					for (int n = 0; n < encodings.GetUpperBound (0); n++) {
+					for (int n = 0; n < encodings.GetLength (0); n++) {
 						try {
 							var id = encodings [n, 0];
 							if (id == UTF8NoBomId || Encoding.GetEncoding (id) != null)

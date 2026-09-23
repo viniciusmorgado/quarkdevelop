@@ -159,11 +159,11 @@ namespace MonoDevelop.Core.Execution
 					break;
 				}
 				
-				if (c == '\\') {
-					escaped = true;
-				} else if (escaped) {
+				if (escaped) {
 					builder.Append (c);
 					escaped = false;
+				} else if (c == '\\') {
+					escaped = true;
 				} else if (qchar == '\0' && (c == ' ' || c == '\t')) {
 					break;
 				} else if (qchar == '\0' && (c == '\'' || c == '"')) {
