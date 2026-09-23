@@ -168,7 +168,8 @@ namespace MonoDevelop.Utilities
 			static string? GetSymbolicatedLine (long offset)
 			{
 				if (!methodsCache.TryGetValue (offset, out string? pmipMethodName)) {
-					pmipMethodName = mono_pmip (offset)?.TrimStart ();
+					// mono_pmip is a Mono runtime export; it does not exist on CoreCLR (T046).
+					pmipMethodName = Type.GetType ("Mono.Runtime") != null ? mono_pmip (offset)?.TrimStart () : null;
 					if (pmipMethodName != null)
 						pmipMethodName = PmipParser.ToSample (pmipMethodName, offset);
 					methodsCache.Add (offset, pmipMethodName);

@@ -83,6 +83,8 @@ namespace MonoDevelop.Core
 		{
 			if (initialized)
 				return;
+			// .NET only ships UTF/ASCII/Latin-1 by default; text files may use legacy code pages (T046).
+			System.Text.Encoding.RegisterProvider (System.Text.CodePagesEncodingProvider.Instance);
 
 			using var initTimer = Counters.RuntimeInitialization.BeginTiming ();
 			SetupInstrumentation ();
