@@ -10,9 +10,16 @@ builds in an out-of-process builder (`MonoDevelop.MSBuildBuilder`, TCP + `Binary
 launched with Mono and got MSBuild from Mono's installation (`$(MSBuildToolsPath)`), copying the
 MSBuild bin directory and patching `exe.config`.
 
+## Considered Options
+
+1. Locator + in-proc custom evaluator + out-of-proc net10 builder (chosen)
+2. In-proc builds inside the IDE (assembly conflicts, node reuse issues, UI stalls)
+3. Replace the evaluator with `ProjectInstance` now (larger change; backlog B35)
+4. Shell out to `dotnet build` (loses structured results and cancellation)
+
 ## Decision Outcome
 
-- Reference `Microsoft.Build*` 17.x with `ExcludeAssets=runtime`; call
+- Reference `Microsoft.Build*` 18.x (≤ the SDK MSBuild, 18.9.6 today) with `ExcludeAssets=runtime`; call
   `MSBuildLocator.RegisterInstance` (SDK instance) first thing in `mdtool`, `MonoDevelop.Startup` and
   the builder, before any MSBuild type is loaded.
 - Evaluation stays in-process in the custom evaluator for now (backlog: switch to

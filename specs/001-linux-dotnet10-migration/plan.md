@@ -31,8 +31,8 @@ type extensions), and Roslyn 5.9 internals via Krafs.Publicizer (Roslyn no longe
 
 **Primary Dependencies**: GtkSharp 3.24.24.x (NuGet), Xwt + Xwt.Gtk3 (vendored), Mono.Addins /
 Mono.Addins.Setup / Mono.Addins.CecilReflector 1.4.1, Microsoft.CodeAnalysis 5.9.0 (+ EditorFeatures
-from the public dnceng `dotnet-tools` feed when needed), Krafs.Publicizer 2.3.0,
-Microsoft.Build 17.x (`ExcludeAssets=runtime`) + Microsoft.Build.Locator 1.11, Mono.Cecil 0.11.6,
+from the public dnceng `dotnet-tools` feed when needed), Krafs.Publicizer 2.3.2,
+Microsoft.Build 18.9.x (≤ SDK MSBuild; `ExcludeAssets=runtime`) + Microsoft.Build.Locator 1.11, Mono.Cecil 0.11.6,
 Mono.Unix 7.1, NGettext, StreamJsonRpc 2.x, LibGit2Sharp 0.32, Microsoft.VisualStudio.Composition
 17.x, Microsoft.VisualStudio.Shared.VsCodeDebugProtocol 17.x + netcoredbg.
 
@@ -63,7 +63,7 @@ command runs inside the container; each commit keeps the Linux solution green; L
 
 | # | Principle | Gate for this plan | Status |
 |---|---|---|---|
-| I | Linux-first, container-first | `Containerfile` + `scripts/pm`; all validation commands prefixed with `./scripts/pm` | PASS (T000 done) |
+| I | Linux-first, container-first | `Containerfile` + `scripts/pm`; all validation commands prefixed with `./scripts/pm` | PASS (T001 done) |
 | II | .NET 10 pinned | `global.json`, `net10.0` SDK-style projects, CPM, no Mono/GAC/dllmap | PASS (planned M2/M3) |
 | III | Reproducible builds | nuget.org only (+ADR-approved feeds), lock files, vendoring in `main/vendor/` | PASS (ADR 0004/0005) |
 | IV | Incremental & reversible | waves W0–W4, one task per commit, UI ported per area | PASS |
@@ -149,7 +149,7 @@ Each decision has an ADR in `docs/adr/` (details and alternatives in [research.m
 
 | Wave | Content | Milestone |
 |---|---|---|
-| W0 | NuGet replacements (Mono.Addins*, Cecil, Mono.Unix, Microsoft.Build*, Locator, Roslyn 5.9, System.CodeDom, StreamJsonRpc 2, VS Composition 17, Newtonsoft 13.0.4, SharpZipLib 1.4) | M2–M3 |
+| W0 | NuGet replacements (Mono.Addins*, Cecil, Mono.Unix, Microsoft.Build* 18.9.x, Locator, Roslyn 5.9, System.CodeDom, StreamJsonRpc 2, VS Composition 17, Newtonsoft 13.0.4, SharpZipLib 1.4) | M2–M3 |
 | W1 | Core, MSBuild builder, mdtool, CSharpBinding.Core, UnitTests, Core.Tests.Addin, Core.Tests | M3 |
 | W2 | DotNetCore.Core (SDK discovery), MSBuildResolver, Mono.Debugging (vendored), TextTemplating (deferred) | M3 |
 | W3 | Xwt + Xwt.Gtk3 (vendored), Mono.Addins.Gui (GTK3), vs-editor-api subset, NRefactory removal, Mono.TextEditor.Shared, Ide, Startup, GnomePlatform | M5a–M5b |
@@ -165,10 +165,20 @@ sharpsvn-binary.
 
 ### Milestones
 
-M0 baseline & spikes → M1 constitution/spec/ADRs → M2 toolchain → M3 headless WS-1 (W0–W2) →
-M4 tests & coverage → M5 GUI (M5a WS-2, M5b Ide compiles, M5c IDE runs + debug) → M6 CI/CD →
-M7 Flatpak → M8 hardening & docs → M9 final validation & release. Acceptance criteria and
-validation commands per milestone are in [quickstart.md](quickstart.md) and `tasks.md`.
+| M | Objective | Depends on | Tasks | Risks | Acceptance criteria | Validation (quickstart) | Evidence |
+|---|---|---|---|---|---|---|---|
+| M0 | Reproducible inventory; de-risk GTK3, Mono.Addins, Roslyn | — | T001–T011 | R5, R6 | inventory generated; every spike has a recorded outcome | § M0 | `docs/evidence/M0/` |
+| M1 | Constitution, spec, plan, tasks, ADRs reviewed | M0 | T012–T017 | — | the consistency analysis 0 CRITICAL; ≥ 18 ADRs; no `NEEDS CLARIFICATION` | § M1 | `docs/evidence/M1/` |
+| M2 | Pinned .NET 10 toolchain, conventions, scripts, minimal CI | M1 | T018–T032 | R12 | fresh clone builds with podman+git only, twice (idempotent); lint + actionlint clean | § M2 | `docs/evidence/M2/` |
+| M3 | Headless walking skeleton: Core + builder + mdtool + CSharpBinding.Core | M2 | T033–T054, T058–T065 | R2, R3, R4 | quickstart § M3 block passes without Mono; audit clean; runtime tasks have tests | § M3 | `docs/evidence/M3/` |
+| M4 | Tests and coverage for the headless build | M3 | T038–T041, T055–T057 | R6 | all Linux-solution test projects run; quarantine ≤ 15% with reasons; Core ≥ 60%, total ≥ 40% | § M4 | `docs/evidence/M4/` |
+| M5a | GUI foundation (Xwt/GTK3 window) | M4 | T066–T069 | R1, R8, R9 | Xwt Gtk3 test app shows a window under Xvfb | § M5 | `docs/evidence/M5/` |
+| M5b | `MonoDevelop.Ide` compiles on GTK3 | M5a | T070–T084 | R1, R2, R10 | pending-area list empty; GTK2-API count 0 in Linux solution | § M5 | `docs/evidence/M5/` |
+| M5c | IDE runs; C# editing, build, Git, NuGet, tests; debug | M5b | T085–T114 | R1, R7 | smoke test exits 0 on X11 and Wayland; debug scenario passes | § M5 | `docs/evidence/M5/` |
+| M6 | CI/CD pipeline and releases | M3 (partial), M5c | T115–T119 | R13 | `scripts/ci.sh` ≤ 15 min; actionlint clean; hosted run after push authorization | § M6 | `docs/evidence/M6/` |
+| M7 | Flatpak distribution | M5c, M6 | T120–T124 | R11, R12 | bundle installs in a clean container; version, headless build and IDE launch pass | § M7 | `docs/evidence/M7/` |
+| M8 | Hardening, observability, documentation | M5–M7 | T125–T129 | R10 | audit clean; JSON logs with versions; start-up ≤ 10 s; docs complete | § M8/M9 | `docs/evidence/M8/` |
+| M9 | Final validation and release | M8 | T130–T131 | — | SC-001…SC-009 met with evidence; release notes; tag only with authorization | § M8/M9 | `docs/evidence/M9/` |
 
 ## Risks
 
@@ -185,6 +195,8 @@ validation commands per milestone are in [quickstart.md](quickstart.md) and `tas
 | R9 | FPF `WindowsBase` clash; VS Text 16 vs 17 | vendored text-only subset; duplicate-assembly check in CI |
 | R10 | Theme loss (Gtk.Rc) and dropped features | GTK3 CSS; `docs/BREAKING-CHANGES.md` |
 | R11 | Licensing of bundled packages | nuget.org-only + SBOM; Roslyn/dnceng packages are MIT |
+| R12 | flatpak-builder (bwrap/FUSE) inside rootless podman; container tooling drift | dedicated `PM_PROFILE=flatpak` with documented flags; images pinned by digest |
+| R13 | CI cannot be exercised on GitHub without a push (not authorized) | `scripts/ci.sh` + actionlint locally; hosted run after maintainer authorization |
 
 ## Complexity Tracking
 

@@ -8,6 +8,12 @@
 Tests (~3.8k) use GuiUnit (NUnitLite-based, submodule) or NUnit 2.7 and run through
 `mdtool run-md-tests`. Coverage used Mono's log profiler. None of this works on .NET 10.
 
+## Considered Options
+
+1. NUnit 3.14 + Microsoft.NET.Test.Sdk + coverlet (chosen)
+2. NUnit 4 directly (larger churn at once)
+3. xUnit/MSTest (rewrite of ~3.8k tests)
+
 ## Decision Outcome
 
 - NUnit 3.14 + NUnit3TestAdapter + Microsoft.NET.Test.Sdk; run with `dotnet test`.

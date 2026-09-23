@@ -33,9 +33,10 @@ process artifacts whose shape the migration must define or preserve.
 
 ## QuarantinedTest
 - **Fields**: fully-qualified test name, suite, reason category (`Mono-only`, `net4x-fixture`,
-  `GTK2`, `Flaky`, `Bug`), note, date added.
+  `GTK2`, `Flaky`, `Bug`), note, owner, date added, linked task/issue.
 - **Rules**: marked `[Category("Quarantine")]` in code and listed in
-  `docs/evidence/M4/quarantine.md`; the list must not grow across milestones after M4.
+  `docs/evidence/M4/quarantine.md` (later suites append to the same file); per suite, the count may
+  not increase after the suite is first converted (ratchet).
 
 ## EvidenceRecord
 - **Fields**: milestone, task id, command (as run via `./scripts/pm`), exit code, output file,

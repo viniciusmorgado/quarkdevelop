@@ -9,6 +9,12 @@
 forks live in this same repository (no separate repos) and that the DotDevelop fork is used only for
 cherry-picks.
 
+## Considered Options
+
+1. Maintained NuGet package, else vendored copy in `main/vendor/` (chosen)
+2. Forks in separate GitHub repositories consumed as submodules (rejected by the maintainer)
+3. Keep upstream submodules unmodified (they do not build on .NET 10)
+
 ## Decision Outcome
 
 Order of preference per dependency: maintained NuGet package → vendored copy in

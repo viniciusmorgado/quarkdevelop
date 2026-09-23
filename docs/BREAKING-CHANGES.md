@@ -28,6 +28,12 @@ Compared with MonoDevelop 8.6:
 | `mdtool run-md-tests` | replaced by `dotnet test` |
 | mdhost, mdmonitor, performance diagnostics | removed |
 | UI automation (AutoTest) tests | removed |
+| Add-in browser tool (ExtensionTools) | removed |
+| Property editor (Xamarin.PropertyEditing) | removed (Mac-only UI) |
+| New Cocoa/WPF text editor (`MonoDevelop.TextEditor`) | removed; the GTK source editor remains |
+| Windows installer (`setup/WixSetup`) | removed |
+| `./configure`, `scripts/configure.*`, `winbuild*.bat`, autotools `make` targets | obsolete (use `scripts/*.sh`) |
+| `mdtool` tools `run-md-tests`, `update-perf-baseline`, `generate-makefiles`, `gsetup` | removed |
 
 ## Add-in authors
 

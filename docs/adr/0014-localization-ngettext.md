@@ -9,6 +9,12 @@
 libintl through Mono.Posix. Generated UI code calls `Mono.Unix.Catalog.GetString` directly (894
 calls). Translations ship as `.po` → `.mo` files in `main/po`.
 
+## Considered Options
+
+1. NGettext managed `.mo` reader behind `GettextCatalog` (chosen)
+2. Mono.Unix 7.1 `Catalog` over native libintl (native dependency, glibc-specific)
+3. Convert translations to .resx (loses the gettext workflow)
+
 ## Decision Outcome
 
 Implement `GettextCatalog` on NGettext (managed `.mo` reader, MIT), keeping the public API and the

@@ -31,19 +31,19 @@ ls docs/adr/*.md | wc -l                                                        
 ```bash
 ./scripts/pm dotnet --version                                                    # honours global.json (10.0.x)
 ./scripts/pm ./scripts/setup.sh && ./scripts/pm ./scripts/build.sh && ./scripts/pm ./scripts/build.sh   # idempotent
-./scripts/pm bash -lc 'shellcheck scripts/*.sh scripts/pm scripts/git-commit'
+./scripts/pm ./scripts/lint.sh                       # shellcheck (maintained scripts) + actionlint
 ```
 
 ## M3 — Headless walking skeleton (US1, US2)
 
 ```bash
-./scripts/pm dotnet build main/MonoDevelop.Linux.sln -c Debug -warnaserror
+./scripts/pm ./scripts/build.sh                      # TreatWarningsAsErrors + per-project baselines (ADR 0018)
 ./scripts/pm dotnet main/build/bin/mdtool.dll                                    # lists "build"
 ./scripts/pm bash -lc 'dotnet main/build/bin/mdtool.dll build main/tests/linux-smoke/Hello/Hello.csproj && dotnet main/tests/linux-smoke/Hello/bin/Debug/net10.0/Hello.dll | grep -q Hello'
 ./scripts/pm bash -lc '! dotnet main/build/bin/mdtool.dll build main/tests/linux-smoke/Broken/Broken.csproj'
 ./scripts/pm dotnet main/build/bin/mdtool.dll build -p:Hello main/tests/linux-smoke/Smoke.sln
 ./scripts/pm dotnet main/build/bin/mdtool.dll build -t:Clean main/tests/linux-smoke/Hello/Hello.csproj
-./scripts/pm dotnet list main/MonoDevelop.Linux.sln package --vulnerable --include-transitive   # no High/Critical
+./scripts/pm ./scripts/audit.sh                      # fails on High/Critical advisories
 ```
 
 ## M4 — Tests & coverage (US1)
@@ -57,28 +57,32 @@ cat docs/evidence/M4/quarantine.md              # every excluded test has a reas
 ## M5 — GUI, run & debug (US3, US4)
 
 ```bash
-./scripts/pm bash -lc 'cd main/vendor/xwt/samples && xvfb-run -a dotnet run'          # M5a: Xwt/GTK3 window
+./scripts/pm xvfb-run -a dotnet run --project main/vendor/xwt/TestApps/Gtk3Test          # M5a: Xwt/GTK3 window
 ./scripts/pm xvfb-run -a dotnet main/build/bin/MonoDevelop.dll --smoke-test main/tests/linux-smoke/Smoke.sln   # exit 0
-./scripts/pm dotnet test main/tests/Ide.Tests --filter "Category=Smoke|Category=Debugger"
-./scripts/pm bash -lc 'grep -rlE "ExposeEvent|Gdk\.GC|SizeRequested" main/src --include=*.cs | wc -l'   # target 0 in the Linux solution
+./scripts/pm xvfb-run -a dotnet test main/tests/Ide.Tests
+./scripts/pm dotnet test main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests --filter FullyQualifiedName~NetCoreDbg
+./scripts/pm bash -lc 'weston --backend=headless-backend.so & sleep 2; GDK_BACKEND=wayland dotnet main/build/bin/MonoDevelop.dll --smoke-test main/tests/linux-smoke/Smoke.sln'
+./scripts/pm ./scripts/inventory.sh out/inventory.md && grep 'GTK2-only' out/inventory.md   # Linux-solution compile items: target 0
 ```
 
 ## M6 — CI/CD (US6)
 
-The workflow `.github/workflows/ci.yml` runs the M3–M5 commands inside the same container image.
-Locally the equivalent is `./scripts/pm ./scripts/ci.sh`.
+```bash
+./scripts/pm bash -lc 'actionlint && time ./scripts/ci.sh'   # ≤ 15 min (SC-007); hosted run only after push authorization
+```
 
 ## M7 — Flatpak (US5)
 
 ```bash
-./scripts/pm-flatpak ./scripts/package-flatpak.sh                               # out/monodevelop.flatpak
-./scripts/pm-flatpak bash -lc 'flatpak --user install -y out/monodevelop.flatpak && flatpak run com.monodevelop.MonoDevelop --version'
+PM_PROFILE=flatpak ./scripts/pm ./scripts/package-flatpak.sh                   # out/monodevelop.flatpak (+ sha256, SBOM)
+PM_PROFILE=flatpak ./scripts/pm bash -lc 'flatpak --user install -y out/monodevelop.flatpak && flatpak run io.github.viniciusmorgado.MonoDevelop --version'
 ```
 
 ## M8/M9 — Hardening & release
 
 ```bash
-./scripts/pm dotnet list main/MonoDevelop.Linux.sln package --vulnerable --include-transitive
+./scripts/pm ./scripts/audit.sh
 ./scripts/pm bash -lc 'MD_LOG_FORMAT=json dotnet main/build/bin/mdtool.dll 2>&1 | head -1 | jq .'
-./scripts/pm ./scripts/test.sh --all && ./scripts/pm xvfb-run -a ./scripts/run.sh --smoke-test
+./scripts/pm ./scripts/test.sh && ./scripts/pm ./scripts/run.sh --headless --smoke-test main/tests/linux-smoke/Smoke.sln
+./scripts/pm ./scripts/test.sh --all   # informational: includes quarantined tests
 ```

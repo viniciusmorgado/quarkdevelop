@@ -181,8 +181,8 @@ published artifacts.
   program): add-in discovery still finds the IDE's add-ins.
 - Wayland session vs X11 session: the IDE runs on both.
 - Build cancelled by the user: the build stops promptly and the IDE remains responsive.
-- Very large solution: the IDE stays responsive while loading (no UI freeze longer than 1 second
-  during load, as observed by the UI-thread monitor).
+- Large solution (the IDE's own `main/MonoDevelop.Linux.sln`): the IDE stays responsive while
+  loading — no main-loop stall longer than 1 second during load.
 
 ## Requirements *(mandatory)*
 
@@ -204,12 +204,15 @@ published artifacts.
 - **FR-008**: The IDE MUST debug .NET 10 programs: breakpoints, stepping, locals inspection,
   process exit reporting.
 - **FR-009**: The IDE MUST show Git status, diff and history for files in Git repositories.
-- **FR-010**: The IDE MUST manage NuGet package references of SDK-style projects.
-- **FR-011**: The IDE MUST discover and run unit tests of .NET 10 test projects.
+- **FR-010**: The IDE MUST add, update, remove and restore NuGet package references of SDK-style
+  projects from nuget.org.
+- **FR-011**: The IDE MUST discover, run and report results of NUnit, xUnit and MSTest tests in
+  .NET 10 test projects (through the VSTest platform).
 - **FR-012**: Components that only serve macOS or Windows, and legacy technologies without a
   .NET 10 / Linux equivalent (web forms, web references/WCF, the old GUI designer, Subversion,
   autotools), MUST be excluded from the Linux build and listed as breaking changes.
-- **FR-013**: The project MUST produce a Flatpak bundle that installs and launches the IDE.
+- **FR-013**: The project MUST produce a Flatpak bundle that installs the IDE with its desktop entry,
+  icon and MIME/file associations, and launches it.
 - **FR-014**: Logs MUST be structured, with level and format selectable at start-up, and start-up
   logs MUST record the IDE, runtime and SDK versions.
 - **FR-015**: Every documented developer workflow (setup, restore, build, test, run, debug,
@@ -228,7 +231,7 @@ published artifacts.
   discovered at start-up from the add-in directory.
 - **Target runtime / SDK**: an installed .NET SDK used to build and run user projects.
 - **Debug session**: a running program under the debugger with breakpoints, threads and frames.
-- **Quarantined test**: a test excluded from the gate, with a recorded reason and owner.
+- **Quarantined test**: a test excluded from the gate, with a recorded reason, owner and date.
 - **Evidence record**: stored output of a validation command proving a milestone criterion.
 
 ## Success Criteria *(mandatory)*
@@ -237,18 +240,22 @@ published artifacts.
 
 - **SC-001**: A contributor with only podman and git reaches a successful build from a fresh clone
   by following the setup guide, with zero manual steps beyond the documented commands.
-- **SC-002**: 100% of the core test suites execute on the target platform; at most 15% of their
-  tests are quarantined, each with a recorded reason.
-- **SC-003**: Line coverage of the core library is at least 60% and of the whole Linux build at
-  least 40%, and coverage never decreases between accepted changes afterwards.
+- **SC-002**: By M4, every test project in the Linux solution executes on the target platform, and
+  quarantined test cases are at most 15% of the test cases discovered (`dotnet test --list-tests`)
+  across those projects, excluding tests already `[Ignore]`d upstream; each has a recorded reason,
+  and the quarantine count per suite never increases after the suite is first converted.
+- **SC-003**: By M4, line coverage of the core library is at least 60% and of the whole Linux
+  solution at least 40%; afterwards coverage never decreases between accepted changes (ratchet).
 - **SC-004**: The command-line build of the sample console project and the sample solution succeeds
-  and the broken sample fails, in 100% of pipeline runs.
+  and the broken sample fails, in every pipeline run (the check is a pipeline step).
 - **SC-005**: The graphical smoke test (start, open sample solution, build, zero errors, exit)
-  passes under a virtual display; start-up to main window takes at most 10 seconds on the
-  reference machine.
+  passes under a virtual display on X11 and on a headless Wayland compositor; start-up to main
+  window takes at most 10 seconds in the reference container on the maintainer's workstation
+  (x86-64, measured and recorded as evidence).
 - **SC-006**: An automated debug scenario (breakpoint hit, locals read, step, exit) passes.
-- **SC-007**: A clean pipeline run (build + tests + smoke) completes in at most 15 minutes of
-  wall-clock time with a warm dependency cache.
+- **SC-007**: A full pipeline run (build + tests + smoke) completes in at most 15 minutes of
+  wall-clock time with a warm dependency cache, measured with `scripts/ci.sh` in the reference
+  container (and on the hosted runner once pushing is authorized).
 - **SC-008**: The Flatpak bundle installs in a clean environment and passes the version and
   headless build checks.
 - **SC-009**: Zero High/Critical known vulnerabilities in the dependency graph of the Linux build.

@@ -9,6 +9,12 @@ The whole IDE is built on Mono.Addins (390 files, 70 manifests). The submodule v
 .NET Framework. It was unknown whether the add-in registry scan (historically able to spawn a
 `mono` setup process) and assembly loading work on CoreCLR.
 
+## Considered Options
+
+1. Mono.Addins 1.4.1 from NuGet in the default AssemblyLoadContext (chosen)
+2. One AssemblyLoadContext per add-in (breaks MEF/Roslyn type identity)
+3. Replace Mono.Addins with MEF-only composition (rewrite of 70 manifests and the extension model)
+
 ## Decision Outcome
 
 Use Mono.Addins, Mono.Addins.Setup and Mono.Addins.CecilReflector 1.4.1 from NuGet

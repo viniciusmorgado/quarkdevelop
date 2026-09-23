@@ -22,3 +22,4 @@ their file and link to the replacement. Context for all of them: `specs/001-linu
 | [0015](0015-test-framework.md) | Test framework: NUnit 3.14 + coverlet | Accepted |
 | [0016](0016-netcoredbg-debugging.md) | Debugging user programs with netcoredbg | Accepted |
 | [0017](0017-linux-exclusions.md) | Projects excluded from the Linux build | Accepted |
+| [0018](0018-warning-policy.md) | Warnings as errors with per-project legacy baselines | Accepted |

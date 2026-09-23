@@ -9,6 +9,12 @@
 dotnetfeed.blob). Versions are spread across `Directory.Build.props` properties and csproj files.
 Several pinned packages have known vulnerabilities (Newtonsoft.Json 12.0.x, SharpZipLib 1.2.0).
 
+## Considered Options
+
+1. Central Package Management + nuget.org-only feeds + lock files (chosen)
+2. Keep per-project versions and the old feed list (dead feeds break restore)
+3. Mirror the old packages into a private feed (not reproducible for contributors; license unclear for vs-impl packages)
+
 ## Decision Outcome
 
 - `main/Directory.Packages.props` with `ManagePackageVersionsCentrally=true` for all converted

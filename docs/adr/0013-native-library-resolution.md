@@ -8,6 +8,12 @@
 GTK/GLib/Pango P/Invokes use Windows DLL names (`libglib-2.0-0.dll`, `libgtk-win32-2.0-0.dll`, …)
 and rely on Mono `<dllmap>` rules in 7 `.dll.config` files. CoreCLR ignores dllmap.
 
+## Considered Options
+
+1. `NativeLibrary.SetDllImportResolver` with a shared map (chosen)
+2. Rename every `DllImport` to Linux sonames (touches 700 lines, still needs fallbacks)
+3. Ship symlinks named like Windows DLLs (fragile, impossible in the Flatpak runtime)
+
 ## Decision Outcome
 
 A shared `NativeLibraryMap` helper in MonoDevelop.Core registers

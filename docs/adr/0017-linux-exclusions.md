@@ -23,6 +23,11 @@ Not part of `main/MonoDevelop.Linux.sln` (code stays in the repository until rem
 | VCS | `VersionControl.Subversion*` | SharpSvn/libsvn P/Invoke |
 | UI automation | `tests/UserInterfaceTests`, `tests/ui/*` | AutoTest over Remoting |
 | Submodules | mono-tools, mdtestharness, nuget-binary, sharpsvn-binary | unused / replaced |
+| Legacy build tooling | `msbuild/MDBuildTasks` (DownloadNupkg for the legacy build), `tools/AssemblyInfoWriter` | replaced by SDK restore / `GenerateAssemblyInfo` |
+| Superseded test runners | `MonoDevelop.UnitTesting.NUnit` (+ `NUnitRunner`, `NUnit3Runner`, Remoting-based) | IDE test running goes through VSTest (`MonoDevelop.UnitTesting` + DotNetCore) |
+| Mac/VS-specific services | `MonoDevelop.ConnectedServices` | VS for Mac Azure services |
+| Editor tests of excluded editor | `core/MonoDevelop.TextEditor.Tests` | tests the Cocoa/WPF editor |
+| Deferred (post-MVP, may return by ADR) | `Deployment` (+ `Deployment.Linux`), `MonoDevelop.AspNetCore`, `MonoDevelop.Packaging`, `MonoDeveloperExtensions` | not needed for the C# desktop/console MVP |
 
 Deferred items may return through a new ADR. All exclusions are listed for users in
 `docs/BREAKING-CHANGES.md`.

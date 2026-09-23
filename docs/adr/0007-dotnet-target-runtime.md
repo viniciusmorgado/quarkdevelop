@@ -10,6 +10,12 @@
 .NET 10 on Linux neither exists → `NullReferenceException` at start-up
 (`SystemAssemblyService.cs:74-77`).
 
+## Considered Options
+
+1. New `DotNetCoreTargetRuntime` + factory (chosen)
+2. Adapt `MonoTargetRuntime` to pretend CoreCLR is Mono (misleading paths, GAC assumptions)
+3. Remove the target-runtime abstraction (large API break for add-ins)
+
 ## Decision Outcome
 
 Add `DotNetCoreTargetRuntime` and `DotNetCoreTargetRuntimeFactory` in

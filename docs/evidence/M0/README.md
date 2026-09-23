@@ -11,8 +11,8 @@ All commands ran inside the dev container (`./scripts/pm`, image built from `Con
 | T006 GtkSharp 3 | [T006-gtk3-hello.png](T006-gtk3-hello.png), `spikes/gtk3-hello` | OK (window + Cairo under Xvfb) |
 | T007 Mono.Addins | `spikes/addins-host`, `spikes/addins-plugin` | OK (in-process scan, XML + type extensions) |
 | T008 Roslyn | `spikes/roslyn-ivt`, `spikes/roslyn-publicizer` | no IVT for MonoDevelop in 5.9; Publicizer works |
-| T009 legacy baseline | [T003-legacy-baseline.md](T003-legacy-baseline.md) | see report |
-| T010 DotDevelop | [T007-dotdevelop.md](T007-dotdevelop.md) | cherry-pick candidates identified |
+| T009 legacy baseline | [T009-legacy-baseline.md](T009-legacy-baseline.md) | see report |
+| T010 DotDevelop | [T010-dotdevelop.md](T010-dotdevelop.md) | cherry-pick candidates identified |
 
 Reproduce: see `specs/001-linux-dotnet10-migration/quickstart.md` § M0.
 

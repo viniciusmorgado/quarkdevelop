@@ -3,241 +3,247 @@
 **Input**: Design documents from `/specs/001-linux-dotnet10-migration/`
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
-**Tests**: Requested by the constitution (principle V) and the spec (SC-002…SC-006): test tasks are
-included per story.
+**Revision 2 (2026-09-23)** — incorporates the three M1 reviews (`docs/evidence/M1/review-*.md`):
+every task names its proof (→), tests precede or accompany behaviour changes, multi-project UI
+tasks are split one project per task, new tasks for gaps found in review.
 
-**Organization**: Grouped by user story; each task also carries its milestone (`M0`…`M9`) in the
-description. Every command runs inside the container: prefix with `./scripts/pm` (see quickstart).
-Each task's "→" names the command or artifact that proves completion.
+**Tests**: required by the constitution (principle V) and the spec (SC-002…SC-006).
 
-## Format: `[ID] [P?] [Story] Description`
-
-- **[P]**: can run in parallel (different files, no dependency on unfinished tasks)
-- **[Story]**: user story (US1…US6) from spec.md
-
-## Path Conventions
-
-Repository root = worktree root; product code under `main/`; docs under `docs/`; specification under
-`specs/001-linux-dotnet10-migration/`.
+**Conventions**
+- Every command runs inside the container: `./scripts/pm <cmd>` (omitted below for brevity).
+- Each task = one or more commits via `./scripts/git-commit`; evidence under `docs/evidence/Mx/`.
+- `[P]` = parallelizable; `[USn]` = user story from spec.md; `Mx` = milestone.
+- "→" = the command or artifact that proves the task is done.
 
 ---
 
-## Phase 1: Setup (M0 baseline, M1 specification)
+## Phase 1: Setup — M0 baseline, M1 specification
 
-**Purpose**: reference environment, inventory, spikes, governance artifacts.
-
-- [x] T001 M0: Create `Containerfile` (dotnet/sdk:10.0.401-noble + GTK3 + Xvfb + specify 1.0.6) and `scripts/pm` podman wrapper → `./scripts/pm dotnet --info`
-- [x] T002 M0: Create `scripts/git-commit` enforcing the no-reply identity → `git log -1 --format=%ae`
-- [x] T003 M0: Specification layout (constitution, `specs/001-linux-dotnet10-migration/`) → files exist
-- [x] T004 M0: Initialize all 15 submodules inside the container → `git submodule status`
-- [x] T005 [P] M0: Write `scripts/inventory.sh` and generate `docs/evidence/M0/inventory.md`
-- [x] T006 [P] M0: Spike GtkSharp 3 window on .NET 10 in `spikes/gtk3-hello/` → `docs/evidence/M0/T006-gtk3-hello.png`
-- [x] T007 [P] M0: Spike Mono.Addins 1.4.1 on CoreCLR in `spikes/addins-host/` + `spikes/addins-plugin/` → "addins-spike: OK"
-- [x] T008 [P] M0: Spike Roslyn 5.9 IVT dump (`spikes/roslyn-ivt/`) and Publicizer access (`spikes/roslyn-publicizer/`) → "roslyn-publicizer: OK"
-- [x] T009 [P] M0: Time-boxed legacy Mono baseline attempt → `docs/evidence/M0/T003-legacy-baseline.md`
-- [x] T010 [P] M0: DotDevelop prior-art review with cherry-pick candidates → `docs/evidence/M0/T007-dotdevelop.md`
-- [x] T011 M0: Record spike outcomes in `specs/001-linux-dotnet10-migration/research.md` and `docs/evidence/M0/README.md`
-- [ ] T012 M1: Constitution v1.0.0 in `docs/constitution.md`; spec, plan, research, data-model, contracts, quickstart, tasks under `specs/001-linux-dotnet10-migration/`
-- [ ] T013 [P] M1: ADRs 0001–0017 in `docs/adr/` (MADR) + `docs/adr/README.md` index
-- [ ] T014 [P] M1: `docs/BREAKING-CHANGES.md` listing excluded platforms/add-ins (ADR 0017)
-- [ ] T015 M1: Independent review of spec/plan/tasks + the consistency analysis; fix all CRITICAL/HIGH findings → `docs/evidence/M1/analyze.md`
-
----
-
-## Phase 2: Foundational (M2 toolchain + W0) — BLOCKS all stories
-
-**Purpose**: SDK pin, package management, Linux props, primary solution, scripts, minimal CI.
-
-- [ ] T016 M2: Add `global.json` (SDK 10.0.100, `rollForward: latestFeature`) at repo root → `./scripts/pm dotnet --version`
-- [ ] T017 M2: Replace root `NuGet.config` with nuget.org-only sources (+ `<packageSourceMapping>`), document removed feeds in ADR 0004
-- [ ] T018 M2: Create `main/Directory.Packages.props` (CPM) with W0 versions: Mono.Addins* 1.4.1, Mono.Cecil 0.11.6, Mono.Unix 7.1.0-final.1.21458.1, Microsoft.Build* 17.x, Microsoft.Build.Locator 1.11.2, Microsoft.CodeAnalysis* 5.9.0, Krafs.Publicizer 2.3.0, System.CodeDom, StreamJsonRpc 2.x, Microsoft.VisualStudio.Composition 17.x, Newtonsoft.Json 13.0.4, SharpZipLib 1.4.2, NGettext, NUnit 3.14, Microsoft.NET.Test.Sdk, coverlet.collector
-- [ ] T019 M2: Create `main/msbuild/Linux/Common.props` (net10.0, output to `main/build/bin`, `AppendTargetFrameworkToOutputPath=false`, `GenerateAssemblyInfo=false`, LangVersion 8, PublicSign with `MonoDevelop-Public.snk`, `DefineConstants GNOME;LINUX`, NuGet audit, lock files), `Addin.props` (`build/AddIns/$(AddinBuildDir)`, non-private refs), `Test.props`
-- [ ] T020 M2: Make `main/Directory.Build.props`/`.targets` branch on `$(UsingMicrosoftNETSdk)` so SDK-style projects import only `msbuild/Linux/*.props`; drop `MdAddinsDirectory`/md-addins dependency for SDK projects
-- [ ] T021 M2: Add `main/msbuild/Linux/BuildVariables.targets` generating `BuildVariables.cs` from `version.config` + git SHA (replaces Mono `configure.exe` step in `MonoDevelop.Core.csproj`)
-- [ ] T022 M2: Create `main/MonoDevelop.Linux.sln` (initially `msbuild/MDBuildTasks` converted to net10.0 or excluded per ADR) → `./scripts/pm dotnet build main/MonoDevelop.Linux.sln`
-- [ ] T023 [P] M2: Scripts `scripts/{setup,restore,build,test,run,debug}.sh` per `contracts/scripts.md` → `shellcheck` + two consecutive `build.sh` runs
-- [ ] T024 [P] M2: Add netcoredbg (pinned release + sha256) to `Containerfile`; `.devcontainer/devcontainer.json` using the same Containerfile
-- [ ] T025 [P] M2: Extend `.editorconfig` with analyzer severities for migrated projects; `dotnet format --verify-no-changes` wired in `scripts/build.sh --check`
-- [ ] T026 M2: Minimal CI `.github/workflows/ci.yml`: build image, restore (cache on lock files), build Linux solution, format check
-- [ ] T027 M2: Evidence `docs/evidence/M2/` (build logs ×2, shellcheck, dotnet --version)
-
-**Checkpoint**: Linux solution builds (even if small); scripts and CI green.
+- [x] T001 M0: `Containerfile` + `scripts/pm` → `./scripts/pm dotnet --info` shows SDK 10.0.401, no Mono
+- [x] T002 M0: `scripts/git-commit` (no-reply identity) → `git log -1 --format=%ae`
+- [x] T003 M0: specification layout (constitution, `specs/001-linux-dotnet10-migration/`) → files exist
+- [x] T004 M0: initialize 15 submodules in the container → `git submodule status | grep -c '^ '` = 15
+- [x] T005 [P] M0: `scripts/inventory.sh` → `docs/evidence/M0/inventory.md`
+- [x] T006 [P] M0: GtkSharp 3 spike `spikes/gtk3-hello` → `docs/evidence/M0/T006-gtk3-hello.png`
+- [x] T007 [P] M0: Mono.Addins spike `spikes/addins-*` → output "addins-spike: OK"
+- [x] T008 [P] M0: Roslyn IVT + Publicizer spikes `spikes/roslyn-*` → "roslyn-publicizer: OK"
+- [x] T009 [P] M0: legacy Mono baseline attempt → `docs/evidence/M0/T009-legacy-baseline.md`
+- [x] T010 [P] M0: DotDevelop prior-art review → `docs/evidence/M0/T010-dotdevelop.md`
+- [x] T011 M0: spike outcomes in `research.md` + `docs/evidence/M0/README.md`
+- [x] T012 M1: constitution + spec + plan + research + data-model + contracts + quickstart + tasks → `docs/constitution.md`, files under `specs/001-linux-dotnet10-migration/`
+- [x] T013 [P] M1: ADRs 0001–0017 + index → `ls docs/adr/*.md | wc -l` ≥ 18
+- [x] T014 [P] M1: `docs/BREAKING-CHANGES.md` → file lists every ADR 0017 exclusion
+- [x] T015 M1: three independent reviews (analyze, feasibility, traceability) → `docs/evidence/M1/review-{A,B,C}.md`
+- [ ] T016 M1: apply review findings (this revision, constitution 1.0.1, ADR fixes, spec SC-002/003/005/007, quickstart/contract fixes) and re-run the consistency analysis → `docs/evidence/M1/analyze.md` with 0 CRITICAL
+- [ ] T017 [P] M1: ADR 0018 warning policy (TreatWarningsAsErrors + per-project `WarningsNotAsErrors` baseline) → `docs/adr/0018-warning-policy.md`
 
 ---
 
-## Phase 3: User Story 1 — Headless core builds and tests on Linux (P1) 🎯 MVP (M3/M4)
+## Phase 2: Foundational — M2 toolchain (blocks every story)
 
-**Goal**: `MonoDevelop.Core` (+ C# project support) compiles on net10.0 and its test suite runs with coverage.
-**Independent Test**: `./scripts/pm ./scripts/build.sh && ./scripts/pm ./scripts/test.sh` → TRX + coverage summary; no Mono in the container.
+- [x] T018 M2: `global.json` (10.0.100, latestFeature) → `dotnet --version` = 10.0.401
+- [x] T019 M2: nuget.org-only `NuGet.config` with source mapping → `grep -c '<add key' NuGet.config` = 1
+- [x] T020 M2: `main/Directory.Packages.props` (CPM, transitive pinning, Microsoft.Build 18.9.6 ≤ SDK MSBuild) → restore succeeds with no NU1605/NU1608
+- [x] T021 M2: `main/msbuild/Linux/{Common.props,Common.targets,OutputLayout.targets}`; `Directory.Build.*` branch on `UsingMicrosoftNETSdk` → Core output lands in `main/build/bin/`
+- [x] T022 M2: `BuildVariables.targets` generates `MonoDevelop.BuildInfo` from `version.config` + `build/bin/buildinfo` → `grep 8.6 main/src/core/MonoDevelop.Core/obj/Debug/BuildVariables.cs`
+- [x] T023 M2: `main/MonoDevelop.Linux.sln` (classic sln) → `dotnet sln main/MonoDevelop.Linux.sln list`
+- [x] T024 [P] M2: `scripts/{lib,setup,restore,build,test,run,debug,lint}.sh` → `./scripts/lint.sh` + two consecutive `./scripts/build.sh` succeed
+- [x] T025 [P] M2: netcoredbg 3.2.0-1092 + actionlint 1.7.12 (sha256-verified), images pinned by digest; `.devcontainer/devcontainer.json` → `netcoredbg --version`, `actionlint`
+- [x] T026 M2: minimal `.github/workflows/ci.yml` (least privilege, NuGet cache, build + format + lint) → `actionlint` clean
+- [x] T027 M2: README Linux section, `docs/linux/setup.md`, `docs/linux/troubleshooting.md` → files exist and are linked from README
+- [x] T028 M2: `InternalsVisibleTo` emitted with the MonoDevelop key (GenerateAssemblyInfo=true, legacy attributes off) → generated `obj/Debug/MonoDevelop.Core.AssemblyInfo.cs` contains the IVT lines
+- [x] T029 M2: per-project warning baseline (`scripts/warnings-baseline.sh`, `main/msbuild/Linux/warning-baselines/`), `TreatWarningsAsErrors=true`, security IDs never baselined → Core builds with 0 errors
+- [ ] T030 M2: `CONTRIBUTING.md` (container workflow, commit identity, spec/ADR flow, warning baseline) → file exists
+- [ ] T031 M2: fresh-clone check: `git clone . /tmp/fc && cd /tmp/fc && ./scripts/setup.sh && ./scripts/build.sh` → `docs/evidence/M2/fresh-clone.log` (SC-001)
+- [ ] T032 M2: evidence → `docs/evidence/M2/README.md` (versions, build ×2 logs, lint, actionlint)
 
-### Implementation for User Story 1
-
-- [ ] T028 [US1] M3: Convert `main/src/core/MonoDevelop.Core/MonoDevelop.Core.csproj` to SDK-style net10.0 (explicit Compile list; remove ReferencesGtk/ReferencesVSEditor imports; remove System.Web/ServiceModel/Remoting/monodoc refs; PackageReferences via CPM)
-- [ ] T029 [US1] M3: Exclude/guard Linux-irrelevant Core files: `MonoDevelop.Core.Web/STSAuthHelper.cs`, `WIFTypeProvider.cs`, `MSBuildEngineV12.cs`, monodoc part of `MonoDevelop.Projects/HelpService.cs` (`#if MONODOC`)
-- [ ] T030 [US1] M3: Remove Remoting/BinaryFormatter in Core (`MonoDevelop.Core.Execution/RemotingService.cs`, `ProcessHostController.cs`, `RemoteProcessObject`, `DisposerFormatterSink`, `InstrumentationService` remoting) per ADR 0009
-- [ ] T031 [US1] M3: Replace `CallContext.LogicalSetData` with `AsyncLocal<T>` in `MonoDevelop.Projects.MSBuild/MSBuildProjectService.cs` and `MonoDevelop.Projects/WorkspaceObject.cs`
-- [ ] T032 [US1] M3: Add `DotNetCoreTargetRuntime` + factory in `main/src/core/MonoDevelop.Core/MonoDevelop.Core.Assemblies/`, register in `MonoDevelop.Core.addin.xml` (`/MonoDevelop/Core/Runtimes`), null-guard `SystemAssemblyService.cs` (data-model: TargetRuntime)
-- [ ] T033 [US1] M3: `MSBuildLocator` bootstrap helper in Core (`MonoDevelop.Core/Runtime.cs` `LoadMSBuildLibraries` no-op on .NET, `GetMSBuildBinPath` → SDK dir)
-- [ ] T034 [US1] M3: `NativeLibraryMap` helper (`main/src/core/MonoDevelop.Core/MonoDevelop.Core/NativeLibraryMap.cs`) replacing `MonoDevelop.Core.dll.config` dllmaps (ADR 0013)
-- [ ] T035 [US1] M3: Switch Mono.Posix → Mono.Unix 7.1 NuGet (`LoggingService.cs`, `ProcessService.cs`, `Runtime.cs`, `FileService.cs`, `TextFile.cs`); remove `mono_pmip` use in `Utilities/SampleProfiler.cs`
-- [ ] T036 [US1] M3: NGettext-backed `GettextCatalog` in `main/src/core/MonoDevelop.Core/MonoDevelop.Core/Gettext.cs` (ADR 0014)
-- [ ] T037 [US1] M3: Replace `Assembly.LoadFrom` paths needing ALC awareness (`Runtime.cs`, `SdkResolution.cs`) and `Type.GetType("Mono.Runtime")` checks with a `Platform.IsMono`-free runtime check
-- [ ] T038 [US1] M3: Create `main/src/addins/CSharpBinding/MonoDevelop.CSharpBinding.Core/` (SDK-style, net10.0) with `CSharpProjectExtension`, `CSharpCompilerParameters` (IdeApp calls → hook), `CSharpLanguageVersionHelper`, `CSharpResourceIdBuilder`, `PortableCSharpProjectFlavor` and an addin manifest registering the C# `DotNetProjectType`
-- [ ] T039 [US1] M3: Upgrade vulnerable/obsolete packages (Newtonsoft 13.0.4, SharpZipLib 1.4.x, Cecil 0.11.6, StreamJsonRpc 2.x, VS Composition 17.x, drop ValueTuple/System.Net.Http shims) → `dotnet list package --vulnerable`
-- [ ] T040 [US1] M3: Add Core + CSharpBinding.Core to `main/MonoDevelop.Linux.sln` → `dotnet build -warnaserror`
-
-### Tests for User Story 1
-
-- [ ] T041 [US1] M4: Convert `main/tests/UnitTests/UnitTests.csproj` to SDK-style net10.0 on NUnit 3.14; replace GuiUnit main-thread plumbing with a `[SetUpFixture]` synchronization context; per-run Mono.Addins registry dir
-- [ ] T042 [US1] M4: Convert `main/tests/MonoDevelop.Core.Tests.Addin` and `main/tests/MonoDevelop.Core.Tests` (TestFixtureSetUp→OneTimeSetUp, ExpectedException→Assert.Throws); `TestBase` default runtime → DotNetCore
-- [ ] T043 [US1] M4: Retarget/reference-pack strategy for `main/tests/test-projects` fixtures (Microsoft.NETFramework.ReferenceAssemblies where net4x is required)
-- [ ] T044 [US1] M4: Run suite, quarantine failures with reasons in `docs/evidence/M4/quarantine.md` (≤ 15 %), coverage via coverlet + ReportGenerator in `scripts/test.sh`
-- [ ] T045 [US1] M4: Raise Core coverage to ≥ 60 % (targeted tests for new runtime/interop/localization code); add coverage ratchet file `docs/evidence/M4/coverage-baseline.txt`
-- [ ] T046 [US1] M4: Evidence `docs/evidence/M3/` and `docs/evidence/M4/` (build log, TRX summary, coverage summary)
-
-**Checkpoint**: US1 complete — the MVP walking skeleton step 1.
+**Checkpoint**: toolchain and conventions ready.
 
 ---
 
-## Phase 4: User Story 2 — `mdtool` builds C# projects (P1) (M3)
+## Phase 3: User Story 1 — headless core builds and tests (P1, MVP) — M3/M4
 
-**Goal**: `mdtool build` builds/cleans SDK-style net10 projects and solutions per `contracts/mdtool-cli.md`.
-**Independent Test**: quickstart M3 block.
+**Goal**: `MonoDevelop.Core` + UI-free C# project support on net10.0 with a running test suite.
+**Independent Test**: `./scripts/build.sh && ./scripts/test.sh` → TRX + coverage; no Mono.
 
-### Tests for User Story 2
+### Core compiles (M3)
 
-- [ ] T047 [P] [US2] M3: Sample projects `main/tests/linux-smoke/Hello/Hello.csproj` (net10 console printing "Hello"), `Broken/Broken.csproj` (compile error), `Smoke.sln` (Hello + a class library)
-- [ ] T048 [P] [US2] M3: Contract test `main/tests/MonoDevelop.Core.Tests/.../MdtoolContractTests.cs` running the mdtool build scenarios (exit codes 0/1, `-p:`, `-t:Clean`, `-c:`)
+- [x] T033 [US1] M3: SDK-style `MonoDevelop.Core.csproj` (543 explicit sources, CPM, only used packages: Mono.Addins(.Setup), Cecil, Mono.Unix, MSBuild* compile-only, Locator, CodeAnalysis.Common, Newtonsoft, ObjectPool, CodeDom, ConfigurationManager) in `MonoDevelop.Linux.sln` → `dotnet build main/src/core/MonoDevelop.Core` 0 errors
+- [x] T034 [US1] M3: Remoting removed from Core (RemotingService, ProcessHostController, DisposerFormatterSink out of the build; `ProcessHostConsole` extracted; `CreateExternalProcessObject` throws `NotSupportedException`; instrumentation autosave → JSON; remote/binary instrumentation → `PlatformNotSupportedException`) → no `System.Runtime.Remoting`/`BinaryFormatter` in Core compile items
+- [x] T035 [US1] M3: `CallContext` → `AsyncLocal` (`MonoDevelop.Projects/ItemInitializationContext.cs`) → covered by T046 tests
+- [x] T036 [US1] M3: `Debug.Listeners` → `Trace.Listeners`; `RegistryHive.DynData` removed; monodoc `HelpService` behind `#if MONODOC`; WCF STS behind `#if WCF_STS`; obsolete serialization members removed (SYSLIB0051/0003); unused Decompiler using removed → build clean of these IDs
+- [x] T037 [US1] M3: `MonoDevelop.Core.addin.xml` imports only assemblies shipped next to Core (Newtonsoft, ObjectPool) → add-in registry loads Core without "assembly not found" (T046)
 
-### Implementation for User Story 2
+### Test harness first (M4 infrastructure, needed before further behaviour changes)
 
-- [ ] T049 [US2] M3: Convert MSBuild builder `main/src/core/MonoDevelop.Projects.Formats.MSBuild/MonoDevelop.MSBuildBuilder.csproj` to net10.0 exe; drop Remoting ref; `Thread.Abort` → `BuildManager.CancelAllSubmissions` in `BuildEngine.Shared.cs`; MSBuildLocator at entry
-- [ ] T050 [US2] M3: `RemoteBuildEngineManager.cs`: launch builder with `dotnet exec`, pass SDK paths via environment, stop copying MSBuild bin dir / patching `exe.config`
-- [ ] T051 [US2] M3: Convert `main/src/tools/mdtool/mdtool.csproj` to net10.0 exe; MSBuildLocator bootstrap in `mdtool.cs`; `.addins` file pointing to `../AddIns`; `-r:` accepted and ignored with warning in `BuildTool.cs`
-- [ ] T052 [US2] M3: Move headless SDK discovery (`DotNetCorePath`, `DotNetCoreSdk*`, `MSBuildSdks*`) into `main/src/addins/MonoDevelop.DotNetCore/MonoDevelop.DotNetCore.Core/` (net10.0) and reference it from Core's runtime
-- [ ] T053 [US2] M3: Cherry-pick DotDevelop MSBuild evaluator fixes for net5+ projects (`7045264a30`, `4518519b5e`, `21031632fd`, provenance in commit message) and add an evaluation diff test vs `dotnet msbuild -getItem:Compile -getProperty:TargetPath` for linux-smoke projects (R4)
-- [ ] T054 [US2] M3: Add builder, mdtool, DotNetCore.Core, linux-smoke to the Linux solution; run the quickstart M3 block → `docs/evidence/M3/mdtool.md`
+- [ ] T038 [US1] M3: `main/tests/UnitTests/UnitTests.csproj` → SDK-style net10.0, NUnit 3.14, no GuiUnit; `TestHostSetup.cs` `[SetUpFixture]` calling `Runtime.Initialize(true)` with per-run `MONODEVELOP_*`/add-in registry dirs + synchronization context; `.addins` pointing to `../../AddIns` → `dotnet build main/tests/UnitTests`
+- [ ] T039 [US1] M3: `main/tests/MonoDevelop.Core.Tests.Addin` → SDK-style add-in test assembly → builds into `build/AddIns/…`
+- [ ] T040 [US1] M3: `main/tests/MonoDevelop.Core.Tests` → SDK-style, `TestFixtureSetUp`→`OneTimeSetUp`, `ExpectedException`→`Assert.Throws`, Moq/Castle current versions; tests needing Xwt/Ide quarantined → `dotnet test main/tests/MonoDevelop.Core.Tests --list-tests` lists ≥ 800 cases
+- [ ] T041 [US1] M3: first run + quarantine record (reason, owner, date, task) → `docs/evidence/M4/quarantine.md`; `./scripts/test.sh` green with `Category!=Quarantine`
 
-**Checkpoint**: US1 + US2 = headless walking skeleton (WS-1) done.
+### Runtime on .NET (M3) — each with tests
+
+- [ ] T042 [US1] M3: `DotNetCoreTargetRuntime` + factory in `MonoDevelop.Core.Assemblies/` (SDK discovery via Locator / `dotnet --list-sdks`, reference packs, `CanBuild=false` + message when no SDK), registered in `MonoDevelop.Core.addin.xml`; null-safe `SystemAssemblyService` → tests `DotNetCoreTargetRuntimeTests` (SDK found; no-SDK case)
+- [ ] T043 [US1] M3: `DotNetCoreExecutionHandler` for `DotNetExecutionCommand` (`dotnet exec`) → test runs `linux-smoke` Hello through the handler
+- [ ] T044 [US1] M3: `MSBuildLocator` bootstrap helper (`Runtime.cs`: `LoadMSBuildLibraries` no-op on CoreCLR, `GetMSBuildBinPath` → SDK dir) → test asserts MSBuild bin path = SDK dir
+- [ ] T045 [US1] M3: `NativeLibraryMap` (`MonoDevelop.Core/NativeLibraryMap.cs`) + module initializer; `MonoDevelop.Core.dll.config` deleted → test resolves `libglib-2.0-0.dll` → `libglib-2.0.so.0`
+- [ ] T046 [US1] M3: `Mono.Unix` usage verified on net10 (`LoggingService`, `ProcessService`, `Runtime`, `FileService`, `TextFile`), `mono_pmip` removed from `SampleProfiler.cs`, `CodePagesEncodingProvider` registered at start-up → tests: log redirection, legacy code page decode, `AsyncLocal` delayed initialization
+- [ ] T047 [US1] M3: NGettext-based `GettextCatalog` (`MonoDevelop.Core/Gettext.cs`) → test translates a known string with `LANG=de_DE` from a compiled catalog
+- [ ] T048 [US1] M3: MSBuild target compiling `main/po/*.po` → `main/build/locale/<lang>/LC_MESSAGES/monodevelop.mo` (replaces autotools msgfmt) → one `.mo` per `.po` (FR-018)
+- [ ] T049 [US1] M3: `Type.GetType("Mono.Runtime")` checks and `Assembly.LoadFrom` sites in Core (`Runtime.cs`, `SdkResolution.cs`, `MonoRuntimeInfo.cs`) behave on CoreCLR → test `Platform`/runtime info reports CoreCLR
+- [ ] T050 [US1] M3: add-in failure resilience: an add-in with a missing dependency is skipped and logged → test with a broken test add-in
+- [ ] T051 [US1] M3: sln/csproj round-trip test (load + save `linux-smoke/Smoke.sln` and a fixture without diff) → test in Core.Tests
+- [ ] T052 [US1] M3: vulnerability gate `scripts/audit.sh` (fails on High/Critical in `dotnet list package --vulnerable --include-transitive`) → exit 0
+
+### UI-free C# project support (M3)
+
+- [ ] T053 [US1] M3: new `main/src/addins/CSharpBinding/MonoDevelop.CSharpBinding.Core/` (net10.0 add-in): `CSharpProject` (class name kept), `CSharpProjectExtension`, `CSharpCompilerParameters` (IdeApp calls → hook), `CSharpLanguageVersionHelper`, `CSharpResourceIdBuilder`, `PortableCSharpProjectFlavor`, manifest registering `DotNetProjectType` + language binding with plain `CSharpCodeProvider` → Core.Tests C# project tests pass (`TestProjectsChecks`)
+- [ ] T054 [US1] M3: headless SDK helpers stay in Core's runtime; `MonoDevelop.DotNetCore.Core` (if needed) only extends via `/MonoDevelop/Core/Runtimes` / global-property providers (no cycle) → project graph acyclic (`dotnet build` succeeds)
+
+### Coverage (M4)
+
+- [ ] T055 [US1] M4: `scripts/test.sh` coverage + ratchet (`docs/evidence/M4/coverage-baseline.txt`; fails if lower) → `out/coverage/Summary.txt`
+- [ ] T056 [US1] M4: Core ≥ 60% and Linux solution ≥ 40% line coverage (targeted tests for new code) → Summary.txt
+- [ ] T057 [US1] M4: evidence → `docs/evidence/M3/README.md`, `docs/evidence/M4/README.md` (TRX summary, coverage, quarantine ≤ 15%)
+
+**Checkpoint**: US1 done.
 
 ---
 
-## Phase 5: User Story 3 — Graphical IDE on GTK3 (P2) (M5)
+## Phase 4: User Story 2 — `mdtool` builds C# projects (P1) — M3
 
-**Goal**: IDE starts on GTK3, opens/edits/builds C# solutions (contracts/smoke-test.md).
-**Independent Test**: `xvfb-run -a dotnet main/build/bin/MonoDevelop.dll --smoke-test main/tests/linux-smoke/Smoke.sln` exits 0.
+**Goal**: `contracts/mdtool-cli.md`. **Independent Test**: quickstart § M3.
+
+- [ ] T058 [P] [US2] M3: `main/tests/linux-smoke/{Hello,Greeter,Broken,Smoke.sln}` isolated from repo props (own `Directory.Build.*`, `Directory.Packages.props`); not part of `MonoDevelop.Linux.sln` → `dotnet build main/tests/linux-smoke/Smoke.sln` ok, Broken fails with CS0103
+- [ ] T059 [US2] M3: MSBuild builder `main/src/core/MonoDevelop.Projects.Formats.MSBuild` → net10.0 exe; no Remoting/`System.Net.Configuration`; `Thread.Abort`/`SetApartmentState` removed (`BuildManager.CancelAllSubmissions`); `Main.cs` no longer sets `MSBUILD_EXE_PATH` nor `AssemblyResolve`; MSBuildLocator at entry → builds to `build/bin/MonoDevelop.MSBuildBuilder.dll`
+- [ ] T060 [US2] M3: `RemoteBuildEngineManager`: launch builder with `dotnet exec` (+ `DOTNET_HOST_PATH`), SDK paths via environment, no MSBuild copy / `exe.config`; add-in MSBuild import search paths via environment or global property (or documented as dropped) → test builds Hello through the builder
+- [ ] T061 [US2] M3: build cancellation test (cancel a long build; builder stops; caller not blocked) → test passes
+- [ ] T062 [US2] M3: `main/src/tools/mdtool` → net10.0 exe `mdtool.dll`; Locator bootstrap; `.addins` → `../AddIns`; `-r:` ignored with warning → `dotnet main/build/bin/mdtool.dll` lists `build`
+- [ ] T063 [US2] M3: cherry-pick DotDevelop evaluator fixes for net5+ projects (`7045264a30`, `4518519b5e`, `21031632fd`, provenance in commit) + evaluation diff test vs `dotnet msbuild -getItem:Compile` → test passes
+- [ ] T064 [US2] M3: contract test `MdtoolContractTests` (exit codes 0/1, `-p:`, `-t:Clean`, `-c:Release`, missing file) → test passes
+- [ ] T065 [US2] M3: quickstart § M3 block run → `docs/evidence/M3/mdtool.md`
+
+**Checkpoint**: WS-1 (US1 + US2) done.
+
+---
+
+## Phase 5: User Story 3 — graphical IDE on GTK3 (P2) — M5
+
+**Goal**: `contracts/smoke-test.md`. One project (or Ide area) per task.
 
 ### M5a — GUI foundation (WS-2)
 
-- [ ] T055 [US3] M5: Vendor xwt into `main/vendor/xwt/` (+ `UPSTREAM.md`); remove submodule; port `Xwt` + `Xwt.Gtk3` to net10.0 on GtkSharp 3.24.24 (NuGet); sample window under Xvfb
-- [ ] T056 [US3] M5: Vendor `Mono.Addins.Gui` into `main/vendor/mono-addins-gui/` ported to GTK3
-- [ ] T057 [US3] M5: Vendor vs-editor-api text subset into `main/vendor/vs-editor-api/` (Text.Data/Logic/Implementation only; no FPF/WindowsBase) targeting net10.0
-- [ ] T058 [US3] M5: Remove NRefactory usages from `MonoDevelop.Ide` (replace with Roslyn/Cecil equivalents) or vendor minimal subset into `main/vendor/nrefactory/`
+- [ ] T066 [US3] M5a: vendor xwt → `main/vendor/xwt/` + `UPSTREAM.md`; remove submodule; `Xwt` + `Xwt.Gtk/Xwt.Gtk3.csproj` on net10.0 + GtkSharp 3.24.24 → `xvfb-run -a dotnet run --project main/vendor/xwt/TestApps/Gtk3Test` shows a window (screenshot)
+- [ ] T067 [US3] M5a: vendor `Mono.Addins.Gui` → `main/vendor/mono-addins-gui/` + `UPSTREAM.md`, GTK3 → builds
+- [ ] T068 [US3] M5a: vendor vs-editor-api text subset → `main/vendor/vs-editor-api/` + `UPSTREAM.md` (no FPF/WindowsBase) → builds; duplicate-assembly check passes
+- [ ] T069 [US3] M5a: ADR 0019 NRefactory (remove usages from Ide vs vendor subset) + implementation → Ide has no NRefactory project reference
 
-### M5b — Ide compiles on GTK3 (one area per commit)
+### M5b — `MonoDevelop.Ide` compiles on GTK3 (one area per task)
 
-- [ ] T059 [US3] M5: Convert `main/src/core/MonoDevelop.Ide/MonoDevelop.Ide.csproj` to SDK-style net10.0 with GtkSharp 3 + Publicizer (Roslyn internals); exclude not-yet-ported areas via tracked `Compile Remove` list `main/src/core/MonoDevelop.Ide/Gtk3PortPending.props`
-- [ ] T060 [US3] M5: Fix `Ide.Gui/SyncContext.cs` delegate `BeginInvoke` and other CoreCLR-only failures
-- [ ] T061 [US3] M5: Port (using DotDevelop PR #10 `c5374d0332` / PR #150 `dcd1055dbb` as guides) `MonoDevelop.Components/` + `Components.Theming` + `Components.Extensions` (Expose→Drawn, size negotiation, styles→CSS)
-- [ ] T062 [US3] M5: Port `Components.Docking/` + `Components.DockNotebook/` + `Components.MainToolbar/`
-- [ ] T063 [US3] M5: Port `Components.Commands/` + `Ide.Commands/` + `Components.PropertyGrid*/` + `Components.Chart/`
-- [ ] T064 [US3] M5: Freeze Stetic output: `main/src/core/MonoDevelop.Ide/Gui/` generated code ported to GTK3 as hand-maintained source; delete `gui.stetic`
-- [ ] T065 [US3] M5: Port `Ide.Gui*` (Shell, Pads, ProjectPad, Components, Dialogs, OptionPanels, Documents, Wizard)
-- [ ] T066 [US3] M5: Port `Ide.Projects*`, `Ide.Execution`, `Ide.FindInFiles`, `Ide.WelcomePage`, `Ide.CodeCompletion`, `Ide.Editor*`, `Ide.Fonts`, remaining areas; `Gtk3PortPending.props` empty
-- [ ] T067 [US3] M5: GTK3 CSS themes replacing `Gtk.Rc` usage (light/dark) in `main/src/core/MonoDevelop.Ide/MonoDevelop.Ide.Gui/IdeTheme.cs`
-- [ ] T068 [US3] M5: `NativeLibraryMap` entries for gtk/gdk/glib/pango/cairo; remove `MonoDevelop.Ide.dll.config`
+- [ ] T070 [US3] M5b: SDK-style `MonoDevelop.Ide.csproj` (GtkSharp 3, Publicizer for Roslyn internals, VS Composition explicit) with tracked `Gtk3PortPending.props`; `SyncContext.BeginInvoke` fixed → Ide builds with pending areas excluded
+- [ ] T071 [US3] M5b: port `MonoDevelop.Components/` (+ Theming, Extensions) → removed from pending list; builds
+- [ ] T072 [US3] M5b: port `Components.Docking`, `Components.DockNotebook` → builds
+- [ ] T073 [US3] M5b: port `Components.MainToolbar` → builds
+- [ ] T074 [US3] M5b: port `Components.Commands` + `Ide.Commands` → builds
+- [ ] T075 [US3] M5b: port `Components.PropertyGrid*`, `Components.Chart` → builds
+- [ ] T076 [US3] M5b: freeze Stetic output of Ide (`main/src/core/MonoDevelop.Ide/Gui/*.cs`) as hand-maintained GTK3 code → builds
+- [ ] T077 [US3] M5b: port `Ide.Gui` + `Ide.Gui.Shell` → builds
+- [ ] T078 [US3] M5b: port `Ide.Gui.Pads*` + `Ide.Gui.Components` → builds
+- [ ] T079 [US3] M5b: port `Ide.Gui.Dialogs`, `Ide.Gui.OptionPanels`, `Ide.Gui.Wizard` → builds
+- [ ] T080 [US3] M5b: port `Ide.Projects*` (+ OptionPanels) → builds
+- [ ] T081 [US3] M5b: port `Ide.Editor*`, `Ide.CodeCompletion`, `Ide.CodeTemplates`, `Ide.Fonts` → builds
+- [ ] T082 [US3] M5b: port `Ide.Execution`, `Ide.FindInFiles`, `Ide.WelcomePage`, remaining areas; `Gtk3PortPending.props` empty → GTK2-API grep over Linux-solution compile items = 0
+- [ ] T083 [US3] M5b: GTK3 CSS themes (light/dark) in `MonoDevelop.Components/…/IdeTheme.cs` → screenshots light + dark
+- [ ] T084 [US3] M5b: NativeLibraryMap entries for gtk/gdk/glib/pango/cairo; `MonoDevelop.Ide.dll.config` deleted → test
 
-### M5c — IDE runs
+### M5c — IDE runs (one project per task)
 
-- [ ] T069 [US3] M5: Convert `MonoDevelop.Startup` (net10.0 exe `MonoDevelop.dll`), `Mono.TextEditor.Shared`, `GnomePlatform` (GTK3, gio P/Invoke via NativeLibraryMap)
-- [ ] T070 [US3] M5: Port `MonoDevelop.SourceEditor2` + Mono.TextEditor rendering to GTK3/Cairo
-- [ ] T071 [US3] M5: Port `CSharpBinding` (GUI) + `MonoDevelop.Refactoring` on Roslyn 5.9 (Publicizer; EditorFeatures from dnceng feed if required, ADR 0004 amendment)
-- [ ] T072 [P] [US3] M5: Port `Xml`, `DesignerSupport`, `AssemblyBrowser`, `RegexToolkit`, `HexEditor`, `DocFood`, `ChangeLogAddIn`, `Gettext` add-ins
-- [ ] T073 [P] [US3] M5: Port `MonoDevelop.DotNetCore` (GUI), `MonoDevelop.PackageManagement` (NuGet 6.x/7.x client), `MonoDevelop.UnitTesting` (+ VSTest)
-- [ ] T074 [P] [US3] M5: Port `VersionControl` + `VersionControl.Git` on LibGit2Sharp 0.32 (reference DotDevelop `216f01c79f`, `2356bb926d`) (remove libgit2/libgit-binary/libgit2sharp submodules)
-- [ ] T075 [US3] M5: `--smoke-test` option in `IdeStartup.cs` per `contracts/smoke-test.md`
-- [ ] T076 [US3] M5: Convert `main/tests/Ide.Tests`, `IdeUnitTests`, `MonoDevelop.CSharpBinding.Tests` to NUnit 3.14 under Xvfb; quarantine with reasons
-- [ ] T077 [US3] M5: `Main.sln` replaced by `MonoDevelop.Linux.sln` content (ADR 0002); excluded projects removed from the build; update `docs/BREAKING-CHANGES.md`
-- [ ] T078 [US3] M5: Evidence `docs/evidence/M5/` (smoke log + screenshot, GTK2-API grep = 0)
-
-**Checkpoint**: IDE usable on GTK3.
-
----
-
-## Phase 6: User Story 4 — Debugging .NET 10 programs (P2) (M5)
-
-**Goal**: breakpoints, stepping, locals via netcoredbg.
-**Independent Test**: automated DAP scenario test passes.
-
-- [ ] T079 [US4] M5: Vendor `Mono.Debugging` (debugger-libs) into `main/vendor/debugger-libs/Mono.Debugging/` on net10.0; remove submodule
-- [ ] T080 [US4] M5: Port `MonoDevelop.Debugger` + `MonoDevelop.Debugger.VSCodeDebugProtocol` (Microsoft.VisualStudio.Shared.VsCodeDebugProtocol 17.x)
-- [ ] T081 [US4] M5: Implement `NetCoreDbgSession` (starting from DotDevelop cherry-pick `379883b7c5` `DotNetCoreDebuggerSession`, MIT) + engine registration in `main/src/addins/MonoDevelop.Debugger.VSCodeDebugProtocol/` (netcoredbg path from container/Flatpak)
-- [ ] T082 [US4] M5: Debug scenario test (breakpoint, locals, step, exit code) in `main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests/NetCoreDbgTests.cs`
-- [ ] T083 [US4] M5: `.vscode/launch.json` + `scripts/debug.sh` for debugging the IDE itself (coreclr/netcoredbg attach)
-
----
-
-## Phase 7: User Story 6 — CI/CD (P3) (M6)
-
-- [ ] T084 [US6] M6: Full `ci.yml`: build+test+coverage+format+audit+GUI smoke (Xvfb) in the dev image; artifacts with SemVer+SHA (MinVer or version.config+SHA)
-- [ ] T085 [P] [US6] M6: `release.yml` on `v*` tags; Dependabot; CodeQL; README badges
-- [ ] T086 [US6] M6: `scripts/ci.sh` reproducing the pipeline locally in the container → `docs/evidence/M6/`
+- [ ] T085 [US3] M5c: `Mono.TextEditor.Shared` on GTK3/Cairo → builds; editor unit tests subset pass
+- [ ] T086 [US3] M5c: `MonoDevelop.Startup` → net10.0 exe `MonoDevelop.dll`; Locator bootstrap → `./scripts/run.sh --headless` reaches main window (log)
+- [ ] T087 [US3] M5c: `GnomePlatform` (gio via NativeLibraryMap; `GnomePlatform.dll.config` deleted) → `xdg-open` test
+- [ ] T088 [US3] M5c: `MonoDevelop.SourceEditor2` on GTK3 (`MonoDevelop.SourceEditor.dll.config` deleted) → opens a C# file (smoke screenshot)
+- [ ] T089 [US3] M5c: `CSharpBinding` (GUI) on Roslyn 5.9 + Publicizer (EditorFeatures from dnceng feed only via ADR 0004 amendment) → completion test (US3-2)
+- [ ] T090 [US3] M5c: `MonoDevelop.Refactoring` → builds; refactoring tests subset pass
+- [ ] T091 [P] [US3] M5c: `Xml` add-in → Xml tests pass
+- [ ] T092 [P] [US3] M5c: `DesignerSupport` (Stetic output frozen; `gui.stetic` deleted) → builds
+- [ ] T093 [P] [US3] M5c: `AssemblyBrowser` → builds
+- [ ] T094 [P] [US3] M5c: `RegexToolkit` (Thread.Abort removed) → builds
+- [ ] T095 [P] [US3] M5c: `HexEditor` (Stetic frozen) → builds
+- [ ] T096 [P] [US3] M5c: `DocFood` (Stetic frozen) → builds
+- [ ] T097 [P] [US3] M5c: `ChangeLogAddIn` → builds
+- [ ] T098 [P] [US3] M5c: `MonoDevelop.Gettext` add-in → builds
+- [ ] T099 [US3] M5c: `MonoDevelop.DotNetCore` (GUI) → DotNetCore tests subset pass
+- [ ] T100 [US3] M5c: ADR 0020 NuGet client version + `MonoDevelop.PackageManagement` on NuGet 6.x/7.x → test add/update/remove/restore a package on an SDK project (FR-010)
+- [ ] T101 [US3] M5c: `MonoDevelop.UnitTesting` + VSTest → test discovers/runs NUnit + xUnit + MSTest samples (FR-011)
+- [ ] T102 [US3] M5c: `VersionControl` + `VersionControl.Git` on LibGit2Sharp 0.32 (reference DotDevelop `216f01c79f`, `2356bb926d`); libgit2/libgit-binary/libgit2sharp submodules removed → Git tests (status/diff/log on temp repo) pass (FR-009)
+- [ ] T103 [US3] M5c: `--smoke-test` in `IdeStartup.cs` per `contracts/smoke-test.md` → exit 0 under `xvfb-run`
+- [ ] T104 [US3] M5c: Wayland smoke (headless `weston`, `GDK_BACKEND=wayland`) → exit 0 (FR-006)
+- [ ] T105 [US3] M5c: error-list navigation test (build Broken; activate error; editor at line) (US3-3) → test passes
+- [ ] T106 [US3] M5c: main-loop stall probe during `MonoDevelop.Linux.sln` load (≤ 1 s) → evidence
+- [ ] T107 [US3] M5c: `Ide.Tests`, `IdeUnitTests`, `MonoDevelop.CSharpBinding.Tests` on NUnit 3.14 under Xvfb; quarantine per suite → `docs/evidence/M4/quarantine.md` updated
+- [ ] T108 [US3] M5c: `Main.sln` replaced by `MonoDevelop.Linux.sln` (ADR 0002); legacy build files removed or marked obsolete → `docs/BREAKING-CHANGES.md` updated
+- [ ] T109 [US3] M5c: evidence → `docs/evidence/M5/` (smoke logs, screenshots X11 + Wayland, grep = 0, startup time)
 
 ---
 
-## Phase 8: User Story 5 — Flatpak (P3) (M7)
+## Phase 6: User Story 4 — debugging .NET 10 programs (P2) — M5
 
-- [ ] T087 [US5] M7: ADR 0018 Flatpak packaging (SDK access strategy, app id, bundled deps)
-- [ ] T088 [US5] M7: `packaging/flatpak/com.monodevelop.MonoDevelop.yml` + launcher; reuse `main/monodevelop.desktop`, `.appdata.xml`, `monodevelop.xml`
-- [ ] T089 [US5] M7: `scripts/pm-flatpak` (container with flatpak-builder) + `scripts/package-flatpak.sh` → `out/monodevelop.flatpak`
-- [ ] T090 [US5] M7: Install test in a clean container (version + mdtool build Hello + Xvfb launch); SBOM + checksums → `docs/evidence/M7/`
+- [ ] T110 [US4] M5: vendor `Mono.Debugging` → `main/vendor/debugger-libs/Mono.Debugging/` + `UPSTREAM.md`, net10.0; submodule removed → builds
+- [ ] T111 [US4] M5: `MonoDevelop.Debugger` + `MonoDevelop.Debugger.VSCodeDebugProtocol` (VsCodeDebugProtocol 17.x/18.x) → builds
+- [ ] T112 [US4] M5: `NetCoreDbgSession` (cherry-pick DotDevelop `379883b7c5`, MIT) + engine registration → debugger engine listed
+- [ ] T113 [US4] M5: `NetCoreDbgTests` in `main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests/` (breakpoint, locals, step, exit code) → `dotnet test … --filter FullyQualifiedName~NetCoreDbg` passes (SC-006)
+- [ ] T114 [US4] M5: `.vscode/launch.json` (coreclr attach/launch via netcoredbg) + `scripts/debug.sh` docs → `docs/linux/setup.md` section
 
 ---
 
-## Phase 9: Polish & Cross-Cutting (M8/M9)
+## Phase 7: User Story 6 — CI/CD (P3) — M6
 
-- [ ] T091 [P] M8: Structured logging backend (Microsoft.Extensions.Logging, `MD_LOG_LEVEL`, `MD_LOG_FORMAT=json`) in `LoggingService`; start-up version log
-- [ ] T092 [P] M8: Metrics/tracing for `InstrumentationService` (`System.Diagnostics.Metrics`, `ActivitySource`)
-- [ ] T093 [P] M8: Security sweep (BinaryFormatter/Remoting grep = 0, `Process` shell usage, audit clean)
-- [ ] T094 [P] M8: Docs: `README.md`, `docs/linux/setup.md`, `docs/linux/troubleshooting.md`, `CONTRIBUTING.md`, `docs/architecture.md`
-- [ ] T095 M8: Start-up time measurement (SC-005 ≤ 10 s) and global coverage ≥ 40 %; shrink quarantine
-- [ ] T096 M9: Full regression + acceptance checklist SC-001…SC-009 → `docs/evidence/M9/acceptance.md`; final the consistency analysis; release notes (tag only with maintainer authorization)
+- [ ] T115 [US6] M6: `scripts/ci.sh` (lint, build --check, test + coverage ratchet, audit, mdtool smoke, GUI smoke under Xvfb), timed → `out/ci/summary.txt`, ≤ 15 min (SC-007)
+- [ ] T116 [US6] M6: `ci.yml` runs `scripts/ci.sh` in the dev image; artifacts named `<version>+<sha>`; job summary → `actionlint` clean
+- [ ] T117 [P] [US6] M6: ADR 0021 versioning (version.config + SHA) and release; `release.yml` on `v*` (least privilege, attaches Flatpak + sha256 + SBOM once M7 exists) → `actionlint` clean
+- [ ] T118 [P] [US6] M6: Dependabot (nuget, github-actions, docker) + CodeQL workflow → `actionlint` clean
+- [ ] T119 [US6] M6: evidence → `docs/evidence/M6/` (local `ci.sh` run + timing; hosted run only after push authorization)
+
+---
+
+## Phase 8: User Story 5 — Flatpak (P3) — M7
+
+- [ ] T120 [US5] M7: ADR 0022 Flatpak (app id `io.github.viniciusmorgado.MonoDevelop`, runtime `org.gnome.Platform`, .NET 10 SDK extension, SDK access strategy, bundled deps)
+- [ ] T121 [US5] M7: `PM_PROFILE=flatpak` in `scripts/pm` (flatpak-builder image, required podman flags) → `PM_PROFILE=flatpak ./scripts/pm flatpak --version`
+- [ ] T122 [US5] M7: `packaging/flatpak/io.github.viniciusmorgado.MonoDevelop.yml` + launcher; desktop entry, icon, AppStream, MIME from `main/monodevelop.{desktop,appdata.xml,xml}` → `appstreamcli validate` / `desktop-file-validate` pass
+- [ ] T123 [US5] M7: `scripts/package-flatpak.sh` → `out/monodevelop.flatpak` + sha256 + CycloneDX SBOM
+- [ ] T124 [US5] M7: install test in a clean container: `--version`, `mdtool build Hello`, IDE under Xvfb → `docs/evidence/M7/`
+
+---
+
+## Phase 9: Polish — M8 hardening, M9 release
+
+- [ ] T125 [P] M8: ADR 0023 logging/observability + structured logging backend (`MD_LOG_LEVEL`, `MD_LOG_FORMAT=json`) and start-up version log → `MD_LOG_FORMAT=json dotnet mdtool.dll | jq` shows version fields
+- [ ] T126 [P] M8: metrics/tracing for `InstrumentationService` (`System.Diagnostics.Metrics`, `ActivitySource`) → test listener shows instruments
+- [ ] T127 [P] M8: security sweep (Remoting/BinaryFormatter grep = 0 in the Linux solution, `Process` with shell, audit) → `docs/evidence/M8/security.md`
+- [ ] T128 [P] M8: `docs/architecture.md` (layers, add-in model, build/run flow), README refresh → markdown link check passes
+- [ ] T129 M8: start-up time ≤ 10 s measured; quarantine reduced; warning baselines shrunk → `docs/evidence/M8/README.md`
+- [ ] T130 M9: full regression (`./scripts/test.sh --all` informational + gate run), acceptance checklist SC-001…SC-009 → `docs/evidence/M9/acceptance.md`
+- [ ] T131 M9: final the consistency analysis, release notes (BREAKING-CHANGES) → tag/release only with maintainer authorization
 
 ---
 
 ## Dependencies & Execution Order
 
-- Phase 1 → Phase 2 → US1 → US2 (WS-1) → US3 (M5a → M5b → M5c) → US4 → US6 (full CI) → US5 → Polish.
-- US1 and US2 share Core; US2's builder work (T049–T051) can proceed in parallel with US1 tests (T041–T045) once T028–T040 are done.
-- US3 requires US1+US2; US4 requires US3 M5b (Ide compiles); US5 requires US3 (M5c); US6 minimal CI starts in Phase 2 (T026).
+- Phase 1 → Phase 2 → US1 (T033–T057) → US2 (T058–T065) → US3 M5a → M5b → M5c → US4 → US6 → US5 → Polish.
+- Within US1: T038–T041 (test harness) precede T042–T052 (behaviour changes with tests).
+- US2's builder work (T059–T061) may run in parallel with T042–T052 once T041 is done.
+- US4 needs M5b (Ide compiles); US5 needs M5c; US6 full CI needs US2 + M5c smoke.
 
-### Parallel Opportunities
-
-- Phase 1: T005–T010 in parallel (done/ongoing).
-- Phase 2: T023, T024, T025 in parallel after T016–T020.
-- US3: T072, T073, T074 in parallel after T069–T071.
-
-## Parallel Example: User Story 3 (M5c add-ins)
+## Parallel Example: M5c add-ins
 
 ```text
-T072 Port Xml/DesignerSupport/AssemblyBrowser/... add-ins
-T073 Port DotNetCore GUI/PackageManagement/UnitTesting
-T074 Port VersionControl + Git on LibGit2Sharp 0.32
+T091 Xml   T092 DesignerSupport   T093 AssemblyBrowser   T094 RegexToolkit
+T095 HexEditor   T096 DocFood   T097 ChangeLogAddIn   T098 Gettext
 ```
 
 ## Implementation Strategy
 
-### MVP First
-
-WS-1 (US1 + US2): headless core + `mdtool build` on .NET 10 inside the container. Validate with the
-quickstart M3/M4 blocks before any GUI work.
-
-### Incremental Delivery
-
-WS-2 (M5a Xwt/GTK3 window) → WS-3 (M5b/M5c IDE) → debugging → CI/CD → Flatpak → hardening.
-Each task = one commit via `scripts/git-commit`, evidence under `docs/evidence/Mx/`.
-
-## Notes
-
-- Mark tasks `[x]` as they complete; the file is the resume point after context compaction.
-- Never push; never run build commands on the host.
+MVP = WS-1 (US1 + US2): headless core + `mdtool build` inside the container. Then WS-2 (M5a),
+WS-3 (M5b/M5c), debugging, CI/CD, Flatpak, hardening. Tasks are checked off here as they land;
+this file is the resume point after interruptions.

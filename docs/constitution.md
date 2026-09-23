@@ -11,7 +11,8 @@ practice found in the repository (autotools, `make`, Mono-only scripts, Mac/Wind
 - Linux is the primary and only required platform for building, running, debugging and developing.
 - The reference environment is the development container defined by the repository `Containerfile`
   and executed with rootless podman through `./scripts/pm`. Every documented command MUST work via
-  `./scripts/pm <command>`; the only host prerequisites are `podman` and `git`.
+  `./scripts/pm <command>` (including its documented profiles, e.g. `PM_PROFILE=flatpak` for the
+  Flatpak builder image); the only host prerequisites are `podman` and `git`.
 - macOS and Windows are secondary. Code that only serves them MAY be broken, excluded from the Linux
   solution or removed when it blocks Linux work; every such removal is listed in
   `docs/BREAKING-CHANGES.md`.
@@ -113,4 +114,4 @@ follows SemVer: MAJOR for removing or redefining a principle, MINOR for adding a
 materially expanding guidance, PATCH for clarifications. Every review and every the consistency analysis
 run checks compliance; deviations must be justified in the plan's Complexity Tracking table.
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23
+**Version**: 1.0.1 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23

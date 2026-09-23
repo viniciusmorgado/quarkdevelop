@@ -10,6 +10,12 @@ Remoting in 39–43 files (Core `RemotingService`, `ProcessHostController`, `Rem
 formatter sinks, instrumentation, mdhost, GtkCore designer, NUnit runner bases) and
 `BinaryFormatter` in 11 files.
 
+## Considered Options
+
+1. Delete Remoting; use existing BinaryMessage protocol / StreamJsonRpc (chosen)
+2. Third-party Remoting re-implementations (unmaintained, security risk)
+3. Keep BinaryFormatter via the compatibility package (forbidden by constitution VII)
+
 ## Decision Outcome
 
 - Delete the Remoting infrastructure in Core; out-of-process features use the existing
