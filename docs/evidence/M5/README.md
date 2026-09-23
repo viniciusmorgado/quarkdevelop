@@ -56,3 +56,15 @@ GTK 2 gtkrc themes (Xamarin engine, Mac, Windows) are no longer used. Tests: `Gt
 (discovery, dark variants, applying a theme, a CSS style property set/replaced/removed on a real
 widget). Screenshots of the IDE in a light and a dark theme wait for the IDE to start (M5c), so T083
 stays open.
+
+## M5c: the IDE runs (2026-09-23)
+
+- **Start-up (T086, T087):** `dotnet main/build/bin/MonoDevelop.dll` reaches the main window and the
+  Welcome page on GTK 3 / .NET 10 ([T086-ide-welcome.png](T086-ide-welcome.png)) with Core, Ide,
+  GnomePlatform, Debugger and DesignerSupport add-ins and no errors in the log. Main window about 1.6 to
+  3.7 s after the process starts (Xvfb, warm caches).
+- **Smoke test (T103):** `MonoDevelop.dll --smoke-test [solution]` opens and builds a solution and exits
+  0/1/2 (checked: Smoke.sln 0, Broken.csproj 1, a 2 s watchdog 2). X11: [T103-smoke-x11.png](T103-smoke-x11.png).
+- **Wayland (T104):** the same smoke on headless Weston, `GDK_BACKEND=wayland`:
+  [T104-smoke-wayland.png](T104-smoke-wayland.png). Both run in `scripts/ci.sh`.
+- Not yet: the source editor (SourceEditor2, T088), C# editing features (T089) and the other add-ins.

@@ -57,6 +57,29 @@ gui_smoke() {
 	test -s "$ci_out/gui-smoke/screenshot.png"
 }
 
+wayland_smoke() {
+	# The same smoke test on Wayland (T104): a headless Weston compositor (no input devices: GDK logs
+	# criticals for the missing seat, which the smoke tolerates), GDK_BACKEND=wayland, no X display.
+	local dir runtime wpid
+	dir="$(mktemp -d)"
+	runtime="$(mktemp -d)"
+	chmod 700 "$runtime"
+	cp -r main/tests/linux-smoke/. "$dir/"
+	XDG_RUNTIME_DIR="$runtime" weston --backend=headless --socket=wayland-md --width=1600 --height=1000 --idle-time=0 \
+		> "$ci_out/weston.log" 2>&1 &
+	wpid=$!
+	for _ in $(seq 50); do [[ -S "$runtime/wayland-md" ]] && break; sleep 0.1; done
+	local status=0
+	env -u DISPLAY XDG_RUNTIME_DIR="$runtime" WAYLAND_DISPLAY=wayland-md GDK_BACKEND=wayland \
+		XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+		MD_SMOKE_OUT="$ci_out/wayland-smoke" \
+		dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln" || status=$?
+	kill "$wpid"
+	rm -rf "$dir" "$runtime"
+	grep -q "GDK display wayland-md" "$ci_out/wayland-smoke/ide.log"
+	return "$status"
+}
+
 step setup ./scripts/setup.sh
 step lint ./scripts/lint.sh
 step build ./scripts/build.sh -c Release --check
@@ -65,6 +88,7 @@ step test ./scripts/test.sh --no-build
 step audit ./scripts/audit.sh
 step mdtool-smoke mdtool_smoke
 step gui-smoke gui_smoke
+step wayland-smoke wayland_smoke
 
 total=$((SECONDS - start_all))
 printf '%-18s      %4ds (budget %ds)\n' total "$total" "$budget" | tee -a "$summary"

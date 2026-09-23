@@ -105,6 +105,8 @@ namespace MonoDevelop.Ide
 				}
 				var processStart = Process.GetCurrentProcess ().StartTime;
 				LoggingService.LogInfo ("Smoke test: main window shown {0:F1} s after the process started", (DateTime.Now - processStart).TotalSeconds);
+				// X11 (":99") or Wayland ("wayland-0"): the Wayland smoke (T104) checks which backend GTK used
+				LoggingService.LogInfo ("Smoke test: GDK display {0}", Gdk.Display.Default?.Name);
 
 				if (!await IdeApp.Workspace.OpenWorkspaceItem (solution)) {
 					Exit (ExitFailure, "could not open " + solution);

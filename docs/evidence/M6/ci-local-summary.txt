@@ -1,9 +1,10 @@
 setup              ok      1s
-lint               ok      0s
-build              ok     22s
+lint               ok      1s
+build              ok     92s
 assemblies         ok      1s
-test               ok    244s
-audit              ok     18s
+test               ok    263s
+audit              ok     15s
 mdtool-smoke       ok      5s
-gui-smoke          ok     10s
-total                    301s (budget 900s)
+gui-smoke          ok      7s
+wayland-smoke      ok      7s
+total                    392s (budget 900s)
