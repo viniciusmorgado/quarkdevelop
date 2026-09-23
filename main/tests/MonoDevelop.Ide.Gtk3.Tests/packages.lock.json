@@ -429,6 +429,16 @@
         "resolved": "10.0.12",
         "contentHash": "wO0W8VDMeRJZakRySOmemAnrBZMwEFRlbfBtATxUiLf2I3IhSRnCp1Vt157NWptdE4IJ7eftd5n8q9LtaKHFTQ=="
       },
+      "gnomeplatform": {
+        "type": "Project",
+        "dependencies": {
+          "GtkSharp": "[3.24.24.95, )",
+          "Mono.Addins": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "Xwt": "[1.0.0, )"
+        }
+      },
       "Microsoft.VisualStudio.CoreUtility": {
         "type": "Project",
         "dependencies": {

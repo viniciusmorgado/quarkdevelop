@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" />
+    <ProjectReference Include="../../src/addins/GnomePlatform/GnomePlatform.csproj" />
   </ItemGroup>
 
   <ItemGroup>

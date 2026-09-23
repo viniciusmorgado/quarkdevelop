@@ -204,9 +204,9 @@ namespace MonoDevelop.Platform {
 				g_object_unref (gfile);
 				return null;
 			}
+			// the content type belongs to the info (it was freed here too: a double free); the MIME type string is ours
 			IntPtr content_type = g_file_info_get_content_type (info);
-			string mime_type = GLib.Marshaller.Utf8PtrToString (g_content_type_get_mime_type (content_type));
-			GLib.Marshaller.Free (content_type);
+			string mime_type = GLib.Marshaller.PtrToStringGFree (g_content_type_get_mime_type (content_type));
 			g_object_unref (info);
 			g_object_unref (gfile);
 			return mime_type;
