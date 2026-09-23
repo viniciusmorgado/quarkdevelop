@@ -6159,4 +6159,15 @@
     <Publicize Include="Microsoft.CodeAnalysis.Features" />
     <Publicize Include="Microsoft.CodeAnalysis.CSharp.Features" />
   </ItemGroup>
+  <!-- Data files the IDE reads from main/build/data at run time (the legacy AfterBuild copy of @(Data)). -->
+  <ItemGroup>
+    <Data Include="options/DefaultEditingLayout.xml" />
+    <Data Include="options/MonoDevelopProperties.xml" />
+    <Data Include="options/MonoDevelop-templates.xml" />
+    <Data Include="options/MonoDevelop-tools.xml" />
+    <Data Include="options/TipsOfTheDay.xml" />
+  </ItemGroup>
+  <Target Name="CopyIdeData" AfterTargets="Build">
+    <Copy SourceFiles="@(Data)" DestinationFolder="$(MonoDevelopBuildDir)data/%(Data.RelativeDir)" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

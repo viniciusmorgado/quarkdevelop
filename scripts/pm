@@ -55,7 +55,9 @@ case "$workdir" in
 	*) workdir="$here" ;;
 esac
 
-exec podman run --rm "${tty_args[@]}" \
+# --init: a minimal init is PID 1, so the command gets default signal handling and zombies are reaped
+# (xvfb-run as PID 1 never saw Xvfb's ready signal and hung, e.g. `exec xvfb-run` in scripts/run.sh).
+exec podman run --rm --init "${tty_args[@]}" \
 	--userns=keep-id \
 	--security-opt label=disable \
 	-v "$mount_root:$mount_root" \

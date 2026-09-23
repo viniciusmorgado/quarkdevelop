@@ -82,6 +82,36 @@ namespace MonoDevelop.Core.Assemblies
 			Assert.IsNull (runtime.GetMSBuildBinPath ("Current"));
 		}
 
+		/// <summary>
+		/// Frameworks found in the reference assemblies folder (e.g. .NET Framework ones installed by
+		/// scripts/netfx-refasm.sh) get a backend: without one, the runtime initialization failed with a
+		/// NullReferenceException and stopped creating frameworks.
+		/// </summary>
+		[Test]
+		public void CustomFrameworksFromReferenceAssembliesAreInstalled ()
+		{
+			var root = Path.Combine (Path.GetTempPath (), "md-refasm-" + System.Guid.NewGuid ().ToString ("N"));
+			var redist = Path.Combine (root, ".NETFramework", "v99.0", "RedistList");
+			Directory.CreateDirectory (redist);
+			File.WriteAllText (Path.Combine (redist, "FrameworkList.xml"),
+				"<FileList Name=\".NET Framework 99\" RedistName=\"Framework\">" +
+				"<File AssemblyName=\"System\" Version=\"4.0.0.0\" PublicKeyToken=\"b77a5c561934e089\" Culture=\"neutral\" ProcessorArchitecture=\"MSIL\" InGac=\"true\" />" +
+				"</FileList>");
+			var previous = System.Environment.GetEnvironmentVariable ("MD_NETFX_REFASM");
+			try {
+				System.Environment.SetEnvironmentVariable ("MD_NETFX_REFASM", root);
+				var runtime = new DotNetCoreTargetRuntime (null);
+				runtime.EnsureInitialized ();
+
+				var fx = runtime.CustomFrameworks.SingleOrDefault (f => f.Id == new TargetFrameworkMoniker (".NETFramework", "v99.0"));
+				Assert.IsNotNull (fx, "the framework in the reference assemblies folder is found");
+				Assert.IsTrue (runtime.IsInstalled (fx));
+			} finally {
+				System.Environment.SetEnvironmentVariable ("MD_NETFX_REFASM", previous);
+				Directory.Delete (root, true);
+			}
+		}
+
 		[Test]
 		public void AssembliesRunThroughDotNetExec ()
 		{

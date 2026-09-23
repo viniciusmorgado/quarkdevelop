@@ -1,10 +1,7 @@
-﻿//
-// XwtWindowControl.cs
 //
-// Author:
-//       Vsevolod Kukol <sevoku@microsoft.com>
+// GnomeNativeLibraries.cs
 //
-// Copyright (c) 2017 Microsoft Corporation
+// Copyright (c) 2026 MonoDevelop contributors
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,32 +20,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-namespace MonoDevelop.Components
+
+using System.Runtime.CompilerServices;
+using MonoDevelop.Core;
+
+namespace MonoDevelop.Platform
 {
-
-	public class XwtWindowControl : Window
+	/// <summary>
+	/// Gio's P/Invokes use Windows library names ("libgio-2.0-0.dll", ...); NativeLibraryMap resolves them to
+	/// the Linux sonames (ADR 0013). Replaces GnomePlatform.dll.config.
+	/// </summary>
+	static class GnomeNativeLibraries
 	{
-		readonly Xwt.WindowFrame window;
-		public Xwt.WindowFrame Window {
-			get { return window; }
-		}
-
-		internal protected XwtWindowControl (Xwt.WindowFrame window) : base (window)
-		{
-			this.window = window;
-		}
-
-#if MAC
-		public static implicit operator AppKit.NSWindow (XwtWindowControl d)
-		{
-			return Xwt.Toolkit.Load (Xwt.ToolkitType.XamMac).GetNativeWindow (d.Window) as AppKit.NSWindow;
-		}
-#endif
-
-		public static implicit operator Gtk.Window (XwtWindowControl d)
-		{
-			return Xwt.Toolkit.Load (Xwt.ToolkitType.Gtk3).GetNativeWindow (d.Window) as Gtk.Window;
-		}
+#pragma warning disable CA2255 // module initializers are intended for this: P/Invokes resolve before first use
+		[ModuleInitializer]
+		internal static void Register () => NativeLibraryMap.Register (typeof (GnomeNativeLibraries).Assembly);
+#pragma warning restore CA2255
 	}
 }

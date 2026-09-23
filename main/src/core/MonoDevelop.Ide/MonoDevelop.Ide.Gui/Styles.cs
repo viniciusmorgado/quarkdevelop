@@ -354,7 +354,8 @@ namespace MonoDevelop.Ide.Gui
 			BaseSelectionBackgroundColor = styledWidget.GetStyleBase (Gtk.StateType.Selected).ToXwtColor ();
 			BaseSelectionTextColor = styledWidget.GetStyleText (Gtk.StateType.Selected).ToXwtColor ();
 
-			LinkForegroundColor = ((Gdk.Color)styledWidget.StyleGetProperty ("link-color")).ToXwtColor ();
+			// GTK3: the "link-color" style property is deprecated (null); the theme gives links the :link state
+			LinkForegroundColor = styledWidget.StyleContext.GetColor (Gtk.StateFlags.Link).ToGdkColor ().ToXwtColor ();
 			if (LinkForegroundColor == Colors.Black) // the style returs black when not initialized
 				LinkForegroundColor = Colors.Blue;   // set the link color to generic blue until initialization is finished
 

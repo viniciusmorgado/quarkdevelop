@@ -188,13 +188,13 @@ namespace MonoDevelop.Ide.Gui.Pads
 				if (sol != null && sol.StartupItem != null)
 					fb.CurrentDir = sol.StartupItem.BaseDirectory;
 			} catch {
-				fb.CurrentDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+				fb.CurrentDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 			}
 		}
 
 		void OnCombineClosed(object sender, EventArgs args)
 		{
-			fb.CurrentDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			fb.CurrentDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 		}
 		
 		public override void Dispose ()

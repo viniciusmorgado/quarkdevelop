@@ -78,7 +78,7 @@ namespace MonoDevelop.Components
 			if (last != null && last.Length > 0)
 				this.SetCurrentFolder (last);
 			else
-				this.SetCurrentFolder (Environment.GetFolderPath (Environment.SpecialFolder.Personal));
+				this.SetCurrentFolder (Environment.GetFolderPath (Environment.SpecialFolder.UserProfile));
 
 			// add default project path as a MD bookmark
 			string pathName = IdeApp.Preferences.ProjectsDefaultPath;

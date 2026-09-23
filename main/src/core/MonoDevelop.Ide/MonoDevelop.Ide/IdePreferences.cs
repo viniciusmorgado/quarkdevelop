@@ -88,7 +88,7 @@ namespace MonoDevelop.Ide
 		public readonly ConfigurationProperty<bool> EnableInstrumentation = Runtime.Preferences.EnableInstrumentation;
 		public readonly ConfigurationProperty<bool> EnableAutomatedTesting = Runtime.Preferences.EnableAutomatedTesting;
 
-		public readonly ConfigurationProperty<string> ProjectsDefaultPath = ConfigurationProperty.Create ("MonoDevelop.Core.Gui.Dialogs.NewProjectDialog.DefaultPath", System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.Personal), "Projects"));
+		public readonly ConfigurationProperty<string> ProjectsDefaultPath = ConfigurationProperty.Create ("MonoDevelop.Core.Gui.Dialogs.NewProjectDialog.DefaultPath", System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.UserProfile), "Projects"));
 
 		public readonly ConfigurationProperty<bool> BuildBeforeExecuting = ConfigurationProperty.Create ("MonoDevelop.Ide.BuildBeforeExecuting", true);
 		public readonly ConfigurationProperty<bool> BuildBeforeRunningTests = ConfigurationProperty.Create ("BuildBeforeRunningTests", true);

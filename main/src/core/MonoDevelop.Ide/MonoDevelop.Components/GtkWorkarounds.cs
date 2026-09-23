@@ -60,21 +60,10 @@ namespace MonoDevelop.Components
 			glibObjectSetProp = typeof (GLib.Object).GetMethod ("SetProperty", flags);
 			glibObjectGetProp = typeof (GLib.Object).GetMethod ("GetProperty", flags);
 
-			// Gtk2 stopped at 24, most likely to be installed
-			for (int i = 24; i >= 14; i -= 2) {
-				if (Global.CheckVersion (2, (uint)i, 0) == null) {
-					GtkMinorVersion = i;
-					break;
-				}
-			}
-
-			for (int i = 1; i < 99; i++) {
-				if (Global.CheckVersion (2, (uint)GtkMinorVersion, (uint)i) == null) {
-					GtkMicroVersion = i;
-				} else {
-					break;
-				}
-			}
+			// GTK 3: the running GTK's own version (the GTK 2 probing with CheckVersion (2, ...) always failed and
+			// left 2.12). The checks against it (>= 16, >= 20: GTK 2 features) hold for every GTK 3.
+			GtkMinorVersion = (int)Global.MinorVersion;
+			GtkMicroVersion = (int)Global.MicroVersion;
 
 			// opt into the fixes on GTK+ >= 2.24.8
 			if (Platform.IsMac && GtkMinorVersion >= 24 && GtkMicroVersion >= 8) {

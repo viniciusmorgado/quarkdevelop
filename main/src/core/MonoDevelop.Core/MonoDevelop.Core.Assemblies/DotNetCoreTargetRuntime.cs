@@ -71,6 +71,10 @@ namespace MonoDevelop.Core.Assemblies
 
 		public override IExecutionHandler GetExecutionHandler () => executionHandler;
 
+		// Frameworks found in the reference folders (e.g. .NET Framework reference assemblies) need a backend;
+		// the base class returns null.
+		protected override TargetFrameworkBackend CreateBackend (TargetFramework fx) => new DotNetCoreFrameworkBackend ();
+
 		[Obsolete ("Use DotNetProject.GetAssemblyDebugInfoFile()")]
 		public override string GetAssemblyDebugInfoFile (string assemblyPath) => Path.ChangeExtension (assemblyPath, ".pdb");
 
@@ -109,6 +113,14 @@ namespace MonoDevelop.Core.Assemblies
 				return Directory.Exists (Path.Combine (dir, ".NETFramework")) ? new FilePath (dir) : FilePath.Null;
 			}
 		}
+	}
+
+	/// <summary>
+	/// Framework backend of <see cref="DotNetCoreTargetRuntime"/>: the defaults of TargetFrameworkBackend (framework
+	/// folders from the framework definition, tools on PATH).
+	/// </summary>
+	public class DotNetCoreFrameworkBackend : TargetFrameworkBackend<DotNetCoreTargetRuntime>
+	{
 	}
 
 	/// <summary>

@@ -71,7 +71,7 @@ namespace MonoDevelop.Ide.Projects
 		}
 		
 		public static FilePath DefaultFileDialogPolicyDir {
-			get { return PropertyService.Get<string> ("MonoDevelop.Ide.Projects.PolicyLocation", Environment.GetFolderPath (Environment.SpecialFolder.Personal)); }
+			get { return PropertyService.Get<string> ("MonoDevelop.Ide.Projects.PolicyLocation", Environment.GetFolderPath (Environment.SpecialFolder.UserProfile)); }
 			set { PropertyService.Set ("MonoDevelop.Ide.Projects.PolicyLocation", value.ToString ()); }
 		}
 

@@ -166,17 +166,23 @@ namespace MonoDevelop.Ide.Composition
 				return true;
 			}
 
-			static bool ValidateAssemblyCacheListIntegrity (HashSet<Assembly> assemblies, List<MefControlCacheAssemblyInfo> cachedAssemblyInfos, ICachingFaultInjector? cachingFaultInjector)
+			internal static bool ValidateAssemblyCacheListIntegrity (HashSet<Assembly> assemblies, List<MefControlCacheAssemblyInfo> cachedAssemblyInfos, ICachingFaultInjector? cachingFaultInjector)
 			{
 				var currentAssemblies = new Dictionary<string, Guid> (assemblies.Count);
+				// An assembly can be loaded more than once from the same file (e.g. by another load context): first wins
 				foreach (var asm in assemblies)
-					currentAssemblies.Add (asm.Location, asm.ManifestModule.ModuleVersionId);
+					currentAssemblies.TryAdd (asm.Location, asm.ManifestModule.ModuleVersionId);
 
 				foreach (var assemblyInfo in cachedAssemblyInfos) {
 					cachingFaultInjector?.FaultAssemblyInfo (assemblyInfo);
 
-					if (!currentAssemblies.TryGetValue (assemblyInfo.Location, out var mvid))
-						return false;
+					if (!currentAssemblies.TryGetValue (assemblyInfo.Location, out var mvid)) {
+						// .NET: an input assembly may not be loaded yet (see WriteMefCacheControl)
+						var loaded = TryLoadFrom (assemblyInfo.Location);
+						if (loaded == null)
+							return false;
+						mvid = loaded.ManifestModule.ModuleVersionId;
+					}
 
 					if (mvid != assemblyInfo.ModuleVersionId)
 						return false;
@@ -235,7 +241,10 @@ namespace MonoDevelop.Ide.Composition
 				}
 
 				var additionalInputAssemblies = new List<MefControlCacheAssemblyInfo> ();
-				var loadedMap = loadedAssemblies.ToDictionary (x => x.FullName, x => x);
+				// An assembly can be loaded more than once under the same name (e.g. by another load context): first wins
+				var loadedMap = new Dictionary<string, Assembly> ();
+				foreach (var loaded in loadedAssemblies)
+					loadedMap.TryAdd (loaded.FullName!, loaded);
 
 				foreach (var asm in catalog.GetInputAssemblies ()) {
 					var assemblyName = asm.ToString ();
@@ -243,7 +252,9 @@ namespace MonoDevelop.Ide.Composition
 						continue;
 
 					if (!loadedMap.TryGetValue (assemblyName, out var assembly)) {
-						throw new InvalidRuntimeCompositionException (assemblyName);
+						// .NET: an input assembly can be referenced by the catalog without being loaded yet
+						// (System.ComponentModel.Composition, through the export attributes)
+						assembly = TryLoad (asm) ?? throw new InvalidRuntimeCompositionException (assemblyName);
 					}
 
 					additionalInputAssemblies.Add (new MefControlCacheAssemblyInfo {
@@ -265,6 +276,28 @@ namespace MonoDevelop.Ide.Composition
 					serializer.Serialize (sw, controlCache);
 				}
 				timer.Trace ("Composition control file written");
+			}
+		}
+
+		static Assembly? TryLoad (AssemblyName name)
+		{
+			try {
+				return Assembly.Load (name);
+			} catch (Exception e) when (e is IOException || e is BadImageFormatException) {
+				return null;
+			}
+		}
+
+		/// <summary>Loads the assembly at <paramref name="location"/> into the default context, if that is where it resolves.</summary>
+		static Assembly? TryLoadFrom (string location)
+		{
+			if (!File.Exists (location))
+				return null;
+			try {
+				var assembly = Assembly.Load (AssemblyName.GetAssemblyName (location));
+				return string.Equals (assembly.Location, location, StringComparison.Ordinal) ? assembly : null;
+			} catch (Exception e) when (e is IOException || e is BadImageFormatException) {
+				return null;
 			}
 		}
 

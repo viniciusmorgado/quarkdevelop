@@ -243,7 +243,8 @@ namespace MonoDevelop.Core
 		
 		internal static UserProfile ForUnix (string version, bool ensureCreated = true)
 		{
-			FilePath home = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
+			// .NET: SpecialFolder.Personal is the XDG documents folder ("" when missing); $HOME is UserProfile
+			FilePath home = Environment.GetFolderPath (Environment.SpecialFolder.UserProfile);
 			FilePath xdgDataHome = Environment.GetEnvironmentVariable ("XDG_DATA_HOME");
 			if (xdgDataHome.IsNullOrEmpty)
 				xdgDataHome = home.Combine (".local", "share");

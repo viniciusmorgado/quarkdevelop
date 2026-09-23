@@ -61,7 +61,7 @@ namespace MonoDevelop.Ide.Desktop
 		
 		public static string DefaultPath {
 			get {
-				return Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.Personal), ".recently-used");
+				return Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.UserProfile), ".recently-used");
 			}
 		}
 		

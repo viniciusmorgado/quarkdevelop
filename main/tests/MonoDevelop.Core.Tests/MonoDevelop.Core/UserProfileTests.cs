@@ -35,5 +35,31 @@ namespace MonoDevelop.Core
 		{
 			Assert.That (UserProfile.ProfileVersions, Contains.Item (BuildInfo.CompatVersion));
 		}
+
+		/// <summary>
+		/// Without XDG variables the profile lives under $HOME. On .NET, SpecialFolder.Personal is the XDG
+		/// documents folder and "" when it does not exist, which made the profile paths relative to the
+		/// current directory.
+		/// </summary>
+		[Test]
+		public void UnixProfileWithoutXdgVariablesIsUnderHome ()
+		{
+			var names = new [] { "XDG_DATA_HOME", "XDG_CONFIG_HOME", "XDG_CACHE_HOME" };
+			var saved = Array.ConvertAll (names, Environment.GetEnvironmentVariable);
+			try {
+				foreach (var name in names)
+					Environment.SetEnvironmentVariable (name, null);
+				var profile = UserProfile.ForUnix ("8.6", false);
+				FilePath home = Environment.GetFolderPath (Environment.SpecialFolder.UserProfile);
+
+				foreach (var dir in new [] { profile.UserDataRoot, profile.ConfigDir, profile.CacheDir, profile.LogDir }) {
+					Assert.IsTrue (dir.IsAbsolute, dir);
+					Assert.IsTrue (dir.IsChildPathOf (home), dir + " under " + home);
+				}
+			} finally {
+				for (int i = 0; i < names.Length; i++)
+					Environment.SetEnvironmentVariable (names [i], saved [i]);
+			}
+		}
 	}
 }

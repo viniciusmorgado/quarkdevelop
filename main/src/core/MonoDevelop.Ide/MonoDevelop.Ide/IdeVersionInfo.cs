@@ -51,24 +51,8 @@ namespace MonoDevelop.Ide
 		
 		public static string GetGtkVersion ()
 		{
-			uint v1 = 2, v2 = 0, v3 = 0;
-			
-			while (v1 < 99 && Gtk.Global.CheckVersion (v1, v2, v3) == null)
-				v1++;
-			v1--;
-			
-			while (v2 < 99 && Gtk.Global.CheckVersion (v1, v2, v3) == null)
-				v2++;
-			v2--;
-			
-			v3 = 0;
-			while (v3 < 99 && Gtk.Global.CheckVersion (v1, v2, v3) == null)
-				v3++;
-			v3--;
-			
-			if (v1 == 99 || v2 == 99 || v3 == 99)
-				return "unknown";
-			return v1 +"." + v2 + "."+ v3;
+			// GTK 3 reports its version (probing with CheckVersion from 2.0 failed on GTK 3: major mismatch)
+			return Gtk.Global.MajorVersion + "." + Gtk.Global.MinorVersion + "." + Gtk.Global.MicroVersion;
 		}
 		
 		static string GetGtkTheme ()

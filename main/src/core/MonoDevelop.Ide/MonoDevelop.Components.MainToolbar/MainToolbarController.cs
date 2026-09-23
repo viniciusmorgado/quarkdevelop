@@ -857,8 +857,10 @@ namespace MonoDevelop.Components.MainToolbar
 			}
 			else {
 				operation = OperationIcon.Run;
-				var ci = IdeApp.CommandService.GetCommandInfo ("MonoDevelop.Debugger.DebugCommands.Debug");
-				if (!ci.Enabled || !ci.Visible) {
+				// The Debug command belongs to the debugger add-in, which may not be installed
+				const string debugCommand = "MonoDevelop.Debugger.DebugCommands.Debug";
+				var ci = IdeApp.CommandService.GetActionCommand (debugCommand) != null ? IdeApp.CommandService.GetCommandInfo (debugCommand) : null;
+				if (ci == null || !ci.Enabled || !ci.Visible) {
 					// If debug is not enabled, try Run
 					ci = IdeApp.CommandService.GetCommandInfo (MonoDevelop.Ide.Commands.ProjectCommands.Run);
 					if (!ci.Enabled || !ci.Visible) {

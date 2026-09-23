@@ -209,14 +209,22 @@ namespace MonoDevelop.Components.AtkCocoaHelper
 				return;
 			}
 
+			// The action signals are added by the AtkCocoa module (Mac accessibility); plain ATK has none of them
+			if (!IdeTheme.AccessibilityEnabled)
+				return;
+
 			HandleSignalAttachment ((signal, handler) => owner.AddSignalHandler (signal, handler, typeof (GLib.SignalArgs)));
+			signalsAttached = true;
 		}
+
+		bool signalsAttached;
 
 		void WidgetDestroyed (object sender, EventArgs e)
 		{
 			FreeActions ();
 
-			HandleSignalAttachment ((signal, handler) => owner.RemoveSignalHandler (signal, handler));
+			if (signalsAttached)
+				HandleSignalAttachment ((signal, handler) => owner.RemoveSignalHandler (signal, handler));
 			owner = null;
 		}
 

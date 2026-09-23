@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using MonoDevelop.Ide;
 
@@ -36,6 +37,15 @@ namespace MonoDevelop.Startup
 	{
 		[STAThread]
 		public static int Main (string[] args)
+		{
+			// The SDK's MSBuild must be registered before any method that uses Microsoft.Build types is
+			// compiled (ADR 0008), so IdeStartup runs in a separate, non-inlined method.
+			MonoDevelop.Core.Assemblies.MSBuildRegistration.EnsureRegistered ();
+			return Run (args);
+		}
+
+		[MethodImpl (MethodImplOptions.NoInlining)]
+		static int Run (string[] args)
 		{
 			return IdeStartup.Main (args);
 		}
