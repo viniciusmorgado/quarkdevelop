@@ -37,7 +37,7 @@ namespace MonoDevelop.Core.Execution
 		/// </summary>
 		public virtual void Dispose ()
 		{
-			System.Runtime.Remoting.RemotingServices.Disconnect (this);
+			// Remote objects no longer exist on .NET (ADR 0009); nothing to disconnect.
 		}
 		
 		/// <summary>

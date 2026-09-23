@@ -26,7 +26,9 @@
 
 using System;
 using System.Linq;
+#if MONODOC
 using Monodoc;
+#endif
 using System.Threading;
 using MonoDevelop.Core;
 using Mono.Addins;
@@ -37,6 +39,7 @@ using System.Threading.Tasks;
 
 namespace MonoDevelop.Projects
 {
+#if MONODOC
 	[DefaultServiceImplementation]
 	public class HelpService: Service
 	{
@@ -142,5 +145,26 @@ namespace MonoDevelop.Projects
 			return result.GetDocumentationCommentId ();
 		}
 	}
+#else
+	/// <summary>
+	/// MonoDoc is not available on .NET 10 / Linux (no monodoc assembly or documentation sources);
+	/// this implementation keeps the service contract with an empty documentation tree.
+	/// See docs/BREAKING-CHANGES.md.
+	/// </summary>
+	[DefaultServiceImplementation]
+	public class HelpService: Service
+	{
+		/// <summary>Always null: no MonoDoc tree is available.</summary>
+		public object HelpTree => null;
+
+		/// <summary>Always true: there is nothing to load.</summary>
+		public bool TreeInitialized => true;
+
+		public IEnumerable<string> Sources => Array.Empty<string> ();
+
+		/// <summary>Documentation comment id of the symbol (same as the MonoDoc build).</summary>
+		public string GetMonoDocHelpUrl (Microsoft.CodeAnalysis.ISymbol result) => result?.GetDocumentationCommentId ();
+	}
+#endif
 }
 

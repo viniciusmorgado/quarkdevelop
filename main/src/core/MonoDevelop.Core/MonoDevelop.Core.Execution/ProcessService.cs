@@ -45,7 +45,6 @@ namespace MonoDevelop.Core.Execution
 {
 	public class ProcessService
 	{
-		ProcessHostController externalProcess;
 		List<ExtensionNode> executionHandlers;
 		DefaultExecutionModeSet defaultExecutionModeSet = new DefaultExecutionModeSet ();
 		IExecutionHandler defaultExecutionHandler = new DefaultExecutionHandler ();
@@ -305,19 +304,6 @@ namespace MonoDevelop.Core.Execution
 				executionHandlers.Remove (args.ExtensionNode);
 		}
 		
-		ProcessHostController GetHost (string id, bool shared, IExecutionHandler executionHandler)
-		{
-			if (!shared)
-				return new ProcessHostController (id, 0, executionHandler);
-			
-			lock (this) {
-				if (externalProcess == null)
-					externalProcess = new ProcessHostController ("SharedHostProcess", 10000, null);
-	
-				return externalProcess;
-			}
-		}
-
 		void CheckRemoteType (Type type)
 		{
 			if (!typeof(IDisposable).IsAssignableFrom (type))
@@ -327,22 +313,26 @@ namespace MonoDevelop.Core.Execution
 		public IDisposable CreateExternalProcessObject (Type type, bool shared = true, IList<string> userAssemblyPaths = null, OperationConsole console = null)
 		{
 			CheckRemoteType (type);
-			var hc = GetHost (type.ToString(), shared, null);
-			return (IDisposable) hc.CreateInstance (type.Assembly.Location, type.FullName, GetRequiredAddins (type), userAssemblyPaths, console);
+			throw ExternalProcessHostingNotSupported ();
 		}
 
 		public IDisposable CreateExternalProcessObject (Type type, IExecutionHandler executionHandler, IList<string> userAssemblyPaths = null, OperationConsole console = null)
 		{
 			CheckRemoteType (type);
-			var hc = GetHost (type.ToString (), false, executionHandler);
-			return (IDisposable)hc.CreateInstance (type.Assembly.Location, type.FullName, GetRequiredAddins (type), userAssemblyPaths, console);
+			throw ExternalProcessHostingNotSupported ();
+		}
+
+		// Remote objects were hosted in mdhost.exe through .NET Remoting, which does not exist on .NET
+		// (ADR 0009). Callers must run the work in-process or use RemoteProcessConnection.
+		static NotSupportedException ExternalProcessHostingNotSupported ()
+		{
+			return new NotSupportedException ("External process objects (mdhost) are not supported on .NET; see docs/adr/0009-remove-remoting-binaryformatter.md");
 		}
 		
 		public bool IsValidForRemoteHosting (IExecutionHandler handler)
 		{
-			string location = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly ().Location);
-			location = Path.Combine (location, "mdhost.exe");
-			return handler.CanExecute (new DotNetExecutionCommand (location));
+			// mdhost (Remoting-based remote hosting) does not exist on .NET (ADR 0009).
+			return false;
 		}
 		
 		string[] GetRequiredAddins (Type type)
@@ -359,7 +349,6 @@ namespace MonoDevelop.Core.Execution
 		
 		internal void Dispose ()
 		{
-			RemotingService.Dispose ();
 		}
 		
 		public class ExecutionModeReference

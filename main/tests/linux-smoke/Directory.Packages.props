@@ -1,0 +1,6 @@
+<Project>
+  <!-- Stops main/Directory.Packages.props (central package management) from applying here. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+</Project>

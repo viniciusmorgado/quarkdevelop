@@ -46,7 +46,6 @@ using System.Collections.Immutable;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using MonoDevelop.Core.Collections;
-using ICSharpCode.Decompiler.TypeSystem.Implementation;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.ObjectPool;
 using System.Diagnostics;

@@ -34,7 +34,6 @@ using MonoDevelop.Projects.Extensions;
 using Mono.Addins;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Runtime.Remoting.Messaging;
 using MonoDevelop.Core.StringParsing;
 using System.Threading;
 using MonoDevelop.Core.AddIns;
@@ -56,8 +55,7 @@ namespace MonoDevelop.Projects
 		{
 			if (instance.GetType () != typeof(T))
 				return;
-			var delayedInitialize = CallContext.LogicalGetData ("MonoDevelop.DelayItemInitialization");
-			if (delayedInitialize != null && (bool)delayedInitialize)
+			if (ItemInitializationContext.DelayItemInitialization)
 				return;
 			EnsureInitialized ();
 		}

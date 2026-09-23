@@ -458,12 +458,7 @@ namespace MonoDevelop.Projects.MSBuild
 		/// </remarks>
 		internal static SolutionItem CreateUninitializedInstance (Type type)
 		{
-			try {
-				System.Runtime.Remoting.Messaging.CallContext.LogicalSetData ("MonoDevelop.DelayItemInitialization", true);
-				return (SolutionItem)Activator.CreateInstance (type, true);
-			} finally {
-				System.Runtime.Remoting.Messaging.CallContext.LogicalSetData ("MonoDevelop.DelayItemInitialization", false);
-			}
+			return ItemInitializationContext.CreateUninitialized (() => (SolutionItem)Activator.CreateInstance (type, true));
 		}
 
 		internal static bool CanCreateSolutionItem (string type, ProjectCreateInformation info, System.Xml.XmlElement projectOptions)

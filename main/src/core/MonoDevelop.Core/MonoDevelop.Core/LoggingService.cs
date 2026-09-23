@@ -111,11 +111,11 @@ namespace MonoDevelop.Core
 			timestamp = DateTime.Now;
 
 			//remove the default trace listener on .NET, it throws up horrible dialog boxes for asserts
-			Debug.Listeners.Clear ();
+			Trace.Listeners.Clear ();
 
 			//add a new listener that just logs failed asserts
 			assertLogger = new AssertLoggingTraceListener ();
-			Debug.Listeners.Add (assertLogger);
+			Trace.Listeners.Add (assertLogger);
 		}
 
 		public static bool? ReportCrashes {
@@ -188,7 +188,7 @@ namespace MonoDevelop.Core
 		
 		public static void Shutdown ()
 		{
-			Debug.Listeners.Remove (assertLogger);
+			Trace.Listeners.Remove (assertLogger);
 			RestoreOutputRedirection ();
 		}
 

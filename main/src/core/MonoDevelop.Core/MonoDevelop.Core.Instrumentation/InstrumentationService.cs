@@ -30,9 +30,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using MonoDevelop.Core.ProgressMonitoring;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Tcp;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -114,15 +111,9 @@ namespace MonoDevelop.Core.Instrumentation
 
 		public static int PublishService ()
 		{
-			RemotingService.RegisterRemotingChannel ();
-			TcpChannel ch = (TcpChannel) ChannelServices.GetChannel ("tcp");
-			Uri u = new Uri (ch.GetUrlsForUri ("test")[0]);
-			publicPort = u.Port;
-			
-			InstrumentationServiceBackend backend = new InstrumentationServiceBackend ();
-			System.Runtime.Remoting.RemotingServices.Marshal (backend, "InstrumentationService");
-			
-			return publicPort;
+			// The remote instrumentation monitor (mdmonitor) used .NET Remoting, which does not exist
+			// on .NET; it is excluded from the Linux build (ADR 0009, ADR 0017).
+			throw new PlatformNotSupportedException ("Remote instrumentation publishing is not supported on .NET (ADR 0009).");
 		}
 		
 		public static void StartMonitor ()
@@ -169,7 +160,8 @@ namespace MonoDevelop.Core.Instrumentation
 			while (!stopping) {
 				Thread.Sleep (interval);
 				lock (counters) {
-					Save (file, (fs, data) => new BinaryFormatter ().Serialize (fs, data));
+					// JSON instead of BinaryFormatter (removed in .NET 9+, ADR 0009).
+					SaveJson (file);
 				}
 			}
 			autoSaveThread = null;
@@ -204,7 +196,8 @@ namespace MonoDevelop.Core.Instrumentation
 		
 		public static IInstrumentationService GetRemoteService (string hostAndPort)
 		{
-			return (IInstrumentationService) Activator.GetObject (typeof(IInstrumentationService), "tcp://" + hostAndPort + "/InstrumentationService");
+			// Remote instrumentation used .NET Remoting (mdmonitor), which does not exist on .NET (ADR 0009).
+			throw new PlatformNotSupportedException ("Remote instrumentation is not supported on .NET (ADR 0009).");
 		}
 
 		public static IInstrumentationService GetServiceData ()
@@ -217,13 +210,9 @@ namespace MonoDevelop.Core.Instrumentation
 		
 		public static IInstrumentationService LoadServiceDataFromFile (string file)
 		{
-			using (Stream s = File.OpenRead (file)) {
-				var f = new BinaryFormatter ();
-				var data = f.Deserialize (s) as IInstrumentationService;
-				if (data == null)
-					throw new Exception ("Invalid instrumentation service data file");
-				return data;
-			}
+			// The BinaryFormatter-based data files (read by mdmonitor) are not supported on .NET (ADR 0009);
+			// instrumentation data is now saved as JSON (SaveJson).
+			throw new PlatformNotSupportedException ("Loading binary instrumentation data files is not supported on .NET (ADR 0009): " + file);
 		}
 		
 		public static bool Enabled {

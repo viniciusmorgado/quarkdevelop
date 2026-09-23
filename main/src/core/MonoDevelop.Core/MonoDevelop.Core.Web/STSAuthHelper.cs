@@ -18,8 +18,10 @@
 using System;
 using System.Net;
 using System.Globalization;
+#if WCF_STS
 using System.ServiceModel;
 using System.ServiceModel.Security;
+#endif
 using System.Text;
 
 namespace MonoDevelop.Core.Web
@@ -91,6 +93,15 @@ namespace MonoDevelop.Core.Web
 
 		private static string GetSTSToken(Uri requestUri, string endPoint, string appliesTo)
 		{
+#if !WCF_STS
+			// WS-Trust via WCF/Windows Identity Foundation does not exist on .NET 10 / Linux: behave like
+			// the original code when the WIF runtime is missing (see docs/BREAKING-CHANGES.md).
+			throw new InvalidOperationException (
+				String.Format (
+					CultureInfo.CurrentCulture,
+					"Connection to feed '{0}' requires the Windows Identity Foundation runtime to be installed.",
+					requestUri));
+#else
 			var typeProvider = WIFTypeProvider.GetWIFTypes();
 			if (typeProvider == null)
 			{
@@ -119,6 +130,7 @@ namespace MonoDevelop.Core.Web
 			dynamic channel = factory.CreateChannel();
 			dynamic securityToken = channel.Issue(rst);
 			return securityToken.TokenXml.OuterXml;
+#endif
 		}
 
 		private static void SetProperty(object instance, string propertyName, object value)

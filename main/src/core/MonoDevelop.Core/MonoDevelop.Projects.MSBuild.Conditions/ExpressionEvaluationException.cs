@@ -47,11 +47,5 @@ namespace MonoDevelop.Projects.MSBuild.Conditions {
 			: base (message, innerException)
 		{
 		}
-
-		protected ExpressionEvaluationException (SerializationInfo info,
-					   StreamingContext context)
-			: base (info, context)
-		{
-		}
 	}
 }

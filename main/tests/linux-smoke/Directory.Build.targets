@@ -1,0 +1,7 @@
+<Project>
+  <!--
+    The linux-smoke projects are *user* projects that mdtool builds in tests (quickstart M3).
+    They must not inherit the repository's build configuration (main/Directory.Build.targets),
+    so this file intentionally stops the Directory.Build.* chain.
+  -->
+</Project>
