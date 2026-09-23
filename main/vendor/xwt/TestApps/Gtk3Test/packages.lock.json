@@ -1,0 +1,83 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net10.0": {
+      "AtkSharp": {
+        "type": "Transitive",
+        "resolved": "3.24.24.95",
+        "contentHash": "LnSfsc0y11gfzczZj5bnpwcFkXFZuVTSSd92ML/FcHIM7FU+cAfm1UkAonv5BdwTRhzDbNDE39vihao/k75sUA==",
+        "dependencies": {
+          "GLibSharp": "3.24.24.95"
+        }
+      },
+      "CairoSharp": {
+        "type": "Transitive",
+        "resolved": "3.24.24.95",
+        "contentHash": "EZ9KT3pwVAol35XbZW0Uwdg2LqhDvPnWdhqIrsedhDx+Omnu56hLzxh8mZGqmQvEwJE8Opbda4w9CqDtXbX6Vw=="
+      },
+      "GdkSharp": {
+        "type": "Transitive",
+        "resolved": "3.24.24.95",
+        "contentHash": "rABpIGkxr8lOdyhEmrKXzjih3z3932kjqUmm5qaQhWVSvu9YepEk3J1FApgnKCW/EWEzlerzxnJArsyOlgMsZQ==",
+        "dependencies": {
+          "CairoSharp": "3.24.24.95",
+          "GLibSharp": "3.24.24.95",
+          "GioSharp": "3.24.24.95",
+          "PangoSharp": "3.24.24.95"
+        }
+      },
+      "GioSharp": {
+        "type": "Transitive",
+        "resolved": "3.24.24.95",
+        "contentHash": "avYEDFlYgbogb+Y7ZhIXQpyJfL83bnPpBKY642YEW9PQ+pRK3qf2k0opvd5oHccXfByj6kAQjmRUSIS0pj19Fg==",
+        "dependencies": {
+          "GLibSharp": "3.24.24.95"
+        }
+      },
+      "GLibSharp": {
+        "type": "Transitive",
+        "resolved": "3.24.24.95",
+        "contentHash": "1viZRMVjddf2HUCW7WDXT47rHssteHkAOimXQ2/pI8oGrPGNFuuw5MbX8BOIy73hCWVqo7JEMONv3z32OrCoCQ=="
+      },
+      "PangoSharp": {
+        "type": "Transitive",
+        "resolved": "3.24.24.95",
+        "contentHash": "H7JeyEvLsgvsbamGpRgoNtdvzPiGwwsUuoeTobN1C/JRjw1J8Snw0yf2WBr7CKx5GLwbrwpQYOb7N/HD17ME8A==",
+        "dependencies": {
+          "CairoSharp": "3.24.24.95",
+          "GLibSharp": "3.24.24.95"
+        }
+      },
+      "samples": {
+        "type": "Project",
+        "dependencies": {
+          "Xwt": "[1.0.0, )"
+        }
+      },
+      "xwt": {
+        "type": "Project"
+      },
+      "xwt.gtk3": {
+        "type": "Project",
+        "dependencies": {
+          "GtkSharp": "[3.24.24.95, )",
+          "Xwt": "[1.0.0, )"
+        }
+      },
+      "GtkSharp": {
+        "type": "CentralTransitive",
+        "requested": "[3.24.24.95, )",
+        "resolved": "3.24.24.95",
+        "contentHash": "RRUY45hAa5gsMcadvVjcLUzMjVtmuHSYTcIwM6j8LNgKhzFFHk69qM1D5ULfGxaWmVjicqNWiFtOtk8WsvPqaQ==",
+        "dependencies": {
+          "AtkSharp": "3.24.24.95",
+          "CairoSharp": "3.24.24.95",
+          "GLibSharp": "3.24.24.95",
+          "GdkSharp": "3.24.24.95",
+          "GioSharp": "3.24.24.95",
+          "PangoSharp": "3.24.24.95"
+        }
+      }
+    }
+  }
+}

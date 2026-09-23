@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Runs the Xwt samples on the GTK3 backend (vendored, see ../../UPSTREAM.md). WS-2 smoke (T066). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Gtk3Test</AssemblyName>
+    <RootNamespace>GtkTest</RootNamespace>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <RunAnalyzers>false</RunAnalyzers>
+    <MDOutDir>$(MonoDevelopBuildDir)samples/xwt/</MDOutDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Xwt/Xwt.csproj" />
+    <ProjectReference Include="../../Xwt.Gtk/Xwt.Gtk3.csproj" />
+    <ProjectReference Include="../Samples/Samples.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Vendored Xwt (see ../UPSTREAM.md), built for net10.0 with the repository props (ADR 0003/0005).
+    Upstream sources are compiled as-is except the XAML designer surface (System.Xaml is WPF-only).
+  -->
+  <PropertyGroup>
+    <AssemblyName>Xwt</AssemblyName>
+    <RootNamespace>Xwt</RootNamespace>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>true</EnableDefaultEmbeddedResourceItems>
+    <!-- Keep Xwt's own strong-name identity. -->
+    <AssemblyOriginatorKeyFile>../xwt.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Xwt.Design/DesignerSurface.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    GTK3 backend of the vendored Xwt (see ../UPSTREAM.md), on the GtkSharp 3.24.24 NuGet packages
+    instead of gtk-sharp 3 from the GAC (ADR 0005, ADR 0011). Same sources as the upstream
+    Xwt.Gtk3.csproj: everything in this folder except the GTK2-only files.
+  -->
+  <PropertyGroup>
+    <AssemblyName>Xwt.Gtk3</AssemblyName>
+    <RootNamespace>Xwt.GtkBackend</RootNamespace>
+    <DefineConstants>$(DefineConstants);XWT_GTK3</DefineConstants>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <AssemblyOriginatorKeyFile>../xwt.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="AssemblyInfo.cs" />
+    <Compile Remove="**/*Gtk2*.cs" />
+    <Compile Remove="Xwt.GtkBackend/SearchTextEntryBackend.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icons/*.png" LogicalName="%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GtkSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Xwt/Xwt.csproj" />
+  </ItemGroup>
+</Project>

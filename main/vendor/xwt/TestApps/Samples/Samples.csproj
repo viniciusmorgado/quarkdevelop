@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Xwt widget gallery (vendored, see ../../UPSTREAM.md). upstream-resources/ holds the images the
+       upstream project linked from Testing/ and Xwt.XamMac/, which are not vendored. -->
+  <PropertyGroup>
+    <AssemblyName>Samples</AssemblyName>
+    <RootNamespace>Samples</RootNamespace>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <!-- Sample code, not shipped: analyzer findings are not tracked here. -->
+    <RunAnalyzers>false</RunAnalyzers>
+    <MDOutDir>$(MonoDevelopBuildDir)samples/xwt/</MDOutDir>
+    <!-- Upstream sample code: compiler warnings (obsolete overrides, hidden members) stay warnings. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- XAML designer sample: needs System.Xaml (WPF), not built (disabled upstream in MainWindow.cs too). -->
+    <Compile Remove="Samples/Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="**/*.png;**/*.jpg" Exclude="bin/**;obj/**" LogicalName="%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Xwt/Xwt.csproj" />
+  </ItemGroup>
+</Project>
