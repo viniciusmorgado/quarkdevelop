@@ -64,6 +64,7 @@
     <Compile Include="MonoDevelop.Ide.Gui.Content/IClipboardHandler.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Content/IPrintable.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Dialogs/CommonAboutDialog.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Dialogs/Gtk3DialogCompat.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Dialogs/DirtyFilesDialog.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Dialogs/NewLayoutDialog.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Dialogs/AboutMonoDevelopTabPage.cs" />

@@ -27,7 +27,7 @@ namespace MonoDevelop.Ide.Projects
 		
 		private global::Gtk.Label label2;
 		
-		private global::Gtk.ComboBox fileTypeCombo;
+		private global::Gtk.ComboBoxText fileTypeCombo;
 		
 		private global::Gtk.Button buttonCancel;
 		
@@ -41,7 +41,7 @@ namespace MonoDevelop.Ide.Projects
 			this.Title = global::Mono.Unix.Catalog.GetString ("Select Project File...");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.Ide.Projects.ProjectFileSelectorDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -121,7 +121,7 @@ namespace MonoDevelop.Ide.Projects
 			w9.Expand = false;
 			w9.Fill = false;
 			// Container child typeBox.Gtk.Box+BoxChild
-			this.fileTypeCombo = global::Gtk.ComboBox.NewText ();
+			this.fileTypeCombo = new global::Gtk.ComboBoxText ();
 			this.fileTypeCombo.Name = "fileTypeCombo";
 			this.typeBox.Add (this.fileTypeCombo);
 			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.typeBox [this.fileTypeCombo]));
@@ -138,11 +138,11 @@ namespace MonoDevelop.Ide.Projects
 			w12.Expand = false;
 			w12.Fill = false;
 			this.hpaned1.Add (this.vbox4);
-			w1.Add (this.hpaned1);
+			w1.PackStart (this.hpaned1, true, true, 0);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(w1 [this.hpaned1]));
 			w14.Position = 0;
 			// Internal child MonoDevelop.Ide.Projects.ProjectFileSelectorDialog.ActionArea
-			global::Gtk.HButtonBox w15 = this.ActionArea;
+			global::Gtk.ButtonBox w15 = this.ActionArea;
 			w15.Name = "dialog1_ActionArea";
 			w15.Spacing = 6;
 			w15.BorderWidth = ((uint)(5));

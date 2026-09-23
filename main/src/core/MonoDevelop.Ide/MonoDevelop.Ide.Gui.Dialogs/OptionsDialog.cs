@@ -95,7 +95,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			buttonOk = new Gtk.Button (Gtk.Stock.Ok);
 			buttonOk.Accessible.Name = "Dialogs.Options.Ok";
 			buttonOk.Accessible.Description = GettextCatalog.GetString ("Close the options dialog and keep the changes");
-			this.ActionArea.PackStart (buttonOk);
+			this.ActionArea.PackStart (buttonOk, true, true, 0);
 			buttonOk.Clicked += OnButtonOkClicked;
 
 			mainHBox = new HBox ();
@@ -121,7 +121,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			mainHBox.PackStart (fboxTree, false, false, 0);
 
 			Realized += delegate {
-				fboxTree.BackgroundColor = tree.Style.Base (Gtk.StateType.Normal);
+				fboxTree.BackgroundColor = Gtk3DialogCompat.GetStyleBase (tree, Gtk.StateFlags.Normal);
 			};
 
 			var vbox = new VBox ();
@@ -143,7 +143,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			imageHeader.Hide ();
 			var imageHeaderWidget = imageHeader.ToGtkWidget ();
 			imageHeaderWidget.Accessible.SetShouldIgnore (true);
-			headerBox.PackStart (imageHeaderWidget);
+			headerBox.PackStart (imageHeaderWidget, true, true, 0);
 
 			var fboxHeader = new HeaderBox ();
 			fboxHeader.Accessible.SetShouldIgnore (true);
@@ -152,13 +152,13 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 //			fbox.GradientBackround = true;
 //			fbox.BackgroundColor = new Gdk.Color (255, 255, 255);
 			Realized += delegate {
-				var c = Style.Background (Gtk.StateType.Normal).ToXwtColor ();
+				var c = Gtk3DialogCompat.GetStyleBackground (this, Gtk.StateFlags.Normal).ToXwtColor ();
 				c.Light += 0.09;
 				fboxHeader.BackgroundColor = c.ToGdkColor ();
 			};
 			StyleSet += delegate {
 				if (IsRealized) {
-					var c = Style.Background (Gtk.StateType.Normal).ToXwtColor ();
+					var c = Gtk3DialogCompat.GetStyleBackground (this, Gtk.StateFlags.Normal).ToXwtColor ();
 					c.Light += 0.09;
 					fboxHeader.BackgroundColor = c.ToGdkColor ();
 				}
@@ -174,7 +174,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			fbox.Add (pageFrame);
 			vbox.PackStart (fbox, true, true, 0);
 
-			this.VBox.PackStart (mainHBox, true, true, 0);
+			this.ContentArea.PackStart (mainHBox, true, true, 0);
 
 			this.removeEmptySections = removeEmptySections;
 			extensionContext = AddinManager.CreateExtensionContext ();

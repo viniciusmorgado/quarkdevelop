@@ -18,7 +18,7 @@ namespace MonoDevelop.Ide.Projects
 			this.Name = "MonoDevelop.Ide.Projects.ImportProjectPolicyDialog";
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.Ide.Projects.ImportProjectPolicyDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -66,11 +66,11 @@ namespace MonoDevelop.Ide.Projects
 			this.vbox5.Add (this.selector);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.selector]));
 			w5.Position = 3;
-			w1.Add (this.vbox5);
+			w1.PackStart (this.vbox5, true, true, 0);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox5]));
 			w6.Position = 0;
 			// Internal child MonoDevelop.Ide.Projects.ImportProjectPolicyDialog.ActionArea
-			global::Gtk.HButtonBox w7 = this.ActionArea;
+			global::Gtk.ButtonBox w7 = this.ActionArea;
 			w7.Name = "dialog1_ActionArea";
 			w7.Spacing = 10;
 			w7.BorderWidth = ((uint)(5));

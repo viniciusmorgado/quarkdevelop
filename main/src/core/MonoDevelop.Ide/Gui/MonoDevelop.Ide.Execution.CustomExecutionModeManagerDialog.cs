@@ -21,7 +21,7 @@ namespace MonoDevelop.Ide.Execution
 			this.Title = global::Mono.Unix.Catalog.GetString ("Custom Execution Modes");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.Ide.Execution.CustomExecutionModeManagerDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -93,11 +93,11 @@ namespace MonoDevelop.Ide.Execution
 			this.vbox2.Add (this.hbox1);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox1]));
 			w8.Position = 0;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w9.Position = 0;
 			// Internal child MonoDevelop.Ide.Execution.CustomExecutionModeManagerDialog.ActionArea
-			global::Gtk.HButtonBox w10 = this.ActionArea;
+			global::Gtk.ButtonBox w10 = this.ActionArea;
 			w10.Name = "dialog1_ActionArea";
 			w10.Spacing = 10;
 			w10.BorderWidth = ((uint)(5));

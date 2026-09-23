@@ -59,8 +59,8 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		{
 			Name = "wizard_dialog";
 			Title = string.Format (GettextCatalog.GetString ("About {0}"), BrandingService.ApplicationName);
-			AllowGrow = false;
-			HasSeparator = false;
+			Resizable = false;
+			// GTK3: Dialog.HasSeparator was removed (dialogs have no separator)
 			BorderWidth = 0;
 
 			var notebook = new Notebook ();
@@ -69,7 +69,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			notebook.BorderWidth = 0;
 			notebook.AppendPage (new AboutMonoDevelopTabPage (), new Label (Title));
 			notebook.AppendPage (new VersionInformationTabPage (), new Label (GettextCatalog.GetString ("Version Information")));
-			VBox.PackStart (notebook, true, true, 0);
+			ContentArea.PackStart (notebook, true, true, 0);
 			
 			var copyButton = new Button () { Label = GettextCatalog.GetString ("Copy Information") };
 			copyButton.Clicked += (sender, e) => CopyBufferToClipboard ();

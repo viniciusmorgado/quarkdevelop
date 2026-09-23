@@ -22,7 +22,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.Modal = true;
 			this.BorderWidth = ((uint)(6));
 			// Internal child MonoDevelop.Ide.Gui.Dialogs.MultiTaskProgressDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.Spacing = 6;
 			w1.BorderWidth = ((uint)(2));
@@ -31,7 +31,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.title.Name = "title";
 			this.title.Xalign = 0F;
 			this.title.UseMarkup = true;
-			w1.Add (this.title);
+			w1.PackStart (this.title, true, true, 0);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(w1 [this.title]));
 			w2.Position = 0;
 			w2.Expand = false;
@@ -49,7 +49,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.progressTreeView.CanFocus = true;
 			this.progressTreeView.Name = "progressTreeView";
 			this.progressScroll.Add (this.progressTreeView);
-			w1.Add (this.progressScroll);
+			w1.PackStart (this.progressScroll, true, true, 0);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(w1 [this.progressScroll]));
 			w4.Position = 1;
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -57,7 +57,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Details:");
-			w1.Add (this.label1);
+			w1.PackStart (this.label1, true, true, 0);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(w1 [this.label1]));
 			w5.Position = 2;
 			w5.Expand = false;
@@ -78,11 +78,11 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.detailsTextView.CursorVisible = false;
 			this.detailsTextView.WrapMode = ((global::Gtk.WrapMode)(3));
 			this.detailsScroll.Add (this.detailsTextView);
-			w1.Add (this.detailsScroll);
+			w1.PackStart (this.detailsScroll, true, true, 0);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(w1 [this.detailsScroll]));
 			w7.Position = 3;
 			// Internal child MonoDevelop.Ide.Gui.Dialogs.MultiTaskProgressDialog.ActionArea
-			global::Gtk.HButtonBox w8 = this.ActionArea;
+			global::Gtk.ButtonBox w8 = this.ActionArea;
 			w8.Name = "dialog1_ActionArea";
 			w8.Spacing = 6;
 			w8.BorderWidth = ((uint)(5));

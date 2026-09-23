@@ -43,7 +43,7 @@ namespace MonoDevelop.Ide.CodeTemplates
 			this.SkipPagerHint = true;
 			this.SkipTaskbarHint = true;
 			// Internal child MonoDevelop.Ide.CodeTemplates.EditTemplateDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.Spacing = 6;
 			w1.BorderWidth = ((uint)(2));
@@ -280,11 +280,11 @@ namespace MonoDevelop.Ide.CodeTemplates
 			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.scrolledwindow2]));
 			w25.Position = 1;
 			this.hpaned1.Add (this.vbox4);
-			w1.Add (this.hpaned1);
+			w1.PackStart (this.hpaned1, true, true, 0);
 			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(w1 [this.hpaned1]));
 			w27.Position = 0;
 			// Internal child MonoDevelop.Ide.CodeTemplates.EditTemplateDialog.ActionArea
-			global::Gtk.HButtonBox w28 = this.ActionArea;
+			global::Gtk.ButtonBox w28 = this.ActionArea;
 			w28.Name = "dialog1_ActionArea";
 			w28.Spacing = 6;
 			w28.BorderWidth = ((uint)(5));

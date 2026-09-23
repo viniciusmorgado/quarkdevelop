@@ -43,13 +43,13 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 	partial class TasksPanelWidget : Gtk.Bin
 	{	
 		ListStore tokensStore;
-		ComboBox comboPriority;
+		ComboBoxText comboPriority;
 
 		public TasksPanelWidget ()
 		{
 			Build ();
 			
-			comboPriority = ComboBox.NewText ();
+			comboPriority = new ComboBoxText ();
 			foreach (TaskPriority priority in Enum.GetValues (typeof (TaskPriority)))
 				comboPriority.AppendText (Enum.GetName (typeof (TaskPriority), priority));
 			comboPriority.Changed += new EventHandler (Validate);

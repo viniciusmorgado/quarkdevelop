@@ -21,9 +21,19 @@ understanding the code:
      `CairoHelper.Create (window)` becomes `gtk3cr.CreateSharedContext ()`,
      `window.DrawLayout (w.Style.TextGC (s), x, y, l)` becomes `gtk3cr.DrawLayout (w, s, x, y, l)`,
      `base.Render` maps to `base.OnRender` and a used expose area comes from the cairo clip.
+  6. Stetic dialogs: `Gtk.VBox w = this.VBox` -> `Gtk.Box w = this.ContentArea` (its `w.Add (x)` becomes
+     `w.PackStart (x, true, true, 0)`, the GTK2 VBox packing), `Gtk.HButtonBox w = this.ActionArea` ->
+     `Gtk.ButtonBox`.
+  7. `ComboBox.NewText ()` -> `new ComboBoxText ()`, retyping the fields/locals it is assigned to and
+     mapping their `RemoveText` to `Remove`.
+  8. Stetic idioms: `Group = new GLib.SList (IntPtr.Zero)` -> `new Gtk.RadioButton [0]`,
+     `AllowGrow` -> `Resizable`, `HasSeparator = x;` -> removed (comment).
+  9. With --errors=FILE (compiler output, e.g. out/ide-body-errors.txt): the one-argument
+     `Box.PackStart (w)` / `PackEnd (w)` calls reported as CS7036 get the GTK2 defaults
+     `(w, true, true, 0)`. Location-based, so other one-argument PackStart overloads (Xwt) are untouched.
 
 Everything else is left to the port tasks. Usage:
-    python3 scripts/tools/gtk3-codemod.py FILE... [--dry-run]
+    python3 scripts/tools/gtk3-codemod.py FILE... [--dry-run] [--errors=FILE]
 """
 import re
 import sys
@@ -252,14 +262,135 @@ def port_cell_render(text, nl):
     return text, True
 
 
+DIALOG_VBOX = re.compile(r"global::Gtk\.VBox\s+(\w+)\s*=\s*this\.VBox\s*;")
+DIALOG_CONTENT = re.compile(r"global::Gtk\.Box\s+(\w+)\s*=\s*this\.ContentArea\s*;")
+DIALOG_ACTION = re.compile(r"global::Gtk\.HButtonBox\s+(\w+)\s*=\s*this\.ActionArea\s*;")
+
+
+def port_stetic_dialog(text):
+    """Stetic dialog internal children: `Gtk.VBox w = this.VBox` -> `Gtk.Box w = this.ContentArea`,
+    `Gtk.HButtonBox w = this.ActionArea` -> `Gtk.ButtonBox`. The GTK3 content area is a plain GtkBox,
+    whose Add packs with expand=false (a GTK2 VBox packed with expand=true), so `w.Add (x)` on it
+    becomes `w.PackStart (x, true, true, 0)`; the child properties Stetic sets afterwards still apply."""
+    new = DIALOG_VBOX.sub(r"global::Gtk.Box \1 = this.ContentArea;", text)
+    new = DIALOG_ACTION.sub(r"global::Gtk.ButtonBox \1 = this.ActionArea;", new)
+    for m in DIALOG_CONTENT.finditer(new):
+        name = re.escape(m.group(1))
+        new = re.sub(r"(?<![\w.])" + name + r"\.Add\s*\(\s*([^;]*?)\s*\)\s*;", m.group(1) + r".PackStart (\1, true, true, 0);", new)
+    return new, new != text
+
+
+NEWTEXT = re.compile(r"(?<![\w.])((?:global::)?(?:Gtk\.)?)ComboBox\.NewText\s*\(\s*\)")
+
+
+def port_combo_new_text(text):
+    """`ComboBox.NewText ()` (GTK2 text combo) -> `new ComboBoxText ()`; the fields and locals it is
+    assigned to are retyped `ComboBoxText` so AppendText/ActiveText/RemoveText resolve."""
+    names = {m.group(1) for m in re.finditer(r"(?:this\.)?(\w+)\s*=\s*" + NEWTEXT.pattern, text)}
+    new = NEWTEXT.sub(r"new \1ComboBoxText ()", text)
+    for name in names:
+        new = re.sub(r"(?<![\w.])((?:global::)?(?:Gtk\.)?)ComboBox(\s+" + re.escape(name) + r"\s*[;=,])", r"\1ComboBoxText\2", new)
+        # GTK2 ComboBox.RemoveText (pos) is ComboBoxText.Remove (pos)
+        new = re.sub(r"(?<![\w.])((?:this\.)?" + re.escape(name) + r")\.RemoveText\s*\(", r"\1.Remove (", new)
+    return new, new != text
+
+
+RADIO_EMPTY_GROUP = re.compile(r"\.Group\s*=\s*new\s+(?:global::)?GLib\.SList\s*\(\s*(?:global::)?(?:System\.)?IntPtr\.Zero\s*\)")
+
+
+def port_stetic_misc(text):
+    """Small Stetic-generated GTK2 idioms:
+    - `x.Group = new GLib.SList (IntPtr.Zero)` (start a new radio group) -> `x.Group = new Gtk.RadioButton [0]`
+      (GtkSharp 3 types RadioButton.Group as RadioButton[]);
+    - `this.AllowGrow = b` -> `this.Resizable = b` (GTK2 "resizable" was the alias of allow-grow);
+    - `this.HasSeparator = b;` -> a comment: GTK3 dialogs have no separator."""
+    new = RADIO_EMPTY_GROUP.sub(".Group = new global::Gtk.RadioButton [0]", text)
+    new = re.sub(r"(?<![\w.])((?:this\.)?)AllowGrow(\s*=)", r"\1Resizable\2", new)
+    new = re.sub(r"(?m)^([ \t]*)(?:this\.)?HasSeparator\s*=\s*\w+\s*;",
+                 r"\1// GTK3: Dialog.HasSeparator was removed (dialogs have no separator)", new)
+    return new, new != text
+
+
+PACK_ERROR = re.compile(r"^(.*?)\((\d+),(\d+)\): error CS7036: .*'expand' of 'Box\.Pack(?:Start|End)\(Widget, bool, bool, uint\)'")
+
+
+def load_pack_errors(error_file):
+    """{realpath: [(line, col)]} of compiler-reported one-argument Box.PackStart/PackEnd calls."""
+    import os
+    found = {}
+    for line in open(error_file, encoding="utf-8"):
+        m = PACK_ERROR.match(line.strip())
+        if m:
+            found.setdefault(os.path.realpath(m.group(1)), []).append((int(m.group(2)), int(m.group(3))))
+    return found
+
+
+def matching_paren(text, i):
+    """Index of the ')' closing the '(' at i, and whether a top-level ',' was seen."""
+    depth = 0
+    comma = False
+    in_str = None
+    k = i
+    while k < len(text):
+        c = text[k]
+        if in_str:
+            if c == "\\":
+                k += 2
+                continue
+            if c == in_str:
+                in_str = None
+        elif c in "\"'":
+            in_str = c
+        elif c in "([{":
+            depth += 1
+        elif c in ")]}":
+            depth -= 1
+            if depth == 0:
+                return k, comma
+        elif c == "," and depth == 1:
+            comma = True
+        k += 1
+    raise ValueError("unbalanced parentheses")
+
+
+def port_pack_defaults(text, positions):
+    """GTK2 `box.PackStart (w)` / `PackEnd (w)` (expand=true, fill=true, padding=0) at the locations the
+    compiler reported (CS7036; Xwt and other boxes keep their one-argument overloads) ->
+    `PackStart (w, true, true, 0)`."""
+    lines = text.splitlines(keepends=True)
+    starts = [0]
+    for l in lines:
+        starts.append(starts[-1] + len(l))
+    new = text
+    for line, col in sorted(set(positions), reverse=True):
+        pos = starts[line - 1] + col - 1
+        m = re.match(r"Pack(?:Start|End)\s*\(", new[pos:])
+        if not m:
+            continue
+        close, comma = matching_paren(new, pos + m.end() - 1)
+        if comma:
+            continue
+        new = new[:close].rstrip(" \t") + ", true, true, 0" + new[close:]
+    return new, new != text
+
+
 def main():
+    import os
     files = [a for a in sys.argv[1:] if not a.startswith("--")]
     dry = "--dry-run" in sys.argv
+    errors = next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--errors=")), None)
+    pack_errors = load_pack_errors(errors) if errors else {}
     total = 0
     for path in files:
         text, bom = load(path)
         nl = "\r\n" if "\r\n" in text else "\n"
         changes = []
+        # location-based rules first: they rely on the compiler's line/column numbers
+        positions = pack_errors.get(os.path.realpath(path))
+        if positions:
+            text, c = port_pack_defaults(text, positions)
+            if c:
+                changes.append("PackDefaults")
         text, c = port_expose(text, nl)
         if c:
             changes.append("OnDrawn")
@@ -284,6 +415,11 @@ def main():
                 break
             if "OnRender" not in changes:
                 changes.append("OnRender")
+        for label, rule in (("ContentArea", port_stetic_dialog), ("ComboBoxText", port_combo_new_text),
+                            ("SteticMisc", port_stetic_misc)):
+            text, c = rule(text)
+            if c:
+                changes.append(label)
         if changes:
             total += 1
             print(f"{path}: {', '.join(changes)}")

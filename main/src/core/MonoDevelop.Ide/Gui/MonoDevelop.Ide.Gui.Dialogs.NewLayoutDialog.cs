@@ -21,9 +21,9 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.TypeHint = ((global::Gdk.WindowTypeHint)(1));
 			this.BorderWidth = ((uint)(6));
 			this.Resizable = false;
-			this.AllowGrow = false;
+			this.Resizable = false;
 			// Internal child MonoDevelop.Ide.Gui.Dialogs.NewLayoutDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog-vbox4";
 			w1.Spacing = 6;
 			w1.BorderWidth = ((uint)(2));
@@ -74,13 +74,13 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			w5.Expand = false;
 			w5.Fill = false;
 			this.alignment1.Add (this.vbox2);
-			w1.Add (this.alignment1);
+			w1.PackStart (this.alignment1, true, true, 0);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(w1 [this.alignment1]));
 			w7.Position = 0;
 			w7.Expand = false;
 			w7.Fill = false;
 			// Internal child MonoDevelop.Ide.Gui.Dialogs.NewLayoutDialog.ActionArea
-			global::Gtk.HButtonBox w8 = this.ActionArea;
+			global::Gtk.ButtonBox w8 = this.ActionArea;
 			w8.Name = "GtkDialog_ActionArea";
 			w8.Spacing = 6;
 			w8.BorderWidth = ((uint)(5));

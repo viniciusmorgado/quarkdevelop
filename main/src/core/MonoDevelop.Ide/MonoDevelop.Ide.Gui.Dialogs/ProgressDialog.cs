@@ -58,7 +58,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.Build ();
 			this.Title = BrandingService.ApplicationName;
 			this.componentsWindowParent = parent; 
-			HasSeparator = false;
+			// GTK3: Dialog.HasSeparator was removed (dialogs have no separator)
 			ActionArea.Hide ();
 			DefaultHeight = 5;
 			

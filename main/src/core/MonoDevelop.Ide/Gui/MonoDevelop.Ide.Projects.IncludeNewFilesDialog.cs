@@ -21,7 +21,7 @@ namespace MonoDevelop.Ide.Projects
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(6));
 			// Internal child MonoDevelop.Ide.Projects.IncludeNewFilesDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -84,11 +84,11 @@ namespace MonoDevelop.Ide.Projects
 			w7.Position = 2;
 			w7.Expand = false;
 			w7.Fill = false;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w8.Position = 0;
 			// Internal child MonoDevelop.Ide.Projects.IncludeNewFilesDialog.ActionArea
-			global::Gtk.HButtonBox w9 = this.ActionArea;
+			global::Gtk.ButtonBox w9 = this.ActionArea;
 			w9.Name = "dialog1_ActionArea";
 			w9.Spacing = 6;
 			w9.BorderWidth = ((uint)(5));

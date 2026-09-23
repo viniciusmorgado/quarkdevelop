@@ -94,7 +94,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			enabledCheckBox.DrawIndicator = true;
 			enabledCheckBox.UseUnderline = true;
 			enabledCheckBox.Toggled += (s, e) => enabledCheckBox.Inconsistent = false;
-			PackStart (enabledCheckBox);
+			PackStart (enabledCheckBox, true, true, 0);
 			ShowAll ();
 		}
 

@@ -53,7 +53,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.SkipPagerHint = true;
 			this.SkipTaskbarHint = true;
 			// Internal child MonoDevelop.Ide.FindInFiles.FindInFilesDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.Spacing = 6;
 			w1.BorderWidth = ((uint)(2));
@@ -75,7 +75,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.toggleFindInFiles.DrawIndicator = false;
 			this.toggleFindInFiles.UseUnderline = true;
 			this.toggleFindInFiles.Relief = ((global::Gtk.ReliefStyle)(2));
-			this.toggleFindInFiles.Group = new global::GLib.SList (global::System.IntPtr.Zero);
+			this.toggleFindInFiles.Group = new global::Gtk.RadioButton [0];
 			this.hbox3.Add (this.toggleFindInFiles);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.toggleFindInFiles]));
 			w2.Position = 0;
@@ -217,13 +217,13 @@ namespace MonoDevelop.Ide.FindInFiles
 			w16.Position = 2;
 			w16.Expand = false;
 			w16.Fill = false;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w17.Position = 0;
 			w17.Expand = false;
 			w17.Fill = false;
 			// Internal child MonoDevelop.Ide.FindInFiles.FindInFilesDialog.ActionArea
-			global::Gtk.HButtonBox w18 = this.ActionArea;
+			global::Gtk.ButtonBox w18 = this.ActionArea;
 			w18.Name = "dialog1_ActionArea";
 			w18.Spacing = 6;
 			w18.BorderWidth = ((uint)(5));

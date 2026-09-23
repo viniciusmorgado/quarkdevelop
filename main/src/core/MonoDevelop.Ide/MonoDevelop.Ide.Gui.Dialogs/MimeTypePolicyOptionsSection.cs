@@ -190,7 +190,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 					notebook.Sensitive = false;
 				}
 				else {
-					string activeName = policyCombo.ActiveText;
+					string activeName = Gtk3DialogCompat.GetActiveText (policyCombo);
 					PolicySet pset = PolicyService.GetPolicySet (activeName);
 					if (pset != null)
 						panelData.AssignPolicies (pset);
