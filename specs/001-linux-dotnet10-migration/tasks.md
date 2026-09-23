@@ -107,6 +107,8 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [ ] T055 [US1] M4: `scripts/test.sh` coverage + ratchet (`docs/evidence/M4/coverage-baseline.txt`; fails if lower) → `out/coverage/Summary.txt`
 - [ ] T056 [US1] M4: Core ≥ 60% and Linux solution ≥ 40% line coverage (targeted tests for new code) → Summary.txt
 - [ ] T057 [US1] M4: evidence → `docs/evidence/M3/README.md`, `docs/evidence/M4/README.md` (TRX summary, coverage, quarantine ≤ 15%)
+- [ ] T134 [US1] M4: legacy .NET Framework fixtures in `main/tests/test-projects` resolve reference assemblies on Linux (Microsoft.NETFramework.ReferenceAssemblies via `TargetFrameworkRootPath`; `CodeTaskFactory` → `RoslynCodeTaskFactory`) → `net4x-fixture` quarantine entries removed
+- [ ] T135 [US1] M4: triage the `Bug`/`Flaky` quarantine entries of T041 → each fixed or linked to a follow-up task; quarantine ≤ 15% per suite
 
 **Checkpoint**: US1 done.
 

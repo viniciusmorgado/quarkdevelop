@@ -84,11 +84,30 @@ namespace MonoDevelop.Core.Assemblies
 
 		public override IEnumerable<FilePath> GetReferenceFrameworkDirectories ()
 		{
+			// Old-style .NET Framework projects resolve framework references from reference assemblies
+			// (<root>/.NETFramework/vX/RedistList/FrameworkList.xml); Linux has none unless they were
+			// installed, e.g. by scripts/netfx-refasm.sh (task T134).
+			var netfx = NetFrameworkReferenceAssembliesDirectory;
+			if (!netfx.IsNull)
+				yield return netfx;
 			if (sdk == null)
 				yield break;
 			var packs = sdk.DotNetRoot.Combine ("packs");
 			if (Directory.Exists (packs))
 				yield return packs;
+		}
+
+		/// <summary>
+		/// Root of the .NET Framework reference assemblies: $MD_NETFX_REFASM, else
+		/// ~/.cache/monodevelop/netfx-refasm; null when it does not exist.
+		/// </summary>
+		public static FilePath NetFrameworkReferenceAssembliesDirectory {
+			get {
+				var dir = Environment.GetEnvironmentVariable ("MD_NETFX_REFASM");
+				if (string.IsNullOrEmpty (dir))
+					dir = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.UserProfile), ".cache", "monodevelop", "netfx-refasm");
+				return Directory.Exists (Path.Combine (dir, ".NETFramework")) ? new FilePath (dir) : FilePath.Null;
+			}
 		}
 	}
 

@@ -92,8 +92,29 @@ namespace UnitTests
 		{
 			Directory.CreateDirectory (TmpDir);
 
-			WriteEmptyProjectFile (Path.Combine (TmpDir, "Directory.Build.props"));
+			WriteFrameworkReferenceProps (Path.Combine (TmpDir, "Directory.Build.props"));
 			WriteEmptyProjectFile (Path.Combine (TmpDir, "Directory.Build.targets"));
+
+			// Legacy .NET Framework fixtures resolve their reference assemblies from the directory
+			// installed by scripts/netfx-refasm.sh (task T134); Linux has no .NETFramework directory.
+			static void WriteFrameworkReferenceProps (string fileName)
+			{
+				if (File.Exists (fileName))
+					return;
+				var refasm = System.Environment.GetEnvironmentVariable ("MD_NETFX_REFASM");
+				if (string.IsNullOrEmpty (refasm))
+					refasm = Path.Combine (System.Environment.GetFolderPath (System.Environment.SpecialFolder.UserProfile), ".cache", "monodevelop", "netfx-refasm");
+				if (!Directory.Exists (Path.Combine (refasm, ".NETFramework"))) {
+					WriteEmptyProjectFile (fileName);
+					return;
+				}
+				File.WriteAllText (fileName,
+					"<Project>\n" +
+					"  <PropertyGroup Condition=\"'$(UsingMicrosoftNETSdk)' != 'true'\">\n" +
+					"    <TargetFrameworkRootPath>" + refasm + "/</TargetFrameworkRootPath>\n" +
+					"  </PropertyGroup>\n" +
+					"</Project>\n");
+			}
 
 			static void WriteEmptyProjectFile (string fileName)
 			{
@@ -235,7 +256,8 @@ namespace UnitTests
 		public static void RunMSBuild (string arguments)
 		{
 			// There is no standalone `msbuild` on Linux/.NET 10: use the SDK's MSBuild (ADR 0008).
-			using var process = Process.Start (new ProcessStartInfo (MonoDevelop.Core.Assemblies.DotNetCoreSdkInfo.GetDotNetHostPath (), "msbuild " + arguments) {
+			// No node reuse: a lingering MSBuild node would keep the redirected output open (ReadToEnd blocks).
+			using var process = Process.Start (new ProcessStartInfo (MonoDevelop.Core.Assemblies.DotNetCoreSdkInfo.GetDotNetHostPath (), "msbuild -nodeReuse:false " + arguments) {
 				RedirectStandardOutput = true,
 				RedirectStandardError = true,
 				UseShellExecute = false

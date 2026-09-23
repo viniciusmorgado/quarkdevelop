@@ -26,6 +26,9 @@ if [[ -f dotnet-tools.json || -f .config/dotnet-tools.json ]]; then
 	dotnet tool restore
 fi
 
+md_log ".NET Framework reference assemblies for legacy test fixtures"
+"$MD_ROOT/scripts/netfx-refasm.sh" | tail -1
+
 md_log "submodules"
 git submodule status | awk '{ state = substr($0, 1, 1); if (state == "-") missing++ } END { print (missing ? missing : 0) " uninitialized" }'
 
