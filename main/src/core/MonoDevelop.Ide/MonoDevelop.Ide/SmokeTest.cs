@@ -63,7 +63,8 @@ namespace MonoDevelop.Ide
 
 		/// <summary>
 		/// Takes the solution out of <paramref name="args"/> (the smoke test opens it itself) and starts the log and
-		/// the watchdog (MD_SMOKE_TIMEOUT seconds, default 600). The output directory is MD_SMOKE_OUT or out/smoke.
+		/// the watchdog (MD_SMOKE_TIMEOUT seconds, default 600). The output directory is MD_SMOKE_OUT or out/smoke;
+		/// MD_SMOKE_NO_BUILD=1 stops after loading the solution.
 		/// </summary>
 		public static SmokeTest Start (ref string[] args)
 		{
@@ -108,7 +109,13 @@ namespace MonoDevelop.Ide
 				// X11 (":99") or Wayland ("wayland-0"): the Wayland smoke (T104) checks which backend GTK used
 				LoggingService.LogInfo ("Smoke test: GDK display {0}", Gdk.Display.Default?.Name);
 
-				if (!await IdeApp.Workspace.OpenWorkspaceItem (solution)) {
+				// T106: the longest gap between main-loop ticks while the solution loads (a stall freezes the UI)
+				var probe = MainLoopStallProbe.Start ();
+				bool opened = await IdeApp.Workspace.OpenWorkspaceItem (solution);
+				// the type system keeps loading the projects in the background after the workspace is open
+				await Task.Delay (5000);
+				LoggingService.LogInfo ("Smoke test: longest main loop stall while loading (and 5 s after): {0} ms", probe.Stop ());
+				if (!opened) {
 					Exit (ExitFailure, "could not open " + solution);
 					return;
 				}
@@ -119,6 +126,12 @@ namespace MonoDevelop.Ide
 					return;
 				}
 				LoggingService.LogInfo ("Smoke test: loaded {0} ({1} projects)", sln.Name, sln.GetAllProjects ().Count ());
+
+				if (Environment.GetEnvironmentVariable ("MD_SMOKE_NO_BUILD") == "1") {
+					SaveScreenshot ();
+					Exit (unhandledExceptions > 0 ? ExitFailure : ExitSuccess, "loaded (MD_SMOKE_NO_BUILD)");
+					return;
+				}
 
 				var result = await IdeApp.ProjectOperations.Build (sln).Task;
 				int errors = result?.ErrorCount ?? 1;
@@ -166,6 +179,36 @@ namespace MonoDevelop.Ide
 			logger.Dispose ();
 			// No IdeApp.Exit: it can ask to save files or wait for the UI; the result is already written.
 			Environment.Exit (code);
+		}
+
+		/// <summary>Measures the longest interval between 50 ms GLib timeouts on the main loop.</summary>
+		sealed class MainLoopStallProbe
+		{
+			readonly Stopwatch clock = Stopwatch.StartNew ();
+			long last, longest;
+			bool running = true;
+
+			public static MainLoopStallProbe Start ()
+			{
+				var probe = new MainLoopStallProbe ();
+				GLib.Timeout.Add (50, probe.Tick);
+				return probe;
+			}
+
+			bool Tick ()
+			{
+				long now = clock.ElapsedMilliseconds;
+				longest = Math.Max (longest, now - last);
+				last = now;
+				return running;
+			}
+
+			public long Stop ()
+			{
+				Tick ();
+				running = false;
+				return longest;
+			}
 		}
 
 		[DllImport ("libgdk-3.so.0")]
