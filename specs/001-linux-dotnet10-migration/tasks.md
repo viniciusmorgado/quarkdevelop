@@ -34,9 +34,9 @@ Repository root = worktree root; product code under `main/`; docs under `docs/`;
 - [x] T006 [P] M0: Spike GtkSharp 3 window on .NET 10 in `spikes/gtk3-hello/` → `docs/evidence/M0/T006-gtk3-hello.png`
 - [x] T007 [P] M0: Spike Mono.Addins 1.4.1 on CoreCLR in `spikes/addins-host/` + `spikes/addins-plugin/` → "addins-spike: OK"
 - [x] T008 [P] M0: Spike Roslyn 5.9 IVT dump (`spikes/roslyn-ivt/`) and Publicizer access (`spikes/roslyn-publicizer/`) → "roslyn-publicizer: OK"
-- [ ] T009 [P] M0: Time-boxed legacy Mono baseline attempt → `docs/evidence/M0/T003-legacy-baseline.md`
+- [x] T009 [P] M0: Time-boxed legacy Mono baseline attempt → `docs/evidence/M0/T003-legacy-baseline.md`
 - [x] T010 [P] M0: DotDevelop prior-art review with cherry-pick candidates → `docs/evidence/M0/T007-dotdevelop.md`
-- [ ] T011 M0: Record spike outcomes in `specs/001-linux-dotnet10-migration/research.md` and `docs/evidence/M0/README.md`
+- [x] T011 M0: Record spike outcomes in `specs/001-linux-dotnet10-migration/research.md` and `docs/evidence/M0/README.md`
 - [ ] T012 M1: Constitution v1.0.0 in `docs/constitution.md`; spec, plan, research, data-model, contracts, quickstart, tasks under `specs/001-linux-dotnet10-migration/`
 - [ ] T013 [P] M1: ADRs 0001–0017 in `docs/adr/` (MADR) + `docs/adr/README.md` index
 - [ ] T014 [P] M1: `docs/BREAKING-CHANGES.md` listing excluded platforms/add-ins (ADR 0017)
