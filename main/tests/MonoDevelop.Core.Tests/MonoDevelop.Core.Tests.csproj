@@ -20,6 +20,7 @@
     <Compile Include="MonoDevelop.Core/RuntimeTests.cs" />
     <Compile Include="MonoDevelop.Core/StringParserServiceTests.cs" />
     <Compile Include="MonoDevelop.Core.Assemblies/SystemAssemblyServiceTests.cs" />
+    <Compile Include="MonoDevelop.Core.Assemblies/DotNetCoreTargetRuntimeTests.cs" />
     <Compile Include="MonoDevelop.Projects/FileServiceTests.cs" />
     <Compile Include="MonoDevelop.Projects/FlavorMigration.cs" />
     <Compile Include="MonoDevelop.Projects/GetSourceFilesAsyncTests.cs" />

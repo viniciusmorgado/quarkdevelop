@@ -26,14 +26,12 @@
 
 using System;
 using System.Threading;
-using System.Runtime.Remoting;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
 //this is the builder for the deprecated build engine API
 using MonoDevelop.Core.Execution;
-using System.Net.Configuration;
 using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
@@ -257,9 +255,9 @@ namespace MonoDevelop.Projects.MSBuild
 
 		static void AbortCurrentTask ()
 		{
-			workThread.Abort ();
-			workThread = null;
-			workDoneEvent.Set ();
+			// Thread.Abort does not exist on .NET (ADR 0008): cancel the running MSBuild submissions
+			// instead; the work thread finishes the current delegate and signals completion itself.
+			Microsoft.Build.Execution.BuildManager.DefaultBuildManager.CancelAllSubmissions ();
 		}
 
 		internal static void RunSTA (ThreadStart ts)
@@ -286,7 +284,9 @@ namespace MonoDevelop.Projects.MSBuild
 
 					if (workThread == null) {
 						workThread = new Thread (STARunner);
-						workThread.SetApartmentState (ApartmentState.STA);
+						// COM apartments only exist on Windows (CA1416); MSBuild does not need STA on Linux.
+						if (OperatingSystem.IsWindows ())
+							workThread.SetApartmentState (ApartmentState.STA);
 						workThread.IsBackground = true;
 						workThread.CurrentUICulture = uiCulture;
 						workThread.Start ();
@@ -324,10 +324,6 @@ namespace MonoDevelop.Projects.MSBuild
 						var doneEvent = workDoneEvent;
 						try {
 							workDelegate ();
-						} catch (ThreadAbortException) {
-							// Gracefully stop the thread
-							Thread.ResetAbort ();
-							return;
 						} catch (Exception ex) {
 							workError = ex;
 						}
@@ -337,9 +333,8 @@ namespace MonoDevelop.Projects.MSBuild
 
 					workThread = null;
 				}
-			} catch (ThreadAbortException) {
-				// Gracefully stop the thread
-				Thread.ResetAbort ();
+			} catch (Exception ex) {
+				Console.Error.WriteLine ("MSBuild work thread failed: " + ex);
 			}
 		}
 	}

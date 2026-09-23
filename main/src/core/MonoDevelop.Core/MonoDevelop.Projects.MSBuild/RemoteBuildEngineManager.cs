@@ -442,6 +442,13 @@ namespace MonoDevelop.Projects.MSBuild
 		/// </summary>
 		static string GetExeLocation (TargetRuntime runtime)
 		{
+			// On .NET the builder is a framework-dependent assembly started with `dotnet exec`; MSBuild is
+			// registered from the SDK by Microsoft.Build.Locator inside the builder, so no local copy of
+			// the MSBuild bin directory and no exe.config are needed (ADR 0008). Add-in MSBuild search
+			// paths configured through exe.config toolsets are not supported there.
+			if (runtime is DotNetCoreTargetRuntime)
+				return GetExeLocationInBundle (MSBuildProjectService.ToolsVersion);
+
 			// Return a local copy of the builder executable.
 			// That local copy is configured to add additional msbuild search paths defined by add-ins.
 			return GetLocalMSBuildExeLocation (runtime);
@@ -453,9 +460,12 @@ namespace MonoDevelop.Projects.MSBuild
 		static string GetExeLocationInBundle (string toolsVersion)
 		{
 			var mdBinDir = new FilePath (typeof (MSBuildProjectService).Assembly.Location).ParentDirectory;
-			var exe = mdBinDir.Combine ("MonoDevelop.MSBuildBuilder.exe");
-			if (File.Exists (exe))
-				return exe;
+			foreach (var name in new [] { "MonoDevelop.MSBuildBuilder.dll", "MonoDevelop.MSBuildBuilder.exe" }) {
+				var candidate = mdBinDir.Combine (name);
+				if (File.Exists (candidate))
+					return candidate;
+			}
+			var exe = mdBinDir.Combine ("MonoDevelop.MSBuildBuilder.dll");
 
 			throw new InvalidOperationException ($"Did not find MSBuild builder '{exe}'");
 		}

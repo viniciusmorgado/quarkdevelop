@@ -71,8 +71,12 @@ namespace MonoDevelop.Core.Assemblies
 				runtime.FrameworksInitialized += HandleRuntimeInitialized;
 			}
 
-			if (CurrentRuntime == null)
+			if (CurrentRuntime == null) {
+				// Every supported host provides a runtime (DotNetCoreTargetRuntimeFactory on .NET, ADR 0007);
+				// fail with a clear message instead of a NullReferenceException.
 				LoggingService.LogFatalError ("Could not create runtime info for current runtime");
+				throw new InvalidOperationException ("No target runtime is available for the current process.");
+			}
 
 			CurrentRuntime.StartInitialization ();
 		}

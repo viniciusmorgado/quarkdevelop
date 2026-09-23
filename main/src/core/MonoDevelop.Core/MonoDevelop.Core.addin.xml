@@ -182,6 +182,7 @@
 	</Extension>
 	
 	<Extension path = "/MonoDevelop/Core/Runtimes">
+		<Class class="MonoDevelop.Core.Assemblies.DotNetCoreTargetRuntimeFactory"/>
 		<Class class="MonoDevelop.Core.Assemblies.MsNetTargetRuntimeFactory"/>
 		<Class class="MonoDevelop.Core.Assemblies.MonoTargetRuntimeFactory"/>
 	</Extension>
