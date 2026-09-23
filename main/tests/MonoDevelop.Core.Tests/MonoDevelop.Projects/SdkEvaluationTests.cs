@@ -43,7 +43,7 @@ namespace MonoDevelop.Projects
 	[Category ("Integration")]
 	public class SdkEvaluationTests : TestBase
 	{
-		static readonly string [] ComparedProperties = {
+		static readonly string[] ComparedProperties = {
 			"TargetFramework", "TargetFrameworkIdentifier", "TargetFrameworkVersion", "TargetFrameworkMoniker",
 			"OutputType", "AssemblyName", "RootNamespace", "Configuration", "Platform", "LangVersion",
 			"Nullable", "ImplicitUsings", "UsingMicrosoftNETSdk",
@@ -51,7 +51,7 @@ namespace MonoDevelop.Projects
 
 		// Reserved properties are not listed among a project's evaluated properties; the probe project copies
 		// them into its own properties (MD_<name>) so both evaluators can be compared.
-		static readonly string [] ReservedProperties = {
+		static readonly string[] ReservedProperties = {
 			"MSBuildVersion", "MSBuildAssemblyVersion", "VisualStudioVersion", "MSBuildRuntimeType", "MSBuildToolsVersion",
 		};
 
@@ -84,7 +84,7 @@ namespace MonoDevelop.Projects
 		public void MSBuildPropertyFunctionsMissingFromTheEvaluatorComeFromMSBuild ()
 		{
 			var functions = MSBuildEvaluationContext.LoadMSBuildIntrinsicFunctions ();
-			foreach (var name in new [] { "GetTargetFrameworkIdentifier", "IsTargetFrameworkCompatible", "VersionGreaterThanOrEquals", "AreFeaturesEnabled", "StableStringHash" })
+			foreach (var name in new[] { "GetTargetFrameworkIdentifier", "IsTargetFrameworkCompatible", "VersionGreaterThanOrEquals", "AreFeaturesEnabled", "StableStringHash" })
 				Assert.IsTrue (functions.ContainsKey (name), name);
 		}
 
@@ -124,7 +124,7 @@ namespace MonoDevelop.Projects
 					.Select (i => (string)new FilePath (i.GetProperty ("FullPath").GetString ()).FullPath)
 					.Where (p => !p.Contains ("/obj/")) // generated files exist only after a build
 					.OrderBy (p => p, StringComparer.Ordinal).ToList ();
-				var actualCompile = (await project.GetSourceFilesAsync (project.Configurations [0].Selector))
+				var actualCompile = (await project.GetSourceFilesAsync (project.Configurations[0].Selector))
 					.Where (f => f.BuildAction == BuildAction.Compile)
 					.Select (f => (string)f.FilePath.FullPath)
 					.Where (p => !p.Contains ("/obj/"))

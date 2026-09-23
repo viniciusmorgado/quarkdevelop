@@ -73,7 +73,7 @@ namespace MonoDevelop.Projects
 
 			using (var sol = (Solution)await Services.ProjectService.ReadWorkspaceItem (Util.GetMonitor (), slnFile)) {
 				var projects = sol.GetAllProjects ().ToList ();
-				Assert.That (projects.Select (p => p.Name), Is.SupersetOf (new [] { "Hello", "Greeter" }));
+				Assert.That (projects.Select (p => p.Name), Is.SupersetOf (new[] { "Hello", "Greeter" }));
 				Assert.IsTrue (projects.OfType<DotNetProject> ().All (p => p.MSBuildProject.GetReferencedSDKs ().Contains ("Microsoft.NET.Sdk")),
 					"SDK-style projects are recognised");
 

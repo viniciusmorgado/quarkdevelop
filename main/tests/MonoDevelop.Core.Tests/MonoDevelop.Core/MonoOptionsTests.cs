@@ -45,11 +45,11 @@ namespace MonoDevelop.Core
 			var extra = new OptionSet {
 				{ "v|verbose", "be verbose", v => verbose = v != null },
 				{ "n|name=", "the name", v => name = v },
-			}.Parse (new [] { "-v", "--name=hello", "file.sln", "other" });
+			}.Parse (new[] { "-v", "--name=hello", "file.sln", "other" });
 
 			Assert.IsTrue (verbose);
 			Assert.AreEqual ("hello", name);
-			CollectionAssert.AreEqual (new [] { "file.sln", "other" }, extra);
+			CollectionAssert.AreEqual (new[] { "file.sln", "other" }, extra);
 		}
 
 		[TestCase ("--name=value")]
@@ -59,7 +59,7 @@ namespace MonoDevelop.Core
 		public void ValueSeparatorsAndPrefixes (string argument)
 		{
 			string name = null;
-			new OptionSet { { "name=", v => name = v } }.Parse (new [] { argument });
+			new OptionSet { { "name=", v => name = v } }.Parse (new[] { argument });
 			Assert.AreEqual ("value", name);
 		}
 
@@ -67,7 +67,7 @@ namespace MonoDevelop.Core
 		public void RequiredValueFromNextArgument ()
 		{
 			string name = null;
-			new OptionSet { { "n|name=", v => name = v } }.Parse (new [] { "-n", "next" });
+			new OptionSet { { "n|name=", v => name = v } }.Parse (new[] { "-n", "next" });
 			Assert.AreEqual ("next", name);
 		}
 
@@ -75,7 +75,7 @@ namespace MonoDevelop.Core
 		public void MissingRequiredValueThrows ()
 		{
 			var set = new OptionSet { { "n|name=", v => { } } };
-			var ex = Assert.Throws<OptionException> (() => set.Parse (new [] { "-n" }));
+			var ex = Assert.Throws<OptionException> (() => set.Parse (new[] { "-n" }));
 			Assert.AreEqual ("-n", ex.OptionName);
 			StringAssert.Contains ("Missing required value", ex.Message);
 		}
@@ -85,8 +85,8 @@ namespace MonoDevelop.Core
 		{
 			var values = new List<string> ();
 			var set = new OptionSet { { "o|opt:", v => values.Add (v) } };
-			set.Parse (new [] { "-o", "--opt=x" });
-			CollectionAssert.AreEqual (new string [] { null, "x" }, values);
+			set.Parse (new[] { "-o", "--opt=x" });
+			CollectionAssert.AreEqual (new string[] { null, "x" }, values);
 		}
 
 		[Test]
@@ -97,7 +97,7 @@ namespace MonoDevelop.Core
 				{ "a", v => a = v != null },
 				{ "b", v => b = v != null },
 				{ "c", v => c = v != null },
-			}.Parse (new [] { "-abc" });
+			}.Parse (new[] { "-abc" });
 			Assert.IsTrue (a && b && c);
 			Assert.IsEmpty (extra);
 		}
@@ -107,9 +107,9 @@ namespace MonoDevelop.Core
 		{
 			bool? debug = null;
 			var set = new OptionSet { { "d|debug", v => debug = v != null } };
-			set.Parse (new [] { "-d-" });
+			set.Parse (new[] { "-d-" });
 			Assert.AreEqual (false, debug);
-			set.Parse (new [] { "-d+" });
+			set.Parse (new[] { "-d+" });
 			Assert.AreEqual (true, debug);
 		}
 
@@ -117,11 +117,11 @@ namespace MonoDevelop.Core
 		public void TypedValuesAreConverted ()
 		{
 			int level = 0;
-			new OptionSet { { "level=", (int v) => level = v } }.Parse (new [] { "--level=42" });
+			new OptionSet { { "level=", (int v) => level = v } }.Parse (new[] { "--level=42" });
 			Assert.AreEqual (42, level);
 
 			var set = new OptionSet { { "level=", (int v) => level = v } };
-			var ex = Assert.Throws<OptionException> (() => set.Parse (new [] { "--level=many" }));
+			var ex = Assert.Throws<OptionException> (() => set.Parse (new[] { "--level=many" }));
 			StringAssert.Contains ("Could not convert", ex.Message);
 		}
 
@@ -129,28 +129,28 @@ namespace MonoDevelop.Core
 		public void KeyValueOptions ()
 		{
 			var defines = new Dictionary<string, string> ();
-			new OptionSet { { "D:", (k, v) => defines [k] = v } }
-				.Parse (new [] { "-DDEBUG", "-DLEVEL=3" });
+			new OptionSet { { "D:", (k, v) => defines[k] = v } }
+				.Parse (new[] { "-DDEBUG", "-DLEVEL=3" });
 			Assert.IsTrue (defines.ContainsKey ("DEBUG"));
-			Assert.IsNull (defines ["DEBUG"]);
-			Assert.AreEqual ("3", defines ["LEVEL"]);
+			Assert.IsNull (defines["DEBUG"]);
+			Assert.AreEqual ("3", defines["LEVEL"]);
 		}
 
 		[Test]
 		public void DoubleDashStopsOptionProcessing ()
 		{
 			bool verbose = false;
-			var extra = new OptionSet { { "v", v => verbose = true } }.Parse (new [] { "--", "-v" });
+			var extra = new OptionSet { { "v", v => verbose = true } }.Parse (new[] { "--", "-v" });
 			Assert.IsFalse (verbose);
-			CollectionAssert.AreEqual (new [] { "-v" }, extra);
+			CollectionAssert.AreEqual (new[] { "-v" }, extra);
 		}
 
 		[Test]
 		public void DefaultHandlerReceivesUnknownArguments ()
 		{
 			var unknown = new List<string> ();
-			var extra = new OptionSet { { "<>", v => unknown.Add (v) } }.Parse (new [] { "a", "b" });
-			CollectionAssert.AreEqual (new [] { "a", "b" }, unknown);
+			var extra = new OptionSet { { "<>", v => unknown.Add (v) } }.Parse (new[] { "a", "b" });
+			CollectionAssert.AreEqual (new[] { "a", "b" }, unknown);
 			Assert.IsEmpty (extra);
 		}
 
@@ -171,8 +171,8 @@ namespace MonoDevelop.Core
 			var set = new OptionSet { { "v|verbose|loud", "chatty", v => { } } };
 			Assert.IsTrue (set.Contains ("verbose"));
 			Assert.IsTrue (set.Contains ("loud"));
-			var option = set ["v"];
-			CollectionAssert.AreEqual (new [] { "v", "verbose", "loud" }, option.GetNames ());
+			var option = set["v"];
+			CollectionAssert.AreEqual (new[] { "v", "verbose", "loud" }, option.GetNames ());
 			Assert.AreEqual ("chatty", option.Description);
 			Assert.AreEqual (OptionValueType.None, option.OptionValueType);
 		}
@@ -200,7 +200,7 @@ namespace MonoDevelop.Core
 		public void MessagesGoThroughTheLocalizer ()
 		{
 			var set = new OptionSet (s => "[" + s + "]") { { "n=", v => { } } };
-			var ex = Assert.Throws<OptionException> (() => set.Parse (new [] { "-n" }));
+			var ex = Assert.Throws<OptionException> (() => set.Parse (new[] { "-n" }));
 			StringAssert.StartsWith ("[", ex.Message);
 		}
 
@@ -209,18 +209,18 @@ namespace MonoDevelop.Core
 		{
 			OptionValueCollection seen = null;
 			var set = new OptionSet { { "D:", (k, v) => { } } };
-			var option = set ["D"];
+			var option = set["D"];
 			Assert.AreEqual (2, option.MaxValueCount);
-			CollectionAssert.AreEquivalent (new [] { ":", "=" }, option.GetValueSeparators ());
+			CollectionAssert.AreEquivalent (new[] { ":", "=" }, option.GetValueSeparators ());
 			var context = new OptionContext (set) { Option = option };
 			seen = context.OptionValues;
 			seen.Add ("a");
 			seen.Insert (0, "b");
 			Assert.AreEqual (2, seen.Count);
-			Assert.AreEqual ("b", seen [0]);
+			Assert.AreEqual ("b", seen[0]);
 			Assert.IsTrue (seen.Contains ("a"));
 			Assert.AreEqual (1, seen.IndexOf ("a"));
-			CollectionAssert.AreEqual (new [] { "b", "a" }, seen.ToArray ());
+			CollectionAssert.AreEqual (new[] { "b", "a" }, seen.ToArray ());
 			Assert.AreEqual ("b, a", seen.ToString ());
 			seen.RemoveAt (0);
 			Assert.IsTrue (seen.Remove ("a"));

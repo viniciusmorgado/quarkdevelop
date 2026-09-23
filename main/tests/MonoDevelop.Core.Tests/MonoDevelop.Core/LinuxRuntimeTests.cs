@@ -66,8 +66,8 @@ namespace MonoDevelop.Core
 		public void LegacyCodePagesDecode ()
 		{
 			// Runtime.Initialize registers CodePagesEncodingProvider; .NET only ships UTF/ASCII/Latin-1.
-			Assert.AreEqual ("é€", Encoding.GetEncoding (1252).GetString (new byte [] { 0xE9, 0x80 }));
-			Assert.AreEqual ("Ж", Encoding.GetEncoding ("windows-1251").GetString (new byte [] { 0xC6 }));
+			Assert.AreEqual ("é€", Encoding.GetEncoding (1252).GetString (new byte[] { 0xE9, 0x80 }));
+			Assert.AreEqual ("Ж", Encoding.GetEncoding ("windows-1251").GetString (new byte[] { 0xC6 }));
 		}
 
 		[Test]
@@ -90,7 +90,7 @@ namespace MonoDevelop.Core
 				// The same private helper the log redirection uses to point Ide.log at the session log.
 				var symlink = typeof (LoggingService).GetMethod ("SymlinkWithRetry", BindingFlags.NonPublic | BindingFlags.Static);
 				var link = Path.Combine (dir, "Ide.log");
-				Assert.IsTrue ((bool)symlink.Invoke (null, new object [] { file, link, 3 }));
+				Assert.IsTrue ((bool)symlink.Invoke (null, new object[] { file, link, 3 }));
 				Assert.AreEqual (file, new FileInfo (link).LinkTarget);
 			} finally {
 				Directory.Delete (dir, true);

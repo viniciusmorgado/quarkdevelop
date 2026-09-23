@@ -62,7 +62,7 @@ namespace MonoDevelop.Core
 		{
 			var file = Path.Combine (dir, "bom.txt");
 			TextFileUtility.WriteText (file, Sample, Utf8WithBom, true);
-			CollectionAssert.AreEqual (new byte [] { 0xEF, 0xBB, 0xBF }, File.ReadAllBytes (file).AsSpan (0, 3).ToArray ());
+			CollectionAssert.AreEqual (new byte[] { 0xEF, 0xBB, 0xBF }, File.ReadAllBytes (file).AsSpan (0, 3).ToArray ());
 
 			var text = TextFileUtility.GetText (File.ReadAllBytes (file), out var encoding, out var hasBom);
 			Assert.AreEqual (Sample, text);

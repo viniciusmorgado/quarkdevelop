@@ -78,7 +78,7 @@ namespace MonoDevelop.Projects
 			using (var cts = new CancellationTokenSource ()) {
 				var monitor = new ProgressMonitor (cts);
 				var watch = Stopwatch.StartNew ();
-				var build = project.Build (monitor, project.Configurations [0].Selector);
+				var build = project.Build (monitor, project.Configurations[0].Selector);
 
 				// Give the builder time to start and reach the Exec task, then cancel.
 				await Task.Delay (TimeSpan.FromSeconds (15));

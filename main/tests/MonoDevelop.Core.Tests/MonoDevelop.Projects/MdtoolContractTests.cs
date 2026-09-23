@@ -63,9 +63,9 @@ namespace MonoDevelop.Projects
 				Directory.Delete (workDir, true);
 		}
 
-		(int exitCode, string output) Run (params string [] args) => RunWithEnvironment (null, args);
+		(int exitCode, string output) Run (params string[] args) => RunWithEnvironment (null, args);
 
-		(int exitCode, string output) RunWithEnvironment (System.Collections.Generic.IDictionary<string, string> environment, params string [] args)
+		(int exitCode, string output) RunWithEnvironment (System.Collections.Generic.IDictionary<string, string> environment, params string[] args)
 		{
 			var psi = new ProcessStartInfo (DotNetCoreSdkInfo.GetDotNetHostPath ()) {
 				RedirectStandardOutput = true,
@@ -79,15 +79,15 @@ namespace MonoDevelop.Projects
 			// Isolated profile and add-in registry: the test host points both at main/tests/config, and an
 			// mdtool sharing that registry rewrites it with its own add-in set under the running tests.
 			var profile = Path.Combine (workDir, ".profile");
-			psi.Environment ["MONODEVELOP_PROFILE"] = profile;
-			psi.Environment ["MONO_ADDINS_REGISTRY"] = profile;
-			psi.Environment ["XDG_CONFIG_HOME"] = profile;
+			psi.Environment["MONODEVELOP_PROFILE"] = profile;
+			psi.Environment["MONO_ADDINS_REGISTRY"] = profile;
+			psi.Environment["XDG_CONFIG_HOME"] = profile;
 			if (environment != null) {
 				foreach (var e in environment) {
 					if (e.Value == null)
 						psi.Environment.Remove (e.Key);
 					else
-						psi.Environment [e.Key] = e.Value;
+						psi.Environment[e.Key] = e.Value;
 				}
 			}
 			using (var p = Process.Start (psi)) {
