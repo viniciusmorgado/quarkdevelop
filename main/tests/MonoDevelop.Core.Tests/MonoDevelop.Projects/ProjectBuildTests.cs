@@ -272,7 +272,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task BuildSolutionWithUnsupportedProjects ()
 		{
 			string solFile = Util.GetSampleProject ("unsupported-project", "console-with-libs.sln");

@@ -1013,7 +1013,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SolutionDisposed_ActiveProjectTasks_MSBuildEngineManagerNotDisposedUntilProjectTasksCompleted ()
 		{
 			var en = new CustomSolutionItemNode<TestProjectExtension> ();

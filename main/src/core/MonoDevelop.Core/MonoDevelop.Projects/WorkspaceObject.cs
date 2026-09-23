@@ -264,7 +264,9 @@ namespace MonoDevelop.Projects
 			GetAllActiveTasksForDispose (allTasks);
 
 			if (allTasks.Count > 0)
-				Task.WhenAll (allTasks).ContinueWith (t => OnDispose (), TaskScheduler.FromCurrentSynchronizationContext ());
+				// Main-thread scheduler, not FromCurrentSynchronizationContext: that throws when the caller's thread
+				// has no synchronization context (e.g. a thread-pool thread in tests).
+				Task.WhenAll (allTasks).ContinueWith (t => OnDispose (), Runtime.MainTaskScheduler);
 			else
 				OnDispose ();
 		}

@@ -1316,7 +1316,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task GetReferences_ProjectDisposed_BeforeTaskIsBound_DoesNotThrowNullReferenceException ()
 		{
 			var fn = new CustomItemNode<TestGetReferencesProjectExtension> ();

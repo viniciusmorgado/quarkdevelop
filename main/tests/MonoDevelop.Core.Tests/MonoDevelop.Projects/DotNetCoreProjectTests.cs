@@ -693,7 +693,6 @@ namespace MonoDevelop.Projects
 		/// Compile items preferred over None items.
 		/// </summary>
 		[Test]
-		[Category ("Quarantine")]
 		public async Task GetSourceFilesAsync_SdkProjectWithCSharpFileDefindAsNoneThenCompileItem_FileHasCompileBuildAction ()
 		{
 			FilePath solFile = Util.GetSampleProject ("duplicate-none-compile-items", "duplicate-none-compile-items.sln");

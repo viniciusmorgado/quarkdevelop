@@ -4,7 +4,7 @@ Tests excluded from the gate with `[Category ("Quarantine")]` (constitution V). 
 
 ## MonoDevelop.Core.Tests
 
-Quarantined 80 test cases (79 methods) on 2026-09-23. Bug: 52, legacy-fixture: 13, Flaky: 8, net4x-fixture: 6, Mono-only: 1.
+Quarantined 75 test cases (74 methods; 80 at first run) on 2026-09-23. Bug: 47, legacy-fixture: 13, Flaky: 8, net4x-fixture: 6, Mono-only: 1.
 
 | Test | Reason | Note | First error line | Owner | Date | Task |
 |---|---|---|---|---|---|---|
@@ -23,7 +23,6 @@ Quarantined 80 test cases (79 methods) on 2026-09-23. Bug: 52, legacy-fixture: 1
 | `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithAcquiredCredentialsOn403_RetriesRequest` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Expected: OK | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithMissingCredentials_Returns401` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Moq.MockException :  | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithWrongCredentials_StopsRetryingAfter3Times` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Expected: 5 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ConfigurationMergingTests.ProjectSerializationRoundtrip("TestConfigurationMerging8.csproj")` | Bug | test main loop: TaskScheduler.FromCurrentSynchronizationContext on the emulated main loop | System.InvalidOperationException : The current SynchronizationContext may not be used as a TaskScheduler. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.DotNetCoreFileWatcherTests.AddRenameRemoveSingleFile` | Flaky | timing-dependent (file watcher / event timing) | System.ApplicationException : Timed out waiting. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.DotNetCoreFileWatcherTests.FileRenamedInSolutionPad_FileWatcherRenameEventIsIgnored` | Flaky | timing-dependent (file watcher / event timing) | Expected: not equal to <System.Threading.Tasks.Task`1[MonoDevelop.Projects.ProjectFile]> | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.DotNetCoreFileWatcherTests.FileWrittenButAlreadyExistsInFilesCollection_DuplicateFileNotAdded` | Flaky | timing-dependent (file watcher / event timing) | Expected: 1 | migration | 2026-09-23 | T135 |
@@ -34,7 +33,6 @@ Quarantined 80 test cases (79 methods) on 2026-09-23. Bug: 52, legacy-fixture: 1
 | `MonoDevelop.Projects.DotNetCoreProjectTests.BuildMultiTargetProject` | Bug | fails on .NET 10; root cause to be analysed | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.DependsOn_FilesInProjectSubDirectory_XamarinFormsVersion24PackageReference` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.FSharpXamarinFormsProject_SaveProject_XamlFilesDependentUponUnchanged` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
-| `MonoDevelop.Projects.DotNetCoreProjectTests.GetSourceFilesAsync_SdkProjectWithCSharpFileDefindAsNoneThenCompileItem_FileHasCompileBuildAction` | Bug | test main loop: TaskScheduler.FromCurrentSynchronizationContext on the emulated main loop | System.InvalidOperationException : The current SynchronizationContext may not be used as a TaskScheduler. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.MultiTargetProject_ExecutionTargets` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.ReevaluateXamarinFormsVersion24PackageReference` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | System.InvalidOperationException : Sequence contains no matching element | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.ReloadModifiedFile_XamarinFormsVersion24PackageReference` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
@@ -62,7 +60,6 @@ Quarantined 80 test cases (79 methods) on 2026-09-23. Bug: 52, legacy-fixture: 1
 | `MonoDevelop.Projects.PortableLibraryTests.BuildPortableLibrary` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | Expected: null | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.PortableLibraryTests.LoadPortableLibrary` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | Expected: instance of <MonoDevelop.Projects.DotNetProject> | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.PortableLibraryTests.PortableLibraryImplicitReferences` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-23 | T134 |
-| `MonoDevelop.Projects.ProjectBuildTests.BuildSolutionWithUnsupportedProjects` | Bug | test main loop: TaskScheduler.FromCurrentSynchronizationContext on the emulated main loop | System.InvalidOperationException : The current SynchronizationContext may not be used as a TaskScheduler. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.ProjectBuildTests.BuildWithCustomProps3` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 37 but was 49. Strings differ at index 0. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.ProjectBuildTests.FastBuildCheckWithLibrary` | Bug | fails on .NET 10; root cause to be analysed | Expected: True | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.ProjectLoadSaveTests.AddProjectConfigurationWithProperties` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 2263 but was 2225. Strings differ at index 1571. | migration | 2026-09-23 | T135 |
@@ -76,7 +73,6 @@ Quarantined 80 test cases (79 methods) on 2026-09-23. Bug: 52, legacy-fixture: 1
 | `MonoDevelop.Projects.ProjectLoadSaveTests.RenameProjectConfiguration` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 1970 but was 1969. Strings differ at index 880. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.ProjectLoadSaveTests.SetCustomPropertiesInNewProject` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 1998 but was 2199. Strings differ at index 1420. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.ProjectTests.AddReference` | Bug | fails on .NET 10; root cause to be analysed | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectTests.GetReferences_ProjectDisposed_BeforeTaskIsBound_DoesNotThrowNullReferenceException` | Bug | test main loop: TaskScheduler.FromCurrentSynchronizationContext on the emulated main loop | System.InvalidOperationException : The current SynchronizationContext may not be used as a TaskScheduler. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.ProjectTests.MSBuildRuntimeVersionProperty` | Mono-only | exercises Mono runtime behaviour | Expected: False | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.ProjectTests.RefreshReferences` | Bug | fails on .NET 10; root cause to be analysed | Expected: not null | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.ProjectTests.Resources` | Bug | fails on .NET 10; root cause to be analysed | Expected: 0 | migration | 2026-09-23 | T135 |
@@ -87,4 +83,9 @@ Quarantined 80 test cases (79 methods) on 2026-09-23. Bug: 52, legacy-fixture: 1
 | `MonoDevelop.Projects.ProjectWithWildcardsTests.LoadProjectWithWildcardLinks4` | Bug | project model / evaluator difference on SDK 10 | System.InvalidCastException : Unable to cast object of type 'MonoDevelop.Projects.UnknownSolutionItem' to type | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.SharedAssetsProjectTests.SaveSharedProject` | Bug | fails on .NET 10; root cause to be analysed | String lengths are both 942. Strings differ at index 236. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.SolutionTests.SkipBuildingUnmodifiedProjects(True,1,2)` | Bug | fails on .NET 10; root cause to be analysed | Expected: 1 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.SolutionTests.SolutionDisposed_ActiveProjectTasks_MSBuildEngineManagerNotDisposedUntilProjectTasksCompleted` | Bug | test main loop: TaskScheduler.FromCurrentSynchronizationContext on the emulated main loop | System.InvalidOperationException : The current SynchronizationContext may not be used as a TaskScheduler. | migration | 2026-09-23 | T135 |
+
+### Released
+
+- 2026-09-23: the 5 `SynchronizationContext may not be used as a TaskScheduler` cases pass after
+  `WorkspaceObject.Dispose` switched to `Runtime.MainTaskScheduler` (the failure appeared when NUnit's
+  timeout wrapper ran a test on a thread-pool thread) — T135.
