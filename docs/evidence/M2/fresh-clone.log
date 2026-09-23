@@ -1,0 +1,19 @@
+$ git clone . ~/fc  (commit d7eafe962b)
+$ ./scripts/setup.sh
+==> toolchain
+dotnet SDK 10.0.401
+MSBuild 18.9.11.42413
+GTK present
+Mono: absent (as required)
+==> restoring local dotnet tools
+Tool 'dotnet-reportgenerator-globaltool' (version '5.5.11') was restored. Available commands: reportgenerator
+
+Restore was successful.
+==> submodules
+15 uninitialized
+==> setup OK
+exit code: 0
+$ ./scripts/build.sh
+==> dotnet restore main/MonoDevelop.Linux.sln 
+==> dotnet build (Debug)
+exit code: 0

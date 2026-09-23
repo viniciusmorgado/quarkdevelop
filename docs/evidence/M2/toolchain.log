@@ -1,0 +1,21 @@
+## versions
+10.0.401
+NET Core debugger 3.2.0-1 (9744e1f, Release)
+1.7.12
+
+## lint
+==> shellcheck 13 scripts
+==> actionlint
+==> lint OK
+
+## build twice (idempotent)
+==> dotnet restore main/MonoDevelop.Linux.sln 
+==> dotnet build (Debug)
+    0 Error(s)
+==> dotnet format whitespace --verify-no-changes (12 new files)
+==> build OK
+==> dotnet restore main/MonoDevelop.Linux.sln 
+==> dotnet build (Debug)
+    0 Error(s)
+==> dotnet format whitespace --verify-no-changes (12 new files)
+==> build OK
