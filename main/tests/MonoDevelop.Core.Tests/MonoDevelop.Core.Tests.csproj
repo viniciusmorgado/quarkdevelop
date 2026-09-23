@@ -74,6 +74,7 @@
     <Compile Include="MonoDevelop.Core/AddinResilienceTests.cs" />
     <Compile Include="MonoDevelop.Projects/MdtoolContractTests.cs" />
     <Compile Include="MonoDevelop.Projects/SdkRoundTripTests.cs" />
+    <Compile Include="MonoDevelop.Projects/BuildCancellationTests.cs" />
     <Compile Include="MonoDevelop.Projects/GetAnalyzerFilesAsyncTests.cs" />
     <Compile Include="MonoDevelop.Core.Instrumentation/BucketTimingsTests.cs" />
     <Compile Include="MonoDevelop.Utilities/RaceCheckerTests.cs" />
