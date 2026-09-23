@@ -61,7 +61,8 @@ namespace MonoDevelop.Core.Text
 				encodings.Add (encoding);
 			}
 
-			encodingsWithBom = encodings.ToArray ();
+			// Longest preamble first: the UTF-32 LE BOM starts with the UTF-16 LE BOM.
+			encodingsWithBom = encodings.OrderByDescending (e => e.GetPreamble ().Length).ToArray ();
 
 			// Encoding verifiers
 			var verifierList = new List<Verifier> {
@@ -326,10 +327,11 @@ namespace MonoDevelop.Core.Text
 				if (bom != null && bom.Length > 0)
 					stream.Write (bom, 0, bom.Length);
 			}
-			using (var sw = new StreamWriter (stream, encoding, 1024, true)) {
-				sw.Write (text);
-				sw.Flush ();
-			}
+			// Encode directly: a StreamWriter writes the encoding's preamble at position 0 even when
+			// writeBom is false (same as WriteTextAsync). Mono.Unix.StdioFileStream.Write fails on an empty buffer.
+			byte[] bytes = encoding.GetBytes (text);
+			if (bytes.Length > 0)
+				stream.Write (bytes, 0, bytes.Length);
 		}
 
 		static void EnsureDirectoryExists (FilePath directoryName)
@@ -379,7 +381,8 @@ namespace MonoDevelop.Core.Text
 				}
 				byte[] bytes = encoding.GetBytes (text);
 				stream.Write (bytes, 0, bytes.Length);
-				return stream.GetBuffer ();
+				// ToArray, not GetBuffer: GetBuffer returns the whole internal buffer, padded with zeros.
+				return stream.ToArray ();
 			}
 		}
 

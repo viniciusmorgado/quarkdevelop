@@ -72,6 +72,8 @@
     <Compile Include="MonoDevelop.Core/NativeLibraryMapTests.cs" />
     <Compile Include="MonoDevelop.Core/LinuxRuntimeTests.cs" />
     <Compile Include="MonoDevelop.Core/AddinResilienceTests.cs" />
+    <Compile Include="MonoDevelop.Core/MonoOptionsTests.cs" />
+    <Compile Include="MonoDevelop.Core/TextFileUtilityTests.cs" />
     <Compile Include="MonoDevelop.Projects/MdtoolContractTests.cs" />
     <Compile Include="MonoDevelop.Projects/SdkRoundTripTests.cs" />
     <Compile Include="MonoDevelop.Projects/BuildCancellationTests.cs" />
