@@ -17,6 +17,7 @@ cd "$root/main"
 
 src_dirs=(src tests)
 fixtures='tests/test-projects'
+test_output='tests/tmp' # git-ignored output of test runs (the only directory named tmp: grep --exclude-dir=tmp)
 
 if [[ "$linux_only" == 1 ]]; then
 	mapfile -t linux_files < <(python3 "$root/scripts/tools/linux-sln-sources.py" .)
@@ -29,7 +30,7 @@ count_files() {
 		[[ ${#linux_files[@]} -gt 0 ]] || { echo 0; return; }
 		grep -lE "$1" "${linux_files[@]}" 2>/dev/null | wc -l || true
 	else
-		grep -rlE --include='*.cs' "$1" "${src_dirs[@]}" 2>/dev/null | grep -cv "^$fixtures/" || true
+		grep -rlE --include='*.cs' --exclude-dir=tmp "$1" "${src_dirs[@]}" 2>/dev/null | grep -cv "^$fixtures/" || true
 	fi
 }
 
@@ -39,12 +40,12 @@ count_lines() {
 		[[ ${#linux_files[@]} -gt 0 ]] || { echo 0; return; }
 		cat "${linux_files[@]}" | grep -cE "$1" || true
 	else
-		grep -rhE --include='*.cs' "$1" "${src_dirs[@]}" 2>/dev/null | wc -l || true
+		grep -rhE --include='*.cs' --exclude-dir=tmp "$1" "${src_dirs[@]}" 2>/dev/null | wc -l || true
 	fi
 }
 
 projects() {
-	find src tests msbuild -name '*.csproj' -not -path "$fixtures/*" | sort
+	find src tests msbuild -name '*.csproj' -not -path "$fixtures/*" -not -path "$test_output/*" | sort
 }
 
 {
@@ -62,15 +63,15 @@ projects() {
 	echo "| Metric | Value |"
 	echo "|---|---|"
 	echo "| csproj (src+tests+msbuild, excl. fixtures) | $(projects | wc -l) |"
-	echo "| SDK-style csproj | $(projects | xargs grep -l '<Project Sdk=' | wc -l || true) |"
-	echo "| csproj targeting \$(MDFrameworkVersion) / v4.x | $(projects | xargs grep -lE 'TargetFrameworkVersion>(\$\(MDFrameworkVersion\)|v4)' | wc -l || true) |"
-	echo "| csproj targeting net10.0 | $(projects | xargs grep -l '<TargetFramework>net10.0' | wc -l || true) |"
+	echo "| SDK-style csproj | $(projects | xargs -d '\n' grep -l '<Project Sdk=' | wc -l || true) |"
+	echo "| csproj targeting \$(MDFrameworkVersion) / v4.x | $(projects | xargs -d '\n' grep -lE 'TargetFrameworkVersion>(\$\(MDFrameworkVersion\)|v4)' | wc -l || true) |"
+	echo "| csproj targeting net10.0 | $(projects | xargs -d '\n' grep -l '<TargetFramework>net10.0' | wc -l || true) |"
 	echo "| Projects in Main.sln | $(grep -c '^Project(' Main.sln) |"
 	if [[ -f MonoDevelop.Linux.sln ]]; then
 		echo "| Projects in MonoDevelop.Linux.sln | $(grep -c '^Project(' MonoDevelop.Linux.sln) |"
 	fi
-	echo "| .cs files (excl. fixtures) | $(find src tests -name '*.cs' -not -path "$fixtures/*" | wc -l) |"
-	echo "| *.addin.xml manifests | $(find src tests -name '*.addin.xml' -not -path "$fixtures/*" | wc -l) |"
+	echo "| .cs files (excl. fixtures) | $(find src tests -name '*.cs' -not -path "$fixtures/*" -not -path "$test_output/*" | wc -l) |"
+	echo "| *.addin.xml manifests | $(find src tests -name '*.addin.xml' -not -path "$fixtures/*" -not -path "$test_output/*" | wc -l) |"
 	echo
 	echo "## Blockers (files unless noted)"
 	echo
@@ -86,8 +87,8 @@ projects() {
 		printf '| %s | `%s` | %s |\n' "$name" "${pattern//|/\\|}" "$n"
 	done <<'EOF'
 GTK stack (Gtk/Gdk/Pango/Cairo/GLib/Atk)~\b(Gtk|Gdk|Pango|Cairo|GLib|Atk)\.[A-Z]~files
-GTK2-only: ExposeEvent~ExposeEvent~files
-GTK2-only: SizeRequested~SizeRequested~files
+GTK2-only: ExposeEvent~\.ExposeEvent\b|\bOnExposeEvent *\(|\bExposeEventArgs\b~files
+GTK2-only: SizeRequested~\.SizeRequested\b|\bOnSizeRequested *\(|\bSizeRequestedArgs\b~files
 GTK2-only: Gdk.GC / Drawable~Gdk\.(GC|Drawable)\b~files
 GTK2-only: Gtk.Rc~Gtk\.Rc\b~files
 Stetic generated (gtk-gui)~Stetic\.~files
@@ -115,7 +116,7 @@ EOF
 	echo
 	echo '| Library | DllImport lines |'
 	echo '|---|---|'
-	grep -rhoE --include='*.cs' 'DllImport *\( *"?[A-Za-z0-9_.@/+-]+' src tests 2>/dev/null \
+	grep -rhoE --include='*.cs' --exclude-dir=tmp 'DllImport *\( *"?[A-Za-z0-9_.@/+-]+' src tests 2>/dev/null \
 		| sed -E 's/DllImport *\( *"?//' | sort | uniq -c | sort -rn | head -40 \
 		| awk '{printf "| %s | %s |\n", $2, $1}' || true
 	echo
@@ -139,7 +140,7 @@ EOF
 	echo '|---|---|'
 	while read -r proj; do
 		dir="$(dirname "$proj")"
-		n="$(grep -rhE --include='*.cs' '\[(Test|TestCase)\b' "$dir" 2>/dev/null | wc -l)"
+		n="$(grep -rhE --include='*.cs' --exclude-dir=tmp '\[(Test|TestCase)\b' "$dir" 2>/dev/null | wc -l)"
 		[[ "$n" -gt 0 ]] && printf '| %s | %s |\n' "$dir" "$n"
 	done < <(projects | grep -iE 'test' ) || true
 	echo
