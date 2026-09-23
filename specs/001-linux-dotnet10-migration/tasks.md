@@ -164,7 +164,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T081 [US3] M5b: port `Ide.Editor*`, `Ide.CodeCompletion`, `Ide.CodeTemplates`, `Ide.Fonts` → builds
 - [x] T082 [US3] M5b: port `Ide.Execution`, `Ide.FindInFiles`, `Ide.WelcomePage`, remaining areas; `Gtk3PortPending.props` empty → `./scripts/inventory.sh --linux-sln` reports 0 GTK2-only APIs
 - [ ] T083 [US3] M5b: GTK3 CSS themes (light/dark) in `MonoDevelop.Components/…/IdeTheme.cs` → screenshots light + dark
-- [ ] T084 [US3] M5b: NativeLibraryMap entries for gtk/gdk/glib/pango/cairo; `MonoDevelop.Ide.dll.config` deleted → test
+- [x] T084 [US3] M5b: NativeLibraryMap entries for gtk/gdk/glib/pango/cairo; `MonoDevelop.Ide.dll.config` deleted → test
 
 ### M5c — IDE runs (one project per task)
 

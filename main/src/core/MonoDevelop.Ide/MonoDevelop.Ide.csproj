@@ -32,6 +32,7 @@
     <Compile Include="MonoDevelop.Ide.TypeSystem/IDynamicDocumentInfoProvider.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/MiscellaneousFilesWorkspace.cs" />
     <Compile Include="MonoDevelop.Ide/MimeTypeCatalog.cs" />
+    <Compile Include="MonoDevelop.Ide/IdeNativeLibraries.cs" />
     <Compile Include="MonoDevelop.Ide.Editor/ITextEditorInitializationService.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/DisplayBindingService.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/Gtk3IdeCompat.cs" />
@@ -6053,7 +6054,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="MonoDevelop.Ide.dll.config" CopyToOutputDirectory="PreserveNewest" />
     <None Include="gtkrc" CopyToOutputDirectory="PreserveNewest" />
     <None Include="gtkrc.win32" CopyToOutputDirectory="PreserveNewest" />
     <None Include="gtkrc.win32-dark" CopyToOutputDirectory="PreserveNewest" />
