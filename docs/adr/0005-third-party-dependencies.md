@@ -1,0 +1,37 @@
+# 0005 — Third-party dependencies: NuGet or vendored in `main/vendor/`
+
+- Status: Accepted
+- Date: 2026-09-23
+
+## Context and Problem Statement
+
+15 git submodules point to archived mono/xamarin/microsoft repositories. The maintainer decided that
+forks live in this same repository (no separate repos) and that the DotDevelop fork is used only for
+cherry-picks.
+
+## Decision Outcome
+
+Order of preference per dependency: maintained NuGet package → vendored copy in
+`main/vendor/<name>/` → drop. Each vendored directory has an `UPSTREAM.md` with origin URL, source
+commit, license and a list of local patches. The corresponding submodule is removed from
+`.gitmodules` in the same commit that introduces its replacement.
+
+| Submodule | Destination |
+|---|---|
+| mono-addins | NuGet Mono.Addins, .Setup, .CecilReflector 1.4.1; `Mono.Addins.Gui` vendored + GTK3 |
+| xwt | vendored (`Xwt`, `Xwt.Gtk3`), ported to GtkSharp 3 NuGet (Xwt NuGet is net472-only) |
+| debugger-libs | vendored `Mono.Debugging` only (Soft debugger excluded) |
+| guiunit | replaced by NUnit + in-repo UI-thread helper |
+| nrefactory | usages removed; vendored minimal subset only if unavoidable |
+| vs-editor-api | vendored text subset (no FPF/WindowsBase clones) |
+| libgit2sharp, libgit2, libgit-binary | NuGet LibGit2Sharp 0.32.0 |
+| nuget-binary | removed (SDK restore) |
+| sharpsvn-binary, macdoc, mono-tools, mdtestharness, Xamarin.PropertyEditing | removed from the Linux build |
+
+Code cherry-picked from DotDevelop (github.com/dotdevelop/dotdevelop) records the source commit in
+the commit message and in `specs/001-linux-dotnet10-migration/research.md`.
+
+### Consequences
+
+- Good: reproducible, reviewable patches; no external repositories to maintain.
+- Bad: vendored code must be kept buildable by us; licenses (MIT/LGPL) must be preserved in-tree.
