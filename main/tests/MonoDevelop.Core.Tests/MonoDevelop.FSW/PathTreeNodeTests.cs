@@ -33,7 +33,7 @@ namespace MonoDevelop.FSW
 	[TestFixture]
 	public class PathTreeNodeTests
 	{
-		string [] seps = {
+		static readonly string [] seps = {
 			"",
 			Path.DirectorySeparatorChar.ToString(),
 		};

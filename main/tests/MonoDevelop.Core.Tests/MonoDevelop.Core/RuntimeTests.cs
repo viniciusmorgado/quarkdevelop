@@ -1,4 +1,4 @@
-﻿//
+//
 // RuntimeTests.cs
 //
 // Author:
@@ -45,7 +45,7 @@ namespace MonoDevelop.Core
 				var expectedException = new ApplicationException ("Error");
 
 				Task task = Runtime.RunInMainThread (() => ThrowException (expectedException));
-				ApplicationException ex = Assert.Throws<ApplicationException> (async () => await task);
+				ApplicationException ex = Assert.ThrowsAsync<ApplicationException> (async () => await task);
 
 				Assert.IsTrue (task.IsFaulted);
 				Assert.AreEqual (expectedException, task.Exception.GetBaseException ());
@@ -74,7 +74,7 @@ namespace MonoDevelop.Core
 				var expectedException = new ApplicationException ("Error");
 
 				Task task = Runtime.RunInMainThread (async () => await ThrowExceptionAsync (expectedException));
-				ApplicationException ex = Assert.Throws<ApplicationException> (async () => await task);
+				ApplicationException ex = Assert.ThrowsAsync<ApplicationException> (async () => await task);
 
 				Assert.IsTrue (task.IsFaulted);
 				Assert.AreEqual (expectedException, task.Exception.GetBaseException ());
@@ -99,7 +99,7 @@ namespace MonoDevelop.Core
 				var expectedException = new ApplicationException ("Error");
 
 				Task task = Runtime.RunInMainThread (() => ThrowExceptionWithAwait (expectedException));
-				ApplicationException ex = Assert.Throws<ApplicationException> (async () => await task);
+				ApplicationException ex = Assert.ThrowsAsync<ApplicationException> (async () => await task);
 
 				Assert.IsTrue (task.IsFaulted);
 				Assert.AreEqual (expectedException, task.Exception.GetBaseException ());
@@ -124,7 +124,7 @@ namespace MonoDevelop.Core
 				var expectedException = new ApplicationException ("Error");
 
 				Task<bool> task = Runtime.RunInMainThread (() => TaskOfT_ThrowExceptionAsync (expectedException));
-				ApplicationException ex = Assert.Throws<ApplicationException> (async () => await task);
+				ApplicationException ex = Assert.ThrowsAsync<ApplicationException> (async () => await task);
 
 				Assert.IsTrue (task.IsFaulted);
 				Assert.AreEqual (expectedException, task.Exception.GetBaseException ());
@@ -149,7 +149,7 @@ namespace MonoDevelop.Core
 				var expectedException = new ApplicationException ("Error");
 
 				Task<bool> task = Runtime.RunInMainThread (() => TaskOfT_ThrowExceptionWithAwait (expectedException));
-				ApplicationException ex = Assert.Throws<ApplicationException> (async () => await task);
+				ApplicationException ex = Assert.ThrowsAsync<ApplicationException> (async () => await task);
 
 				Assert.IsTrue (task.IsFaulted);
 				Assert.AreEqual (expectedException, task.Exception.GetBaseException ());

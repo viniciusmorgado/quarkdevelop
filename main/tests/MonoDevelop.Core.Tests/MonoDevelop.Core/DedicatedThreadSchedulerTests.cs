@@ -125,8 +125,7 @@ namespace MonoDevelop.Core
 		{
 			if (TestScheduler != null) {
 				try {
-					if (TestScheduler.DedicatedThread.IsAlive)
-						TestScheduler.DedicatedThread.Abort ();
+					// Thread.Abort does not exist on .NET; disposing the scheduler ends its thread.
 					TestScheduler.Dispose ();
 				} catch (ObjectDisposedException) {
 				} finally {

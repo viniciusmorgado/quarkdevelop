@@ -43,7 +43,7 @@ namespace MonoDevelop.Core.Execution
 			public Array Array { get; }
 		}
 
-		public Data [] TestCase = {
+		public static readonly Data [] TestCase = {
 			new Data (new int[1, 2, 3], 6, new int[][] {
 				new int[] {0, 0, 0},
 				new int[] {0, 0, 1},
