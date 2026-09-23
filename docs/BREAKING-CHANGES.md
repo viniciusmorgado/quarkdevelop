@@ -52,3 +52,16 @@ Compared with MonoDevelop 8.6:
   ([ADR 0006](adr/0006-mono-addins-on-coreclr.md)).
 - UI add-ins must use GTK3 (GtkSharp 3.24) or Xwt.
 - .NET Remoting and BinaryFormatter-based APIs were removed ([ADR 0009](adr/0009-remove-remoting-binaryformatter.md)).
+- NRefactory 5 is gone ([ADR 0019](adr/0019-nrefactory-removal.md)):
+  - `CodeGenerator.AddLocalNamespaceImport` takes a `MonoDevelop.Ide.Editor.DocumentLocation`
+    instead of an NRefactory `TextLocation`.
+  - `CodeGenerator.CreateGenerator (ITextDocument, ICompilation)` is removed. Use
+    `CreateGenerator (Document)`.
+  - `FoldingUtilities.FlagIfInsideMembers` is removed (it was already marked obsolete).
+  - `MemberReference.EntityOrVariable` holds Roslyn `ISymbol`s.
+- `Mono.Addins.Gui` (GTK2) is replaced by `Mono.Addins.GuiGtk3`, which has the same classes in the
+  `Mono.Addins.GuiGtk3` namespace.
+- The VS editor API assemblies keep their names. WPF-only members are not available: presenter
+  styles, `ITextFormattable`, `WpfHelper`, and the TextUIWpf contracts. Clipboard access in
+  `EditorOperations` goes through `Microsoft.VisualStudio.Text.Operations.EditorClipboard`
+  (see `main/vendor/vs-editor-api/UPSTREAM.md`).

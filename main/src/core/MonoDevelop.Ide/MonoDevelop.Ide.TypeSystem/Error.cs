@@ -77,7 +77,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		public object Tag { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.TypeSystem.Error"/> class.
+		/// Initializes a new instance of the <see cref="Error"/> class.
 		/// </summary>
 		/// <param name='errorType'>
 		/// The error type.
@@ -96,7 +96,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.TypeSystem.Error"/> class.
+		/// Initializes a new instance of the <see cref="Error"/> class.
 		/// </summary>
 		/// <param name='errorType'>
 		/// The error type.
@@ -115,7 +115,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.TypeSystem.Error"/> class.
+		/// Initializes a new instance of the <see cref="Error"/> class.
 		/// </summary>
 		/// <param name='errorType'>
 		/// The error type.
@@ -128,7 +128,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.TypeSystem.Error"/> class.
+		/// Initializes a new instance of the <see cref="Error"/> class.
 		/// </summary>
 		/// <param name='errorType'>
 		/// The error type.
@@ -145,7 +145,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.TypeSystem.Error"/> class.
+		/// Initializes a new instance of the <see cref="Error"/> class.
 		/// </summary>
 		/// <param name='errorType'>
 		/// The error type.
@@ -165,7 +165,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.TypeSystem.Error"/> class.
+		/// Initializes a new instance of the <see cref="Error"/> class.
 		/// </summary>
 		/// <param name='errorType'>
 		/// The error type.
@@ -185,7 +185,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.TypeSystem.Error"/> class.
+		/// Initializes a new instance of the <see cref="Error"/> class.
 		/// </summary>
 		/// <param name='errorType'>
 		/// The error type.
@@ -198,7 +198,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.TypeSystem.Error"/> class.
+		/// Initializes a new instance of the <see cref="Error"/> class.
 		/// </summary>
 		/// <param name='errorType'>
 		/// The error type.

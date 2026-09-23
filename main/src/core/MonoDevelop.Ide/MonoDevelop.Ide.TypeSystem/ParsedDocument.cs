@@ -24,7 +24,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using ICSharpCode.NRefactory.TypeSystem;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
@@ -207,11 +206,6 @@ namespace MonoDevelop.Ide.TypeSystem
 	[Obsolete ("Old editor")]
 	public static class FoldingUtilities
 	{
-		static bool IncompleteOrSingleLine (DomRegion region)
-		{
-			return region.BeginLine <= 0 || region.EndLine <= region.BeginLine;
-		}
-
 		[Obsolete("Language backends need to implement a custom version.")]
 		public static IEnumerable<FoldingRegion> ToFolds (this IReadOnlyList<Comment> comments)
 		{
@@ -325,54 +319,6 @@ namespace MonoDevelop.Ide.TypeSystem
 			if (end <= start)
 				return "";
 			return text.Substring (start, end - start);
-		}
-		
-		public static IEnumerable<FoldingRegion> FlagIfInsideMembers (this IEnumerable<FoldingRegion> folds,
-			IEnumerable<IUnresolvedTypeDefinition> types, Action<FoldingRegion> flagAction)
-		{
-			foreach (FoldingRegion fold in folds) {
-				foreach (var type in types) {
-					if (fold.Region.IsInsideMember (type)) {
-						flagAction (fold);
-						break;
-					}
-				}
-				yield return fold;
-			}
-		}
-		
-		static bool IsInsideMember (this DomRegion region, IUnresolvedTypeDefinition cl)
-		{
-			if (region.IsEmpty || cl == null || !cl.BodyRegion.IsInside (region.Begin))
-				return false;
-			foreach (var member in cl.Members) {
-				if (member.BodyRegion.IsEmpty)
-					continue;
-				if (member.BodyRegion.IsInside (region.Begin) && member.BodyRegion.IsInside (region.End)) 
-					return true;
-			}
-			foreach (var inner in cl.NestedTypes) {
-				if (region.IsInsideMember (inner))
-					return true;
-			}
-			return false;
-		}
-
-		static bool IsInsideMember (this DocumentRegion region, IUnresolvedTypeDefinition cl)
-		{
-			if (region.IsEmpty || cl == null || !cl.BodyRegion.IsInside (region.Begin.Line, region.Begin.Column))
-				return false;
-			foreach (var member in cl.Members) {
-				if (member.BodyRegion.IsEmpty)
-					continue;
-				if (member.BodyRegion.IsInside (region.Begin.Line, region.Begin.Column) && member.BodyRegion.IsInside (region.End.Line, region.End.Column)) 
-					return true;
-			}
-			foreach (var inner in cl.NestedTypes) {
-				if (region.IsInsideMember (inner))
-					return true;
-			}
-			return false;
 		}
 		
 	}

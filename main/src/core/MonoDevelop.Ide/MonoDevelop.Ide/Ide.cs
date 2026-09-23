@@ -33,7 +33,7 @@ using System;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Instrumentation;
 using Mono.Addins;
-using Mono.Addins.Gui;
+using Mono.Addins.GuiGtk3;
 using Mono.Addins.Setup;
 using MonoDevelop.Components.Commands;
 

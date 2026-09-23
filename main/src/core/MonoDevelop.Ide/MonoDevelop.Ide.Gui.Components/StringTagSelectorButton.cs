@@ -30,6 +30,7 @@ using Gtk;
 using MonoDevelop.Core;
 using MonoDevelop.Components;
 using MonoDevelop.Components.AtkCocoaHelper;
+using MenuButton = MonoDevelop.Components.MenuButton;
 
 namespace MonoDevelop.Ide.Gui.Components
 {

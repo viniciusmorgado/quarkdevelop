@@ -37,6 +37,7 @@ using MonoDevelop.Components;
 using MonoDevelop.Components.Commands;
 using System.IO;
 using System.Runtime.InteropServices;
+using SearchEntry = MonoDevelop.Components.SearchEntry;
 
 namespace MonoDevelop.Ide.Projects
 {

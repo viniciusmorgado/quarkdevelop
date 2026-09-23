@@ -35,6 +35,7 @@ using MonoDevelop.Core;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.TypeSystem;
 using MonoDevelop.Projects;
+using ParsedDocument = MonoDevelop.Ide.TypeSystem.ParsedDocument;
 
 namespace MonoDevelop.Ide.Editor.Extension
 {

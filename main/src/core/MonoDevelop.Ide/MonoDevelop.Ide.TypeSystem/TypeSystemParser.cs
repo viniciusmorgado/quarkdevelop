@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 using System;
 using System.IO;
-using ICSharpCode.NRefactory.TypeSystem;
 using MonoDevelop.Projects;
 using MonoDevelop.Core.Text;
 using Microsoft.CodeAnalysis;

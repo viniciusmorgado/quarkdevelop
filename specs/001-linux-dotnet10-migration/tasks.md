@@ -139,12 +139,12 @@ tasks are split one project per task, new tasks for gaps found in review.
 
 - [x] T066 [US3] M5a: vendor xwt → `main/vendor/xwt/` + `UPSTREAM.md`; remove submodule; `Xwt` + `Xwt.Gtk/Xwt.Gtk3.csproj` on net10.0 + GtkSharp 3.24.24 → `xvfb-run -a dotnet run --project main/vendor/xwt/TestApps/Gtk3Test` shows a window (screenshot)
 - [x] T067 [US3] M5a: vendor `Mono.Addins.Gui` → `main/vendor/mono-addins-gui/` + `UPSTREAM.md`, GTK3 → builds
-- [ ] T068 [US3] M5a: vendor vs-editor-api text subset → `main/vendor/vs-editor-api/` + `UPSTREAM.md` (no FPF/WindowsBase) → builds; duplicate-assembly check passes
-- [ ] T069 [US3] M5a: ADR 0019 NRefactory (remove usages from Ide vs vendor subset) + implementation → Ide has no NRefactory project reference
+- [x] T068 [US3] M5a: vendor vs-editor-api text subset → `main/vendor/vs-editor-api/` + `UPSTREAM.md` (no FPF/WindowsBase) → builds; duplicate-assembly check passes
+- [x] T069 [US3] M5a: ADR 0019 NRefactory (remove usages from Ide vs vendor subset) + implementation → Ide has no NRefactory project reference
 
 ### M5b — `MonoDevelop.Ide` compiles on GTK3 (one area per task)
 
-- [ ] T070 [US3] M5b: SDK-style `MonoDevelop.Ide.csproj` (GtkSharp 3, Publicizer for Roslyn internals, VS Composition explicit) with tracked `Gtk3PortPending.props`; `SyncContext.BeginInvoke` fixed → Ide builds with pending areas excluded
+- [x] T070 [US3] M5b: SDK-style `MonoDevelop.Ide.csproj` (GtkSharp 3, Publicizer for Roslyn internals, VS Composition explicit) with tracked `Gtk3PortPending.props`; `SyncContext.BeginInvoke` fixed → Ide builds with pending areas excluded
 - [ ] T071 [US3] M5b: port `MonoDevelop.Components/` (+ Theming, Extensions) → removed from pending list; builds
 - [ ] T072 [US3] M5b: port `Components.Docking`, `Components.DockNotebook` → builds
 - [ ] T073 [US3] M5b: port `Components.MainToolbar` → builds

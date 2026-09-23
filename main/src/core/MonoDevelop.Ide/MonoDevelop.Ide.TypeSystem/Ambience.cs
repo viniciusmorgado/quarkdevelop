@@ -227,31 +227,6 @@ namespace MonoDevelop.Ide.TypeSystem
 			return null;
 		}
 		
-		static string GetCref (ICSharpCode.NRefactory.TypeSystem.ITypeResolveContext ctx, string cref)
-		{
-			if (cref == null)
-				return "";
-
-			if (cref.Length < 2)
-				return cref;
-			try {
-				var entity = new ICSharpCode.NRefactory.Documentation.DocumentationComment ("", ctx).ResolveCref (cref.Replace("<", "{").Replace(">", "}"));
-	
-				if (entity != null) {
-					var ambience = new ICSharpCode.NRefactory.CSharp.CSharpAmbience ();
-					ambience.ConversionFlags = ICSharpCode.NRefactory.TypeSystem.ConversionFlags.ShowParameterList | ICSharpCode.NRefactory.TypeSystem.ConversionFlags.ShowParameterNames | ICSharpCode.NRefactory.TypeSystem.ConversionFlags.ShowTypeParameterList;
-					return ambience.ConvertSymbol (entity);
-				}
-			} catch (Exception e) {
-				LoggingService.LogWarning ("Invalid cref:" + cref, e);
-			}
-
-			if (cref[1] == ':')
-				return cref.Substring (2, cref.Length - 2);
-			
-			return cref;
-		}
-		
 		static bool IsSpecialChar (int charValue)
 		{
 			return 

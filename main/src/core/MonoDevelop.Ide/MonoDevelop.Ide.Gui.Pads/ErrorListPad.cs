@@ -57,6 +57,7 @@ using MonoDevelop.Ide.BuildOutputView;
 using System.Threading.Tasks;
 using MonoDevelop.Core.ProgressMonitoring;
 using MonoDevelop.Core.Instrumentation;
+using SearchEntry = MonoDevelop.Components.SearchEntry;
 
 namespace MonoDevelop.Ide.Gui.Pads
 {

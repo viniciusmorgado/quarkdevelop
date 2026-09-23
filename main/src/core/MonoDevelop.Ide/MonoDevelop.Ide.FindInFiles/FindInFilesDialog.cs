@@ -38,6 +38,7 @@ using System.Threading.Tasks;
 using MonoDevelop.Components.AtkCocoaHelper;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text;
+using SearchEntry = MonoDevelop.Components.SearchEntry;
 
 namespace MonoDevelop.Ide.FindInFiles
 {

@@ -28,10 +28,8 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Mono.Addins;
-using ICSharpCode.NRefactory.TypeSystem;
 using MonoDevelop.Core.AddIns;
 using MonoDevelop.Ide.TypeSystem;
-using ICSharpCode.NRefactory;
 using MonoDevelop.Projects.Policies;
 using MonoDevelop.Ide.Extensions;
 using MonoDevelop.Ide.Editor;
@@ -88,22 +86,6 @@ namespace MonoDevelop.Ide.TypeSystem
 			return CreateGenerator (doc.Editor, doc.DocumentContext);
 		}
 
-		public static CodeGenerator CreateGenerator (ITextDocument editor, ICompilation compilation)
-		{
-			MimeTypeExtensionNode node;
-			if (!generators.TryGetValue (editor.MimeType, out node))
-				return null;
-
-			var result = (CodeGenerator)node.CreateInstance ();
-
-			//result.UseSpaceIndent = editor.Options.TabsToSpaces;
-			result.EolMarker = editor.GetEolMarker ();
-			//result.TabSize = editor.Options.TabSize;
-			//result.Compilation = compilation;
-
-			return result;
-		}
-
 		protected void AppendLine (StringBuilder sb)
 		{
 			sb.Append (EolMarker);
@@ -158,17 +140,10 @@ namespace MonoDevelop.Ide.TypeSystem
 			generators.Remove (node.MimeType);
 		}
 
-		static bool CompareMethods (IMethod interfaceMethod, IMethod typeMethod)
-		{
-			if (typeMethod.IsExplicitInterfaceImplementation)
-				return typeMethod.ImplementedInterfaceMembers.Any (m => m.Equals (interfaceMethod));
-			return SignatureComparer.Ordinal.Equals (interfaceMethod, typeMethod);
-		}
-
 		public abstract string WrapInRegions (string regionName, string text);
 
 		public abstract void AddGlobalNamespaceImport (TextEditor editor, DocumentContext context, string nsName);
-		public abstract void AddLocalNamespaceImport (TextEditor editor, DocumentContext context, string nsName, TextLocation caretLocation);
+		public abstract void AddLocalNamespaceImport (TextEditor editor, DocumentContext context, string nsName, DocumentLocation caretLocation);
 
 		public void AddGlobalNamespaceImport (MonoDevelop.Ide.Gui.Document doc, string nsName)
 		{
@@ -177,7 +152,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			AddGlobalNamespaceImport (doc.Editor, doc.DocumentContext, nsName);
 		}
 
-		public void AddLocalNamespaceImport (MonoDevelop.Ide.Gui.Document doc, string nsName, TextLocation caretLocation)
+		public void AddLocalNamespaceImport (MonoDevelop.Ide.Gui.Document doc, string nsName, DocumentLocation caretLocation)
 		{
 			if (doc == null)
 				throw new ArgumentNullException ("doc");

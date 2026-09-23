@@ -82,7 +82,6 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         /// </devdoc>
 #if !SILVERLIGHT
 #if !DISABLE_CAS_USE
-        [HostProtection(Synchronization=true)]
 #endif
         static public Group Synchronized(Group inner) {
 #else

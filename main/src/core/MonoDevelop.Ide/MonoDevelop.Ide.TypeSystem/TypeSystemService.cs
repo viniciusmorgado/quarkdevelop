@@ -32,7 +32,6 @@ using Mono.Addins;
 using MonoDevelop.Core;
 using System.Threading;
 using System.Xml;
-using ICSharpCode.NRefactory.Utils;
 using System.Threading.Tasks;
 using MonoDevelop.Ide.Extensions;
 using MonoDevelop.Core.Assemblies;

@@ -37,6 +37,7 @@ using MonoDevelop.Components;
 using Gtk;
 using System.Linq;
 using MonoDevelop.Projects;
+using MenuButton = MonoDevelop.Components.MenuButton;
 
 namespace MonoDevelop.Ide.Projects
 {

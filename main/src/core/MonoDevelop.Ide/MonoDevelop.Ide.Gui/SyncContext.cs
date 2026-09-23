@@ -30,9 +30,6 @@ using System.Text;
 using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.Remoting.Contexts;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Remoting.Activation;
 
 namespace MonoDevelop.Ide.Gui
 {
@@ -58,7 +55,8 @@ namespace MonoDevelop.Ide.Gui
 		
 		public virtual void AsyncDispatch (StatefulMessageHandler cb, object ob)
 		{
-			cb.BeginInvoke (ob, null, null);
+			// Delegate.BeginInvoke is not supported on .NET (PlatformNotSupportedException).
+			System.Threading.Tasks.Task.Run (() => cb (ob));
 		}
 	}
 

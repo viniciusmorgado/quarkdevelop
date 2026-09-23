@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using ICSharpCode.NRefactory;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.FindInFiles;
 

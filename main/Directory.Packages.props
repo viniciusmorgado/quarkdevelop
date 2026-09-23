@@ -54,6 +54,10 @@
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="SharpZipLib" Version="1.4.2" />
     <PackageVersion Include="GtkSharp" Version="3.24.24.95" />
+    <PackageVersion Include="Microsoft.TemplateEngine.Edge" Version="10.0.401" />
+    <PackageVersion Include="Microsoft.TemplateEngine.Orchestrator.RunnableProjects" Version="10.0.401" />
+    <PackageVersion Include="YamlDotNet" Version="18.1.0" />
+    <PackageVersion Include="NuGet.Frameworks" Version="6.13.2" />
     <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
     <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.12" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.12" />

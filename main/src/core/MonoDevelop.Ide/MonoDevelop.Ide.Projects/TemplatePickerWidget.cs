@@ -33,6 +33,7 @@ using MonoDevelop.Components;
 using MonoDevelop.Ide.Templates;
 using System.Linq;
 using MonoDevelop.Ide.Gui.Components;
+using SearchEntry = MonoDevelop.Components.SearchEntry;
 
 namespace MonoDevelop.Ide.Projects
 {

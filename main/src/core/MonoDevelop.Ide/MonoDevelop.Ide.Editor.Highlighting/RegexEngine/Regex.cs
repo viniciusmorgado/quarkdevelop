@@ -1148,7 +1148,6 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine
         /// <devdoc>
         /// </devdoc>
 #if !DISABLE_CAS_USE
-        [HostProtection(MayLeakOnAbort=true)]
 #endif
         [ResourceExposure(ResourceScope.Machine)] // The AssemblyName is interesting.
         [ResourceConsumption(ResourceScope.Machine)]
@@ -1161,7 +1160,6 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine
         /// <devdoc>
         /// </devdoc>
 #if !DISABLE_CAS_USE
-        [HostProtection(MayLeakOnAbort=true)]
 #endif
         [ResourceExposure(ResourceScope.Machine)] // The AssemblyName is interesting.
         [ResourceConsumption(ResourceScope.Machine)]
@@ -1171,7 +1169,6 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine
         }
 
 #if !DISABLE_CAS_USE
-        [HostProtection(MayLeakOnAbort=true)]
 #endif
         [ResourceExposure(ResourceScope.Machine)]
         [ResourceConsumption(ResourceScope.Machine)]

@@ -51,6 +51,7 @@ using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Ide.Gui.Documents;
 using MonoDevelop.Ide.Gui.Shell;
 using System.Runtime.CompilerServices;
+using Task = System.Threading.Tasks.Task;
 
 namespace MonoDevelop.Ide.Gui
 {

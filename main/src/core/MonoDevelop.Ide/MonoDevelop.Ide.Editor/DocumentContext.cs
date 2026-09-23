@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 using System;
 using MonoDevelop.Projects;
-using ICSharpCode.NRefactory.TypeSystem;
 using MonoDevelop.Ide.TypeSystem;
 using System.Threading.Tasks;
 using System.Threading;

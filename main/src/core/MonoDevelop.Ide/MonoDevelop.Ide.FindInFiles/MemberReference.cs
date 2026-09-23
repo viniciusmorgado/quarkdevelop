@@ -24,7 +24,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using ICSharpCode.NRefactory.TypeSystem;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Highlighting;
 
@@ -71,16 +70,10 @@ namespace MonoDevelop.Ide.FindInFiles
 
 		public string GetName ()
 		{
-			if (EntityOrVariable is IEntity) {
-				return ((IEntity)EntityOrVariable).Name;
-			} 
-			if (EntityOrVariable is ITypeParameter) {
-				return ((ITypeParameter)EntityOrVariable).Name;
-			} 
-			if (EntityOrVariable is INamespace) {
-				return ((INamespace)EntityOrVariable).Name;
-			} 
-			return ((IVariable)EntityOrVariable).Name;
+			// Entities are Roslyn symbols (the NRefactory type system is gone, ADR 0019).
+			if (EntityOrVariable is Microsoft.CodeAnalysis.ISymbol symbol)
+				return symbol.Name;
+			return EntityOrVariable.ToString ();
 		}
 
 		public override Components.HslColor GetBackgroundMarkerColor (EditorTheme style)

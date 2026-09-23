@@ -205,7 +205,6 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
 
 #if !SILVERLIGHT
 #if !DISABLE_CAS_USE
-        [HostProtection(Synchronization=true)]
 #endif
         static public Match Synchronized(Match inner) {
 #else

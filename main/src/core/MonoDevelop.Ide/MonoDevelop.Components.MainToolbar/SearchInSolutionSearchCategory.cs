@@ -27,7 +27,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MonoDevelop.Core;
-using ICSharpCode.NRefactory.TypeSystem;
 using MonoDevelop.Ide.FindInFiles;
 using System.Linq;
 using MonoDevelop.Ide.Gui;

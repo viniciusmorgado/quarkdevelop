@@ -39,7 +39,6 @@ using MonoDevelop.Core;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Components;
 using System.Collections.Immutable;
-using ICSharpCode.NRefactory.MonoCSharp;
 using System.Diagnostics;
 
 namespace MonoDevelop.Ide.Editor.Highlighting

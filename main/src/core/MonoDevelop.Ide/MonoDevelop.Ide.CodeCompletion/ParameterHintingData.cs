@@ -24,7 +24,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using ICSharpCode.NRefactory.Completion;
 using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
 using System.Linq;
