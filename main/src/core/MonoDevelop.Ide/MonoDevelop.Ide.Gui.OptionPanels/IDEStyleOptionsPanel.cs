@@ -60,20 +60,8 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 	{
 		string currentTheme;
 
-		static Lazy<Dictionary<string, string>> themes = new Lazy<Dictionary<string, string>> (() => {
-			var searchDirs = new List<string> ();
-
-			string prefix = Environment.GetEnvironmentVariable ("MONO_INSTALL_PREFIX");
-			FilePath homeDir = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-
-			searchDirs.Add (homeDir.Combine (".themes"));
-			searchDirs.Add (Gtk.Rc.ThemeDir);
-			if (!string.IsNullOrEmpty (prefix))
-				searchDirs.Add (new FilePath (prefix).Combine ("share").Combine ("themes"));
-			
-			var themes = FindThemes (searchDirs);
-			return themes;
-		});
+		// display name -> theme ("Name" or "Name:dark", see GtkThemes)
+		static Lazy<Dictionary<string, string>> themes = new Lazy<Dictionary<string, string>> (() => FindThemes (GtkThemes.GetSearchDirectories ()));
 
 		public static IList<string> InstalledThemes {
 			get {
@@ -143,9 +131,14 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 		{
 			bool restartRequired = false;
 
-			if (currentTheme != IdeApp.Preferences.UserInterfaceThemeName.Value ||
-			    ((Platform.IsLinux && Gtk.Settings.Default.ThemeName != IdeApp.Preferences.UserInterfaceThemeName.Value) ||
-			     IdeTheme.UserInterfaceTheme != (IdeApp.Preferences.UserInterfaceThemeName == "Dark" ? Theme.Dark : Theme.Light)))
+			if (currentTheme != IdeApp.Preferences.UserInterfaceThemeName.Value)
+				restartRequired = true;
+			else if (Platform.IsLinux) {
+				// "(Default)" (empty) is the theme GTK started with
+				string theme = IdeApp.Preferences.UserInterfaceThemeName.Value;
+				if (GtkThemes.GetCurrent (Gtk.Settings.Default) != (string.IsNullOrEmpty (theme) ? IdeTheme.DefaultTheme : theme))
+					restartRequired = true;
+			} else if (IdeTheme.UserInterfaceTheme != (IdeApp.Preferences.UserInterfaceThemeName == "Dark" ? Theme.Dark : Theme.Light))
 				restartRequired = true;
 			
 			if (GettextCatalog.UILocale != IdeApp.Preferences.UserInterfaceLanguage ||
@@ -187,17 +180,10 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 		{
 			var themes = new Dictionary<string, string> ();
 			if (Platform.IsLinux) {
-				string gtkrc = System.IO.Path.Combine ("gtk-2.0", "gtkrc");
-				foreach (string themeDir in themeDirs) {
-					if (string.IsNullOrEmpty (themeDir) || !System.IO.Directory.Exists (themeDir))
-						continue;
-					foreach (FilePath dir in System.IO.Directory.GetDirectories (themeDir)) {
-						if (System.IO.File.Exists (dir.Combine (gtkrc))) {
-							var themeName = dir.FileName;
-							if (!IsBadGtkTheme (themeName))
-								themes.Add (themeName, themeName);
-						}
-					}
+				foreach (var theme in GtkThemes.FindThemes (themeDirs)) {
+					GtkThemes.Parse (theme, out var themeName, out _);
+					if (!IsBadGtkTheme (themeName))
+						themes.Add (GtkThemes.GetDisplayName (theme), theme);
 				}
 			} else {
 				themes.Add (GettextCatalog.GetString ("Light"), "Light");

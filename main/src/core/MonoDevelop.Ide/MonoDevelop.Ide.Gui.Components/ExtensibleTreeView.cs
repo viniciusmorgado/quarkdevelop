@@ -257,11 +257,6 @@ namespace MonoDevelop.Ide.Gui.Components
 				});
 			}
 
-			for (int n=3; n<16; n++) {
-				Gtk.Rc.ParseString ("style \"MonoDevelop.ExtensibleTreeView_" + n + "\" {\n GtkTreeView::expander-size = " + n + "\n }\n");
-				Gtk.Rc.ParseString ("widget \"*.MonoDevelop.ExtensibleTreeView_" + n + "\" style  \"MonoDevelop.ExtensibleTreeView_" + n + "\"\n");
-			}
-
 			if (!string.IsNullOrEmpty (Id))
 				Zoom = PropertyService.Get<double> ("MonoDevelop.Ide.ExtensibleTreeView.Zoom." + Id, 1d);
 			else
@@ -1125,10 +1120,8 @@ namespace MonoDevelop.Ide.Gui.Components
 			int expanderSize = (int) (12 * Zoom);
 			if (expanderSize < 3) expanderSize = 3;
 			if (expanderSize > 15) expanderSize = 15;
-			if (expanderSize != 12)
-				tree.Name = "MonoDevelop.ExtensibleTreeView_" + expanderSize;
-			else
-				tree.Name = "";
+			GtkCss.SetStyle (tree, "MonoDevelop.ExtensibleTreeView.ExpanderSize",
+				expanderSize != 12 ? "treeview { -GtkTreeView-expander-size: " + expanderSize + "; }" : null);
 			tree.ColumnsAutosize ();
 			if (!string.IsNullOrEmpty (Id)) {
 				PropertyService.Set ("MonoDevelop.Ide.ExtensibleTreeView.Zoom." + Id, Zoom);

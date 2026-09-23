@@ -36,7 +36,6 @@ namespace MonoDevelop.Components
 {
 	public class HPanedThin: Gtk.HPaned
 	{
-		static Dictionary<int, Gtk.CssProvider> handleStyles = new Dictionary<int, Gtk.CssProvider> ();
 		const string HandleStyleKey = "MonoDevelop.ThinPanedHandle.Style";
 
 		CustomPanedHandle handle;
@@ -69,18 +68,7 @@ namespace MonoDevelop.Components
 		{
 			// GTK3 ignores gtkrc and the GtkPaned::handle-size style property: the handle is the
 			// paned's "separator" CSS node, sized by its min-width/min-height.
-			if (!handleStyles.TryGetValue (size, out var provider)) {
-				provider = new Gtk.CssProvider ();
-				provider.LoadFromData ("paned > separator { min-width: " + size + "px; min-height: " + size + "px; background-image: none; }");
-				handleStyles [size] = provider;
-			}
-			var current = paned.Data [HandleStyleKey] as Gtk.CssProvider;
-			if (current == provider)
-				return;
-			if (current != null)
-				paned.StyleContext.RemoveProvider (current);
-			paned.StyleContext.AddProvider (provider, Gtk.StyleProviderPriority.Application);
-			paned.Data [HandleStyleKey] = provider;
+			GtkCss.SetStyle (paned, HandleStyleKey, "paned > separator { min-width: " + size + "px; min-height: " + size + "px; background-image: none; }");
 		}
 
 		protected override void ForAll (bool include_internals, Gtk.Callback callback)

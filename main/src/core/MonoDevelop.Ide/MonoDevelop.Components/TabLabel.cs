@@ -48,8 +48,6 @@ namespace MonoDevelop.Components
 			titleBox.Add (title);
 			this.PackStart (titleBox, true, true, 0);
 
-			Gtk.Rc.ParseString ("style \"MonoDevelop.TabLabel.CloseButton\" {\n GtkButton::inner-border = {0,0,0,0}\n }\n");
-			Gtk.Rc.ParseString ("widget \"*.MonoDevelop.TabLabel.CloseButton\" style  \"MonoDevelop.TabLabel.CloseButton\"\n");
 			Button button = new Button ();
 			button.CanDefault = false;
 			var closeIcon = new Xwt.ImageView (closeImage).ToGtkWidget ();
@@ -58,6 +56,8 @@ namespace MonoDevelop.Components
 			button.BorderWidth = 0;
 			button.Clicked += new EventHandler(ButtonClicked);
 			button.Name = "MonoDevelop.TabLabel.CloseButton";
+			// GTK 2 inner-border 0: no padding and no theme minimum size around the close icon
+			GtkCss.SetStyle (button, "MonoDevelop.TabLabel.CloseButton", "button { padding: 0; min-width: 0; min-height: 0; }");
 			this.PackStart (button, false, true, 0);
 			CanFocus = false;
 			this.BorderWidth = 0;

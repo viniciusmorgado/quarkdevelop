@@ -35,18 +35,10 @@ namespace MonoDevelop.Components
 		
 		bool showBorderLine;
 		
-		static CompactScrolledWindow ()
-		{
-			Gtk.Rc.ParseString (@"style """ + styleName + @"""
-{
-	GtkScrolledWindow::scrollbar-spacing = 0
-}");
-		}
-		
 		public CompactScrolledWindow () : base ()
 		{
 			//HACK to hide the useless padding that many themes have inside the ScrolledWindow - GTK default is 3
-			Gtk.Rc.ParseString (string.Format ("widget \"*.{0}\" style \"{1}\" ", Name, styleName));
+			GtkCss.SetStyle (this, styleName, "scrolledwindow { -GtkScrolledWindow-scrollbar-spacing: 0; }");
 		}
 		
 		public bool ShowBorderLine {

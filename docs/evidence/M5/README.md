@@ -39,8 +39,20 @@ GTK2-only APIs in the sources compiled by the Linux solution
 | `ExposeEvent` (event, override, args) | 0 |
 | `SizeRequested` (event, override, args) | 0 |
 | `Gdk.GC` / `Gdk.Drawable` | 0 |
-| `Gtk.Rc` (RC theming) | 5 (T082/T083 still open) |
+| `Gtk.Rc` (RC theming) | 0 (was 5; GTK 3 themes and per-widget CSS, see below) |
 
 Compiling is not running: the IDE has not been started yet (M5c). Legacy code came back with 48 more
 warning IDs on the Ide baseline and with 0.42% line coverage, which lowered the product total from
 46.77% to 17.19% (ADR 0015 amendment).
+
+### GTK 3 themes (T082, T083)
+
+GTK 2 RC theming is gone from the Linux build. `GtkThemes` lists the GTK 3 themes of the XDG theme
+directories (`<dir>/themes/<Name>/gtk-3.*/gtk.css`) plus the ones built into GTK (Adwaita,
+HighContrast), and offers a theme's dark variant (`gtk-dark.css`) as `Name:dark`, the GTK_THEME syntax,
+applied with `gtk-application-prefer-dark-theme`. Per-widget RC styles (tab close button, tree expander
+size, compact scrolled window, paned handles) are CSS providers on the widget (`GtkCss`). The bundled
+GTK 2 gtkrc themes (Xamarin engine, Mac, Windows) are no longer used. Tests: `GtkThemesTests`
+(discovery, dark variants, applying a theme, a CSS style property set/replaced/removed on a real
+widget). Screenshots of the IDE in a light and a dark theme wait for the IDE to start (M5c), so T083
+stays open.
