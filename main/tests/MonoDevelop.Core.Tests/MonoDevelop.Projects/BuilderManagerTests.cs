@@ -313,7 +313,9 @@ namespace MonoDevelop.Projects
 		static async Task WaitForBuildersToShutDown (FilePath projectFile)
 		{
 			for (int i = 0; i < 100; i++) {
-				if (RemoteBuildEngineManager.ActiveEnginesCount == 0 && await RemoteBuildEngineManager.CountActiveBuildersForProject (projectFile) == 0)
+				// EnginesCount includes engines that are still shutting down, which the tests also assert on
+				if (RemoteBuildEngineManager.ActiveEnginesCount == 0 && RemoteBuildEngineManager.EnginesCount == 0 &&
+					await RemoteBuildEngineManager.CountActiveBuildersForProject (projectFile) == 0)
 					return;
 				await Task.Delay (100);
 			}
