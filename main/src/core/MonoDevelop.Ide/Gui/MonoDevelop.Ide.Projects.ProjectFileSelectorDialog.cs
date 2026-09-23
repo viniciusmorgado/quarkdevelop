@@ -38,7 +38,7 @@ namespace MonoDevelop.Ide.Projects
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Ide.Projects.ProjectFileSelectorDialog
 			this.Name = "MonoDevelop.Ide.Projects.ProjectFileSelectorDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Select Project File...");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Select Project File...");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.Ide.Projects.ProjectFileSelectorDialog.VBox
 			global::Gtk.Box w1 = this.ContentArea;
@@ -91,7 +91,7 @@ namespace MonoDevelop.Ide.Projects
 			this.hbox2.Spacing = 6;
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.AddFileButton = new global::Gtk.Button ();
-			this.AddFileButton.TooltipMarkup = global::Mono.Unix.Catalog.GetString ("Add existing files to the project");
+			this.AddFileButton.TooltipMarkup = global::MonoDevelop.Core.GettextCatalog.GetString ("Add existing files to the project");
 			this.AddFileButton.CanFocus = true;
 			this.AddFileButton.Name = "AddFileButton";
 			this.AddFileButton.Relief = ((global::Gtk.ReliefStyle)(2));
@@ -113,7 +113,7 @@ namespace MonoDevelop.Ide.Projects
 			// Container child typeBox.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("File _type:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("File _type:");
 			this.label2.UseUnderline = true;
 			this.typeBox.Add (this.label2);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.typeBox [this.label2]));

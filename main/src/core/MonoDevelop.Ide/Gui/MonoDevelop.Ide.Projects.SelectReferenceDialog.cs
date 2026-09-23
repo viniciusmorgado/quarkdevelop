@@ -40,7 +40,7 @@ namespace MonoDevelop.Ide.Projects
 			this.WidthRequest = 640;
 			this.HeightRequest = 520;
 			this.Name = "MonoDevelop.Ide.Projects.SelectReferenceDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("References");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("References");
 			this.TypeHint = ((global::Gdk.WindowTypeHint)(1));
 			this.BorderWidth = ((uint)(6));
 			this.DestroyWithParent = true;
@@ -84,7 +84,7 @@ namespace MonoDevelop.Ide.Projects
 			this.label114 = new global::Gtk.Label ();
 			this.label114.Name = "label114";
 			this.label114.Xalign = 0F;
-			this.label114.LabelProp = global::Mono.Unix.Catalog.GetString ("Selected references:");
+			this.label114.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Selected references:");
 			this.hbox2.Add (this.label114);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label114]));
 			w3.Position = 0;
@@ -92,7 +92,7 @@ namespace MonoDevelop.Ide.Projects
 			w3.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.RemoveReferenceButton = new global::Gtk.Button ();
-			this.RemoveReferenceButton.TooltipMarkup = global::Mono.Unix.Catalog.GetString ("Remove");
+			this.RemoveReferenceButton.TooltipMarkup = global::MonoDevelop.Core.GettextCatalog.GetString ("Remove");
 			this.RemoveReferenceButton.Name = "RemoveReferenceButton";
 			this.RemoveReferenceButton.FocusOnClick = false;
 			this.RemoveReferenceButton.Relief = ((global::Gtk.ReliefStyle)(2));

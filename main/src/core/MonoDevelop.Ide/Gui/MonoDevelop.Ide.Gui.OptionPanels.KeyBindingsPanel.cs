@@ -67,7 +67,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.labelScheme = new global::Gtk.Label ();
 			this.labelScheme.Name = "labelScheme";
 			this.labelScheme.Xalign = 0F;
-			this.labelScheme.LabelProp = global::Mono.Unix.Catalog.GetString ("Scheme:");
+			this.labelScheme.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Scheme:");
 			this.hbox1.Add (this.labelScheme);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.labelScheme]));
 			w1.Position = 0;
@@ -154,7 +154,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("The current scheme has conflicting key bindings");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("The current scheme has conflicting key bindings");
 			this.warningBox.Add (this.label2);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.warningBox [this.label2]));
 			w9.Position = 1;
@@ -213,7 +213,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child hbox.Gtk.Box+BoxChild
 			this.labelEditBinding = new global::Gtk.Label ();
 			this.labelEditBinding.Name = "labelEditBinding";
-			this.labelEditBinding.LabelProp = global::Mono.Unix.Catalog.GetString ("Edit Binding");
+			this.labelEditBinding.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Edit Binding");
 			this.hbox.Add (this.labelEditBinding);
 			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox [this.labelEditBinding]));
 			w18.Position = 0;
@@ -233,7 +233,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.updateButton.CanFocus = true;
 			this.updateButton.Name = "updateButton";
 			this.updateButton.UseUnderline = true;
-			this.updateButton.Label = global::Mono.Unix.Catalog.GetString ("Apply");
+			this.updateButton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Apply");
 			this.hbox.Add (this.updateButton);
 			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox [this.updateButton]));
 			w20.Position = 2;
@@ -244,7 +244,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.addButton.CanFocus = true;
 			this.addButton.Name = "addButton";
 			this.addButton.UseUnderline = true;
-			this.addButton.Label = global::Mono.Unix.Catalog.GetString ("Add");
+			this.addButton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Add");
 			this.hbox.Add (this.addButton);
 			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.hbox [this.addButton]));
 			w21.Position = 3;

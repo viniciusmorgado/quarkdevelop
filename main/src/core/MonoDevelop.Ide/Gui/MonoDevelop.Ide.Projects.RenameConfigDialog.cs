@@ -16,7 +16,7 @@ namespace MonoDevelop.Ide.Projects
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Ide.Projects.RenameConfigDialog
 			this.Name = "MonoDevelop.Ide.Projects.RenameConfigDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Rename Configuration");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Rename Configuration");
 			this.TypeHint = ((global::Gdk.WindowTypeHint)(1));
 			// Internal child MonoDevelop.Ide.Projects.RenameConfigDialog.VBox
 			global::Gtk.Box w1 = this.ContentArea;
@@ -34,7 +34,7 @@ namespace MonoDevelop.Ide.Projects
 			// Container child hbox63.Gtk.Box+BoxChild
 			this.label106 = new global::Gtk.Label ();
 			this.label106.Name = "label106";
-			this.label106.LabelProp = global::Mono.Unix.Catalog.GetString ("New name:");
+			this.label106.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("New name:");
 			this.hbox63.Add (this.label106);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox63 [this.label106]));
 			w2.Position = 0;
@@ -56,7 +56,7 @@ namespace MonoDevelop.Ide.Projects
 			// Container child vbox79.Gtk.Box+BoxChild
 			this.renameChildrenCheck = new global::Gtk.CheckButton ();
 			this.renameChildrenCheck.Name = "renameChildrenCheck";
-			this.renameChildrenCheck.Label = global::Mono.Unix.Catalog.GetString ("Rename configurations in all solution items");
+			this.renameChildrenCheck.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Rename configurations in all solution items");
 			this.renameChildrenCheck.Active = true;
 			this.renameChildrenCheck.DrawIndicator = true;
 			this.renameChildrenCheck.UseUnderline = true;

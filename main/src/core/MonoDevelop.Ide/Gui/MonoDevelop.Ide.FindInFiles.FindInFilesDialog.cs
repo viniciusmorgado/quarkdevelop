@@ -67,8 +67,8 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.hbox3.Name = "hbox3";
 			this.hbox3.Spacing = 6;
 			// Container child hbox3.Gtk.Box+BoxChild
-			this.toggleFindInFiles = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("Find in Files"));
-			this.toggleFindInFiles.TooltipMarkup = global::Mono.Unix.Catalog.GetString ("Switch to Find in Files");
+			this.toggleFindInFiles = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("Find in Files"));
+			this.toggleFindInFiles.TooltipMarkup = global::MonoDevelop.Core.GettextCatalog.GetString ("Switch to Find in Files");
 			this.toggleFindInFiles.CanFocus = true;
 			this.toggleFindInFiles.Name = "toggleFindInFiles";
 			this.toggleFindInFiles.Active = true;
@@ -89,8 +89,8 @@ namespace MonoDevelop.Ide.FindInFiles
 			w3.Expand = false;
 			w3.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
-			this.toggleReplaceInFiles = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("Replace in Files"));
-			this.toggleReplaceInFiles.TooltipMarkup = global::Mono.Unix.Catalog.GetString ("Switch to Replace in Files");
+			this.toggleReplaceInFiles = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("Replace in Files"));
+			this.toggleReplaceInFiles.TooltipMarkup = global::MonoDevelop.Core.GettextCatalog.GetString ("Switch to Replace in Files");
 			this.toggleReplaceInFiles.CanFocus = true;
 			this.toggleReplaceInFiles.Name = "toggleReplaceInFiles";
 			this.toggleReplaceInFiles.DrawIndicator = false;
@@ -147,7 +147,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.labelFind = new global::Gtk.Label ();
 			this.labelFind.Name = "labelFind";
 			this.labelFind.Xalign = 0F;
-			this.labelFind.LabelProp = global::Mono.Unix.Catalog.GetString ("_Find:");
+			this.labelFind.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Find:");
 			this.labelFind.UseUnderline = true;
 			this.tableFindAndReplace.Add (this.labelFind);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.tableFindAndReplace [this.labelFind]));
@@ -157,7 +157,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.labelScope = new global::Gtk.Label ();
 			this.labelScope.Name = "labelScope";
 			this.labelScope.Xalign = 0F;
-			this.labelScope.LabelProp = global::Mono.Unix.Catalog.GetString ("_Look in:");
+			this.labelScope.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Look in:");
 			this.labelScope.UseUnderline = true;
 			this.tableFindAndReplace.Add (this.labelScope);
 			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.tableFindAndReplace [this.labelScope]));
@@ -182,7 +182,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.checkbuttonCaseSensitive = new global::Gtk.CheckButton ();
 			this.checkbuttonCaseSensitive.CanFocus = true;
 			this.checkbuttonCaseSensitive.Name = "checkbuttonCaseSensitive";
-			this.checkbuttonCaseSensitive.Label = global::Mono.Unix.Catalog.GetString ("C_ase sensitive");
+			this.checkbuttonCaseSensitive.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("C_ase sensitive");
 			this.checkbuttonCaseSensitive.DrawIndicator = true;
 			this.checkbuttonCaseSensitive.UseUnderline = true;
 			this.table1.Add (this.checkbuttonCaseSensitive);
@@ -192,7 +192,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.checkbuttonRegexSearch = new global::Gtk.CheckButton ();
 			this.checkbuttonRegexSearch.CanFocus = true;
 			this.checkbuttonRegexSearch.Name = "checkbuttonRegexSearch";
-			this.checkbuttonRegexSearch.Label = global::Mono.Unix.Catalog.GetString ("Rege_x search");
+			this.checkbuttonRegexSearch.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Rege_x search");
 			this.checkbuttonRegexSearch.DrawIndicator = true;
 			this.checkbuttonRegexSearch.UseUnderline = true;
 			this.table1.Add (this.checkbuttonRegexSearch);
@@ -204,7 +204,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.checkbuttonWholeWordsOnly = new global::Gtk.CheckButton ();
 			this.checkbuttonWholeWordsOnly.CanFocus = true;
 			this.checkbuttonWholeWordsOnly.Name = "checkbuttonWholeWordsOnly";
-			this.checkbuttonWholeWordsOnly.Label = global::Mono.Unix.Catalog.GetString ("_Whole words only");
+			this.checkbuttonWholeWordsOnly.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Whole words only");
 			this.checkbuttonWholeWordsOnly.DrawIndicator = true;
 			this.checkbuttonWholeWordsOnly.UseUnderline = true;
 			this.table1.Add (this.checkbuttonWholeWordsOnly);

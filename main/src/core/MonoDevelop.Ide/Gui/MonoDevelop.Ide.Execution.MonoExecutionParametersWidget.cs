@@ -37,7 +37,7 @@ namespace MonoDevelop.Ide.Execution
 			this.buttonReset.CanFocus = true;
 			this.buttonReset.Name = "buttonReset";
 			this.buttonReset.UseUnderline = true;
-			this.buttonReset.Label = global::Mono.Unix.Catalog.GetString ("Clear All Options");
+			this.buttonReset.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Clear All Options");
 			this.vbox4.Add (this.buttonReset);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.buttonReset]));
 			w2.Position = 0;
@@ -48,7 +48,7 @@ namespace MonoDevelop.Ide.Execution
 			this.buttonPreview.CanFocus = true;
 			this.buttonPreview.Name = "buttonPreview";
 			this.buttonPreview.UseUnderline = true;
-			this.buttonPreview.Label = global::Mono.Unix.Catalog.GetString ("Preview Options");
+			this.buttonPreview.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Preview Options");
 			this.vbox4.Add (this.buttonPreview);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.buttonPreview]));
 			w3.Position = 1;

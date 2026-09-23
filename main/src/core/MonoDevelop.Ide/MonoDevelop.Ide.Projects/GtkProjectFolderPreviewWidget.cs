@@ -83,7 +83,7 @@ namespace MonoDevelop.Ide.Projects
 			previewLabel.LabelProp = String.Format (
 				"<span weight='bold' foreground='{0}'>{1}</span>",
 				Styles.ColorGetHex (Styles.NewProjectDialog.ProjectConfigurationPreviewLabelColor),
-				global::Mono.Unix.Catalog.GetString ("PREVIEW"));
+				global::MonoDevelop.Core.GettextCatalog.GetString ("PREVIEW"));
 
 			CreateFolderTreeViewColumns ();
 

@@ -64,7 +64,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("User Interface Language:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("User Interface Language:");
 			this.table1.Add (this.label2);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
 			w3.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -73,7 +73,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.labelTheme = new global::Gtk.Label ();
 			this.labelTheme.Name = "labelTheme";
 			this.labelTheme.Xalign = 0F;
-			this.labelTheme.LabelProp = global::Mono.Unix.Catalog.GetString ("User Interface Theme:");
+			this.labelTheme.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("User Interface Theme:");
 			this.table1.Add (this.labelTheme);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelTheme]));
 			w4.TopAttach = ((uint)(1));
@@ -103,7 +103,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.btnRestart.CanFocus = true;
 			this.btnRestart.Name = "btnRestart";
 			this.btnRestart.UseUnderline = true;
-			this.btnRestart.Label = global::Mono.Unix.Catalog.GetString ("Restart {0}:");
+			this.btnRestart.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Restart {0}:");
 			this.tableRestart.Add (this.btnRestart);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.tableRestart [this.btnRestart]));
 			w7.TopAttach = ((uint)(1));
@@ -124,7 +124,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child tableRestart.Gtk.Table+TableChild
 			this.labelRestart = new global::Gtk.Label ();
 			this.labelRestart.Name = "labelRestart";
-			this.labelRestart.LabelProp = global::Mono.Unix.Catalog.GetString ("These preferences will take effect next time you start {0}");
+			this.labelRestart.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("These preferences will take effect next time you start {0}");
 			this.tableRestart.Add (this.labelRestart);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.tableRestart [this.labelRestart]));
 			w9.LeftAttach = ((uint)(1));

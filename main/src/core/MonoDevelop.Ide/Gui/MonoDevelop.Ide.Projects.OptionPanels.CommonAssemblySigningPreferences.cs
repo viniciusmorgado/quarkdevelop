@@ -24,7 +24,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			this.signAssemblyCheckbutton = new global::Gtk.CheckButton ();
 			this.signAssemblyCheckbutton.CanFocus = true;
 			this.signAssemblyCheckbutton.Name = "signAssemblyCheckbutton";
-			this.signAssemblyCheckbutton.Label = global::Mono.Unix.Catalog.GetString ("_Sign this assembly");
+			this.signAssemblyCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Sign this assembly");
 			this.signAssemblyCheckbutton.DrawIndicator = true;
 			this.signAssemblyCheckbutton.UseUnderline = true;
 			this.vbox1.Add (this.signAssemblyCheckbutton);
@@ -39,7 +39,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.strongNameFileLabel = new global::Gtk.Label ();
 			this.strongNameFileLabel.Name = "strongNameFileLabel";
-			this.strongNameFileLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("S_trong Name File:");
+			this.strongNameFileLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("S_trong Name File:");
 			this.strongNameFileLabel.UseUnderline = true;
 			this.hbox1.Add (this.strongNameFileLabel);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.strongNameFileLabel]));
@@ -61,7 +61,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			this.delaySignCheckbutton = new global::Gtk.CheckButton ();
 			this.delaySignCheckbutton.CanFocus = true;
 			this.delaySignCheckbutton.Name = "delaySignCheckbutton";
-			this.delaySignCheckbutton.Label = global::Mono.Unix.Catalog.GetString ("_Delay sign assembly");
+			this.delaySignCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Delay sign assembly");
 			this.delaySignCheckbutton.DrawIndicator = true;
 			this.delaySignCheckbutton.UseUnderline = true;
 			this.vbox1.Add (this.delaySignCheckbutton);

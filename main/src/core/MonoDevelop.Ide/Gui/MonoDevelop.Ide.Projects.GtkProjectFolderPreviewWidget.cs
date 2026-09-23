@@ -32,7 +32,7 @@ namespace MonoDevelop.Ide.Projects
 			// Container child previewLabelHBox.Gtk.Box+BoxChild
 			this.previewLabel = new global::Gtk.Label ();
 			this.previewLabel.Name = "previewLabel";
-			this.previewLabel.LabelProp = string.Format ("<span weight='bold' foreground='#555555'>{0}</span>", global::Mono.Unix.Catalog.GetString ("PREVIEW"));
+			this.previewLabel.LabelProp = string.Format ("<span weight='bold' foreground='#555555'>{0}</span>", global::MonoDevelop.Core.GettextCatalog.GetString ("PREVIEW"));
 			this.previewLabel.UseMarkup = true;
 			this.previewLabelHBox.Add (this.previewLabel);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.previewLabelHBox [this.previewLabel]));

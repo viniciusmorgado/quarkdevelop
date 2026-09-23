@@ -41,7 +41,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Desired _file width:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Desired _file width:");
 			this.label1.UseUnderline = true;
 			this.hbox1.Add (this.label1);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.label1]));
@@ -64,7 +64,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.label5 = new global::Gtk.Label ();
 			this.label5.Name = "label5";
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("columns");
+			this.label5.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("columns");
 			this.hbox1.Add (this.label5);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.label5]));
 			w3.Position = 2;
@@ -82,7 +82,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.label6 = new global::Gtk.Label ();
 			this.label6.Name = "label6";
-			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("_Line endings:");
+			this.label6.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Line endings:");
 			this.label6.UseUnderline = true;
 			this.hbox2.Add (this.label6);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label6]));
@@ -110,7 +110,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Whitespace</b>");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Whitespace</b>");
 			this.label3.UseMarkup = true;
 			this.alignment2.Add (this.label3);
 			this.vbox1.Add (this.alignment2);
@@ -150,7 +150,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child table1.Gtk.Table+TableChild
 			this.label7 = new global::Gtk.Label ();
 			this.label7.Name = "label7";
-			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("_Tab width:");
+			this.label7.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Tab width:");
 			this.label7.UseUnderline = true;
 			this.table1.Add (this.label7);
 			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.label7]));
@@ -159,7 +159,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child table1.Gtk.Table+TableChild
 			this.label9 = new global::Gtk.Label ();
 			this.label9.Name = "label9";
-			this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("_Indent width:");
+			this.label9.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Indent width:");
 			this.label9.UseUnderline = true;
 			this.table1.Add (this.label9);
 			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.table1 [this.label9]));
@@ -190,7 +190,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.tabsToSpaceCheck = new global::Gtk.CheckButton ();
 			this.tabsToSpaceCheck.CanFocus = true;
 			this.tabsToSpaceCheck.Name = "tabsToSpaceCheck";
-			this.tabsToSpaceCheck.Label = global::Mono.Unix.Catalog.GetString ("_Convert tabs to spaces");
+			this.tabsToSpaceCheck.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Convert tabs to spaces");
 			this.tabsToSpaceCheck.DrawIndicator = true;
 			this.tabsToSpaceCheck.UseUnderline = true;
 			this.vbox2.Add (this.tabsToSpaceCheck);
@@ -202,7 +202,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.tabsAfterNonTabsCheck = new global::Gtk.CheckButton ();
 			this.tabsAfterNonTabsCheck.CanFocus = true;
 			this.tabsAfterNonTabsCheck.Name = "tabsAfterNonTabsCheck";
-			this.tabsAfterNonTabsCheck.Label = global::Mono.Unix.Catalog.GetString ("_Allow tabs after non-tabs");
+			this.tabsAfterNonTabsCheck.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Allow tabs after non-tabs");
 			this.tabsAfterNonTabsCheck.DrawIndicator = true;
 			this.tabsAfterNonTabsCheck.UseUnderline = true;
 			this.vbox2.Add (this.tabsAfterNonTabsCheck);
@@ -214,7 +214,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.removeTrailingWhitespaceCheck = new global::Gtk.CheckButton ();
 			this.removeTrailingWhitespaceCheck.CanFocus = true;
 			this.removeTrailingWhitespaceCheck.Name = "removeTrailingWhitespaceCheck";
-			this.removeTrailingWhitespaceCheck.Label = global::Mono.Unix.Catalog.GetString ("_Remove trailing whitespace");
+			this.removeTrailingWhitespaceCheck.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Remove trailing whitespace");
 			this.removeTrailingWhitespaceCheck.DrawIndicator = true;
 			this.removeTrailingWhitespaceCheck.UseUnderline = true;
 			this.vbox2.Add (this.removeTrailingWhitespaceCheck);

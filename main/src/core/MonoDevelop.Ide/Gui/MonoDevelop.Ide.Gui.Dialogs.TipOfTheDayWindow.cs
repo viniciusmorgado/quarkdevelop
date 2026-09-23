@@ -32,7 +32,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Ide.Gui.Dialogs.TipOfTheDayWindow
 			this.Name = "MonoDevelop.Ide.Gui.Dialogs.TipOfTheDayWindow";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Tip of the Day");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Tip of the Day");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(1));
 			this.BorderWidth = ((uint)(6));
 			// Container child MonoDevelop.Ide.Gui.Dialogs.TipOfTheDayWindow.Gtk.Container+ContainerChild
@@ -63,7 +63,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.categoryLabel = new global::Gtk.Label ();
 			this.categoryLabel.Name = "categoryLabel";
 			this.categoryLabel.Xalign = 0F;
-			this.categoryLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Did you know...?");
+			this.categoryLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Did you know...?");
 			this.categoryLabel.UseMarkup = true;
 			this.categoryLabel.Wrap = true;
 			this.hbox7.Add (this.categoryLabel);
@@ -101,7 +101,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			// Container child hbox5.Gtk.Box+BoxChild
 			this.noshowCheckbutton = new global::Gtk.CheckButton ();
 			this.noshowCheckbutton.Name = "noshowCheckbutton";
-			this.noshowCheckbutton.Label = global::Mono.Unix.Catalog.GetString ("_Show at startup");
+			this.noshowCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Show at startup");
 			this.noshowCheckbutton.DrawIndicator = true;
 			this.noshowCheckbutton.UseUnderline = true;
 			this.hbox5.Add (this.noshowCheckbutton);
@@ -117,7 +117,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.nextButton = new global::Gtk.Button ();
 			this.nextButton.Name = "nextButton";
 			this.nextButton.UseUnderline = true;
-			this.nextButton.Label = global::Mono.Unix.Catalog.GetString ("_Next Tip");
+			this.nextButton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Next Tip");
 			this.hbuttonbox1.Add (this.nextButton);
 			global::Gtk.ButtonBox.ButtonBoxChild w8 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox1 [this.nextButton]));
 			w8.Expand = false;

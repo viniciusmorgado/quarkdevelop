@@ -17,7 +17,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Ide.Gui.Dialogs.MultiTaskProgressDialog
 			this.Name = "MonoDevelop.Ide.Gui.Dialogs.MultiTaskProgressDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Progress");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Progress");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Modal = true;
 			this.BorderWidth = ((uint)(6));
@@ -56,7 +56,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Details:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Details:");
 			w1.PackStart (this.label1, true, true, 0);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(w1 [this.label1]));
 			w5.Position = 2;

@@ -50,7 +50,7 @@ namespace MonoDevelop.Ide
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Ide.SelectEncodingsDialog
 			this.Name = "MonoDevelop.Ide.SelectEncodingsDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Select Text Encodings");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Select Text Encodings");
 			this.TypeHint = ((global::Gdk.WindowTypeHint)(1));
 			this.Modal = true;
 			this.BorderWidth = ((uint)(6));
@@ -72,7 +72,7 @@ namespace MonoDevelop.Ide
 			this.label106.Name = "label106";
 			this.label106.Xalign = 0F;
 			this.label106.Yalign = 0F;
-			this.label106.LabelProp = global::Mono.Unix.Catalog.GetString ("Available encodings:");
+			this.label106.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Available encodings:");
 			this.label106.WidthChars = 20;
 			this.table5.Add (this.label106);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table5 [this.label106]));
@@ -83,7 +83,7 @@ namespace MonoDevelop.Ide
 			this.label107.Name = "label107";
 			this.label107.Xalign = 0F;
 			this.label107.Yalign = 0F;
-			this.label107.LabelProp = global::Mono.Unix.Catalog.GetString ("Encodings shown in menu:");
+			this.label107.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Encodings shown in menu:");
 			this.label107.WidthChars = 20;
 			this.table5.Add (this.label107);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table5 [this.label107]));

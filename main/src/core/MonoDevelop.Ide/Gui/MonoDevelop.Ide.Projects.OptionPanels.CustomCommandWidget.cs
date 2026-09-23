@@ -136,7 +136,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			this.buttonBrowse.CanFocus = true;
 			this.buttonBrowse.Name = "buttonBrowse";
 			this.buttonBrowse.UseUnderline = true;
-			this.buttonBrowse.Label = global::Mono.Unix.Catalog.GetString ("Browse...");
+			this.buttonBrowse.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Browse...");
 			this.hbox3.Add (this.buttonBrowse);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.buttonBrowse]));
 			w9.Position = 0;
@@ -163,7 +163,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Working Directory:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Working Directory:");
 			this.tableData.Add (this.label1);
 			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.tableData [this.label1]));
 			w12.TopAttach = ((uint)(2));
@@ -174,7 +174,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Command:");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Command:");
 			this.tableData.Add (this.label3);
 			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.tableData [this.label3]));
 			w13.TopAttach = ((uint)(1));
@@ -185,7 +185,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			this.labelName = new global::Gtk.Label ();
 			this.labelName.Name = "labelName";
 			this.labelName.Xalign = 0F;
-			this.labelName.LabelProp = global::Mono.Unix.Catalog.GetString ("Name:");
+			this.labelName.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Name:");
 			this.tableData.Add (this.labelName);
 			global::Gtk.Table.TableChild w14 = ((global::Gtk.Table.TableChild)(this.tableData [this.labelName]));
 			w14.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -216,7 +216,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			this.checkExternalCons = new global::Gtk.CheckButton ();
 			this.checkExternalCons.CanFocus = true;
 			this.checkExternalCons.Name = "checkExternalCons";
-			this.checkExternalCons.Label = global::Mono.Unix.Catalog.GetString ("Run on e_xternal console");
+			this.checkExternalCons.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Run on e_xternal console");
 			this.checkExternalCons.DrawIndicator = true;
 			this.checkExternalCons.UseUnderline = true;
 			this.boxData.Add (this.checkExternalCons);
@@ -228,7 +228,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			this.checkPauseCons = new global::Gtk.CheckButton ();
 			this.checkPauseCons.CanFocus = true;
 			this.checkPauseCons.Name = "checkPauseCons";
-			this.checkPauseCons.Label = global::Mono.Unix.Catalog.GetString ("Pause _console output");
+			this.checkPauseCons.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Pause _console output");
 			this.checkPauseCons.DrawIndicator = true;
 			this.checkPauseCons.UseUnderline = true;
 			this.boxData.Add (this.checkPauseCons);

@@ -18,7 +18,7 @@ namespace MonoDevelop.Ide.Execution
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Ide.Execution.CustomExecutionModeManagerDialog
 			this.Name = "MonoDevelop.Ide.Execution.CustomExecutionModeManagerDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Custom Execution Modes");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Custom Execution Modes");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.Ide.Execution.CustomExecutionModeManagerDialog.VBox
 			global::Gtk.Box w1 = this.ContentArea;

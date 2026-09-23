@@ -96,7 +96,7 @@ namespace MonoDevelop.Ide.Projects
 			this.browseButton.Name = "browseButton";
 			this.browseButton.UseUnderline = true;
 			this.browseButton.BorderWidth = ((uint)(1));
-			this.browseButton.Label = global::Mono.Unix.Catalog.GetString ("Browse...");
+			this.browseButton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Browse...");
 			this.projectConfigurationTable.Add (this.browseButton);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.projectConfigurationTable [this.browseButton]));
 			w3.TopAttach = ((uint)(3));
@@ -110,7 +110,7 @@ namespace MonoDevelop.Ide.Projects
 			this.createGitIgnoreFileCheckBox = new global::Gtk.CheckButton ();
 			this.createGitIgnoreFileCheckBox.CanFocus = true;
 			this.createGitIgnoreFileCheckBox.Name = "createGitIgnoreFileCheckBox";
-			this.createGitIgnoreFileCheckBox.Label = global::Mono.Unix.Catalog.GetString ("Create a .gitignore file to ignore inessential files.");
+			this.createGitIgnoreFileCheckBox.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Create a .gitignore file to ignore inessential files.");
 			this.createGitIgnoreFileCheckBox.Active = true;
 			this.createGitIgnoreFileCheckBox.DrawIndicator = true;
 			this.createGitIgnoreFileCheckBox.UseUnderline = true;
@@ -126,7 +126,7 @@ namespace MonoDevelop.Ide.Projects
 			this.createProjectWithinSolutionDirectoryCheckBox = new global::Gtk.CheckButton ();
 			this.createProjectWithinSolutionDirectoryCheckBox.CanFocus = true;
 			this.createProjectWithinSolutionDirectoryCheckBox.Name = "createProjectWithinSolutionDirectoryCheckBox";
-			this.createProjectWithinSolutionDirectoryCheckBox.Label = global::Mono.Unix.Catalog.GetString ("Create a project directory within the solution directory.");
+			this.createProjectWithinSolutionDirectoryCheckBox.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Create a project directory within the solution directory.");
 			this.createProjectWithinSolutionDirectoryCheckBox.Active = true;
 			this.createProjectWithinSolutionDirectoryCheckBox.DrawIndicator = true;
 			this.createProjectWithinSolutionDirectoryCheckBox.UseUnderline = true;
@@ -143,7 +143,7 @@ namespace MonoDevelop.Ide.Projects
 			this.locationLabel.Name = "locationLabel";
 			this.locationLabel.Xpad = 5;
 			this.locationLabel.Xalign = 1F;
-			this.locationLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Location:");
+			this.locationLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Location:");
 			this.locationLabel.Justify = ((global::Gtk.Justification)(1));
 			this.projectConfigurationTable.Add (this.locationLabel);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.projectConfigurationTable [this.locationLabel]));
@@ -182,7 +182,7 @@ namespace MonoDevelop.Ide.Projects
 			this.projectNameLabel.Name = "projectNameLabel";
 			this.projectNameLabel.Xpad = 5;
 			this.projectNameLabel.Xalign = 1F;
-			this.projectNameLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Project Name:");
+			this.projectNameLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Project Name:");
 			this.projectNameLabel.Justify = ((global::Gtk.Justification)(1));
 			this.projectConfigurationTable.Add (this.projectNameLabel);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.projectConfigurationTable [this.projectNameLabel]));
@@ -204,7 +204,7 @@ namespace MonoDevelop.Ide.Projects
 			this.solutionNameLabel.Name = "solutionNameLabel";
 			this.solutionNameLabel.Xpad = 5;
 			this.solutionNameLabel.Xalign = 1F;
-			this.solutionNameLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Solution Name:");
+			this.solutionNameLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Solution Name:");
 			this.solutionNameLabel.Justify = ((global::Gtk.Justification)(1));
 			this.projectConfigurationTable.Add (this.solutionNameLabel);
 			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.projectConfigurationTable [this.solutionNameLabel]));
@@ -242,7 +242,7 @@ namespace MonoDevelop.Ide.Projects
 			this.useGitCheckBox = new global::Gtk.CheckButton ();
 			this.useGitCheckBox.CanFocus = true;
 			this.useGitCheckBox.Name = "useGitCheckBox";
-			this.useGitCheckBox.Label = global::Mono.Unix.Catalog.GetString ("Use git for version control.");
+			this.useGitCheckBox.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Use git for version control.");
 			this.useGitCheckBox.Active = true;
 			this.useGitCheckBox.DrawIndicator = true;
 			this.useGitCheckBox.UseUnderline = true;
@@ -272,7 +272,7 @@ namespace MonoDevelop.Ide.Projects
 			this.versionControlLabel.Name = "versionControlLabel";
 			this.versionControlLabel.Xpad = 5;
 			this.versionControlLabel.Xalign = 1F;
-			this.versionControlLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Version Control:");
+			this.versionControlLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Version Control:");
 			this.versionControlLabel.Justify = ((global::Gtk.Justification)(1));
 			this.versionControlLabelHBox.Add (this.versionControlLabel);
 			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.versionControlLabelHBox [this.versionControlLabel]));

@@ -22,7 +22,7 @@ namespace MonoDevelop.Ide.Projects
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Ide.Projects.NewPolicySetDialog
 			this.Name = "MonoDevelop.Ide.Projects.NewPolicySetDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("New Policy");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("New Policy");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.Ide.Projects.NewPolicySetDialog.VBox
 			global::Gtk.Box w1 = this.ContentArea;
@@ -37,7 +37,7 @@ namespace MonoDevelop.Ide.Projects
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Policy Name:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Policy Name:");
 			this.vbox2.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.label1]));
 			w2.Position = 0;
@@ -58,7 +58,7 @@ namespace MonoDevelop.Ide.Projects
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Copy Settings From:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Copy Settings From:");
 			this.vbox2.Add (this.label2);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.label2]));
 			w4.Position = 2;

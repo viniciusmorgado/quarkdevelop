@@ -41,7 +41,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.locationLabel.Name = "locationLabel";
 			this.locationLabel.Xalign = 0F;
 			this.locationLabel.Yalign = 0F;
-			this.locationLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Default _Solution location");
+			this.locationLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Default _Solution location");
 			this.locationLabel.UseUnderline = true;
 			this.vbox26.PackStart (this.locationLabel, false, false, 0);
 
@@ -60,7 +60,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.loadLabel.Name = "loadLabel";
 			this.loadLabel.Xalign = 0F;
 			this.loadLabel.Yalign = 0F;
-			this.loadLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Load</b>");
+			this.loadLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Load</b>");
 			this.loadLabel.UseMarkup = true;
 			this.vbox18.PackStart (this.loadLabel, false, false, 0);
 			// Container child vbox18.Gtk.Box+BoxChild
@@ -78,7 +78,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child vbox65.Gtk.Box+BoxChild
 			this.loadUserDataCheckButton = new global::Gtk.CheckButton ();
 			this.loadUserDataCheckButton.Name = "loadUserDataCheckButton";
-			this.loadUserDataCheckButton.Label = global::Mono.Unix.Catalog.GetString ("Load user-specific settings with the document");
+			this.loadUserDataCheckButton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Load user-specific settings with the document");
 			this.loadUserDataCheckButton.DrawIndicator = true;
 			this.loadUserDataCheckButton.UseUnderline = true;
 			this.vbox65.PackStart (this.loadUserDataCheckButton, false, false, 0);
@@ -92,7 +92,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			startSectionLabel.Name = "startSectionLabel";
 			startSectionLabel.Xalign = 0F;
 			startSectionLabel.Yalign = 0F;
-			startSectionLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Start</b>");
+			startSectionLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Start</b>");
 			startSectionLabel.UseMarkup = true;
 			startSectionVbox.PackStart (startSectionLabel, false, false, 0);
 
@@ -106,7 +106,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 
 			this.openStartWindowRadioButton = new global::Gtk.RadioButton ((global::Gtk.RadioButton) null) {
 				Name = "openStartWindowCheckButton",
-				Label = global::Mono.Unix.Catalog.GetString ("_Always show me the Start Window"),
+				Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Always show me the Start Window"),
 				DrawIndicator = true,
 				UseUnderline = true
 			};
@@ -115,14 +115,14 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child vbox65.Gtk.Box+BoxChild
 			this.loadPrevProjectRadioButton = new global::Gtk.RadioButton (this.openStartWindowRadioButton);
 			this.loadPrevProjectRadioButton.Name = "loadPrevProjectCheckButton";
-			this.loadPrevProjectRadioButton.Label = global::Mono.Unix.Catalog.GetString ("_Load previous solution on startup");
+			this.loadPrevProjectRadioButton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Load previous solution on startup");
 			this.loadPrevProjectRadioButton.DrawIndicator = true;
 			this.loadPrevProjectRadioButton.UseUnderline = true;
 			startContentVbox.PackStart (this.loadPrevProjectRadioButton, false, false, 0);
 
 			this.emptyEnvironmentRadioButton = new global::Gtk.RadioButton (this.openStartWindowRadioButton) {
 				Name = "emptyEnvironmentCheckButton",
-				Label = global::Mono.Unix.Catalog.GetString ("_Show empty environment"),
+				Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Show empty environment"),
 				DrawIndicator = true,
 				UseUnderline = true
 			};
@@ -143,7 +143,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			this.saveLabel.Name = "saveLabel";
 			this.saveLabel.Xalign = 0F;
 			this.saveLabel.Yalign = 0F;
-			this.saveLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Save</b>");
+			this.saveLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Save</b>");
 			this.saveLabel.UseMarkup = true;
 			this.vbox19.PackStart (this.saveLabel, false, false, 0);
 			// Container child vbox19.Gtk.Box+BoxChild
@@ -157,7 +157,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			// Container child vbox20.Gtk.Box+BoxChild
 			this.createBackupCopyCheckButton = new global::Gtk.CheckButton ();
 			this.createBackupCopyCheckButton.Name = "createBackupCopyCheckButton";
-			this.createBackupCopyCheckButton.Label = global::Mono.Unix.Catalog.GetString ("Always create backup copy");
+			this.createBackupCopyCheckButton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Always create backup copy");
 			this.createBackupCopyCheckButton.DrawIndicator = true;
 			this.createBackupCopyCheckButton.UseUnderline = true;
 			this.vbox20.PackStart (this.createBackupCopyCheckButton, false, false, 0);
