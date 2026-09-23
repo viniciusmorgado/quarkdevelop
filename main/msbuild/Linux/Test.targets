@@ -6,6 +6,9 @@
   <PropertyGroup>
     <MDTestRunSettings>$(BaseIntermediateOutputPath)monodevelop.runsettings</MDTestRunSettings>
     <RunSettingsFilePath Condition="'$(RunSettingsFilePath)' == ''">$(MDTestRunSettings)</RunSettingsFilePath>
+    <!-- Coverlet resolves the references of instrumented assemblies from the deps.json; MSBuild is
+         referenced compile-only (ADR 0008), so keep the compile references there (T055). -->
+    <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(MSBuildProjectName)' != 'TestStartupHook'">
