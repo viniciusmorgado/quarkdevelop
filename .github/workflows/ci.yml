@@ -25,7 +25,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,14 +44,23 @@ jobs:
           mkdir -p ~/.nuget/packages
           ./scripts/pm dotnet --info
 
-      - name: Setup
-        run: ./scripts/pm ./scripts/setup.sh
+      # setup, lint, build --check, duplicate assemblies, tests + coverage ratchet, audit,
+      # mdtool smoke and GUI smoke (Xvfb): the same gate developers run locally (T115).
+      - name: CI gate (scripts/ci.sh)
+        run: ./scripts/pm ./scripts/ci.sh
 
-      - name: Lint scripts and workflows
-        run: ./scripts/pm ./scripts/lint.sh
+      - name: Job summary
+        if: always()
+        run: |
+          { echo '### CI gate'; echo '```'; cat out/ci/summary.txt 2>/dev/null || echo 'no summary'; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Build (+ format check)
-        run: ./scripts/pm ./scripts/build.sh -c Release --check
-
-      - name: Vulnerability audit (High/Critical fail)
-        run: ./scripts/pm ./scripts/audit.sh
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-${{ github.run_number }}+${{ github.sha }}
+          path: |
+            out/ci/
+            out/coverage/
+            out/tests/**/*.trx
+          if-no-files-found: warn

@@ -1,0 +1,9 @@
+setup              ok      1s
+lint               ok      0s
+build              ok     22s
+assemblies         ok      1s
+test               ok    244s
+audit              ok     18s
+mdtool-smoke       ok      5s
+gui-smoke          ok     10s
+total                    301s (budget 900s)
