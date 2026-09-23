@@ -47,9 +47,9 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 	{
 		const string TemplateId = "MonoDevelop.Ide.Gtk3.Tests.Sample.CSharp";
 		static readonly Guid OpenFilesPostActionId = new Guid ("84C0DA21-51C8-4541-9940-6CA19AF04EE6");
-		static readonly string [] ExpectedClassifications = { "Common", "Console" };
-		static readonly string [] ExpectedPrimaryOutputs = { "MyConsole.csproj", "Program.cs" };
-		static readonly Type [] InstantiateProjectSignature = {
+		static readonly string[] ExpectedClassifications = { "Common", "Console" };
+		static readonly string[] ExpectedPrimaryOutputs = { "MyConsole.csproj", "Program.cs" };
+		static readonly Type[] InstantiateProjectSignature = {
 			typeof (ITemplateInfo), typeof (NewProjectConfiguration), typeof (IReadOnlyDictionary<string, string>)
 		};
 
@@ -93,8 +93,8 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 
 			var choices = (IReadOnlyDictionary<string, string>)Call (template, "GetParameterChoices", "Framework");
 			Assert.AreEqual (2, choices.Count);
-			Assert.AreEqual ("Target .NET 8", choices ["net8.0"]);
-			Assert.AreEqual ("Target .NET 10", choices ["net10.0"]);
+			Assert.AreEqual ("Target .NET 8", choices["net8.0"]);
+			Assert.AreEqual ("Target .NET 10", choices["net10.0"]);
 			Assert.IsNull (Call (template, "GetParameterChoices", "Unknown"));
 		}
 
@@ -152,7 +152,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 
 			var task = (Task<ITemplateCreationResult>)engineType
 				.GetMethod ("InstantiateAsync", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, InstantiateProjectSignature, null)
-				.Invoke (null, new object [] { templateInfo, config, parameters });
+				.Invoke (null, new object[] { templateInfo, config, parameters });
 			var result = await task;
 
 			Assert.AreEqual (CreationResultStatus.Success, result.Status, result.ErrorMessage);
@@ -161,7 +161,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 
 			var postAction = result.CreationResult.PostActions.Single ();
 			Assert.AreEqual (OpenFilesPostActionId, postAction.ActionId);
-			Assert.AreEqual ("1", postAction.Args ["files"]);
+			Assert.AreEqual ("1", postAction.Args["files"]);
 
 			string project = await File.ReadAllTextAsync (Path.Combine (config.ProjectLocation, "MyConsole.csproj"));
 			StringAssert.Contains ("<TargetFramework>net10.0</TargetFramework>", project);
@@ -184,14 +184,14 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 				.GetValue (template);
 		}
 
-		object CallEngine (string name, params object [] args)
+		object CallEngine (string name, params object[] args)
 		{
 			var method = engineType.GetMethods (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
 				.Single (m => m.Name == name && m.GetParameters ().Length == args.Length);
 			return method.Invoke (null, args);
 		}
 
-		static object Call (object target, string name, params object [] args)
+		static object Call (object target, string name, params object[] args)
 		{
 			return target.GetType ().GetMethod (name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 				.Invoke (target, args);

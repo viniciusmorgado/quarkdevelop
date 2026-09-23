@@ -48,7 +48,7 @@ namespace MonoDevelop.Components
 				}
 				if (!loaded)
 					throw new ArgumentException ("Invalid CSS: " + css, nameof (css));
-				providers [css] = provider;
+				providers[css] = provider;
 			}
 			return provider;
 		}
@@ -60,14 +60,14 @@ namespace MonoDevelop.Components
 		public static void SetStyle (Gtk.Widget widget, string key, string css)
 		{
 			var provider = css == null ? null : GetProvider (css);
-			var current = widget.Data [key] as Gtk.CssProvider;
+			var current = widget.Data[key] as Gtk.CssProvider;
 			if (current == provider)
 				return;
 			if (current != null)
 				widget.StyleContext.RemoveProvider (current);
 			if (provider != null)
 				widget.StyleContext.AddProvider (provider, Gtk.StyleProviderPriority.Application);
-			widget.Data [key] = provider;
+			widget.Data[key] = provider;
 		}
 	}
 }

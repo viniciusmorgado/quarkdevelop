@@ -91,7 +91,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			lock (gate) {
 				if (workspaces.ContainsKey (workspace))
 					return;
-				workspaces [workspace] = new WorkspaceState ();
+				workspaces[workspace] = new WorkspaceState ();
 			}
 			workspace.WorkspaceChanged += OnWorkspaceChanged;
 			Enqueue (workspace, GetAllDocumentIds (workspace.CurrentSolution));
@@ -146,7 +146,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			case WorkspaceChangeKind.DocumentReloaded:
 			case WorkspaceChangeKind.DocumentRemoved:
 				if (e.DocumentId != null)
-					Enqueue (workspace, new [] { e.DocumentId });
+					Enqueue (workspace, new[] { e.DocumentId });
 				break;
 			}
 		}
@@ -176,7 +176,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				return;
 			}
 
-			DocumentId [] ids;
+			DocumentId[] ids;
 			ImmutableArray<TaskListItemDescriptor> currentDescriptors;
 			WorkspaceState state;
 			lock (gate) {
@@ -221,7 +221,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 					bool raise;
 					lock (gate) {
-						state.Versions [id] = version;
+						state.Versions[id] = version;
 						if (items.Length > 0) {
 							state.WithItems.Add (id);
 							raise = true;

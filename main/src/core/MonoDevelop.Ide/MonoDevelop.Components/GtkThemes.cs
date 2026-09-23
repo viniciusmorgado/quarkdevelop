@@ -39,7 +39,7 @@ namespace MonoDevelop.Components
 		public const string DefaultTheme = "Adwaita";
 
 		/// <summary>Themes compiled into GTK 3 as resources, available without a directory.</summary>
-		static readonly string [] builtInThemes = { "Adwaita", "Adwaita" + DarkVariantSuffix, "HighContrast", "HighContrastInverse" };
+		static readonly string[] builtInThemes = { "Adwaita", "Adwaita" + DarkVariantSuffix, "HighContrast", "HighContrastInverse" };
 
 		/// <summary>The directories GTK 3 searches for themes, in its order.</summary>
 		public static IEnumerable<string> GetSearchDirectories ()

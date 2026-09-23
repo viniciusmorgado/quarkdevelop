@@ -55,9 +55,9 @@ namespace MonoDevelop.Ide.Gtk3.Tests
   <metadata name=""Meta""><value>ignored</value></metadata>
 </root>";
 
-		static readonly string [] ReadNames = { "Greeting", "Two words", "Data", "Icon", "Text" };
-		static readonly string [] UnmatchableNames = { "ResourceManager", "a b", "a_b", "1abc" };
-		static readonly string [] PropertyNames = { "ResourceManager", "Culture", "_class", "Fine" };
+		static readonly string[] ReadNames = { "Greeting", "Two words", "Data", "Icon", "Text" };
+		static readonly string[] UnmatchableNames = { "ResourceManager", "a b", "a_b", "1abc" };
+		static readonly string[] PropertyNames = { "ResourceManager", "Culture", "_class", "Fine" };
 
 		string dir;
 
@@ -87,11 +87,11 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			var entries = ResXStronglyTypedBuilder.Read (WriteResX ()).ToDictionary (e => e.Name);
 
 			Assert.That (entries.Keys, Is.EquivalentTo (ReadNames));
-			Assert.AreEqual ("Hello <world>", entries ["Greeting"].Value);
-			Assert.IsTrue (entries ["Greeting"].IsString);
-			Assert.AreEqual ("System.Byte[]", entries ["Data"].TypeName);
-			Assert.AreEqual ("System.Drawing.Bitmap", entries ["Icon"].TypeName);
-			Assert.IsTrue (entries ["Text"].IsString);
+			Assert.AreEqual ("Hello <world>", entries["Greeting"].Value);
+			Assert.IsTrue (entries["Greeting"].IsString);
+			Assert.AreEqual ("System.Byte[]", entries["Data"].TypeName);
+			Assert.AreEqual ("System.Drawing.Bitmap", entries["Icon"].TypeName);
+			Assert.IsTrue (entries["Text"].IsString);
 		}
 
 		[TestCase ("System.Byte[], mscorlib, Version=4.0.0.0", "System.Byte[]")]
@@ -105,7 +105,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 		[Test]
 		public void InvalidAndCollidingNamesAreUnmatchable ()
 		{
-			var entries = new [] {
+			var entries = new[] {
 				new ResXEntry ("ResourceManager", "System.String", "x"),
 				new ResXEntry ("a b", "System.String", "x"),
 				new ResXEntry ("a_b", "System.String", "x"),
@@ -116,7 +116,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			var ccu = ResXStronglyTypedBuilder.Create (entries, "Strings", "Test", "Test", new CSharpCodeProvider (), true, out var unmatchable);
 
 			Assert.That (unmatchable, Is.EquivalentTo (UnmatchableNames));
-			var properties = ccu.Namespaces [0].Types [0].Members.OfType<CodeMemberProperty> ().Select (p => p.Name);
+			var properties = ccu.Namespaces[0].Types[0].Members.OfType<CodeMemberProperty> ().Select (p => p.Name);
 			Assert.That (properties, Is.EquivalentTo (PropertyNames));
 		}
 
@@ -129,13 +129,13 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 		{
 			var ccu = ResXStronglyTypedBuilder.Create (Array.Empty<ResXEntry> (), "Strings", "Gen", "Res", new CSharpCodeProvider (), true, out _);
 
-			var init = (CodeObjectCreateExpression)ccu.Namespaces [0].Types [0]
+			var init = (CodeObjectCreateExpression)ccu.Namespaces[0].Types[0]
 				.Members.OfType<CodeMemberProperty> ().Single (t => t.Name == "ResourceManager")
 				.GetStatements.OfType<CodeConditionStatement> ().Single ()
 				.TrueStatements.OfType<CodeVariableDeclarationStatement> ().Single ()
 				.InitExpression;
-			Assert.AreEqual ("Res.Strings", ((CodePrimitiveExpression)init.Parameters [0]).Value);
-			Assert.IsInstanceOf<CodePropertyReferenceExpression> (init.Parameters [1]);
+			Assert.AreEqual ("Res.Strings", ((CodePrimitiveExpression)init.Parameters[0]).Value);
+			Assert.IsInstanceOf<CodePropertyReferenceExpression> (init.Parameters[1]);
 		}
 
 		[TestCase (true)]
@@ -156,7 +156,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			using (var writer = new ResourceWriter (resources)) {
 				writer.AddResource ("Greeting", "Hello <world>");
 				writer.AddResource ("Two words", "two");
-				writer.AddResource ("Data", new byte [] { 1, 2, 3 });
+				writer.AddResource ("Data", new byte[] { 1, 2, 3 });
 				writer.AddResource ("Text", "text");
 				writer.Generate ();
 				resources = new MemoryStream (resources.ToArray ());
@@ -164,10 +164,10 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 
 			var references = ((string)AppContext.GetData ("TRUSTED_PLATFORM_ASSEMBLIES")).Split (Path.PathSeparator)
 				.Select (p => MetadataReference.CreateFromFile (p));
-			var compilation = CSharpCompilation.Create ("Generated", new [] { CSharpSyntaxTree.ParseText (code.ToString ()) }, references,
+			var compilation = CSharpCompilation.Create ("Generated", new[] { CSharpSyntaxTree.ParseText (code.ToString ()) }, references,
 				new CSharpCompilationOptions (OutputKind.DynamicallyLinkedLibrary));
 			var assemblyStream = new MemoryStream ();
-			var emit = compilation.Emit (assemblyStream, manifestResources: new [] {
+			var emit = compilation.Emit (assemblyStream, manifestResources: new[] {
 				new ResourceDescription ("Res.Strings.resources", () => resources, true)
 			});
 			Assert.IsTrue (emit.Success, string.Join ("\n", emit.Diagnostics));
@@ -176,7 +176,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			object Get (string name) => type.GetProperty (name, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).GetValue (null);
 			Assert.AreEqual ("Hello <world>", Get ("Greeting"));
 			Assert.AreEqual ("two", Get ("Two_words"));
-			Assert.AreEqual (new byte [] { 1, 2, 3 }, Get ("Data"));
+			Assert.AreEqual (new byte[] { 1, 2, 3 }, Get ("Data"));
 			Assert.AreEqual ("text", Get ("Text"));
 		}
 	}

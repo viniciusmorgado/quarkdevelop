@@ -68,7 +68,7 @@ namespace MonoDevelop.Ide.CustomTools
 		const string CultureProperty = "Culture";
 		const string GeneratorName = "MonoDevelop.Ide.CustomTools.ResXFileCodeGenerator";
 
-		static readonly char [] invalidIdentifierChars = {
+		static readonly char[] invalidIdentifierChars = {
 			' ', '\u00A0', '.', ',', ';', '|', '~', '@', '#', '%', '^', '&', '*', '+', '-', '/', '\\', '<', '>',
 			'?', '[', ']', '(', ')', '{', '}', '"', '\'', ':', '!', '='
 		};
@@ -95,7 +95,7 @@ namespace MonoDevelop.Ide.CustomTools
 				if (typeName == "System.Resources.ResXFileRef") {
 					// value: "path;type[;encoding]"
 					var parts = value.Split (';');
-					typeName = parts.Length > 1 ? StripAssemblyName (parts [1].Trim ()) : "System.Object";
+					typeName = parts.Length > 1 ? StripAssemblyName (parts[1].Trim ()) : "System.Object";
 					value = null;
 				} else if (typeName == "System.Resources.ResXNullRef") {
 					typeName = "System.Object";
@@ -112,7 +112,7 @@ namespace MonoDevelop.Ide.CustomTools
 		{
 			int depth = 0;
 			for (int i = 0; i < typeName.Length; i++) {
-				switch (typeName [i]) {
+				switch (typeName[i]) {
 				case '[': depth++; break;
 				case ']': depth--; break;
 				case ',':
@@ -131,15 +131,15 @@ namespace MonoDevelop.Ide.CustomTools
 		{
 			var chars = name.ToCharArray ();
 			for (int i = 0; i < chars.Length; i++) {
-				if (Array.IndexOf (invalidIdentifierChars, chars [i]) >= 0)
-					chars [i] = '_';
+				if (Array.IndexOf (invalidIdentifierChars, chars[i]) >= 0)
+					chars[i] = '_';
 			}
 			var identifier = provider.CreateValidIdentifier (new string (chars));
 			return provider.IsValidIdentifier (identifier) ? identifier : null;
 		}
 
 		public static CodeCompileUnit Create (IEnumerable<ResXEntry> resources, string baseName, string generatedCodeNamespace,
-			string resourcesNamespace, CodeDomProvider provider, bool internalClass, out string [] unmatchable)
+			string resourcesNamespace, CodeDomProvider provider, bool internalClass, out string[] unmatchable)
 		{
 			var className = VerifyResourceName (baseName, provider);
 			if (className == null)
@@ -159,7 +159,7 @@ namespace MonoDevelop.Ide.CustomTools
 					continue;
 				}
 				if (!byIdentifier.TryGetValue (identifier, out var list))
-					byIdentifier [identifier] = list = new List<ResXEntry> ();
+					byIdentifier[identifier] = list = new List<ResXEntry> ();
 				list.Add (resource);
 			}
 
@@ -232,7 +232,7 @@ namespace MonoDevelop.Ide.CustomTools
 					invalid.AddRange (pair.Value.Select (r => r.Name));
 					continue;
 				}
-				type.Members.Add (CreateProperty (pair.Key, pair.Value [0], managerProperty, cultureField, memberAttributes));
+				type.Members.Add (CreateProperty (pair.Key, pair.Value[0], managerProperty, cultureField, memberAttributes));
 			}
 
 			unmatchable = invalid.ToArray ();

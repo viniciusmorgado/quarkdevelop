@@ -36,11 +36,11 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 	[TestFixture]
 	public class GtkThemesTests
 	{
-		static readonly string [] ExpectedThemes = { "Plain", "WithDark", "WithDark:dark", "Adwaita", "Adwaita:dark", "HighContrast" };
+		static readonly string[] ExpectedThemes = { "Plain", "WithDark", "WithDark:dark", "Adwaita", "Adwaita:dark", "HighContrast" };
 
 		string dir;
 
-		string [] SearchDirs => new [] { dir };
+		string[] SearchDirs => new[] { dir };
 
 		[SetUp]
 		public void SetUp ()
@@ -71,7 +71,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 		[Test]
 		public void FindThemesListsGtk3ThemesDarkVariantsAndBuiltInThemes ()
 		{
-			var themes = GtkThemes.FindThemes (new [] { dir, Path.Combine (dir, "missing") });
+			var themes = GtkThemes.FindThemes (new[] { dir, Path.Combine (dir, "missing") });
 
 			Assert.That (themes, Is.SupersetOf (ExpectedThemes));
 			Assert.That (themes, Has.None.StartsWith ("Plain:"));

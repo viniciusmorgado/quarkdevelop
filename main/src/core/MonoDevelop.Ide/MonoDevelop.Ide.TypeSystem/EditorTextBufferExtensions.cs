@@ -154,11 +154,11 @@ namespace Microsoft.CodeAnalysis.Text
 
 			public override int Length => Snapshot.Length;
 
-			public override char this [int position] => Snapshot [position];
+			public override char this[int position] => Snapshot[position];
 
 			public override SourceTextContainer Container => container;
 
-			public override void CopyTo (int sourceIndex, char [] destination, int destinationIndex, int count)
+			public override void CopyTo (int sourceIndex, char[] destination, int destinationIndex, int count)
 				=> Snapshot.CopyTo (sourceIndex, destination, destinationIndex, count);
 
 			public override string ToString (TextSpan span)
@@ -213,7 +213,7 @@ namespace Microsoft.CodeAnalysis.Text
 
 				public override int Count => text.Snapshot.LineCount;
 
-				public override TextLine this [int index] {
+				public override TextLine this[int index] {
 					get {
 						var line = text.Snapshot.GetLineFromLineNumber (index);
 						return TextLine.FromSpan (text, TextSpan.FromBounds (line.Start, line.End));
@@ -224,7 +224,7 @@ namespace Microsoft.CodeAnalysis.Text
 					=> text.Snapshot.GetLineNumberFromPosition (position);
 
 				public override TextLine GetLineFromPosition (int position)
-					=> this [IndexOf (position)];
+					=> this[IndexOf (position)];
 
 				public override LinePosition GetLinePosition (int position)
 				{

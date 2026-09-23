@@ -42,7 +42,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			// FastPangoAttrList: [DllImport (PangoUtil.LIBGLIB = "libglib-2.0-0.dll")] static extern int g_slist_length (IntPtr l); NULL is the empty list.
 			var method = typeof (FastPangoAttrList).GetMethod ("g_slist_length", BindingFlags.NonPublic | BindingFlags.Static);
 			Assert.IsNotNull (method);
-			Assert.AreEqual (0, method.Invoke (null, new object [] { IntPtr.Zero }));
+			Assert.AreEqual (0, method.Invoke (null, new object[] { IntPtr.Zero }));
 		}
 	}
 }
