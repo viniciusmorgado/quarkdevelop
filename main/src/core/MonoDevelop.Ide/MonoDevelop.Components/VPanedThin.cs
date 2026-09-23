@@ -64,11 +64,13 @@ namespace MonoDevelop.Components
 			base.OnDrawn (gtk3cr);
 			
 			if (Child1 != null && Child1.Visible && Child2 != null && Child2.Visible) {
-				var gc = new Gdk.GC (evnt.Window);
-				gc.RgbFgColor = Styles.ThinSplitterColor.ToGdkColor ();
-				var y = Child1.Allocation.Y + Child1.Allocation.Height;
-				evnt.Window.DrawLine (gc, Allocation.X, y, Allocation.X + Allocation.Width, y);
-				gc.Dispose ();
+				using (var ctx = evnt.CreateContext ()) {
+					var y = Child1.Allocation.Y + Child1.Allocation.Height;
+					// GTK2 drew a 1px line with a GC (end points included)
+					ctx.Rectangle (Allocation.X, y, Allocation.Width + 1, 1);
+					ctx.SetSourceColor (Styles.ThinSplitterColor.ToCairoColor ());
+					ctx.Fill ();
+				}
 			}
 			
 			return true;

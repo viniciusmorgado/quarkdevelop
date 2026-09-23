@@ -146,7 +146,7 @@ namespace MonoDevelop.Components.Docking
 				if (VisualStyle.TabStyle == DockTabStyle.Normal)
 					ModifyBg (StateType.Normal, VisualStyle.PadBackgroundColor.Value.ToGdkColor ());
 				else 
-					ModifyBg (StateType.Normal, Style.Background(StateType.Normal));
+					ModifyBg (StateType.Normal, this.GetStyleBackgroundColor (StateType.Normal).ToGdkColor ());
 			}
 		}
 
@@ -171,11 +171,11 @@ namespace MonoDevelop.Components.Docking
 		{
 			var w = (Gtk.TreeView)sender;
 			if (VisualStyle.TreeBackgroundColor != null) {
-				w.ModifyBase (StateType.Normal, VisualStyle.TreeBackgroundColor.Value.ToGdkColor ());
-				w.ModifyBase (StateType.Insensitive, VisualStyle.TreeBackgroundColor.Value.ToGdkColor ());
+				w.OverrideBackgroundColor (StateFlags.Normal, VisualStyle.TreeBackgroundColor.Value.ToCairoColor ().ToGdkRgba ());
+				w.OverrideBackgroundColor (StateFlags.Insensitive, VisualStyle.TreeBackgroundColor.Value.ToCairoColor ().ToGdkRgba ());
 			} else {
-				w.ModifyBase (StateType.Normal, Parent.Style.Base (StateType.Normal));
-				w.ModifyBase (StateType.Insensitive, Parent.Style.Base (StateType.Insensitive));
+				w.OverrideBackgroundColor (StateFlags.Normal, Parent.GetStyleBaseColor (StateType.Normal).ToGdkRgba ());
+				w.OverrideBackgroundColor (StateFlags.Insensitive, Parent.GetStyleBaseColor (StateType.Insensitive).ToGdkRgba ());
 			}
 		}
 		
@@ -183,10 +183,11 @@ namespace MonoDevelop.Components.Docking
 		{
 			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (VisualStyle.TabStyle == DockTabStyle.Normal) {
-				Gdk.GC gc = new Gdk.GC (GdkWindow);
-				gc.RgbFgColor = VisualStyle.PadBackgroundColor.Value.ToGdkColor ();
-				evnt.Window.DrawRectangle (gc, true, Allocation);
-				gc.Dispose ();
+				using (var ctx = evnt.CreateContext ()) {
+					ctx.SetSourceColor (VisualStyle.PadBackgroundColor.Value.ToCairoColor ());
+					ctx.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
+					ctx.Fill ();
+				}
 			}
 			return base.OnDrawn (gtk3cr);
 		}
@@ -222,7 +223,7 @@ namespace MonoDevelop.Components.Docking
 		{
 			base.OnStyleSet (previous_style);
 			if (!borderColorSet)
-				borderColor = Style.Dark (Gtk.StateType.Normal);
+				borderColor = this.GetStyleDarkColor (Gtk.StateType.Normal).ToGdkColor ();
 		}
 		
 		public void SetMargins (int topMargin, int bottomMargin, int leftMargin, int rightMargin)
@@ -312,7 +313,7 @@ namespace MonoDevelop.Components.Docking
 			//Gdk.Rectangle.Right and Bottom are inconsistent
 			int right = rect.X + rect.Width, bottom = rect.Y + rect.Height;
 
-			var bcolor = backgroundColorSet ? BackgroundColor : Style.Background (Gtk.StateType.Normal);
+			var bcolor = backgroundColorSet ? BackgroundColor : this.GetStyleBackgroundColor (Gtk.StateType.Normal).ToGdkColor ();
 			using (Cairo.Context cr = evnt.CreateContext ()) {
 			
 				if (GradientBackround) {
@@ -337,10 +338,9 @@ namespace MonoDevelop.Components.Docking
 					}
 				} else {
 					if (backgroundColorSet) {
-						Gdk.GC gc = new Gdk.GC (GdkWindow);
-						gc.RgbFgColor = bcolor;
-						evnt.Window.DrawRectangle (gc, true, rect.X, rect.Y, rect.Width, rect.Height);
-						gc.Dispose ();
+						cr.SetSourceColor (bcolor.ToCairoColor ());
+						cr.Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
+						cr.Fill ();
 					}
 				}
 			

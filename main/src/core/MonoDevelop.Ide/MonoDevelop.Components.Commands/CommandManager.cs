@@ -507,11 +507,14 @@ namespace MonoDevelop.Components.Commands
 				firstResponder != window.ContentView) {
 				firstResponder.FlagsChanged (currentEvent);
 			}
+#else
+			bool retVal = false;
 #endif
 			bool complete;
-			// KeyboardShortcut[] accels = 
+			// KeyboardShortcut[] accels =
 			KeyBindingManager.AccelsFromKey (e.Event, out complete);
 
+#if MAC
 			if (currentEvent != null &&
 				currentEvent.Type == AppKit.NSEventType.KeyUp &&
 				firstResponder is AppKit.NSView view &&
@@ -521,6 +524,7 @@ namespace MonoDevelop.Components.Commands
 				SimulateViewKeyActionBehaviour (view, currentEvent);
 				retVal = true;
 			}
+#endif
 
 			if (!complete) {
 				// incomplete accel
@@ -2424,8 +2428,10 @@ namespace MonoDevelop.Components.Commands
 		Gtk.Widget GetFocusedChild (Control widget)
 		{
 			Gtk.Container container;
+#if MAC
 			if (widget?.nativeWidget is AppKit.NSWindow window)
 				widget = Mac.GtkMacInterop.GetGtkWindow (window)?.Child;
+#endif
 			do {
 				container = widget?.nativeWidget is Gtk.Container ? widget.GetNativeWidget<Gtk.Container> () : null;
 				if (container != null) {

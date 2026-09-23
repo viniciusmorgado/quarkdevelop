@@ -424,7 +424,7 @@ namespace MonoDevelop.Components
 					if (!last) {
 						xpos += arrowLeftPadding;
 						if (leftPath [i].IsPathEnd) {
-							Style.PaintVline (Style, GdkWindow, State, evnt.Area, this, "", ypos, ypos + height, xpos - arrowSize / 2);
+							StyleContext.RenderLine (ctx, xpos - arrowSize / 2, ypos, xpos - arrowSize / 2, ypos + height);
 						} else {
 							int arrowH = Math.Min (height, arrowSize);
 							int arrowY = ypos + (height - arrowH) / 2;
@@ -499,7 +499,7 @@ namespace MonoDevelop.Components
 					int focusY = topPadding - buttonPadding;
 					int focusHeight = Allocation.Height - topPadding - bottomPadding + buttonPadding * 2;
 
-					Gtk.Style.PaintFocus (Style, GdkWindow, State, Allocation, this, "label", focusRect.X, focusY, focusRect.Width, focusHeight);
+					StyleContext.RenderFocus (ctx, focusRect.X, focusY, focusRect.Width, focusHeight);
 				}
 			}
 			return true;
@@ -722,8 +722,8 @@ namespace MonoDevelop.Components
 			y += rect.Height;
 			x += GetHoverXPosition (out w);
 			//if the menu would be off the bottom of the screen, "drop" it upwards
-			if (y + mn.Requisition.Height > this.Screen.Height) {
-				y -= mn.Requisition.Height;
+			if (y + mn.SizeRequest ().Height > this.Screen.Height) {
+				y -= mn.SizeRequest ().Height;
 				y -= rect.Height;
 			}
 			

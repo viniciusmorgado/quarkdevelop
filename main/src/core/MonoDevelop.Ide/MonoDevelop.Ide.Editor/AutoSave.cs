@@ -64,14 +64,14 @@ namespace MonoDevelop.Ide.Editor
 		{
 			if (fileName == null)
 				return null;
-			return Path.Combine (autoSavePath, GetMD5 (fileName) + ".sav");
+			return Path.Combine (autoSavePath, GetHash (fileName) + ".sav");
 		}
 
-		static MD5 md5 = MD5.Create ();
-		static string GetMD5 (string data)
+		// SHA-256 instead of MD5 (CA5351): auto-save files written by MD5-based versions are not found
+		static string GetHash (string data)
 		{
 			var result = StringBuilderCache.Allocate();
-			foreach (var b in md5.ComputeHash (Encoding.ASCII.GetBytes (data))) {
+			foreach (var b in SHA256.HashData (Encoding.ASCII.GetBytes (data))) {
 				result.Append(b.ToString("X2"));
 			}
 			return StringBuilderCache.ReturnAndFree (result);

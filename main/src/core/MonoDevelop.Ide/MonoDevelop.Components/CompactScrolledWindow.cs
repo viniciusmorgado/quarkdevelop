@@ -156,10 +156,9 @@ namespace MonoDevelop.Components
 
 			//draw the border lines
 			using (var cr = evnt.CreateContext ()) {
-				Gdk.CairoHelper.Region (cr, evnt.Region);
-				cr.Clip ();
+				// GTK3 hands a context already clipped to the exposed region.
 				
-				cr.SetSourceColor (Style.Dark (Gtk.StateType.Normal).ToCairoColor ());
+				cr.SetSourceColor (this.GetStyleDarkColor (Gtk.StateType.Normal));
 				cr.LineWidth = lineWidth;
 				cr.Translate (rect.X, rect.Y);
 

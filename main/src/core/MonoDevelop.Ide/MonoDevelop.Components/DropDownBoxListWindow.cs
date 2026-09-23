@@ -432,7 +432,8 @@ namespace MonoDevelop.Components
 			protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
 			{
 				int winWidth, winHeight;
-				GdkWindow.GetSize (out winWidth, out winHeight);
+				winWidth = GdkWindow.Width;
+				winHeight = GdkWindow.Height;
 				curMouseY = (int)evnt.Y;
 				Selection = GetRowByPosition (curMouseY);
 				
@@ -456,14 +457,16 @@ namespace MonoDevelop.Components
 			{
 				var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 				base.OnDrawn (gtk3cr);
-				DrawList ();
+				using (var ctx = evnt.CreateContext ())
+					DrawList (ctx);
 				return false;
 			}
 
-			void DrawList ()
+			void DrawList (Cairo.Context ctx)
 			{
 				int winWidth, winHeight;
-				GdkWindow.GetSize (out winWidth, out winHeight);
+				winWidth = GdkWindow.Width;
+				winHeight = GdkWindow.Height;
 
 				int lineWidth = winWidth - leftXAlignment * 2;
 				const int xpos = leftXAlignment + padding;
@@ -488,25 +491,27 @@ namespace MonoDevelop.Components
 					
 					if (n == selection) {
 						if (!disableSelection) {
-							GdkWindow.DrawRectangle (Style.BaseGC (StateType.Selected), 
-								true, leftXAlignment, ypos, lineWidth, rowHeight);
-							GdkWindow.DrawLayout (Style.TextGC (StateType.Selected), 
-							                      xpos + iconWidth + iconTextDistance, typos, layout);
+							ctx.SetSourceColor (this.GetStyleBaseColor (StateType.Selected));
+							ctx.Rectangle (leftXAlignment, ypos, lineWidth, rowHeight);
+							ctx.Fill ();
+							ctx.DrawLayout (this, StateType.Selected,
+							                xpos + iconWidth + iconTextDistance, typos, layout);
 							if (icon != null)
 								icon = icon.WithStyles ("sel");
 						} else {
-							GdkWindow.DrawRectangle (Style.BaseGC (StateType.Selected), 
-								false, leftXAlignment, ypos, lineWidth, rowHeight);
-							GdkWindow.DrawLayout (Style.TextGC (StateType.Normal), 
-							                      xpos + iconWidth + iconTextDistance, typos, layout);
+							ctx.SetSourceColor (this.GetStyleBaseColor (StateType.Selected));
+							ctx.Rectangle (leftXAlignment + 0.5, ypos + 0.5, lineWidth, rowHeight);
+							ctx.LineWidth = 1;
+							ctx.Stroke ();
+							ctx.DrawLayout (this, StateType.Normal,
+							                xpos + iconWidth + iconTextDistance, typos, layout);
 						}
 					} else
-						GdkWindow.DrawLayout (Style.TextGC (StateType.Normal), 
-						                      xpos + iconWidth + iconTextDistance, typos, layout);
-					
+						ctx.DrawLayout (this, StateType.Normal,
+						                xpos + iconWidth + iconTextDistance, typos, layout);
+
 					if (icon != null) {
-						using (var ctx = Gdk.CairoHelper.Create (this.GdkWindow))
-							ctx.DrawImage (this, icon, xpos, iypos);
+						ctx.DrawImage (this, icon, xpos, iypos);
 					}
 					
 					ypos += rowHeight;
@@ -609,7 +614,7 @@ namespace MonoDevelop.Components
 			void UpdateStyle ()
 			{
 				if (IsRealized)
-					GdkWindow.Background = Style.Base (StateType.Normal);
+					GdkWindow.Background = this.GetStyleBaseColor (StateType.Normal).ToGdkColor ();
 				if (layout != null)
 					layout.Dispose ();
 				layout = new Pango.Layout (PangoContext);

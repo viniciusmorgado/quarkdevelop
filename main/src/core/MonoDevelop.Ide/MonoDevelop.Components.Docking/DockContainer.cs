@@ -212,7 +212,7 @@ namespace MonoDevelop.Components.Docking
 			bool res = base.OnDrawn (gtk3cr);
 			
 			if (layout != null) {
-				layout.Draw (evnt.Area, null, 0);
+				layout.Draw (gtk3cr, evnt.Area, null, 0);
 			}
 			return res;
 		}
@@ -372,46 +372,44 @@ namespace MonoDevelop.Components.Docking
 		
 		protected override void OnRealized ()
 		{
-			WidgetFlags |= WidgetFlags.Realized;
-			
+			IsRealized = true;
+
 			Gdk.WindowAttr attributes = new Gdk.WindowAttr ();
 			attributes.X = Allocation.X;
 			attributes.Y = Allocation.Y;
 			attributes.Height = Allocation.Height;
 			attributes.Width = Allocation.Width;
 			attributes.WindowType = Gdk.WindowType.Child;
-			attributes.Wclass = Gdk.WindowClass.InputOutput;
+			attributes.Wclass = Gdk.WindowWindowClass.InputOutput;
 			attributes.Visual = Visual;
-			attributes.Colormap = Colormap;
 			attributes.EventMask = (int)(Events |
 				Gdk.EventMask.ExposureMask |
 				Gdk.EventMask.Button1MotionMask |
 				Gdk.EventMask.ButtonPressMask |
 				Gdk.EventMask.ButtonReleaseMask);
-		
+
 			Gdk.WindowAttributesType attributes_mask =
 				Gdk.WindowAttributesType.X |
 				Gdk.WindowAttributesType.Y |
-				Gdk.WindowAttributesType.Colormap |
 				Gdk.WindowAttributesType.Visual;
-			GdkWindow = new Gdk.Window (ParentWindow, attributes, (int)attributes_mask);
-			GdkWindow.UserData = Handle;
+			GdkWindow = new Gdk.Window (ParentWindow, attributes, attributes_mask);
+			RegisterWindow (GdkWindow);
 
-			Style = Style.Attach (GdkWindow);
-			Style.SetBackground (GdkWindow, State);
-			this.WidgetFlags &= ~WidgetFlags.NoWindow;
-			
+			StyleContext.Background = GdkWindow;
+			HasWindow = true;
+
 			//GdkWindow.SetBackPixmap (null, true);
 
-			ModifyBase (StateType.Normal, Styles.DockFrameBackground.ToGdkColor ());
+			// GTK3 has no base color; gtk_widget_modify_base is replaced by the background color override.
+			OverrideBackgroundColor (StateFlags.Normal, Styles.DockFrameBackground.ToCairoColor ().ToGdkRgba ());
 		}
-		
+
 		protected override void OnUnrealized ()
 		{
 			if (this.GdkWindow != null) {
-				this.GdkWindow.UserData = IntPtr.Zero;
+				UnregisterWindow (this.GdkWindow);
 				this.GdkWindow.Destroy ();
-				this.WidgetFlags |= WidgetFlags.NoWindow;
+				HasWindow = false;
 			}
 			base.OnUnrealized ();
 		}
@@ -555,7 +553,7 @@ namespace MonoDevelop.Components.Docking
 
 				// For testing purposes. Not being shown while VisibleWindow = false
 				ModifyBg (StateType.Normal, new Gdk.Color (255,0,0));
-				ModifyBase (StateType.Normal, new Gdk.Color (255,0,0));
+				// GTK3 has no base color (ModifyBase); the background is already set above.
 				ModifyFg (StateType.Normal, new Gdk.Color (255,0,0));
 			}
 

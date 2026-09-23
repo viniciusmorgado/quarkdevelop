@@ -39,7 +39,7 @@ namespace MonoDevelop.Components
 		
 		public string LinkColor {
 			get {
-				var color = HslColor.GenerateHighlightColors (Style.Background (State), Style.Text (State), 3)[2];
+				var color = HslColor.GenerateHighlightColors (this.GetStyleBackgroundColor (State), this.GetStyleTextColor (State), 3)[2];
 				return color.ToPangoString ();
 			}
 		}
@@ -51,8 +51,7 @@ namespace MonoDevelop.Components
 			this.Decorated = false;
 			this.BorderWidth = 2;
 			this.TypeHint = WindowTypeHint.Tooltip;
-			this.AllowShrink = false;
-			this.AllowGrow = false;
+			this.Resizable = false; // GTK2 AllowShrink = AllowGrow = false
 			this.Title = "tooltip"; // fixes the annoying '** Message: ATK_ROLE_TOOLTIP object found, but doesn't look like a tooltip.** Message: ATK_ROLE_TOOLTIP object found, but doesn't look like a tooltip.'
 			
 			//fake widget name for stupid theme engines
@@ -82,7 +81,13 @@ namespace MonoDevelop.Components
 			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			int winWidth, winHeight;
 			this.GetSize (out winWidth, out winHeight);
-			Gtk.Style.PaintFlatBox (Style, this.GdkWindow, StateType.Normal, ShadowType.Out, evnt.Area, this, "tooltip", 0, 0, winWidth, winHeight);
+			using (var ctx = evnt.CreateContext ()) {
+				// GTK2 painted a flat "tooltip" box: GTK3 renders the background of the tooltip style class.
+				StyleContext.Save ();
+				StyleContext.AddClass ("tooltip");
+				StyleContext.RenderBackground (ctx, 0, 0, winWidth, winHeight);
+				StyleContext.Restore ();
+			}
 			foreach (var child in this.Children)
 				this.PropagateDraw (child, gtk3cr);
 			return false;

@@ -55,7 +55,7 @@ namespace MonoDevelop.Components
 			int ty = Allocation.Y + (int) Ypad + (int) ((float)(Allocation.Height - (int)(Ypad*2) - h) * Yalign);
 
 			using (var ctx = evnt.CreateContext ()) {
-				ctx.SetSourceColor (Style.Text (State).ToCairoColor ());
+				ctx.SetSourceColor (this.GetStyleTextColor (State));
 				ctx.MoveTo (tx, ty);
 
 				// In order to get the same result as in MonoDevelop.Components.DockNotebook.TabStrip.DrawTab()
@@ -70,7 +70,7 @@ namespace MonoDevelop.Components
 				// looked different. We need to simulate same gradient treatment as we have in document tabs.
 
 				using (var lg = new LinearGradient (tx + w - 1, 0, tx + w, 0)) {
-					var color = Style.Text (State).ToCairoColor ();
+					var color = this.GetStyleTextColor (State);
 					lg.AddColorStop (0, color);
 					color.A = 0.99;
 					lg.AddColorStop (1, color);

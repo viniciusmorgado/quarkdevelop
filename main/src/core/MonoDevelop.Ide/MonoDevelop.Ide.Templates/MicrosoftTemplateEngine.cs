@@ -264,17 +264,18 @@ namespace MonoDevelop.Ide.Templates
 			if (!cacheParameters.Any ())
 				return defaultParameters;
 
-			if (!string.IsNullOrEmpty (defaultParameters)) {
+			if (!string.IsNullOrEmpty (defaultParameters))
 				priorityParameters = TemplateParameter.CreateParameters (defaultParameters).ToList ();
-				defaultParameters += ",";
-			}
 
 			foreach (var p in cacheParameters) {
 				if (priorityParameters == null || !priorityParameters.Exists (t => t.Name == p.Name))
 					parameters.Add ($"{p.Name}={p.DefaultValue}");
 			}
 
-			return defaultParameters += string.Join (",", parameters);
+			// no trailing separator when every template default is already given
+			if (!string.IsNullOrEmpty (defaultParameters))
+				parameters.Insert (0, defaultParameters);
+			return string.Join (",", parameters);
 		}
 
 		public static string GetLanguage (ITemplateInfo templateInfo)

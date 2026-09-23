@@ -198,7 +198,7 @@ namespace MonoDevelop.Components.Docking
 				var font = IdeServices.FontService.SansFont.CopyModified (null, Pango.Weight.Bold);
 				font.AbsoluteSize = Pango.Units.FromPixels (11);
 				labelWidget.ModifyFont (font);
-				labelWidget.ModifyText (StateType.Normal, (active ? visualStyle.PadTitleLabelColor.Value : visualStyle.InactivePadTitleLabelColor.Value).ToGdkColor ());
+				labelWidget.OverrideColor (StateFlags.Normal, (active ? visualStyle.PadTitleLabelColor.Value : visualStyle.InactivePadTitleLabelColor.Value).ToCairoColor ().ToGdkRgba ());
 			}
 
 			var r = WidthRequest;
@@ -750,13 +750,13 @@ namespace MonoDevelop.Components.Docking
 
 			if (HasFocus) {
 				var alloc = labelWidget.Allocation;
-				Gtk.Style.PaintFocus (Style, GdkWindow, State, alloc, this, "label",
-				                      alloc.X, alloc.Y, alloc.Width, alloc.Height);
+				using (var ctx = evnt.CreateContext ())
+					StyleContext.RenderFocus (ctx, alloc.X, alloc.Y, alloc.Width, alloc.Height);
 			}
 			return base.OnDrawn (gtk3cr);
 		}
 
-		void DrawAsBrowser (Gdk.EventExpose evnt)
+		void DrawAsBrowser (MonoDevelop.Components.Gtk3ExposeEvent evnt)
 		{
 			bool first = true;
 			bool last = true;
@@ -768,7 +768,7 @@ namespace MonoDevelop.Components.Docking
 				last = cts[cts.Length - 1] == this;
 			}
 
-			using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+			using (var ctx = evnt.CreateContext ()) {
 				if (first && last) {
 					ctx.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
 					ctx.SetSourceColor (VisualStyle.PadBackgroundColor.Value.ToCairoColor ());
@@ -782,9 +782,9 @@ namespace MonoDevelop.Components.Docking
 			}
 		}
 
-		void DrawNormal (Gdk.EventExpose evnt)
+		void DrawNormal (MonoDevelop.Components.Gtk3ExposeEvent evnt)
 		{
-			using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
+			using (var ctx = evnt.CreateContext ()) {
 				var x = Allocation.X;
 				var y = Allocation.Y;
 

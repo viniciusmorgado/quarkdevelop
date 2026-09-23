@@ -971,7 +971,7 @@ namespace MonoDevelop.Components
 			col.CellSetCellData (tree.Model, iter, false, false);
 			int x = 0;
 			int th = 0;
-			CellRenderer[] renderers = col.CellRenderers;
+			CellRenderer[] renderers = col.Cells;
 			foreach (CellRenderer cr in renderers) {
 				int sp, wi, he, xo, yo;
 				col.CellGetPosition (cr, out sp, out wi);
@@ -1004,14 +1004,14 @@ namespace MonoDevelop.Components
 			}
 			col.CellSetCellData (tree.Model, iter, false, false);
 
-			foreach (CellRenderer cr in col.CellRenderers) {
+			foreach (CellRenderer cr in col.Cells) {
 				if (!cr.Visible)
 					continue;
 
 				if (cr is CellRendererText) {
 					hasFgColor = ((CellRendererText)cr).GetCellForegroundSet ();
 					save = ((CellRendererText)cr).ForegroundGdk;
-					((CellRendererText)cr).ForegroundGdk = Style.Foreground (State);
+					((CellRendererText)cr).ForegroundGdk = this.GetStyleTextColor (State).ToGdkColor ();
 				}
 
 				int sp, wi, he, xo, yo;
@@ -1021,7 +1021,8 @@ namespace MonoDevelop.Components
 				int leftMargin = (int) ((bgrect.Width - wi) * cr.Xalign);
 				int topMargin = (int) ((bgrect.Height - he) * cr.Yalign);
 				Gdk.Rectangle cellrect = new Gdk.Rectangle (bgrect.X + leftMargin, bgrect.Y + topMargin + 1, wi, he);
-				cr.Render (this.GdkWindow, this, bgrect, cellrect, expose, CellRendererState.Focused);
+				using (var ctx = evnt.CreateContext ())
+					cr.Render (ctx, this, bgrect, cellrect, expose, CellRendererState.Focused);
 				x += bgrect.Width + col.Spacing + 1;
 
 				if (cr is CellRendererText) {

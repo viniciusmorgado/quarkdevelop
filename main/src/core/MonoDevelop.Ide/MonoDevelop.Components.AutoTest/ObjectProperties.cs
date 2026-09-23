@@ -71,8 +71,6 @@ namespace MonoDevelop.Components.AutoTest
 
 		public void Dispose ()
 		{
-			RemotingServices.Disconnect (this);
-
 			if (propertyMap != null) {
 				foreach (var prop in propertyMap)
 					prop.Value.Dispose ();

@@ -56,14 +56,14 @@ namespace MonoDevelop.Components
 		public RoundedFrame ()
 		{
 			this.Events =  Gdk.EventMask.AllEventsMask;
-			this.WidgetFlags |= WidgetFlags.NoWindow;
+			HasWindow = false;
 			DoubleBuffered = true;
 			AppPaintable = false;
 		}
 
 		public void SetFillColor (Cairo.Color color)
 		{
-			this.ModifyBase (Gtk.StateType.Normal, CairoExtensions.CairoColorToGdkColor (color));
+			// GTK3 has no base color (ModifyBase); ModifyBg below sets the background.
 			this.ModifyBg (Gtk.StateType.Normal, CairoExtensions.CairoColorToGdkColor (color));
 			fill_color = color;
 			fill_color_set = true;

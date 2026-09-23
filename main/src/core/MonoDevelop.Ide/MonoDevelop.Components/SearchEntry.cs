@@ -349,7 +349,7 @@ namespace MonoDevelop.Components
 
 		private void UpdateStyle ()
 		{
-			Gdk.Color color = entry.Style.Base (entry.State);
+			Gdk.Color color = entry.GetStyleBaseColor (entry.State).ToGdkColor ();
 			filter_button.ModifyBg (entry.State, color);
 			clear_button.ModifyBg (entry.State, color);
 			if (statusLabelEventBox != null)
@@ -456,11 +456,17 @@ namespace MonoDevelop.Components
 			var alloc = new Gdk.Rectangle (alignment.Allocation.X, box.Allocation.Y, alignment.Allocation.Width, box.Allocation.Height);
 
 			if (hasFrame && (!roundedShape || (roundedShape && !customRoundedShapeDrawing))) {
-				if (Platform.IsLinux)
-					Style.PaintFlatBox (Style, GdkWindow, entry.State, ShadowType.None,
-					                    evnt.Area, this, "entry_bg", alloc.X + 2, alloc.Y + 2, alloc.Width - 4, alloc.Height - 4);
-				Style.PaintShadow (entry.Style, GdkWindow, entry.State, entry.ShadowType,
-				                   evnt.Area, entry, "entry", alloc.X, alloc.Y, alloc.Width, alloc.Height);
+				// GTK2 painted the "entry_bg" flat box and the "entry" shadow: GTK3 renders the entry's
+				// background and frame (without the "flat" class GTK3 adds to entries without a frame).
+				using (var ctx = evnt.CreateContext ()) {
+					var sc = entry.StyleContext;
+					sc.Save ();
+					sc.RemoveClass ("flat");
+					if (Platform.IsLinux)
+						sc.RenderBackground (ctx, alloc.X + 2, alloc.Y + 2, alloc.Width - 4, alloc.Height - 4);
+					sc.RenderFrame (ctx, alloc.X, alloc.Y, alloc.Width, alloc.Height);
+					sc.Restore ();
+				}
 /*				using (var ctx = evnt.CreateContext ()) {
 					ctx.LineWidth = 1;
 					ctx.Rectangle (alloc.X + 0.5, alloc.Y + 0.5, alloc.Width - 1, alloc.Height - 1);
@@ -471,14 +477,14 @@ namespace MonoDevelop.Components
 			else if (!roundedShape) {
 				using (var ctx = evnt.CreateContext ()) {
 					CairoExtensions.RoundedRectangle (ctx, alloc.X + 0.5, alloc.Y + 0.5, alloc.Width - 1, alloc.Height - 1, 4);
-					ctx.SetSourceColor (entry.Style.Base (Gtk.StateType.Normal).ToCairoColor ());
+					ctx.SetSourceColor (entry.GetStyleBaseColor (Gtk.StateType.Normal));
 					ctx.Fill ();
 				}
 			}
 			else {
 				using (var ctx = evnt.CreateContext ()) {
 					RoundBorder (ctx, alloc.X + 0.5, alloc.Y + 0.5, alloc.Width - 1, alloc.Height - 1);
-					ctx.SetSourceColor (entry.Style.Base (Gtk.StateType.Normal).ToCairoColor ());
+					ctx.SetSourceColor (entry.GetStyleBaseColor (Gtk.StateType.Normal));
 					ctx.Fill ();
 				}
 			}

@@ -145,7 +145,8 @@ namespace MonoDevelop.Ide.FindInFiles
 			var options = new ParallelOptions ();
 			options.MaxDegreeOfParallelism = 4;
 
-			Parallel.ForEach (IdeApp.Workspace.GetAllSolutionItems ().OfType<SolutionFolder> (),
+			// GetAllSolutionItems () never returns folders (SolutionFolder is not a SolutionItem, CA2021)
+			Parallel.ForEach (IdeApp.Workspace.GetAllItems<SolutionFolder> (),
 							  options,
 							  () => new List<FileProvider> (),
 							  (folder, loop, providers) => {

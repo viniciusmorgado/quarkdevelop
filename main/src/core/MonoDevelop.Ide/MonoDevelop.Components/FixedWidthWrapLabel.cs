@@ -63,7 +63,7 @@ namespace MonoDevelop.Components
 		}
 		public FixedWidthWrapLabel ()
 		{
-			WidgetFlags |= WidgetFlags.NoWindow;
+			HasWindow = false;
 		}
 		
 		public FixedWidthWrapLabel (string text)
@@ -192,8 +192,8 @@ namespace MonoDevelop.Components
 				return base.OnDrawn (gtk3cr);
 			}
             
-			Gtk.Style.PaintLayout (Style, GdkWindow, State, false, evnt.Area, 
-			    this, null, Allocation.X, Allocation.Y, layout);
+			using (var ctx = evnt.CreateContext ())
+				ctx.DrawLayout (this, State, Allocation.X, Allocation.Y, layout);
 			
 			return true;
 		}

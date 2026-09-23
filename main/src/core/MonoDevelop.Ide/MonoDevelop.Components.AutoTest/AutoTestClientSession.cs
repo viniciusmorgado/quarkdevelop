@@ -27,7 +27,6 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Remoting;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
@@ -40,12 +39,12 @@ namespace MonoDevelop.Components.AutoTest
 {
 	public class AutoTestClientSession: MarshalByRefObject, IAutoTestClient
 	{
-		Process process;
+		Process process = null;
 		AutoTestSession session;
 		ManualResetEvent waitEvent = new ManualResetEvent (false);
 		int defaultEventWaitTimeout = 20000;
 		Queue<string> eventQueue = new Queue<string> ();
-		IAutoTestService service;
+		IAutoTestService service = null;
 
 		IAutoTestSessionDebug<MarshalByRefObject> debugObject;
 		public IAutoTestSessionDebug<MarshalByRefObject> DebugObject {  
@@ -82,45 +81,15 @@ namespace MonoDevelop.Components.AutoTest
 				throw new FileNotFoundException (file);
 			}
 
-			MonoDevelop.Core.Execution.RemotingService.RegisterRemotingChannel ();
-
-			BinaryFormatter bf = new BinaryFormatter ();
-			ObjRef oref = RemotingServices.Marshal (this);
-			MemoryStream ms = new MemoryStream ();
-			bf.Serialize (ms, oref);
-			string sref = Convert.ToBase64String (ms.ToArray ());
-
-			var pi = new ProcessStartInfo (file, args) { UseShellExecute = false };
-			pi.EnvironmentVariables ["MONO_AUTOTEST_CLIENT"] = sref;
-			if (environment != null)
-				foreach (var e in environment)
-					pi.EnvironmentVariables [e.Key] = e.Value;
-
-			process = Process.Start (pi);
-
-			if (!waitEvent.WaitOne (120000)) {
-				try {
-					process.Kill ();
-				} catch { }
-				throw new Exception ("Could not connect to application");
-			}
-
-			return process.Id;
+			// The IDE process was driven over .NET Remoting (ObjRef + BinaryFormatter), which does not exist on
+			// .NET 10 (ADR 0009); out-of-process UI automation is excluded from the Linux product (ADR 0017).
+			throw new PlatformNotSupportedException ("AutoTest remote sessions require .NET Remoting (ADR 0009, ADR 0017)");
 		}
 
 		public void AttachApplication ()
 		{
-			MonoDevelop.Core.Execution.RemotingService.RegisterRemotingChannel ();
-
-			string sref = File.ReadAllText (AutoTestService.SessionReferenceFile);
-			byte[] data = Convert.FromBase64String (sref);
-			MemoryStream ms = new MemoryStream (data);
-			BinaryFormatter bf = new BinaryFormatter ();
-			service = (IAutoTestService) bf.Deserialize (ms);
-			session = service.AttachClient (this);
-			if (DebugObject != null) {
-				session.DebugObject = DebugObject;
-			}
+			// Attached to a running IDE through a BinaryFormatter-serialized ObjRef (ADR 0009, ADR 0017).
+			throw new PlatformNotSupportedException ("AutoTest remote sessions require .NET Remoting (ADR 0009, ADR 0017)");
 		}
 
 		public override object InitializeLifetimeService ()

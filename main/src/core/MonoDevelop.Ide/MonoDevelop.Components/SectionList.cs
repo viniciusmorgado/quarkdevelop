@@ -92,7 +92,7 @@ namespace MonoDevelop.Components
 		{
 			GtkWorkarounds.FixContainerLeak (this);
 			
-			this.WidgetFlags |= WidgetFlags.NoWindow;
+			HasWindow = false;
 			WidthRequest = 100;
 			EnsureLayout ();
 		}
@@ -106,7 +106,7 @@ namespace MonoDevelop.Components
 			
 			var attributes = new Gdk.WindowAttr () {
 				WindowType = Gdk.WindowType.Child,
-				Wclass = Gdk.WindowClass.InputOnly,
+				Wclass = Gdk.WindowWindowClass.InputOnly,
 				EventMask = (int) (
 					EventMask.EnterNotifyMask |
 					EventMask.LeaveNotifyMask |
@@ -308,12 +308,11 @@ namespace MonoDevelop.Components
 			int h = alloc.Height - bw2;
 			
 			using (var cr = evnt.CreateContext ()) {
-				CairoHelper.Region (cr, evnt.Region);
-				cr.Clip ();
+				// GTK3 hands a context already clipped to the exposed region.
 				
 				cr.Translate (alloc.X + bw, alloc.Y + bw);
 				
-				var borderCol = Convert (Style.Dark (StateType.Normal));
+				var borderCol = this.GetStyleDarkColor (StateType.Normal);
 				cr.SetSourceColor (borderCol);
 				cr.Rectangle (halfLineWidth, halfLineWidth, w - borderLineWidth, h - borderLineWidth);
 				cr.LineWidth = borderLineWidth;
@@ -327,22 +326,22 @@ namespace MonoDevelop.Components
 				       selectedGrad = new LinearGradient (0, 0, 0, headerHeight)
 				       )
 				{
-					var unselectedCol = Convert (Style.Mid (StateType.Normal));
-					var unselectedTextCol = Convert (Style.Text (StateType.Normal));
+					var unselectedCol = this.GetStyleMidColor (StateType.Normal);
+					var unselectedTextCol = this.GetStyleTextColor (StateType.Normal);
 					unselectedCol.A = 0.6;
 					unselectedGrad.AddColorStop (0, unselectedCol);
 					unselectedCol.A = 1;
 					unselectedGrad.AddColorStop (1, unselectedCol);
 
-					var hoverCol = Convert (Style.Mid (StateType.Prelight));
-					var hoverTextCol = Convert (Style.Text (StateType.Prelight));
+					var hoverCol = this.GetStyleMidColor (StateType.Prelight);
+					var hoverTextCol = this.GetStyleTextColor (StateType.Prelight);
 					hoverCol.A = 0.6;
 					hoverGrad.AddColorStop (0, unselectedCol);
 					hoverCol.A = 1;
 					hoverGrad.AddColorStop (1, unselectedCol);
 
-					var selectedCol = Convert (Style.Mid (StateType.Normal));
-					var selectedTextCol = Convert (Style.Text (StateType.Normal));
+					var selectedCol = this.GetStyleMidColor (StateType.Normal);
+					var selectedTextCol = this.GetStyleTextColor (StateType.Normal);
 					selectedCol.A = 0.6;
 					selectedGrad.AddColorStop (0, selectedCol);
 					selectedCol.A = 1;

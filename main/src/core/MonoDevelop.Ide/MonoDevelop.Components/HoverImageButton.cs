@@ -171,8 +171,8 @@ namespace MonoDevelop.Components
             base.OnDrawn (gtk3cr);
 
             if(HasFocus && draw_focus) {
-                Style.PaintFocus(Style, GdkWindow, StateType.Normal, evnt.Area, this, "button",
-                    0, 0, Allocation.Width, Allocation.Height);
+                using (var ctx = evnt.CreateContext ())
+                    StyleContext.RenderFocus (ctx, 0, 0, Allocation.Width, Allocation.Height);
             }
 
             return true;

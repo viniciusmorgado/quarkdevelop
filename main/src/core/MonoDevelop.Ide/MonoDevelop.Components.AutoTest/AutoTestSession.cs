@@ -97,8 +97,6 @@ namespace MonoDevelop.Components.AutoTest
 				return;
 
 			disposed = true;
-			RemotingServices.Disconnect (this);
-
 			DisconnectQueries ();
 		}
 
@@ -235,17 +233,10 @@ namespace MonoDevelop.Components.AutoTest
 			#else
 			Sync (delegate {
 				try {
-					using (var bmp = new System.Drawing.Bitmap (System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width,
-						System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height)) {
-						using (var g = System.Drawing.Graphics.FromImage(bmp))
-						{
-							g.CopyFromScreen(System.Windows.Forms.Screen.PrimaryScreen.Bounds.X,
-								System.Windows.Forms.Screen.PrimaryScreen.Bounds.Y,
-								0, 0,
-								bmp.Size,
-								System.Drawing.CopyPixelOperation.SourceCopy);
-						}
-						bmp.Save(screenshotPath);
+					// System.Windows.Forms/System.Drawing screen capture replaced by a capture of the GDK root window.
+					var root = Gdk.Screen.Default.RootWindow;
+					using (var pixbuf = new Gdk.Pixbuf (root, 0, 0, root.Width, root.Height)) {
+						pixbuf.Save (screenshotPath, "png");
 					}
 					return null;
 				} catch (Exception e) {
@@ -295,9 +286,11 @@ namespace MonoDevelop.Components.AutoTest
 		{
 			if (ob == null)
 				return null;
-			if (ob.GetType ().IsPrimitive || ob.GetType ().IsSerializable)
+			// Plain values only: "serializable" meant "can cross the remoting boundary", and remoting is gone
+			var type = ob.GetType ();
+			if (type.IsPrimitive || type.IsEnum)
 				return ob;
-			if (ob is string)
+			if (ob is string || ob is decimal || ob is DateTime || ob is TimeSpan || ob is Guid)
 				return ob;
 			return null;
 		}

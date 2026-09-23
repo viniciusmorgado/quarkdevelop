@@ -71,16 +71,36 @@ namespace MonoDevelop.Components
 
 			disableSizeCheck = false;
 
-			SizeRequested += (object o, SizeRequestedArgs args) => {
-				if (this.AnimationIsRunning("Resize") && !disableSizeCheck) {
-					Gtk.Requisition result = new Gtk.Requisition ();
-					result.Width  = Math.Max (args.Requisition.Width, Math.Max (Allocation.Width, targetSize.Width));
-					result.Height = Math.Max (args.Requisition.Height, Math.Max (Allocation.Height, targetSize.Height));
-					args.Requisition = result;
-				}
-			};
-
 			UpdatePadding ();
+		}
+
+		// GTK2 SizeRequested handler: while the resize animation runs, request at least the size being animated to.
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			base.OnGetPreferredWidth (out minimum_width, out natural_width);
+			if (this.AnimationIsRunning ("Resize") && !disableSizeCheck) {
+				int animated = Math.Max (Allocation.Width, targetSize.Width);
+				minimum_width = Math.Max (minimum_width, animated);
+				natural_width = Math.Max (natural_width, animated);
+			}
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			base.OnGetPreferredHeight (out minimum_height, out natural_height);
+			if (this.AnimationIsRunning ("Resize") && !disableSizeCheck) {
+				int animated = Math.Max (Allocation.Height, targetSize.Height);
+				minimum_height = Math.Max (minimum_height, animated);
+				natural_height = Math.Max (natural_height, animated);
+			}
+		}
+
+		// GTK2 OnSizeRequested: the size vfuncs are called directly to bypass GTK's size cache.
+		Gtk.Requisition GetUncachedSizeRequest ()
+		{
+			OnGetPreferredWidth (out _, out int width);
+			OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		public PopoverWindowTheme Theme { 
@@ -221,9 +241,8 @@ namespace MonoDevelop.Components
 			}
 
 			disableSizeCheck = true;
-			Gtk.Requisition sizeReq = Gtk.Requisition.Zero;
-			// use OnSizeRequested instead of SizeRequest to bypass internal GTK caching
-			OnSizeRequested (ref sizeReq);
+			// query the size vfuncs instead of GetPreferredSize to bypass internal GTK caching
+			Gtk.Requisition sizeReq = GetUncachedSizeRequest ();
 			disableSizeCheck = false;
 
 			Gdk.Size size = new Gdk.Size (sizeReq.Width, sizeReq.Height);
@@ -257,8 +276,7 @@ namespace MonoDevelop.Components
 		void MaybeReanimate ()
 		{
 			disableSizeCheck = true;
-			Gtk.Requisition sizeReq = Gtk.Requisition.Zero;
-			OnSizeRequested (ref sizeReq);
+			Gtk.Requisition sizeReq = GetUncachedSizeRequest ();
 			disableSizeCheck = false;
 
 			if (sizeReq.Width == paintSize.Width && sizeReq.Height == paintSize.Height)
@@ -419,10 +437,11 @@ namespace MonoDevelop.Components
 		void CheckScreenColormap ()
 		{
 			SupportsAlpha = Screen.IsComposited;
+			// GTK3 has no colormaps: an RGBA visual gives the window an alpha channel.
 			if (SupportsAlpha) {
-				Colormap = Screen.RgbaColormap;
+				Visual = Screen.RgbaVisual;
 			} else {
-				Colormap = Screen.RgbColormap;
+				Visual = Screen.SystemVisual;
 			}
 		}
 
@@ -449,7 +468,7 @@ namespace MonoDevelop.Components
 				context.Paint ();
 				context.Restore ();
 
-				OnDrawContent (evnt, context); // Draw content first so we can easily clip it
+				OnDrawContent (context); // Draw content first so we can easily clip it
 				retVal = base.OnDrawn (gtk3cr);
 
 				changed = Theme.SetBorderPath (context, BorderAllocation, position);
@@ -476,7 +495,7 @@ namespace MonoDevelop.Components
 			return retVal;
 		}
 
-		protected virtual void OnDrawContent (Gdk.EventExpose evnt, Cairo.Context context)
+		protected virtual void OnDrawContent (Cairo.Context context)
 		{
 			Theme.RenderBackground (context, new Gdk.Rectangle (Allocation.X, Allocation.Y, paintSize.Width, paintSize.Height));
 		}

@@ -68,7 +68,8 @@ namespace MonoDevelop.Components.MainToolbar
 			public override Task<TooltipInformation> GetTooltipInformation (CancellationToken token)
 			{
 				return Task.Run (async () => {
-					var document = result.NavigableItem.Document;
+					var navigableDocument = result.NavigableItem.Document;
+					var document = await navigableDocument.Workspace.CurrentSolution.GetDocumentAsync (navigableDocument.Id, includeSourceGenerated: true, token).ConfigureAwait (false);
 					var span = result.NavigableItem.SourceSpan;
 
 					var root = await document.GetSyntaxRootAsync (token).ConfigureAwait (false);
@@ -108,7 +109,7 @@ namespace MonoDevelop.Components.MainToolbar
 				var filePath = result.NavigableItem.Document.FilePath;
 				var offset = result.NavigableItem.SourceSpan.Start;
 
-				var proj = IdeApp.TypeSystemService.GetMonoProject (result.NavigableItem.Document.Project);
+				var proj = IdeApp.TypeSystemService.GetMonoProject (result.NavigableItem.Document.Workspace.CurrentSolution.GetProject (result.NavigableItem.Document.Project.Id));
 				if (proj?.ParentSolution != null) {
 					string projectedName;
 					int projectedOffset;

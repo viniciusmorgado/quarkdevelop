@@ -47,7 +47,7 @@ namespace MonoDevelop.Components.Commands
 		{
 			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			using (var context = evnt.CreateContext ()) {
-				context.SetSourceColor (Style.Light (StateType.Normal).ToCairoColor ());
+				context.SetSourceColor (this.GetStyleLightColor (StateType.Normal));
 				context.Paint ();
 			}
 

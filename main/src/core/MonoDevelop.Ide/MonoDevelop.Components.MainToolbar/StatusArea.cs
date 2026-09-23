@@ -145,7 +145,7 @@ namespace MonoDevelop.Components.MainToolbar
 			ctxHandler = new StatusBarContextHandler (this);
 			VisibleWindow = false;
 			NoShowAll = true;
-			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
+			AppPaintable = true;
 
 			statusIconBox.BorderWidth = 0;
 			statusIconBox.Spacing = 3;
@@ -387,7 +387,7 @@ namespace MonoDevelop.Components.MainToolbar
 		protected override void OnRealized ()
 		{
 			base.OnRealized ();
-			ModifyText (StateType.Normal, Styles.StatusBarTextColor.ToGdkColor ());
+			// GTK3 has no separate text color (ModifyText); ModifyFg below sets the color.
 			ModifyFg (StateType.Normal, Styles.StatusBarTextColor.ToGdkColor ());
 		}
 
@@ -439,7 +439,7 @@ namespace MonoDevelop.Components.MainToolbar
 		{
 			Runtime.AssertMainThread ();
 			StatusIcon icon = new StatusIcon (this, pixbuf);
-			statusIconBox.PackEnd (icon.box);
+			statusIconBox.PackEnd (icon.box, true, true, 0);
 			statusIconBox.ShowAll ();
 			icons.Add (icon);
 			return icon;

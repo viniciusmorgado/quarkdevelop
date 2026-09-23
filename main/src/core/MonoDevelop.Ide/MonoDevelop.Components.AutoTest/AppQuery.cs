@@ -181,8 +181,6 @@ namespace MonoDevelop.Components.AutoTest
 
 		public void Dispose ()
 		{
-			RemotingServices.Disconnect (this);
-
 			foreach (var node in toDispose) {
 				node.Dispose ();
 			}

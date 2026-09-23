@@ -843,24 +843,24 @@ namespace MonoDevelop.Components.Docking
 			}
 		}
 		
-		public void Draw (Gdk.Rectangle exposedArea, DockGroup currentHandleGrp, int currentHandleIndex)
+		public void Draw (Cairo.Context ctx, Gdk.Rectangle exposedArea, DockGroup currentHandleGrp, int currentHandleIndex)
 		{
 			if (type != DockGroupType.Tabbed) {
-				DrawSeparators (exposedArea, currentHandleGrp, currentHandleIndex, DrawSeparatorOperation.Draw, false, null);
+				DrawSeparators (exposedArea, currentHandleGrp, currentHandleIndex, DrawSeparatorOperation.Draw, false, null, ctx);
 				foreach (DockObject it in VisibleObjects) {
 					DockGroup grp = it as DockGroup;
 					if (grp != null)
-						grp.Draw (exposedArea, currentHandleGrp, currentHandleIndex);
+						grp.Draw (ctx, exposedArea, currentHandleGrp, currentHandleIndex);
 				}
 			}
 		}
 		
 		public void DrawSeparators (Gdk.Rectangle exposedArea, DockGroup currentHandleGrp, int currentHandleIndex, DrawSeparatorOperation oper, List<Gdk.Rectangle> areasList)
 		{
-			DrawSeparators (exposedArea, currentHandleGrp, currentHandleIndex, oper, true, areasList);
+			DrawSeparators (exposedArea, currentHandleGrp, currentHandleIndex, oper, true, areasList, null);
 		}
 		
-		void DrawSeparators (Gdk.Rectangle exposedArea, DockGroup currentHandleGrp, int currentHandleIndex, DrawSeparatorOperation oper, bool drawChildrenSep, List<Gdk.Rectangle> areasList)
+		void DrawSeparators (Gdk.Rectangle exposedArea, DockGroup currentHandleGrp, int currentHandleIndex, DrawSeparatorOperation oper, bool drawChildrenSep, List<Gdk.Rectangle> areasList, Cairo.Context ctx)
 		{
 			if (type == DockGroupType.Tabbed || VisibleObjects.Count == 0)
 				return;
@@ -873,18 +873,11 @@ namespace MonoDevelop.Components.Docking
 			int hw = horiz ? Frame.HandleSize : Allocation.Width;
 			int hh = horiz ? Allocation.Height : Frame.HandleSize;
 
-			Gdk.GC hgc = null;
-
-			if (areasList == null && oper == DrawSeparatorOperation.Draw) {
-				hgc = new Gdk.GC (Frame.Container.GdkWindow);
-				hgc.RgbFgColor = Styles.DockFrameBackground.ToGdkColor ();
-			}
-
 			for (int n=0; n<VisibleObjects.Count; n++) {
 				DockObject ob = VisibleObjects [n];
 				DockGroup grp = ob as DockGroup;
 				if (grp != null && drawChildrenSep)
-					grp.DrawSeparators (exposedArea, currentHandleGrp, currentHandleIndex, oper, areasList);
+					grp.DrawSeparators (exposedArea, currentHandleGrp, currentHandleIndex, oper, true, areasList, ctx);
 				if (ob != last) {
 					if (horiz)
 						x += ob.Allocation.Width + Frame.HandlePadding;
@@ -900,7 +893,11 @@ namespace MonoDevelop.Components.Docking
 						Frame.Container.QueueDrawArea (x, y, hw, hh);
 						break;
 					case DrawSeparatorOperation.Draw:
-						Frame.Container.GdkWindow.DrawRectangle (hgc, true, x, y, hw, hh);
+						if (ctx != null && areasList == null) {
+							ctx.SetSourceColor (Styles.DockFrameBackground.ToCairoColor ());
+							ctx.Rectangle (x, y, hw, hh);
+							ctx.Fill ();
+						}
 						break;
 					case DrawSeparatorOperation.Allocate:
 						Frame.Container.AllocateSplitter (this, n, new Gdk.Rectangle (x, y, hw, hh));
@@ -913,8 +910,6 @@ namespace MonoDevelop.Components.Docking
 						y += Frame.HandleSize + Frame.HandlePadding;
 				}
 			}
-			if (hgc != null)
-				hgc.Dispose ();
 		}
 		
 		public void ResizeItem (int index, int newSize)

@@ -143,11 +143,187 @@ namespace MonoDevelop.Components
 			}
 		}
 
+		/// <summary>
+		/// GTK2 <c>widget.State = state</c> (<c>gtk_widget_set_state</c>, not bound by GtkSharp 3): replaces the
+		/// state-type flags of the widget and keeps the others (direction, backdrop, ...), as GTK3's deprecated
+		/// implementation does.
+		/// </summary>
+		public static void SetState (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			const Gtk.StateFlags stateTypeFlags = Gtk.StateFlags.Active | Gtk.StateFlags.Prelight | Gtk.StateFlags.Selected |
+				Gtk.StateFlags.Insensitive | Gtk.StateFlags.Inconsistent | Gtk.StateFlags.Focused;
+			if (widget.State == state)
+				return;
+			var flags = state.ToStateFlags ();
+			widget.UnsetStateFlags (stateTypeFlags & ~flags);
+			if (flags != Gtk.StateFlags.Normal)
+				widget.SetStateFlags (flags, false);
+		}
+
 		/// <summary>The foreground (text) color of <paramref name="widget"/> in a GTK2 state (GTK2 <c>Style.Text/Fg</c>).</summary>
 		public static Cairo.Color GetStyleTextColor (this Gtk.Widget widget, Gtk.StateType state)
 		{
 			var c = widget.StyleContext.GetColor (state.ToStateFlags ());
 			return new Cairo.Color (c.Red, c.Green, c.Blue, c.Alpha);
+		}
+
+		/// <summary>
+		/// GTK2 <c>Style.Background (state)</c> (<c>bg[state]</c>): the opaque background color the widget shows.
+		/// GTK3 widgets without a background of their own are transparent, so the first ancestor with a
+		/// background is used, then the theme's <c>theme_bg_color</c>.
+		/// </summary>
+		public static Cairo.Color GetStyleBackgroundColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			for (var w = widget; w != null; w = w.Parent) {
+				var c = QueryStyleColor (w, state, false, true);
+				if (c.Alpha > 0)
+					return new Cairo.Color (c.Red, c.Green, c.Blue);
+			}
+			return LookupThemeColor (widget, "theme_bg_color", new Cairo.Color (0.93, 0.93, 0.93));
+		}
+
+		/// <summary>
+		/// GTK2 <c>Style.Base (state)</c> (<c>base[state]</c>): the background of text views and entries. As GTK3's
+		/// own GtkStyle does, it is the background of the widget with the <c>entry</c> style class.
+		/// </summary>
+		public static Cairo.Color GetStyleBaseColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			var c = QueryStyleColor (widget, state, true, true);
+			if (c.Alpha > 0)
+				return new Cairo.Color (c.Red, c.Green, c.Blue);
+			return LookupThemeColor (widget, "theme_base_color", new Cairo.Color (1, 1, 1));
+		}
+
+		/// <summary>GTK2 <c>Style.Light (state)</c>: the background color shaded by 1.3, as GTK2 and GTK3's GtkStyle compute it.</summary>
+		public static Cairo.Color GetStyleLightColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			return Shade (widget.GetStyleBackgroundColor (state), LightnessMult);
+		}
+
+		/// <summary>GTK2 <c>Style.Dark (state)</c>: the background color shaded by 0.7, as GTK2 and GTK3's GtkStyle compute it.</summary>
+		public static Cairo.Color GetStyleDarkColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			return Shade (widget.GetStyleBackgroundColor (state), DarknessMult);
+		}
+
+		/// <summary>GTK2 <c>Style.Mid (state)</c>: halfway between the light and dark colors.</summary>
+		public static Cairo.Color GetStyleMidColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			var bg = widget.GetStyleBackgroundColor (state);
+			var light = Shade (bg, LightnessMult);
+			var dark = Shade (bg, DarknessMult);
+			return new Cairo.Color ((light.R + dark.R) / 2, (light.G + dark.G) / 2, (light.B + dark.B) / 2);
+		}
+
+		/// <summary>A GDK RGBA color (for the GTK3 <c>Override*Color</c> methods) from a Cairo color.</summary>
+		public static Gdk.RGBA ToGdkRgba (this Cairo.Color color)
+		{
+			return new Gdk.RGBA { Red = color.R, Green = color.G, Blue = color.B, Alpha = color.A };
+		}
+
+		/// <summary>
+		/// GTK2 <c>gtk_combo_box_get_active_text</c> (removed in GTK3): the entry text of a combo box with an
+		/// entry, otherwise the text column of the active row (<c>null</c> when nothing is active).
+		/// </summary>
+		public static string GetActiveText (this Gtk.ComboBox combo)
+		{
+			if (combo.HasEntry)
+				return (combo.Child as Gtk.Entry)?.Text;
+			if (combo.Model == null || !combo.GetActiveIter (out Gtk.TreeIter iter))
+				return null;
+			return combo.Model.GetValue (iter, Math.Max (combo.EntryTextColumn, 0)) as string;
+		}
+
+		const double LightnessMult = 1.3;
+		const double DarknessMult = 0.7;
+
+		static Gdk.RGBA QueryStyleColor (Gtk.Widget widget, Gtk.StateType state, bool entry, bool background)
+		{
+			var style = widget.StyleContext;
+			var flags = state.ToStateFlags ();
+			style.Save ();
+			if (entry)
+				style.AddClass ("entry");
+			else
+				style.RemoveClass ("entry");
+			style.State = flags;
+			var c = background ? style.GetBackgroundColor (flags) : style.GetColor (flags);
+			style.Restore ();
+			return c;
+		}
+
+		static Cairo.Color LookupThemeColor (Gtk.Widget widget, string name, Cairo.Color fallback)
+		{
+			if (widget.StyleContext.LookupColor (name, out Gdk.RGBA c))
+				return new Cairo.Color (c.Red, c.Green, c.Blue);
+			return fallback;
+		}
+
+		/// <summary>GTK's <c>_gtk_style_shade</c>: scales lightness and saturation (HLS) by <paramref name="k"/>.</summary>
+		internal static Cairo.Color Shade (Cairo.Color color, double k)
+		{
+			double r = color.R, g = color.G, b = color.B;
+			RgbToHls (ref r, ref g, ref b);
+			g = Math.Min (Math.Max (g * k, 0), 1);
+			b = Math.Min (Math.Max (b * k, 0), 1);
+			HlsToRgb (ref r, ref g, ref b);
+			return new Cairo.Color (r, g, b, color.A);
+		}
+
+		static void RgbToHls (ref double r, ref double g, ref double b)
+		{
+			double red = r, green = g, blue = b;
+			double max = Math.Max (red, Math.Max (green, blue));
+			double min = Math.Min (red, Math.Min (green, blue));
+			double l = (max + min) / 2, s = 0, h = 0;
+			if (max != min) {
+				s = l <= 0.5 ? (max - min) / (max + min) : (max - min) / (2 - max - min);
+				double delta = max - min;
+				if (red == max)
+					h = (green - blue) / delta;
+				else if (green == max)
+					h = 2 + (blue - red) / delta;
+				else
+					h = 4 + (red - green) / delta;
+				h *= 60;
+				if (h < 0)
+					h += 360;
+			}
+			r = h;
+			g = l;
+			b = s;
+		}
+
+		static void HlsToRgb (ref double h, ref double l, ref double s)
+		{
+			double lightness = l, saturation = s;
+			double m2 = lightness <= 0.5 ? lightness * (1 + saturation) : lightness + saturation - lightness * saturation;
+			double m1 = 2 * lightness - m2;
+			if (saturation == 0) {
+				h = l = s = lightness;
+				return;
+			}
+			double red = HueToChannel (m1, m2, h + 120);
+			double green = HueToChannel (m1, m2, h);
+			double blue = HueToChannel (m1, m2, h - 120);
+			h = red;
+			l = green;
+			s = blue;
+		}
+
+		static double HueToChannel (double m1, double m2, double hue)
+		{
+			while (hue > 360)
+				hue -= 360;
+			while (hue < 0)
+				hue += 360;
+			if (hue < 60)
+				return m1 + (m2 - m1) * hue / 60;
+			if (hue < 180)
+				return m2;
+			if (hue < 240)
+				return m1 + (m2 - m1) * (240 - hue) / 60;
+			return m1;
 		}
 
 		/// <summary>

@@ -6157,7 +6157,4 @@
     <Publicize Include="Microsoft.CodeAnalysis.Features" />
     <Publicize Include="Microsoft.CodeAnalysis.CSharp.Features" />
   </ItemGroup>
-
-  <!-- Areas not yet ported to GTK3 / Roslyn 5 / .NET 10, removed from the build one by one (T070-T082). -->
-  <Import Project="Gtk3PortPending.props" />
 </Project>

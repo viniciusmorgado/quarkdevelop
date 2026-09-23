@@ -173,7 +173,7 @@ namespace MonoDevelop.Components
 			
 			if (GradientBackground) {
 				rect = new Gdk.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
-				var gcol = Style.Background (Gtk.StateType.Normal).ToXwtColor ();
+				var gcol = this.GetStyleBackgroundColor (Gtk.StateType.Normal).ToXwtColor ();
 				
 				using (Cairo.Context cr = evnt.CreateContext ()) {
 					cr.NewPath ();
@@ -204,28 +204,32 @@ namespace MonoDevelop.Components
 			} else if (useChildBackgroundColor && Child != null) {
 				using (Cairo.Context cr = evnt.CreateContext ()) {
 					cr.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
-					cr.SetSourceColor (Child.Style.Base (StateType.Normal).ToCairoColor ());
+					cr.SetSourceColor (Child.GetStyleBaseColor (StateType.Normal));
 					cr.Fill ();
 				}
 			}
 			
 			bool res = base.OnDrawn (gtk3cr);
 			
-			var borderColor = new Gdk.GC (GdkWindow);
-			borderColor.RgbFgColor = BorderColor != null ? BorderColor.Value : Style.Dark (Gtk.StateType.Normal);
+			var borderColor = BorderColor != null ? BorderColor.Value.ToCairoColor () : this.GetStyleDarkColor (Gtk.StateType.Normal);
 
 			rect = Allocation;
-			for (int n=0; n<topMargin; n++)
-				GdkWindow.DrawLine (borderColor, rect.X, rect.Y + n, rect.Right - 1, rect.Y + n);
-			
-			for (int n=0; n<bottomMargin; n++)
-				GdkWindow.DrawLine (borderColor, rect.X, rect.Bottom - n, rect.Right, rect.Bottom - n);
-			
-			for (int n=0; n<leftMargin; n++)
-				GdkWindow.DrawLine (borderColor, rect.X + n, rect.Y, rect.X + n, rect.Bottom);
-			
-			for (int n=0; n<rightMargin; n++)
-				GdkWindow.DrawLine (borderColor, rect.Right - n, rect.Y, rect.Right - n, rect.Bottom);
+			using (Cairo.Context cr = evnt.CreateContext ()) {
+				// GTK2 drew 1px lines with a GC (end points included): fill 1px wide rectangles instead.
+				cr.SetSourceColor (borderColor);
+				for (int n=0; n<topMargin; n++)
+					cr.Rectangle (rect.X, rect.Y + n, rect.Right - rect.X, 1);
+
+				for (int n=0; n<bottomMargin; n++)
+					cr.Rectangle (rect.X, rect.Bottom - n, rect.Right - rect.X + 1, 1);
+
+				for (int n=0; n<leftMargin; n++)
+					cr.Rectangle (rect.X + n, rect.Y, 1, rect.Bottom - rect.Y + 1);
+
+				for (int n=0; n<rightMargin; n++)
+					cr.Rectangle (rect.Right - n, rect.Y, 1, rect.Bottom - rect.Y + 1);
+				cr.Fill ();
+			}
 
 			if (showTopShadow) {
 				// FIXME: VV: Remove gradient features
@@ -240,7 +244,6 @@ namespace MonoDevelop.Components
 				}
 			}
 
-			borderColor.Dispose ();
 			return res;
 		}
 	}

@@ -94,7 +94,9 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 		
 		protected override IPropertyEditor CreateEditor (Gdk.Rectangle cell_area, Gtk.StateType state)
 		{
-			return new BooleanEditor { State = state };
+			var editor = new BooleanEditor ();
+			editor.SetState (state);
+			return editor;
 		}
 	}
 	

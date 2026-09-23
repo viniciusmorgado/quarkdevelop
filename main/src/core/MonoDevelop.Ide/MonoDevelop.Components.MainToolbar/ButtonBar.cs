@@ -79,7 +79,7 @@ namespace MonoDevelop.Components.MainToolbar
 
 		public ButtonBar ()
 		{
-			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
+			AppPaintable = true;
 			VisibleWindow = false;
 			Events |= EventMask.ButtonPressMask | EventMask.ButtonReleaseMask;
 
@@ -128,14 +128,14 @@ namespace MonoDevelop.Components.MainToolbar
 		StateType leaveState = StateType.Normal;
 		protected override bool OnEnterNotifyEvent (EventCrossing evnt)
 		{
-			State = leaveState;
+			this.SetState (leaveState);
 			return base.OnEnterNotifyEvent (evnt);
 		}
 
 		protected override bool OnLeaveNotifyEvent (EventCrossing evnt)
 		{
 			leaveState = State;
-			State = StateType.Normal;
+			this.SetState (StateType.Normal);
 			return base.OnLeaveNotifyEvent (evnt);
 		}
 
@@ -144,7 +144,7 @@ namespace MonoDevelop.Components.MainToolbar
 			if (evnt.Button == 1) {
 				pushedButton = VisibleButtons.FirstOrDefault (b => allocations [b].Contains (Allocation.X + (int)evnt.X, Allocation.Y + (int)evnt.Y));
 				if (pushedButton != null && pushedButton.Enabled)
-					State = StateType.Selected;
+					this.SetState (StateType.Selected);
 			}
 			return true;
 		}
@@ -154,7 +154,7 @@ namespace MonoDevelop.Components.MainToolbar
 			if (State == StateType.Selected && pushedButton != null) {
 				pushedButton.NotifyPushed ();
 			}
-			State = StateType.Prelight;
+			this.SetState (StateType.Prelight);
 			leaveState = StateType.Normal;
 			pushedButton = null;
 			return true;

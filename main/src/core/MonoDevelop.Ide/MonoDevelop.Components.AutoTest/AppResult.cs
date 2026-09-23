@@ -239,8 +239,6 @@ namespace MonoDevelop.Components.AutoTest
 
 		protected virtual void Dispose (bool disposing)
 		{
-			RemotingServices.Disconnect (this);
-
 			FirstChild?.Dispose ();
 			NextSibling?.Dispose ();
 

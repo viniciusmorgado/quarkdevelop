@@ -131,7 +131,7 @@ namespace MonoDevelop.Components.MainToolbar
 		TreeIter lastSelection = TreeIter.Zero;
 		public MainToolbar ()
 		{
-			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
+			AppPaintable = true;
 
 			AddWidget (button);
 			AddSpace (8);
@@ -271,7 +271,7 @@ namespace MonoDevelop.Components.MainToolbar
 			button.Clicked += HandleStartButtonClicked;
 
 			this.ShowAll ();
-			this.statusArea.statusIconBox.HideAll ();
+			this.statusArea.statusIconBox.Hide (); // GTK3 has no HideAll; ShowAll shows the icons again
 		}
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
@@ -394,8 +394,8 @@ namespace MonoDevelop.Components.MainToolbar
 				} else {
 					context.Rectangle (0, 0, Allocation.Width, Allocation.Height);
 					using (var lg = new LinearGradient (0, 0, 0, Allocation.Height)) {
-						lg.AddColorStop (0, Style.Light (StateType.Normal).ToCairoColor ());
-						lg.AddColorStop (1, Style.Mid (StateType.Normal).ToCairoColor ());
+						lg.AddColorStop (0, this.GetStyleLightColor (StateType.Normal));
+						lg.AddColorStop (1, this.GetStyleMidColor (StateType.Normal));
 						context.SetSource (lg);
 					}
 					context.Fill ();

@@ -51,7 +51,7 @@ namespace MonoDevelop.Components.MainToolbar
 
 		public RoundButton ()
 		{
-			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
+			AppPaintable = true;
 			Events |= EventMask.ButtonPressMask | EventMask.ButtonReleaseMask | EventMask.LeaveNotifyMask | EventMask.PointerMotionMask;
 			VisibleWindow = false;
 			SetSizeRequest (height, height);
@@ -76,21 +76,22 @@ namespace MonoDevelop.Components.MainToolbar
 		protected override bool OnMotionNotifyEvent (EventMotion evnt)
 		{
 
-			State = IsInside (evnt.X, evnt.Y) ? hoverState : StateType.Normal;;
+			this.SetState (IsInside (evnt.X, evnt.Y) ? hoverState : StateType.Normal);
 			return base.OnMotionNotifyEvent (evnt);
 		}
 
 
 		protected override bool OnLeaveNotifyEvent (EventCrossing evnt)
 		{
-			State = StateType.Normal;
+			this.SetState (StateType.Normal);
 			return base.OnLeaveNotifyEvent (evnt);
 		}
 
 		protected override bool OnButtonPressEvent (EventButton evnt)
 		{
 			if (evnt.Button == 1 && IsInside (evnt.X, evnt.Y)) {
-				hoverState = State = StateType.Selected;
+				hoverState = StateType.Selected;
+				this.SetState (hoverState);
 			}
 			return true;
 		}
@@ -99,7 +100,7 @@ namespace MonoDevelop.Components.MainToolbar
 		{
 			if (State == StateType.Selected)
 				OnClicked (EventArgs.Empty);
-			State = IsInside (evnt.X, evnt.Y) ? StateType.Prelight : StateType.Normal;;
+			this.SetState (IsInside (evnt.X, evnt.Y) ? StateType.Prelight : StateType.Normal);
 			hoverState = StateType.Prelight; 
 			return true;
 		}

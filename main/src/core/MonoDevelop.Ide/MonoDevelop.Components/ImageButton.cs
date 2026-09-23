@@ -103,8 +103,8 @@ namespace MonoDevelop.Components
 		{
 			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (HasFocus && image != null) {
-				Gtk.Style.PaintFocus (Style, GdkWindow, State, Allocation, this, "button",
-				                      Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
+				using (var ctx = evnt.CreateContext ())
+					StyleContext.RenderFocus (ctx, Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
 			}
 
 			return base.OnDrawn (gtk3cr);

@@ -140,8 +140,13 @@ namespace MonoDevelop.Components
 		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
 			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
-			Style.PaintFlatBox (Style, evnt.Window, StateType.Normal, ShadowType.Out, evnt.Area, this, "tooltip", 
-				Allocation.X + 1, Allocation.Y + 1, Allocation.Width - 2, Allocation.Height - 2);
+			using (var ctx = evnt.CreateContext ()) {
+				// GTK2 painted a flat "tooltip" box: GTK3 renders the background of the tooltip style class.
+				StyleContext.Save ();
+				StyleContext.AddClass ("tooltip");
+				StyleContext.RenderBackground (ctx, Allocation.X + 1, Allocation.Y + 1, Allocation.Width - 2, Allocation.Height - 2);
+				StyleContext.Restore ();
+			}
 			return base.OnDrawn (gtk3cr);
 		}
 

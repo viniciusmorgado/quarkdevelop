@@ -587,7 +587,8 @@ namespace MonoDevelop.Components.Docking
 			}
 
 			if (HasFocus) {
-				Gtk.Style.PaintFocus (Style, GdkWindow, State, Allocation, this, "button", Allocation.X + 2, Allocation.Y + 2, Allocation.Width - 4, Allocation.Height - 4);
+				using (var context = evnt.CreateContext ())
+					StyleContext.RenderFocus (context, Allocation.X + 2, Allocation.Y + 2, Allocation.Width - 4, Allocation.Height - 4);
 			}
 			return base.OnDrawn (gtk3cr);
 		}

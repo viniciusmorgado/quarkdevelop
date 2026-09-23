@@ -151,17 +151,17 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T136 [US3] M5b: `main/tests/MonoDevelop.Ide.Gtk3.Tests` in the Linux solution (Xvfb) with tests for the M5b behaviour changes so far: `SyncContext.AsyncDispatch` without `Delegate.BeginInvoke`, `Gtk3ExposeEvent` offsets/area/context restore, `Gtk3CompatExtensions.SizeRequest` → `./scripts/test.sh` runs them green
 
 - [x] T070 [US3] M5b: SDK-style `MonoDevelop.Ide.csproj` (GtkSharp 3, Publicizer for Roslyn internals, VS Composition explicit) with tracked `Gtk3PortPending.props`; `SyncContext.BeginInvoke` fixed → Ide builds with pending areas excluded
-- [ ] T071 [US3] M5b: port `MonoDevelop.Components/` (+ Theming, Extensions) → removed from pending list; builds
-- [ ] T072 [US3] M5b: port `Components.Docking`, `Components.DockNotebook` → builds
-- [ ] T073 [US3] M5b: port `Components.MainToolbar` → builds
-- [ ] T074 [US3] M5b: port `Components.Commands` + `Ide.Commands` → builds
-- [ ] T075 [US3] M5b: port `Components.PropertyGrid*`, `Components.Chart` → builds
-- [ ] T076 [US3] M5b: freeze Stetic output of Ide (`main/src/core/MonoDevelop.Ide/Gui/*.cs`) as hand-maintained GTK3 code → builds
-- [ ] T077 [US3] M5b: port `Ide.Gui` + `Ide.Gui.Shell` → builds
-- [ ] T078 [US3] M5b: port `Ide.Gui.Pads*` + `Ide.Gui.Components` → builds
-- [ ] T079 [US3] M5b: port `Ide.Gui.Dialogs`, `Ide.Gui.OptionPanels`, `Ide.Gui.Wizard` → builds
-- [ ] T080 [US3] M5b: port `Ide.Projects*` (+ OptionPanels) → builds
-- [ ] T081 [US3] M5b: port `Ide.Editor*`, `Ide.CodeCompletion`, `Ide.CodeTemplates`, `Ide.Fonts` → builds
+- [x] T071 [US3] M5b: port `MonoDevelop.Components/` (+ Theming, Extensions) → removed from pending list; builds
+- [x] T072 [US3] M5b: port `Components.Docking`, `Components.DockNotebook` → builds
+- [x] T073 [US3] M5b: port `Components.MainToolbar` → builds
+- [x] T074 [US3] M5b: port `Components.Commands` + `Ide.Commands` → builds
+- [x] T075 [US3] M5b: port `Components.PropertyGrid*`, `Components.Chart` → builds
+- [x] T076 [US3] M5b: freeze Stetic output of Ide (`main/src/core/MonoDevelop.Ide/Gui/*.cs`) as hand-maintained GTK3 code → builds
+- [x] T077 [US3] M5b: port `Ide.Gui` + `Ide.Gui.Shell` → builds
+- [x] T078 [US3] M5b: port `Ide.Gui.Pads*` + `Ide.Gui.Components` → builds
+- [x] T079 [US3] M5b: port `Ide.Gui.Dialogs`, `Ide.Gui.OptionPanels`, `Ide.Gui.Wizard` → builds
+- [x] T080 [US3] M5b: port `Ide.Projects*` (+ OptionPanels) → builds
+- [x] T081 [US3] M5b: port `Ide.Editor*`, `Ide.CodeCompletion`, `Ide.CodeTemplates`, `Ide.Fonts` → builds
 - [ ] T082 [US3] M5b: port `Ide.Execution`, `Ide.FindInFiles`, `Ide.WelcomePage`, remaining areas; `Gtk3PortPending.props` empty → `./scripts/inventory.sh --linux-sln` reports 0 GTK2-only APIs
 - [ ] T083 [US3] M5b: GTK3 CSS themes (light/dark) in `MonoDevelop.Components/…/IdeTheme.cs` → screenshots light + dark
 - [ ] T084 [US3] M5b: NativeLibraryMap entries for gtk/gdk/glib/pango/cairo; `MonoDevelop.Ide.dll.config` deleted → test

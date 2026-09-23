@@ -143,7 +143,7 @@ namespace MonoDevelop.Components.PropertyGrid
 			AddPropertyTab (new DefaultPropertyTab ());
 			AddPropertyTab (new EventPropertyTab ());
 
-			base.PackEnd (vpaned);
+			base.PackEnd (vpaned, true, true, 0);
 			base.FocusChain = new Gtk.Widget [] { vpaned };
 			
 			Populate (saveEditSession: false);

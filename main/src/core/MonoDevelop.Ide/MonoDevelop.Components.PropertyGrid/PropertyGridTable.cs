@@ -159,7 +159,7 @@ namespace MonoDevelop.Components.PropertyGrid
 
 			this.parentGrid = parentGrid;
 			this.editorManager = editorManager;
-			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
+			AppPaintable = true;
 			Events |= Gdk.EventMask.PointerMotionMask;
 			CanFocus = true;
 			resizeCursor = new Cursor (CursorType.SbHDoubleArrow);
@@ -615,7 +615,7 @@ namespace MonoDevelop.Components.PropertyGrid
 					ctx.Rectangle (0, y, dividerX, h + PropertyTopBottomPadding*2);
 					ctx.Clip ();
 					ctx.MoveTo (x, y + PropertyTopBottomPadding);
-					ctx.SetSourceColor (Style.Text (state).ToCairoColor ());
+					ctx.SetSourceColor (this.GetStyleTextColor (state));
 					Pango.CairoHelper.ShowLayout (ctx, layout);
 					ctx.Restore ();
 

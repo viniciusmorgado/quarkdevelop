@@ -167,7 +167,7 @@ namespace MonoDevelop.Components.DockNotebook
 			Add (innerBox);
 
 			this.notebook = notebook;
-			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
+			AppPaintable = true;
 			Events |= EventMask.PointerMotionMask | EventMask.LeaveNotifyMask | EventMask.ButtonPressMask;
 
 			var arr = new Xwt.ImageView (tabbarPrevImage);
@@ -1162,7 +1162,7 @@ namespace MonoDevelop.Components.DockNotebook
 			drawActive?.Invoke (ctx);
 
 			if (HasFocus) {
-				Gtk.Style.PaintFocus (Style, GdkWindow, State, focusRect, this, "tab", focusRect.X, focusRect.Y, focusRect.Width, focusRect.Height);
+				StyleContext.RenderFocus (ctx, focusRect.X, focusRect.Y, focusRect.Width, focusRect.Height);
 			}
 		}
 

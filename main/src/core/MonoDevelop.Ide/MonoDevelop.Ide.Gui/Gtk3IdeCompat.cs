@@ -167,14 +167,13 @@ namespace MonoDevelop.Ide
 			((Gtk.ListStore)combo.Model).AppendValues (text);
 		}
 
-		/// <summary>GTK2 <c>gtk_combo_box_get_active_text</c> for combos built like <see cref="AppendText"/>.</summary>
+		/// <summary>
+		/// GTK2 <c>gtk_combo_box_get_active_text</c>. Code in MonoDevelop.Ide.* namespaces binds this overload
+		/// before the MonoDevelop.Components one, so both must behave the same: delegate.
+		/// </summary>
 		public static string GetActiveText (this Gtk.ComboBox combo)
 		{
-			if (combo is Gtk.ComboBoxText comboText)
-				return comboText.ActiveText;
-			if (!combo.GetActiveIter (out Gtk.TreeIter iter))
-				return null;
-			return combo.Model.GetValue (iter, 0) as string;
+			return MonoDevelop.Components.Gtk3CompatExtensions.GetActiveText (combo);
 		}
 
 		/// <summary>Converts a GTK3 RGBA to the GTK2 Gdk.Color (alpha dropped).</summary>

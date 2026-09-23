@@ -90,8 +90,7 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 			var dialog = new Gtk.Dialog () {
 				Title = displayName + " Editor",
 				Modal = true,
-				AllowGrow = true,
-				AllowShrink = true,
+				Resizable = true,
 			};
 			IdeTheme.ApplyTheme (dialog);
 			var toplevel = this.Container.GetNativeWidget<Gtk.Widget> ().Toplevel as Gtk.Window;
@@ -103,7 +102,7 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 			
 			//three columns for items, sorting, PropGrid
 			HBox hBox = new HBox ();
-			dialog.VBox.PackStart (hBox, true, true, 5);
+			dialog.ContentArea.PackStart (hBox, true, true, 5);
 
 			//propGrid at end
 			grid = new PropertyGrid (base.EditorManager) {

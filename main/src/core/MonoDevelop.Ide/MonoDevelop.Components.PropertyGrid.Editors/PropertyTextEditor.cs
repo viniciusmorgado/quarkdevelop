@@ -64,8 +64,9 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 					combo.PackStart (crt, true);
 					combo.AddAttribute (crt, "text", 0);
 				} else {
-					combo = new ComboBoxEntry (store, 0);
-					entry = ((ComboBoxEntry)combo).Entry;
+					combo = ComboBox.NewWithModelAndEntry (store);
+					combo.EntryTextColumn = 0;
+					entry = combo.Entry;
 					entry.HeightRequest = combo.SizeRequest ().Height;
 				}
 
@@ -100,7 +101,7 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 				entry.Changed += TextChanged;
 				entry.FocusOutEvent += FirePendingChangeEvent;
 				if (!entry.IsEditable)
-					entry.ModifyText (StateType.Normal, entry.Style.Text (Gtk.StateType.Insensitive));
+					entry.OverrideColor (StateFlags.Normal, entry.GetStyleTextColor (Gtk.StateType.Insensitive).ToGdkRgba ());
 			}
 
 			if (entry != null && ShouldShowDialogButton () && entry.IsEditable) {
@@ -232,7 +233,7 @@ namespace MonoDevelop.Components.PropertyGrid.PropertyEditors
 					int index;
 					if (FindComboValue (value, out index)) {
 						combo.Active = index;
-						initialText = combo.ActiveText;
+						initialText = combo.GetActiveText ();
 						return;
 					}
 				}

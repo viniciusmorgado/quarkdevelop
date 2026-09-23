@@ -294,12 +294,11 @@ namespace MonoDevelop.Components
 		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
 			var args = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
-			Gdk.Drawable win = args.Window;
-		
+			using var ctx = args.CreateContext ();
 			int width, height;
 			layout.GetPixelSize (out width, out height);
-			
-			int arrowHeight = height / 2; 
+
+			int arrowHeight = height / 2;
 			int arrowWidth = arrowHeight + 1;
 			int arrowXPos = this.Allocation.X + this.Allocation.Width - arrowWidth;
 			if (DrawButtonShape) {
@@ -312,30 +311,32 @@ namespace MonoDevelop.Components
 			//this *might* cause some theme issues with the state of the text/arrows rendering on top of it
 			var state = window != null? StateType.Active
 				: State == StateType.Insensitive? StateType.Normal : State;
-			
+
 			//HACK: paint the button background as if it were bigger, but it stays clipped to the real area,
 			// so we get the content but not the border. This might break with crazy themes.
 			//FIXME: we can't use the style's actual internal padding because GTK# hasn't wrapped GtkBorder AFAICT
 			// (default-border, inner-border, default-outside-border, etc - see http://git.gnome.org/browse/gtk+/tree/gtk/gtkbutton.c)
 			const int padding = 4;
+			var style = StyleContext;
+			style.Save ();
+			style.AddClass ("button");
+			style.State = state.ToStateFlags ();
+			// GTK2 painted a "button" box without shadow: GTK3 renders the button background only.
 			if (DrawButtonShape){
-				Style.PaintBox (Style, args.Window, state, ShadowType.None, args.Area, this, "button", 
-				            Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
-
+				style.RenderBackground (ctx, Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
 			} else {
-				Style.PaintBox (Style, args.Window, state, ShadowType.None, args.Area, this, "button", 
-				            Allocation.X - padding, Allocation.Y - padding, Allocation.Width + padding * 2, Allocation.Height + padding * 2);
+				style.RenderBackground (ctx, Allocation.X - padding, Allocation.Y - padding, Allocation.Width + padding * 2, Allocation.Height + padding * 2);
 			}
+			style.Restore ();
 
 			int xPos = Allocation.Left;
 			if (Pixbuf != null) {
-				using (var ctx = Gdk.CairoHelper.Create (win))
-					ctx.DrawImage (this, Pixbuf, xPos + pixbufSpacing, Allocation.Y + (Allocation.Height - Pixbuf.Height) / 2);
+				ctx.DrawImage (this, Pixbuf, xPos + pixbufSpacing, Allocation.Y + (Allocation.Height - Pixbuf.Height) / 2);
 				xPos += (int)Pixbuf.Width + pixbufSpacing * 2;
 			}
 			if (DrawButtonShape)
 				xPos += 4;
-			
+
 			//constrain the text area so it doesn't get rendered under the arrows
 			var textArea = new Gdk.Rectangle (xPos, Allocation.Y + ySpacing, arrowXPos - xPos - 2, Allocation.Height - ySpacing);
 
@@ -344,16 +345,33 @@ namespace MonoDevelop.Components
 				layout.Width = Allocation.Width - textArea.X;
 			}
 
-			Style.PaintLayout (Style, win, state, true, textArea, this, "", textArea.X, textArea.Y + Math.Max (0, (textArea.Height - height) / 2), layout);
-			
+			ctx.Save ();
+			ctx.Rectangle (textArea.X, textArea.Y, textArea.Width, textArea.Height);
+			ctx.Clip ();
+			ctx.DrawLayout (this, state, textArea.X, textArea.Y + Math.Max (0, (textArea.Height - height) / 2), layout);
+			ctx.Restore ();
+
 			state = Sensitive ? StateType.Normal : StateType.Insensitive;
-			Gtk.Style.PaintArrow (this.Style, win, state, ShadowType.None, args.Area, this, "", ArrowType.Up, true, arrowXPos, Allocation.Y + (Allocation.Height) / 2 - arrowHeight, arrowWidth, arrowHeight);
-			Gtk.Style.PaintArrow (this.Style, win, state, ShadowType.None, args.Area, this, "", ArrowType.Down, true, arrowXPos, Allocation.Y + (Allocation.Height) / 2, arrowWidth, arrowHeight);
+			// GTK3 arrows are square: centre an arrowHeight-sized arrow in the GTK2 arrowWidth x arrowHeight box.
+			style.Save ();
+			style.State = state.ToStateFlags ();
+			double arrowX = arrowXPos + (arrowWidth - arrowHeight) / 2.0;
+			style.RenderArrow (ctx, 0, arrowX, Allocation.Y + (Allocation.Height) / 2 - arrowHeight, arrowHeight);
+			style.RenderArrow (ctx, Math.PI, arrowX, Allocation.Y + (Allocation.Height) / 2, arrowHeight);
+			style.Restore ();
 			if (!DrawButtonShape) {
-				if (DrawRightBorder)
-					win.DrawLine (this.Style.DarkGC (StateType.Normal), Allocation.X + Allocation.Width - 1, Allocation.Y, Allocation.X + Allocation.Width - 1, Allocation.Y + Allocation.Height);			
-				if (DrawLeftBorder)
-					win.DrawLine (this.Style.DarkGC (StateType.Normal), Allocation.X, Allocation.Y, Allocation.X, Allocation.Y + Allocation.Height);			
+				ctx.SetSourceColor (this.GetStyleDarkColor (StateType.Normal));
+				ctx.LineWidth = 1;
+				if (DrawRightBorder) {
+					ctx.MoveTo (Allocation.X + Allocation.Width - 0.5, Allocation.Y);
+					ctx.LineTo (Allocation.X + Allocation.Width - 0.5, Allocation.Y + Allocation.Height);
+					ctx.Stroke ();
+				}
+				if (DrawLeftBorder) {
+					ctx.MoveTo (Allocation.X + 0.5, Allocation.Y);
+					ctx.LineTo (Allocation.X + 0.5, Allocation.Y + Allocation.Height);
+					ctx.Stroke ();
+				}
 			}
 			return false;
 		}

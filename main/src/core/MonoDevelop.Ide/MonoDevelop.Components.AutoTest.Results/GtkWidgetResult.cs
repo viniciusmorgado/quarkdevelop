@@ -108,7 +108,7 @@ namespace MonoDevelop.Components.AutoTest.Results
 			// If the active text fails then
 			ComboBox cb = resultWidget as ComboBox;
 			if (cb != null) {
-				string activeText = cb.ActiveText;
+				string activeText = cb.GetActiveText ();
 				if (activeText == null) {
 					return null;
 				}

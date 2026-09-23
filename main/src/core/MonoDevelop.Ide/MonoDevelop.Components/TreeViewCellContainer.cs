@@ -82,7 +82,7 @@ namespace MonoDevelop.Components
 			requisition = Gtk3BaseSizeRequest ();
 			if (box.Child != null) {
 				requisition = box.Child.SizeRequest ();
-				requisition.Height += 2 * box.Child.Style?.YThickness ?? 0;
+				requisition.Height += 2 * box.Child.StyleContext.GetPadding (box.Child.StateFlags).Top; // GTK3 GtkStyle ythickness = padding top
 			}
 			else
 				requisition = box.SizeRequest ();
@@ -110,7 +110,7 @@ namespace MonoDevelop.Components
 		{
 			base.OnSizeAllocated (allocation);
 			box.SizeRequest ();
-			box.Allocation = allocation;
+			box.SizeAllocate (allocation);
 		}
 	}
 }

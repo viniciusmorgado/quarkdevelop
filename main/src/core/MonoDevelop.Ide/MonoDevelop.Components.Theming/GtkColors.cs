@@ -112,37 +112,34 @@ namespace MonoDevelop.Components.Theming
 			
 			for (int c = 0, i = 0; c < cn; c++) {
 				for (int s = 0; s < sn; s++,i++) {
-					Gdk.Color color = Gdk.Color.Zero;
-					
+					Cairo.Color color = new Cairo.Color (0, 0, 0);
+
 					if (widget != null && widget.IsRealized) {
+						var state = (StateType)s;
 						switch ((GtkColorClass)c) {
 						case GtkColorClass.Light:
-							color = widget.Style.LightColors[s];
+							color = widget.GetStyleLightColor (state);
 							break;
 						case GtkColorClass.Mid:
-							color = widget.Style.MidColors[s];
+							color = widget.GetStyleMidColor (state);
 							break;
 						case GtkColorClass.Dark:
-							color = widget.Style.DarkColors[s];
+							color = widget.GetStyleDarkColor (state);
 							break;
 						case GtkColorClass.Base:
-							color = widget.Style.BaseColors[s];
+							color = widget.GetStyleBaseColor (state);
 							break;
 						case GtkColorClass.Text:
-							color = widget.Style.TextColors[s];
+						case GtkColorClass.Foreground:
+							color = widget.GetStyleTextColor (state);
 							break;
 						case GtkColorClass.Background:
-							color = widget.Style.Backgrounds[s];
-							break;
-						case GtkColorClass.Foreground:
-							color = widget.Style.Foregrounds[s];
+							color = widget.GetStyleBackgroundColor (state);
 							break;
 						}
-					} else {
-						color = new Gdk.Color (0, 0, 0);
 					}
-					
-					gtk_colors[c * sn + s] = CairoExtensions.GdkColorToCairoColor (color);
+
+					gtk_colors[c * sn + s] = color;
 				}
 			}
 			

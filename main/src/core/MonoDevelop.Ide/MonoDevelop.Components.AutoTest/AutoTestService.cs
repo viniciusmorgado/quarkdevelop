@@ -28,7 +28,6 @@ using System;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Remoting;
 using System.Diagnostics;
 using System.Collections.Generic;
@@ -56,31 +55,11 @@ namespace MonoDevelop.Components.AutoTest
 		{
 			AutoTestService.commandManager = commandManager;
 			
-			string sref = Environment.GetEnvironmentVariable ("MONO_AUTOTEST_CLIENT");
-			if (!string.IsNullOrEmpty (sref)) {
-				Console.WriteLine ("AutoTest service starting");
-				MonoDevelop.Core.Execution.RemotingService.RegisterRemotingChannel ();
-				byte[] data = Convert.FromBase64String (sref);
-				MemoryStream ms = new MemoryStream (data);
-				BinaryFormatter bf = new BinaryFormatter ();
-				IAutoTestClient client = (IAutoTestClient) bf.Deserialize (ms);
-
-				// Initialize as much as we can before connecting back to the client
-				Ide.IdeApp.Workbench.EnsureLayout ();
-				Runtime.Preferences.EnableUpdaterForCurrentSession = false;
-
-				client.Connect (manager.AttachClient (client));
-			}
-			if (publishServer && !manager.IsClientConnected) {
-				MonoDevelop.Core.Execution.RemotingService.RegisterRemotingChannel ();
-				BinaryFormatter bf = new BinaryFormatter ();
-				ObjRef oref = RemotingServices.Marshal (manager);
-				MemoryStream ms = new MemoryStream ();
-				bf.Serialize (ms, oref);
-				sref = Convert.ToBase64String (ms.ToArray ());
-				File.WriteAllText (SessionReferenceFile, sref);
-				Runtime.Preferences.EnableUpdaterForCurrentSession = false;
-			}
+			// Connecting to a test client (MONO_AUTOTEST_CLIENT) and publishing the session for AttachApplication
+			// went through .NET Remoting and BinaryFormatter, which do not exist on .NET 10 (ADR 0009). Remote UI
+			// automation is excluded from the Linux product (ADR 0017); in-process sessions and recording still work.
+			if (!string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("MONO_AUTOTEST_CLIENT")) || publishServer)
+				LoggingService.LogWarning ("AutoTest remote sessions are not supported on this platform (they require .NET Remoting)");
 		}
 
 		public static void ReplaySessionFromFile (string filename)

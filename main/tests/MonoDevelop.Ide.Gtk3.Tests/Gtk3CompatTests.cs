@@ -129,5 +129,108 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			Assert.AreEqual (natural.Width, requisition.Width);
 			Assert.AreEqual (natural.Height, requisition.Height);
 		}
+
+		[Test]
+		public void SetStateReplacesTheStateTypeFlagsOnly ()
+		{
+			GtkFixture.Require ();
+			var button = new Gtk.Button ();
+			button.SetStateFlags (Gtk.StateFlags.DirLtr, false);
+
+			button.SetState (Gtk.StateType.Prelight);
+			Assert.IsTrue (button.StateFlags.HasFlag (Gtk.StateFlags.Prelight));
+
+			button.SetState (Gtk.StateType.Selected);
+			Assert.IsTrue (button.StateFlags.HasFlag (Gtk.StateFlags.Selected));
+			Assert.IsFalse (button.StateFlags.HasFlag (Gtk.StateFlags.Prelight));
+
+			button.SetState (Gtk.StateType.Normal);
+			Assert.IsFalse (button.StateFlags.HasFlag (Gtk.StateFlags.Selected));
+			Assert.IsFalse (button.StateFlags.HasFlag (Gtk.StateFlags.Prelight));
+			// Flags that are not a GTK2 state type are kept, as gtk_widget_set_state does.
+			Assert.IsTrue (button.StateFlags.HasFlag (Gtk.StateFlags.DirLtr));
+		}
+
+		/// <summary>Gives the widget a background color through CSS (the non-deprecated way).</summary>
+		static void SetBackground (Gtk.Widget widget, string cssColor)
+		{
+			var css = new Gtk.CssProvider ();
+			css.LoadFromData ("* { background-color: " + cssColor + "; }");
+			widget.StyleContext.AddProvider (css, uint.MaxValue);
+		}
+
+		[Test]
+		public void LightDarkAndMidShadeTheBackgroundLikeGtkStyle ()
+		{
+			GtkFixture.Require ();
+			var box = new Gtk.EventBox ();
+			SetBackground (box, "rgb(50%, 50%, 50%)");
+
+			var bg = box.GetStyleBackgroundColor (Gtk.StateType.Normal);
+			Assert.AreEqual (0.5, bg.R, 1e-6);
+			Assert.AreEqual (1, bg.A, 1e-6);
+			// Grey has no saturation: GTK's shade only scales the lightness (x1.3 light, x0.7 dark).
+			Assert.AreEqual (0.65, box.GetStyleLightColor (Gtk.StateType.Normal).R, 1e-6);
+			Assert.AreEqual (0.35, box.GetStyleDarkColor (Gtk.StateType.Normal).G, 1e-6);
+			Assert.AreEqual (0.5, box.GetStyleMidColor (Gtk.StateType.Normal).B, 1e-6);
+
+			// Saturation is scaled too: pure red (l 0.5, s 1) darkens to l 0.35, s 0.7, keeping its hue.
+			var red = new Gtk.EventBox ();
+			SetBackground (red, "rgb(255, 0, 0)");
+			var dark = red.GetStyleDarkColor (Gtk.StateType.Normal);
+			Assert.AreEqual (0.595, dark.R, 1e-6);
+			Assert.AreEqual (0.105, dark.G, 1e-6);
+			Assert.AreEqual (0.105, dark.B, 1e-6);
+		}
+
+		[Test]
+		public void BackgroundColorOfATransparentWidgetComesFromItsAncestors ()
+		{
+			GtkFixture.Require ();
+			var box = new Gtk.EventBox ();
+			SetBackground (box, "rgb(20%, 40%, 60%)");
+			var label = new Gtk.Label ("x");
+			box.Add (label);
+
+			var bg = label.GetStyleBackgroundColor (Gtk.StateType.Normal);
+			Assert.AreEqual (0.2, bg.R, 1e-6);
+			Assert.AreEqual (0.4, bg.G, 1e-6);
+			Assert.AreEqual (0.6, bg.B, 1e-6);
+			Assert.AreEqual (1, bg.A, 1e-6);
+
+			// Base comes from the entry style class and is always opaque.
+			Assert.AreEqual (1, label.GetStyleBaseColor (Gtk.StateType.Normal).A, 1e-6);
+		}
+
+		[Test]
+		public void ToGdkRgbaKeepsTheComponents ()
+		{
+			var rgba = new Cairo.Color (0.1, 0.2, 0.3, 0.4).ToGdkRgba ();
+			Assert.AreEqual (0.1, rgba.Red, 1e-9);
+			Assert.AreEqual (0.2, rgba.Green, 1e-9);
+			Assert.AreEqual (0.3, rgba.Blue, 1e-9);
+			Assert.AreEqual (0.4, rgba.Alpha, 1e-9);
+		}
+
+		[Test]
+		public void GetActiveTextReadsTheActiveRowOrTheEntry ()
+		{
+			GtkFixture.Require ();
+			var combo = new Gtk.ComboBoxText ();
+			combo.AppendText ("one");
+			combo.AppendText ("two");
+			Assert.IsNull (combo.GetActiveText ());
+			combo.Active = 1;
+			Assert.AreEqual ("two", combo.GetActiveText ());
+
+			var store = new Gtk.ListStore (typeof (string));
+			store.AppendValues ("alpha");
+			var withEntry = Gtk.ComboBox.NewWithModelAndEntry (store);
+			withEntry.EntryTextColumn = 0;
+			withEntry.Entry.Text = "typed";
+			Assert.AreEqual ("typed", withEntry.GetActiveText ());
+			withEntry.Active = 0;
+			Assert.AreEqual ("alpha", withEntry.GetActiveText ());
+		}
 	}
 }

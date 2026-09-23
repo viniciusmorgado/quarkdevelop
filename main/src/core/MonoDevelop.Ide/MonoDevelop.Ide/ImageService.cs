@@ -836,7 +836,7 @@ namespace MonoDevelop.Ide
 			var scaleFactor = (int) screen.ScaleFactor;
 			size = size * scaleFactor;
 
-			var hash = GetMD5Hash (email);
+			var hash = GetGravatarHash (email);
 			string key = hash + "@" + size + "x" + size;
 
 			if (scaleFactor != 1) {
@@ -853,10 +853,10 @@ namespace MonoDevelop.Ide
 			return loader;
 		}
 
-		static string GetMD5Hash (string email)
+		// Gravatar accepts SHA-256 e-mail hashes (MD5 is a broken algorithm, CA5351)
+		static string GetGravatarHash (string email)
 		{
-			var md5 = System.Security.Cryptography.MD5.Create ();
-			byte[] hash = md5.ComputeHash (Encoding.UTF8.GetBytes (email.Trim ().ToLower ()));
+			byte[] hash = System.Security.Cryptography.SHA256.HashData (Encoding.UTF8.GetBytes (email.Trim ().ToLowerInvariant ()));
 			StringBuilder sb = StringBuilderCache.Allocate ();
 			foreach (byte b in hash)
 				sb.Append (b.ToString ("x2"));
