@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RoslynVersion>5.9.0</RoslynVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(RoslynVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
+    <PackageReference Include="Krafs.Publicizer" Version="2.3.0" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <Publicize Include="Microsoft.CodeAnalysis.Workspaces" />
+    <Publicize Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+  </ItemGroup>
+</Project>

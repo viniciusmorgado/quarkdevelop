@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>AddinsHost</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Mono.Addins" Version="1.4.1" />
+    <PackageReference Include="Mono.Addins.Setup" Version="1.4.1" />
+    <PackageReference Include="Mono.Addins.CecilReflector" Version="1.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Host.addin.xml" LogicalName="Host.addin.xml" />
+  </ItemGroup>
+  <!-- MonoDevelop-style: tell Mono.Addins where add-ins live via an .addins file next to the host. -->
+  <ItemGroup>
+    <None Include="AddinsHost.addins" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

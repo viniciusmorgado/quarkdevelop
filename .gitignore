@@ -280,3 +280,7 @@ main/po/StripMnemonics.exe
 *.ProjectImports.zip
 main/tests/StressTest/bin
 
+
+# M0 spikes build output
+/spikes/**/bin/
+/spikes/**/obj/

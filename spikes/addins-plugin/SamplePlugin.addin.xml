@@ -1,0 +1,14 @@
+<Addin id="SamplePlugin" namespace="" version="1.0">
+  <Runtime>
+    <Import assembly="SamplePlugin.dll" />
+  </Runtime>
+  <Dependencies>
+    <Addin id="Host" version="1.0" />
+  </Dependencies>
+  <Extension path="/Host/Tools">
+    <Tool id="hello-tool" />
+  </Extension>
+  <Extension path="/Host/Commands">
+    <Type type="SamplePlugin.HelloCommand" />
+  </Extension>
+</Addin>

@@ -1,0 +1,8 @@
+<Addin id="Host" namespace="" version="1.0" isroot="true">
+  <Runtime>
+    <Import assembly="AddinsHost.dll" />
+  </Runtime>
+  <ExtensionPoint path="/Host/Tools">
+    <ExtensionNode name="Tool" />
+  </ExtensionPoint>
+</Addin>
