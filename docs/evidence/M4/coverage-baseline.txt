@@ -1,0 +1,1 @@
+MonoDevelop.Core 57.6

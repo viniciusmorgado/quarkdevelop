@@ -3,19 +3,25 @@
 # Usage: ./scripts/pm ./scripts/test.sh [--all] [--no-build] [extra dotnet test args...]
 #   default  excludes tests in the Quarantine category
 #   --all    runs quarantined tests too (informational; failures are expected there)
+#   --update-baseline  rewrite the coverage ratchet file after an intentional change
 # Outputs: out/tests/*.trx, out/coverage/Summary.txt (+ Cobertura XML)
+# Coverage ratchet (task T055): each assembly listed in docs/evidence/M4/coverage-baseline.txt must
+# keep at least its recorded line coverage; the run fails otherwise.
 set -euo pipefail
 # shellcheck source=scripts/lib.sh
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 md_require_container "$@"
 
 filter='Category!=Quarantine'
+update_baseline=false
+baseline="$MD_ROOT/docs/evidence/M4/coverage-baseline.txt"
 build_args=()
 extra=()
 while [[ $# -gt 0 ]]; do
 	case "$1" in
 		--all) filter=''; shift ;;
 		--no-build) build_args+=(--no-build); shift ;;
+		--update-baseline) update_baseline=true; shift ;;
 		*) extra+=("$1"); shift ;;
 	esac
 done
@@ -40,6 +46,25 @@ if [[ ${#reports[@]} -gt 0 ]]; then
 		"-targetdir:$MD_OUT/coverage" \
 		"-reporttypes:TextSummary;Cobertura" >/dev/null
 	cat "$MD_OUT/coverage/Summary.txt"
+
+	# Per-assembly line coverage: lines "<Assembly>   <percent>%" after the summary header.
+	current="$MD_OUT/coverage/line-coverage.txt"
+	awk '/^[A-Za-z][A-Za-z0-9.]+ +[0-9.]+%$/ { sub(/%$/, "", $2); print $1, $2 }' "$MD_OUT/coverage/Summary.txt" | sort > "$current"
+	if [[ "$update_baseline" == true ]]; then
+		cp "$current" "$baseline"
+		md_log "coverage baseline updated: $baseline"
+	elif [[ -f "$baseline" && -n "$filter" ]]; then
+		md_log "coverage ratchet ($baseline)"
+		while read -r assembly minimum; do
+			actual="$(awk -v a="$assembly" '$1 == a { print $2 }' "$current")"
+			if [[ -z "$actual" ]] || awk -v a="$actual" -v m="$minimum" 'BEGIN { exit !(a + 0.05 < m) }'; then
+				echo "coverage of $assembly dropped: ${actual:-missing}% < $minimum%" >&2
+				status=1
+			else
+				echo "$assembly $actual% (baseline $minimum%)"
+			fi
+		done < "$baseline"
+	fi
 fi
 
 exit "$status"

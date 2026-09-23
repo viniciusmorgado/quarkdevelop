@@ -81,20 +81,20 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [x] T040 [US1] M3: `main/tests/MonoDevelop.Core.Tests` → SDK-style, `OneTimeSetUp`/`OneTimeTearDown`, `Assert.Throws` instead of `ExpectedException`, `Assert.IsInstanceOf`, `Does.EndWith`, Moq 4.20/Castle 5.2 → `dotnet test --list-tests` lists 860 cases
 - [x] T132 [US1] M3: retroactive tests for T034–T036 and the CA5369 fix (JSON instrumentation autosave round-trip, `CreateExternalProcessObject` throws `NotSupportedException`, `ItemInitializationContext` delays initialization across awaits, property deserialization rejects DTDs) → tests pass
 - [x] T133 [US1] M3: test host infrastructure: `TestHost` (main-loop sync context, isolated profile), `MonoDevelop.TestStartupHook` (MSBuildLocator before discovery), generated `.runsettings`, `Mono.Addins.CecilReflector` → `dotnet test --list-tests` discovers ≥ 850 Core tests
-- [ ] T041 [US1] M3: first run + quarantine record (reason, owner, date, task) → `docs/evidence/M4/quarantine.md`; `./scripts/test.sh` green with `Category!=Quarantine`
+- [x] T041 [US1] M3: first run + quarantine record (reason, owner, date, task) → `docs/evidence/M4/quarantine.md`; `./scripts/test.sh` green with `Category!=Quarantine`
 
 ### Runtime on .NET (M3) — each with tests
 
 - [x] T042 [US1] M3: `DotNetCoreTargetRuntime` + factory in `MonoDevelop.Core.Assemblies/` (SDK discovery via Locator / `dotnet --list-sdks`, reference packs, `CanBuild=false` + message when no SDK), registered in `MonoDevelop.Core.addin.xml`; null-safe `SystemAssemblyService` → tests `DotNetCoreTargetRuntimeTests` (SDK found; no-SDK case)
 - [x] T043 [US1] M3: `DotNetCoreExecutionHandler` for `DotNetExecutionCommand` (`dotnet exec`) → test runs `linux-smoke` Hello through the handler
 - [x] T044 [US1] M3: `MSBuildRegistration.EnsureRegistered` (MSBuildLocator, SDK instance) called first in mdtool/test hosts; builder registers the path sent by the IDE → `DotNetCoreTargetRuntimeTests.InstalledSdkProvidesMSBuild`, mdtool builds (docs/evidence/M3/mdtool.md)
-- [ ] T045 [US1] M3: `NativeLibraryMap` (`MonoDevelop.Core/NativeLibraryMap.cs`) + module initializer; `MonoDevelop.Core.dll.config` deleted → test resolves `libglib-2.0-0.dll` → `libglib-2.0.so.0`
-- [ ] T046 [US1] M3: `Mono.Unix` usage verified on net10 (`LoggingService`, `ProcessService`, `Runtime`, `FileService`, `TextFile`), `mono_pmip` removed from `SampleProfiler.cs`, `CodePagesEncodingProvider` registered at start-up → tests: log redirection, legacy code page decode, `AsyncLocal` delayed initialization
-- [ ] T047 [US1] M3: NGettext-based `GettextCatalog` (`MonoDevelop.Core/Gettext.cs`) → test translates a known string with `LANG=de_DE` from a compiled catalog
-- [ ] T048 [US1] M3: MSBuild target compiling `main/po/*.po` → `main/build/locale/<lang>/LC_MESSAGES/monodevelop.mo` (replaces autotools msgfmt) → one `.mo` per `.po` (FR-018)
-- [ ] T049 [US1] M3: `Type.GetType("Mono.Runtime")` checks and `Assembly.LoadFrom` sites in Core (`Runtime.cs`, `SdkResolution.cs`, `MonoRuntimeInfo.cs`) behave on CoreCLR → test `Platform`/runtime info reports CoreCLR
-- [ ] T050 [US1] M3: add-in failure resilience: an add-in with a missing dependency is skipped and logged → test with a broken test add-in
-- [ ] T051 [US1] M3: sln/csproj round-trip test (load + save `linux-smoke/Smoke.sln` and a fixture without diff) → test in Core.Tests
+- [x] T045 [US1] M3: `NativeLibraryMap` (`MonoDevelop.Core/NativeLibraryMap.cs`) + module initializer; `MonoDevelop.Core.dll.config` deleted → test resolves `libglib-2.0-0.dll` → `libglib-2.0.so.0`
+- [x] T046 [US1] M3: `Mono.Unix` usage verified on net10 (`LoggingService`, `ProcessService`, `Runtime`, `FileService`, `TextFile`), `mono_pmip` removed from `SampleProfiler.cs`, `CodePagesEncodingProvider` registered at start-up → tests: log redirection, legacy code page decode, `AsyncLocal` delayed initialization
+- [x] T047 [US1] M3: NGettext-based `GettextCatalog` (`MonoDevelop.Core/Gettext.cs`) → test translates a known string with `LANG=de_DE` from a compiled catalog
+- [x] T048 [US1] M3: MSBuild target compiling `main/po/*.po` → `main/build/locale/<lang>/LC_MESSAGES/monodevelop.mo` (replaces autotools msgfmt) → one `.mo` per `.po` (FR-018)
+- [x] T049 [US1] M3: `Type.GetType("Mono.Runtime")` checks and `Assembly.LoadFrom` sites in Core (`Runtime.cs`, `SdkResolution.cs`, `MonoRuntimeInfo.cs`) behave on CoreCLR → test `Platform`/runtime info reports CoreCLR
+- [x] T050 [US1] M3: add-in failure resilience: an add-in with a missing dependency is skipped and logged → test with a broken test add-in
+- [x] T051 [US1] M3: sln/csproj round-trip test (load + save `linux-smoke/Smoke.sln` and a fixture without diff) → test in Core.Tests
 - [x] T052 [US1] M3: vulnerability gate `scripts/audit.sh` (fails on High/Critical in `dotnet list package --vulnerable --include-transitive`) → exit 0
 
 ### UI-free C# project support (M3)
@@ -104,7 +104,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 
 ### Coverage (M4)
 
-- [ ] T055 [US1] M4: `scripts/test.sh` coverage + ratchet (`docs/evidence/M4/coverage-baseline.txt`; fails if lower) → `out/coverage/Summary.txt`
+- [x] T055 [US1] M4: `scripts/test.sh` coverage + ratchet (`docs/evidence/M4/coverage-baseline.txt`; fails if lower) → `out/coverage/Summary.txt`
 - [ ] T056 [US1] M4: Core ≥ 60% and Linux solution ≥ 40% line coverage (targeted tests for new code) → Summary.txt
 - [ ] T057 [US1] M4: evidence → `docs/evidence/M3/README.md`, `docs/evidence/M4/README.md` (TRX summary, coverage, quarantine ≤ 15%)
 - [ ] T134 [US1] M4: legacy .NET Framework fixtures in `main/tests/test-projects` resolve reference assemblies on Linux (Microsoft.NETFramework.ReferenceAssemblies via `TargetFrameworkRootPath`; `CodeTaskFactory` → `RoslynCodeTaskFactory`) → `net4x-fixture` quarantine entries removed
@@ -121,10 +121,10 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [x] T058 [P] [US2] M3: `main/tests/linux-smoke/{Hello,Greeter,Broken,Smoke.sln}` isolated from repo props (own `Directory.Build.*`, `Directory.Packages.props`); not part of `MonoDevelop.Linux.sln` → `dotnet build main/tests/linux-smoke/Smoke.sln` ok, Broken fails with CS0103
 - [x] T059 [US2] M3: MSBuild builder `main/src/core/MonoDevelop.Projects.Formats.MSBuild` → net10.0 exe; no Remoting/`System.Net.Configuration`; `Thread.Abort`/`SetApartmentState` removed (`BuildManager.CancelAllSubmissions`); `Main.cs` no longer sets `MSBUILD_EXE_PATH` nor `AssemblyResolve`; MSBuildLocator at entry → builds to `build/bin/MonoDevelop.MSBuildBuilder.dll`
 - [x] T060 [US2] M3: `RemoteBuildEngineManager`: launch builder with `dotnet exec` (+ `DOTNET_HOST_PATH`), SDK paths via environment, no MSBuild copy / `exe.config`; add-in MSBuild import search paths via environment or global property (or documented as dropped) → test builds Hello through the builder
-- [ ] T061 [US2] M3: build cancellation test (cancel a long build; builder stops; caller not blocked) → test passes
+- [x] T061 [US2] M3: build cancellation test (cancel a long build; builder stops; caller not blocked) → test passes
 - [x] T062 [US2] M3: `main/src/tools/mdtool` → net10.0 exe `mdtool.dll`; Locator bootstrap; `.addins` → `../AddIns`; `-r:` ignored with warning → `dotnet main/build/bin/mdtool.dll` lists `build`
-- [ ] T063 [US2] M3: cherry-pick DotDevelop evaluator fixes for net5+ projects (`7045264a30`, `4518519b5e`, `21031632fd`, provenance in commit) + evaluation diff test vs `dotnet msbuild -getItem:Compile` → test passes
-- [ ] T064 [US2] M3: contract test `MdtoolContractTests` (exit codes 0/1, `-p:`, `-t:Clean`, `-c:Release`, missing file) → test passes
+- [x] T063 [US2] M3: cherry-pick DotDevelop evaluator fixes for net5+ projects (`7045264a30`, `4518519b5e`, `21031632fd`, provenance in commit) + evaluation diff test vs `dotnet msbuild -getItem:Compile` → test passes
+- [x] T064 [US2] M3: contract test `MdtoolContractTests` (exit codes 0/1, `-p:`, `-t:Clean`, `-c:Release`, missing file) → test passes
 - [x] T065 [US2] M3: quickstart § M3 block run → `docs/evidence/M3/mdtool.md`
 
 **Checkpoint**: WS-1 (US1 + US2) done.
@@ -137,8 +137,8 @@ tasks are split one project per task, new tasks for gaps found in review.
 
 ### M5a — GUI foundation (WS-2)
 
-- [ ] T066 [US3] M5a: vendor xwt → `main/vendor/xwt/` + `UPSTREAM.md`; remove submodule; `Xwt` + `Xwt.Gtk/Xwt.Gtk3.csproj` on net10.0 + GtkSharp 3.24.24 → `xvfb-run -a dotnet run --project main/vendor/xwt/TestApps/Gtk3Test` shows a window (screenshot)
-- [ ] T067 [US3] M5a: vendor `Mono.Addins.Gui` → `main/vendor/mono-addins-gui/` + `UPSTREAM.md`, GTK3 → builds
+- [x] T066 [US3] M5a: vendor xwt → `main/vendor/xwt/` + `UPSTREAM.md`; remove submodule; `Xwt` + `Xwt.Gtk/Xwt.Gtk3.csproj` on net10.0 + GtkSharp 3.24.24 → `xvfb-run -a dotnet run --project main/vendor/xwt/TestApps/Gtk3Test` shows a window (screenshot)
+- [x] T067 [US3] M5a: vendor `Mono.Addins.Gui` → `main/vendor/mono-addins-gui/` + `UPSTREAM.md`, GTK3 → builds
 - [ ] T068 [US3] M5a: vendor vs-editor-api text subset → `main/vendor/vs-editor-api/` + `UPSTREAM.md` (no FPF/WindowsBase) → builds; duplicate-assembly check passes
 - [ ] T069 [US3] M5a: ADR 0019 NRefactory (remove usages from Ide vs vendor subset) + implementation → Ide has no NRefactory project reference
 
