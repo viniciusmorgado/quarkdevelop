@@ -100,7 +100,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 ### UI-free C# project support (M3)
 
 - [x] T053 [US1] M3: new `main/src/addins/CSharpBinding/MonoDevelop.CSharpBinding.Core/` (net10.0 add-in): `CSharpProject` (class name kept), `CSharpProjectExtension`, `CSharpCompilerParameters` (IdeApp calls → hook), `CSharpLanguageVersionHelper`, `CSharpResourceIdBuilder`, `PortableCSharpProjectFlavor`, manifest registering `DotNetProjectType` + language binding with plain `CSharpCodeProvider` → Core.Tests C# project tests pass (`TestProjectsChecks`)
-- [ ] T054 [US1] M3: headless SDK helpers stay in Core's runtime; `MonoDevelop.DotNetCore.Core` (if needed) only extends via `/MonoDevelop/Core/Runtimes` / global-property providers (no cycle) → project graph acyclic (`dotnet build` succeeds)
+- [x] T054 [US1] M3: headless SDK helpers stay in Core's runtime; `MonoDevelop.DotNetCore.Core` (if needed) only extends via `/MonoDevelop/Core/Runtimes` / global-property providers (no cycle) → project graph acyclic (`dotnet build` succeeds)
 
 ### Coverage (M4)
 
