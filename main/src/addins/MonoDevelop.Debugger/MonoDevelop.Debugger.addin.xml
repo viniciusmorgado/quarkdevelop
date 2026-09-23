@@ -232,14 +232,8 @@
 		</Condition>
 	</Extension>
 
-	<Extension path = "/MonoDevelop/TextEditor/ContextMenu/Editor">
-		<SeparatorItem id = "DebuggerSectionStart" insertafter="Separator1" />
-		<CommandItem id = "MonoDevelop.Debugger.DebugCommands.SetNextStatement" />
-		<CommandItem id = "MonoDevelop.Debugger.DebugCommands.ShowNextStatement"  />
-		<CommandItem id = "MonoDevelop.Debugger.DebugCommands.RunToCursor" />
-		<CommandItem id = "MonoDevelop.Debugger.DebugCommands.ExpressionEvaluator" />
-		<SeparatorItem id = "DebuggerSectionEnd" />
-	</Extension>
+	<!-- Linux: the context menu of the Cocoa/WPF TextEditor add-in (excluded, ADR 0012) is gone; the
+	     SourceEditor2 menu lists the debugger commands itself. -->
 
 	<Extension path = "/MonoDevelop/Core/ExecutionModes/Debug">
 		<ModeSetType id="MonoDevelop.Debugger" class="MonoDevelop.Debugger.DebugExecutionModeSet"/>

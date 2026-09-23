@@ -11,6 +11,16 @@
     <CopyLocalLockFileAssemblies Condition="'$(CopyLocalLockFileAssemblies)' == ''">false</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
+  <!--
+    Nor the host's project closure: project references of add-ins, including the transitive ones the SDK
+    adds (Ide -> Xwt.Gtk3, vs-editor-api, ...), are not copied unless the project sets Private="true".
+  -->
+  <ItemDefinitionGroup Condition="'$(AddinBuildDir)' != '' and '$(IsTestProject)' != 'true'">
+    <ProjectReference>
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+
   <!-- Friend assemblies are signed with the MonoDevelop public key. -->
   <ItemDefinitionGroup>
     <InternalsVisibleTo>

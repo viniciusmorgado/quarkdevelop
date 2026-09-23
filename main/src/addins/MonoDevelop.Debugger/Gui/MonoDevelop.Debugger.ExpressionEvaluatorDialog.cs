@@ -17,10 +17,10 @@ namespace MonoDevelop.Debugger
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Debugger.ExpressionEvaluatorDialog
 			this.Name = "MonoDevelop.Debugger.ExpressionEvaluatorDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Expression Evaluator");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Expression Evaluator");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.Debugger.ExpressionEvaluatorDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -48,7 +48,7 @@ namespace MonoDevelop.Debugger
 			this.buttonEval.CanFocus = true;
 			this.buttonEval.Name = "buttonEval";
 			this.buttonEval.UseUnderline = true;
-			this.buttonEval.Label = global::Mono.Unix.Catalog.GetString ("Evaluate");
+			this.buttonEval.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Evaluate");
 			this.hbox1.Add (this.buttonEval);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonEval]));
 			w3.Position = 1;
@@ -77,11 +77,11 @@ namespace MonoDevelop.Debugger
 			this.vbox2.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.GtkScrolledWindow]));
 			w6.Position = 1;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w7.Position = 0;
 			// Internal child MonoDevelop.Debugger.ExpressionEvaluatorDialog.ActionArea
-			global::Gtk.HButtonBox w8 = this.ActionArea;
+			global::Gtk.ButtonBox w8 = this.ActionArea;
 			w8.Name = "dialog1_ActionArea";
 			w8.Spacing = 6;
 			w8.BorderWidth = ((uint)(5));

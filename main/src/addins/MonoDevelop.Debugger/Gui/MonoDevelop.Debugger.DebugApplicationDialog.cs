@@ -33,10 +33,10 @@ namespace MonoDevelop.Debugger
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Debugger.DebugApplicationDialog
 			this.Name = "MonoDevelop.Debugger.DebugApplicationDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Debug Application");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Debug Application");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.Debugger.DebugApplicationDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -88,7 +88,7 @@ namespace MonoDevelop.Debugger
 			this.label7 = new global::Gtk.Label ();
 			this.label7.Name = "label7";
 			this.label7.Xalign = 0F;
-			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("Command");
+			this.label7.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Command");
 			this.table1.Add (this.label7);
 			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.label7]));
 			w5.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -97,7 +97,7 @@ namespace MonoDevelop.Debugger
 			this.label8 = new global::Gtk.Label ();
 			this.label8.Name = "label8";
 			this.label8.Xalign = 0F;
-			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("Arguments");
+			this.label8.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Arguments");
 			this.table1.Add (this.label8);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.label8]));
 			w6.TopAttach = ((uint)(1));
@@ -108,7 +108,7 @@ namespace MonoDevelop.Debugger
 			this.label9 = new global::Gtk.Label ();
 			this.label9.Name = "label9";
 			this.label9.Xalign = 0F;
-			this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("Working Directory");
+			this.label9.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Working Directory");
 			this.table1.Add (this.label9);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.label9]));
 			w7.TopAttach = ((uint)(2));
@@ -123,7 +123,7 @@ namespace MonoDevelop.Debugger
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.label6 = new global::Gtk.Label ();
 			this.label6.Name = "label6";
-			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("Environment Variables");
+			this.label6.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Environment Variables");
 			this.vbox5.Add (this.label6);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.label6]));
 			w9.Position = 1;
@@ -137,11 +137,11 @@ namespace MonoDevelop.Debugger
 			this.vbox5.Add (this.envVarList);
 			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.envVarList]));
 			w10.Position = 2;
-			w1.Add (this.vbox5);
+			w1.PackStart (this.vbox5, true, true, 0);
 			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox5]));
 			w11.Position = 0;
 			// Internal child MonoDevelop.Debugger.DebugApplicationDialog.ActionArea
-			global::Gtk.HButtonBox w12 = this.ActionArea;
+			global::Gtk.ButtonBox w12 = this.ActionArea;
 			w12.Name = "dialog1_ActionArea";
 			w12.Spacing = 10;
 			w12.BorderWidth = ((uint)(5));

@@ -15,11 +15,11 @@ namespace MonoDevelop.Debugger
 			MonoDevelop.Components.Gui.Initialize(this);
 			// Widget MonoDevelop.Debugger.BusyEvaluatorDialog
 			this.Name = "MonoDevelop.Debugger.BusyEvaluatorDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString("The Debugger is Busy");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString("The Debugger is Busy");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Resizable = false;
 			// Internal child MonoDevelop.Debugger.BusyEvaluatorDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -31,17 +31,17 @@ namespace MonoDevelop.Debugger
 			this.label1 = new global::Gtk.Label();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("The debugger runtime is not responding. You can wait for it to recover, or stop debugging.");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("The debugger runtime is not responding. You can wait for it to recover, or stop debugging.");
 			this.vbox2.Add(this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.label1]));
 			w2.Position = 0;
 			w2.Expand = false;
 			w2.Fill = false;
-			w1.Add(this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(w1[this.vbox2]));
 			w3.Position = 0;
 			// Internal child MonoDevelop.Debugger.BusyEvaluatorDialog.ActionArea
-			global::Gtk.HButtonBox w4 = this.ActionArea;
+			global::Gtk.ButtonBox w4 = this.ActionArea;
 			w4.Name = "dialog1_ActionArea";
 			w4.Spacing = 10;
 			w4.BorderWidth = ((uint)(5));
@@ -52,7 +52,7 @@ namespace MonoDevelop.Debugger
 			this.buttonCancel.CanFocus = true;
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseUnderline = true;
-			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString("Stop Debugger");
+			this.buttonCancel.Label = global::MonoDevelop.Core.GettextCatalog.GetString("Stop Debugger");
 			w4.Add(this.buttonCancel);
 			global::Gtk.ButtonBox.ButtonBoxChild w5 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w4[this.buttonCancel]));
 			w5.Expand = false;

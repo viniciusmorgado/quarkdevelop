@@ -10,7 +10,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 		
 		private global::Gtk.Label label1;
 		
-		private global::Gtk.ComboBox comboType;
+		private global::Gtk.ComboBoxText comboType;
 		
 		private global::Gtk.VSeparator vseparator1;
 		
@@ -37,10 +37,10 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 			global::Stetic.Gui.Initialize (this);
 			// Widget MonoDevelop.DesignerSupport.Toolbox.ComponentSelectorDialog
 			this.Name = "MonoDevelop.DesignerSupport.Toolbox.ComponentSelectorDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Toolbox Item Selector");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Toolbox Item Selector");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.DesignerSupport.Toolbox.ComponentSelectorDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -56,14 +56,14 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Type of component:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Type of component:");
 			this.hbox1.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.label1]));
 			w2.Position = 0;
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.comboType = global::Gtk.ComboBox.NewText ();
+			this.comboType = new global::Gtk.ComboBoxText ();
 			this.comboType.Name = "comboType";
 			this.hbox1.Add (this.comboType);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.comboType]));
@@ -97,7 +97,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Add Assembly...");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Add Assembly...");
 			this.label2.UseUnderline = true;
 			this.hbox2.Add (this.label2);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label2]));
@@ -131,7 +131,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 			this.checkGroupByCat = new global::Gtk.CheckButton ();
 			this.checkGroupByCat.CanFocus = true;
 			this.checkGroupByCat.Name = "checkGroupByCat";
-			this.checkGroupByCat.Label = global::Mono.Unix.Catalog.GetString ("Group by component category");
+			this.checkGroupByCat.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Group by component category");
 			this.checkGroupByCat.DrawIndicator = true;
 			this.checkGroupByCat.UseUnderline = true;
 			this.vbox2.Add (this.checkGroupByCat);
@@ -139,11 +139,11 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 			w12.Position = 2;
 			w12.Expand = false;
 			w12.Fill = false;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w13.Position = 0;
 			// Internal child MonoDevelop.DesignerSupport.Toolbox.ComponentSelectorDialog.ActionArea
-			global::Gtk.HButtonBox w14 = this.ActionArea;
+			global::Gtk.ButtonBox w14 = this.ActionArea;
 			w14.Name = "dialog1_ActionArea";
 			w14.Spacing = 10;
 			w14.BorderWidth = ((uint)(5));

@@ -198,9 +198,10 @@ namespace MonoDevelop.Debugger
 			clipboard.Text = bufferText;
 		}
 
-		public override void Dispose ()
+		// GTK3: Gtk.Object.Dispose () is gone; unsubscribe when the widget is destroyed.
+		protected override void OnDestroyed ()
 		{
-			base.Dispose ();
+			base.OnDestroyed ();
 			DebuggingService.CallStackChanged -= OnStackChanged;
 			DebuggingService.PausedEvent -= OnDebuggerPaused;
 			DebuggingService.ResumedEvent -= OnDebuggerResumed;

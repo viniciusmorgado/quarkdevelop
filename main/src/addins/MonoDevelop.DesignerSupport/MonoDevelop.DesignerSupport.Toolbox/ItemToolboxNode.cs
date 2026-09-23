@@ -34,7 +34,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
-using System.Drawing.Design;
 using Gtk;
 
 using MonoDevelop.Core.Serialization;
@@ -162,15 +161,8 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 		#endregion Behaviours
 		
 		
-		protected Xwt.Drawing.Image ImageToPixbuf (System.Drawing.Image image)
-		{
-			using (System.IO.MemoryStream stream = new System.IO.MemoryStream ()) {
-				image.Save (stream, System.Drawing.Imaging.ImageFormat.Png);
-				stream.Position = 0;
-				return Xwt.Drawing.Image.FromStream (stream);
-			}
-		}
-		
+		// ImageToPixbuf (System.Drawing.Image) removed: System.Drawing.Common is Windows-only on .NET.
+
 		#region custom serialisation for ToolboxItemFilterAttribute collection
 		
 		public DataCollection Serialize (ITypeSerializer handler)

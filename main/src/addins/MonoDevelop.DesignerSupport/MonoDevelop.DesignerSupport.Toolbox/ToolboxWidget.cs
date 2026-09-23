@@ -38,7 +38,7 @@ using MonoDevelop.Components.AtkCocoaHelper;
 
 namespace MonoDevelop.DesignerSupport.Toolbox
 {
-	class ToolboxWidget : Gtk.DrawingArea, IToolboxWidget
+	class ToolboxWidget : Gtk.DrawingArea, IToolboxWidget, IScrollableImplementor
 	{
 		List<ToolboxWidgetCategory> categories = new List<ToolboxWidgetCategory> ();
 
@@ -149,7 +149,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 			actionHandler.PerformShowMenu += PerformShowMenu;
 		}
 
-		protected override void OnStyleSet (Gtk.Style previous_style)
+		protected override void OnStyleUpdated ()
 		{
 			if (this.layout != null) {
 				this.layout.Dispose ();
@@ -160,7 +160,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 				this.headerLayout = null;
 			}
 
-			base.OnStyleSet (previous_style);
+			base.OnStyleUpdated ();
 
 			layout = new Pango.Layout (this.PangoContext);
 			headerLayout = new Pango.Layout (this.PangoContext);
@@ -205,9 +205,10 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 		const int ItemIconTextItemSpacing = 4;
 		const int IconModePadding = 2;
 
-		protected override bool OnExposeEvent (Gdk.EventExpose e)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			Cairo.Context cr = Gdk.CairoHelper.Create (e.Window);
+			var e = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			Cairo.Context cr = e.CreateContext ();
 
 			Gdk.Rectangle area = e.Area;
 
@@ -220,14 +221,14 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 				else
 					messageLayout.SetText (MonoDevelop.Core.GettextCatalog.GetString ("There are no tools available for the current document."));
 				cr.MoveTo (Allocation.Width * 1 / 6, 12);
-				cr.SetSourceColor (Style.Text (StateType.Normal).ToCairoColor ());
+				cr.SetSourceColor (this.GetStyleTextColor (StateType.Normal));
 				Pango.CairoHelper.ShowLayout (cr, messageLayout);
 				messageLayout.Dispose ();
 				((IDisposable)cr).Dispose ();
 				return true;
 			}
 
-			var backColor = Style.Base (StateType.Normal).ToCairoColor ();
+			var backColor = this.GetStyleBaseColor (StateType.Normal);
 			cr.SetSourceColor (backColor);
 			cr.Rectangle (area.X, area.Y, area.Width, area.Height);
 			cr.Fill ();
@@ -283,7 +284,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 				}
 				if (item == SelectedItem) {
 					icon = icon.WithStyles ("sel");
-					cr.SetSourceColor (Style.Base (StateType.Selected).ToCairoColor ());
+					cr.SetSourceColor (this.GetStyleBaseColor (StateType.Selected));
 					cr.Rectangle (xpos, ypos, itemDimension.Width, itemDimension.Height);
 					cr.Fill ();
 				}
@@ -292,7 +293,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 					layout.SetMarkup (item.Text);
 					layout.Width = (int)((itemDimension.Width - ItemIconTextItemSpacing - iconSize.Width - ItemLeftPadding * 2) * Pango.Scale.PangoScale);
 					layout.GetPixelSize (out var width, out var height);
-					cr.SetSourceColor (Style.Text (item != SelectedItem ? StateType.Normal : StateType.Selected).ToCairoColor ());
+					cr.SetSourceColor (this.GetStyleTextColor (item != SelectedItem ? StateType.Normal : StateType.Selected));
 					cr.MoveTo (xpos + ItemLeftPadding + iconSize.Width + ItemIconTextItemSpacing, ypos + Math.Round ((double)(itemDimension.Height - height) / 2));
 					Pango.CairoHelper.ShowLayout (cr, layout);
 				} else {
@@ -300,7 +301,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 				}
 
 				if (item == mouseOverItem) {
-					cr.SetSourceColor (Style.Dark (StateType.Prelight).ToCairoColor ());
+					cr.SetSourceColor (this.GetStyleDarkColor (StateType.Prelight));
 					cr.Rectangle (xpos + 0.5, ypos + 0.5, itemDimension.Width - 1, itemDimension.Height - 1);
 					cr.Stroke ();
 				}
@@ -788,16 +789,43 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 				this.vAdjustement.Value = rect.Bottom - this.Allocation.Height;
 		}
 
-		protected override void OnSetScrollAdjustments (Adjustment hAdjustement, Adjustment vAdjustement)
+		// GTK3: scrolled windows hand their adjustments to Gtk.IScrollable children through the
+		// hadjustment/vadjustment properties (GTK2 used the set-scroll-adjustments signal).
+		public Adjustment Hadjustment {
+			get { return hAdjustement; }
+			set {
+				if (hAdjustement != null)
+					hAdjustement.ValueChanged -= HandleAdjustmentValueChanged;
+				hAdjustement = value;
+				if (hAdjustement != null)
+					hAdjustement.ValueChanged += HandleAdjustmentValueChanged;
+			}
+		}
+
+		public Adjustment Vadjustment {
+			get { return vAdjustement; }
+			set {
+				if (vAdjustement != null)
+					vAdjustement.ValueChanged -= HandleAdjustmentValueChanged;
+				vAdjustement = value;
+				if (vAdjustement != null)
+					vAdjustement.ValueChanged += HandleAdjustmentValueChanged;
+			}
+		}
+
+		public ScrollablePolicy HscrollPolicy { get; set; }
+
+		public ScrollablePolicy VscrollPolicy { get; set; }
+
+		public bool GetBorder (out Border border)
 		{
-			this.hAdjustement = hAdjustement;
-			if (this.hAdjustement != null) {
-				this.hAdjustement.ValueChanged += (sender, e) => this.QueueDraw ();
-			}
-			this.vAdjustement = vAdjustement;
-			if (this.vAdjustement != null) {
-				this.vAdjustement.ValueChanged += (sender, e) => this.QueueDraw ();
-			}
+			border = default (Border);
+			return false;
+		}
+
+		void HandleAdjustmentValueChanged (object sender, EventArgs e)
+		{
+			QueueDraw ();
 		}
 		#endregion
 
@@ -872,14 +900,15 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 
 		#region Control size management
 		bool realSizeRequest;
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			if (!realSizeRequest) {
 				// Request a minimal width, to size recalculation infinite loops with
 				// small widths, due to the vscrollbar being shown and hidden.
 				requisition.Width = 50;
 				requisition.Height = 0;
-				return;
+				return requisition;
 			}
 			int xpos = 0;
 			int ypos = 0;
@@ -899,6 +928,17 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 				if (vAdjustement.Value < 0)
 					vAdjustement.Value = 0;
 			}
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)

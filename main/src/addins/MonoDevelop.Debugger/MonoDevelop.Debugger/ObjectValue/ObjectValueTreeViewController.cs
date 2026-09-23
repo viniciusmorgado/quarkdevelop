@@ -207,23 +207,9 @@ namespace MonoDevelop.Debugger
 			return control;
 		}
 
-		public MacObjectValueTreeView GetMacControl (ObjectValueTreeViewFlags flags)
-		{
-			if (view != null)
-				throw new InvalidOperationException ("You can only get the control once for each controller instance");
-
-			var control = new MacObjectValueTreeView (this, this, AllowEditing, flags);
-
-			ConfigureView (control);
-
-			return control;
-		}
-
+		// Linux: GetMacControl (the macOS NSOutlineView tree view) was removed.
 		public Control GetControl (ObjectValueTreeViewFlags flags)
 		{
-			if (Platform.IsMac)
-				return GetMacControl (flags);
-
 			return GetGtkControl (flags);
 		}
 

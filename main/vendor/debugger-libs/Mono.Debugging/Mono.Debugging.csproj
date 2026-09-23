@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Vendored Mono.Debugging from debugger-libs (see ../UPSTREAM.md), built for net10.0 with the
+    repository props (ADR 0003/0005). The NRefactory 5 expression evaluator is not vendored (ADR 0019).
+  -->
+  <PropertyGroup>
+    <AssemblyName>Mono.Debugging</AssemblyName>
+    <RootNamespace>Mono.Debugging</RootNamespace>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <!-- Keep Mono.Debugging's own strong-name identity. -->
+    <AssemblyOriginatorKeyFile>mono.debugging.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+</Project>

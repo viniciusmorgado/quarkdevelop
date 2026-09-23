@@ -84,8 +84,8 @@ namespace MonoDevelop.Debugger
 		public DebugValueWindow (Gtk.Window transientFor, PinnedWatchLocation location, StackFrame frame, ObjectValue value, PinnedWatch watch) : base (Gtk.WindowType.Toplevel)
 		{
 			TypeHint = WindowTypeHint.PopupMenu;
-			AllowShrink = false;
-			AllowGrow = false;
+			// GTK3: AllowShrink is gone; Resizable = false keeps the window at its requested size.
+			Resizable = false;
 			Decorated = false;
 
 			TransientFor = transientFor;

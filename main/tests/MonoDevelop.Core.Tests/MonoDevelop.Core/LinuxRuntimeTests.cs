@@ -96,5 +96,32 @@ namespace MonoDevelop.Core
 				Directory.Delete (dir, true);
 			}
 		}
+
+		/// <summary>
+		/// Assemblies next to the IDE that the host's deps.json does not list (add-in dependencies such as
+		/// Mono.Debugging) are resolved from the application directory, as Mono did.
+		/// </summary>
+		[Test]
+		public void AssembliesAreResolvedFromADirectory ()
+		{
+			var dir = Path.Combine (Path.GetTempPath (), "md-resolve-" + Guid.NewGuid ().ToString ("N"));
+			Directory.CreateDirectory (dir);
+			var context = new System.Runtime.Loader.AssemblyLoadContext ("md-resolve-test", true);
+			try {
+				var name = new AssemblyName ("MdResolveTest" + Guid.NewGuid ().ToString ("N"));
+				var builder = new System.Reflection.Emit.PersistedAssemblyBuilder (name, typeof (object).Assembly);
+				builder.DefineDynamicModule (name.Name).DefineType ("Probe", TypeAttributes.Public).CreateType ();
+				builder.Save (Path.Combine (dir, name.Name + ".dll"));
+
+				var resolved = Runtime.ResolveFromDirectory (context, name, dir);
+				Assert.IsNotNull (resolved);
+				Assert.AreEqual (name.Name, resolved.GetName ().Name);
+				Assert.IsNotNull (resolved.GetType ("Probe"));
+				Assert.IsNull (Runtime.ResolveFromDirectory (context, new AssemblyName ("DoesNotExist"), dir));
+			} finally {
+				context.Unload ();
+				Directory.Delete (dir, true);
+			}
+		}
 	}
 }

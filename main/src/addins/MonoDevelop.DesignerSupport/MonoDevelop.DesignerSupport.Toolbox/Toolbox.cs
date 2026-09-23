@@ -32,7 +32,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Gtk;
-using System.Drawing.Design;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui;
 using MonoDevelop.Components.AtkCocoaHelper;
@@ -55,7 +54,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 		
 		ToggleButton catToggleButton;
 		ToggleButton compactModeToggleButton;
-		SearchEntry filterEntry;
+		MonoDevelop.Components.SearchEntry filterEntry;
 		MonoDevelop.Ide.Gui.PadFontChanger fontChanger;
 		IPadWindow container;
 		Dictionary<string,int> categoryPriorities = new Dictionary<string, int> ();
@@ -69,7 +68,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 			#region Toolbar
 			DockItemToolbar toolbar = container.GetToolbar (DockPositionType.Top);
 		
-			filterEntry = new SearchEntry();
+			filterEntry = new MonoDevelop.Components.SearchEntry();
 			filterEntry.Ready = true;
 			filterEntry.HasFrame = true;
 			filterEntry.WidthRequest = 150;

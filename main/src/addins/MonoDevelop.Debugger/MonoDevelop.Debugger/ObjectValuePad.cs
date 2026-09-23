@@ -34,7 +34,6 @@ using Mono.Debugging.Client;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui;
 using MonoDevelop.Components;
-using Foundation;
 
 namespace MonoDevelop.Debugger
 {
@@ -44,8 +43,6 @@ namespace MonoDevelop.Debugger
 
 		protected ObjectValueTreeViewController controller;
 		protected ObjectValueTreeView tree;
-		// this is for the new treeview
-		protected MacObjectValueTreeView _treeview;
 
 		readonly Control control;
 		PadFontChanger fontChanger;
@@ -68,40 +65,8 @@ namespace MonoDevelop.Debugger
 				controller = new ObjectValueTreeViewController (allowWatchExpressions);
 				controller.AllowEditing = true;
 
-				if (Platform.IsMac) {
-					LoggingService.LogInfo ("Using MacObjectValueTreeView for {0}", allowWatchExpressions ? "Watch Pad" : "Locals Pad");
-					var treeView = controller.GetMacControl (ObjectValueTreeViewFlags.ObjectValuePadFlags);
-					treeView.UIElementName = allowWatchExpressions ? "WatchPad" : "LocalsPad";
-					_treeview = treeView;
-
-					fontChanger = new PadFontChanger (treeView, treeView.SetCustomFont, treeView.QueueResize);
-
-					var scrolled = new AppKit.NSScrollView {
-						DocumentView = treeView,
-						AutohidesScrollers = false,
-						HasVerticalScroller = true,
-						HasHorizontalScroller = true,
-					};
-
-					// disable implicit animations
-					scrolled.WantsLayer = true;
-					scrolled.Layer.Actions = new NSDictionary (
-						"actions", NSNull.Null,
-						"contents", NSNull.Null,
-						"hidden", NSNull.Null,
-						"onLayout", NSNull.Null,
-						"onOrderIn", NSNull.Null,
-						"onOrderOut", NSNull.Null,
-						"position", NSNull.Null,
-						"sublayers", NSNull.Null,
-						"transform", NSNull.Null,
-						"bounds", NSNull.Null);
-
-					var host = new GtkNSViewHost (scrolled);
-					host.ShowAll ();
-
-					control = host;
-				} else {
+				// Linux: the macOS (NSOutlineView) tree view was removed; the GTK tree view is always used.
+				{
 					LoggingService.LogInfo ("Using GtkObjectValueTreeView for {0}", allowWatchExpressions ? "Watch Pad" : "Locals Pad");
 					var treeView = controller.GetGtkControl (ObjectValueTreeViewFlags.ObjectValuePadFlags);
 					treeView.Show ();

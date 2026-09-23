@@ -30,7 +30,6 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
-using Foundation;
 using GLib;
 using Gtk;
 
@@ -59,7 +58,6 @@ namespace MonoDevelop.Debugger
 		VBox vboxAroundInnerExceptionMessage, rightVBox, container;
 		Button close, helpLinkButton, innerExceptionHelpLinkButton;
 		TreeView exceptionValueTreeView, stackTraceTreeView;
-		MacObjectValueTreeView macExceptionValueTreeView;
 		InnerExceptionsTree innerExceptionsTreeView;
 		ObjectValueTreeViewController controller;
 		CheckButton onlyShowMyCodeCheckbox;
@@ -104,13 +102,7 @@ namespace MonoDevelop.Debugger
 			exceptionMessageLabel = new Label { Wrap = true, Xalign = 0.0f, Selectable = true, CanFocus = false };
 			helpLinkButton = new Button { HasFocus = true, Xalign = 0, Relief = ReliefStyle.None, BorderWidth = 0 };
 			helpLinkButton.Name = "exception_help_link_label";
-			Gtk.Rc.ParseString (@"style ""exception-help-link-label""
-{
-	GtkWidget::link-color = ""#ffffff""
-	GtkWidget::visited-link-color = ""#ffffff""
-}
-widget ""*.exception_help_link_label"" style ""exception-help-link-label""
-");
+			// GTK3 ignores RC styles; the removed link-color rule had no effect (the button shows plain text).
 			var textColor = Styles.ExceptionCaughtDialog.HeaderTextColor.ToGdkColor ();
 			var headerColor = Styles.ExceptionCaughtDialog.HeaderBackgroundColor.ToGdkColor ();
 
@@ -155,7 +147,6 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 			var frame = new Frame ();
 			frame.Add (hBox);
 			frame.BorderWidth = (uint)(Platform.IsWindows ? 5 : 10); // on Windows we need to have smaller border due to ExceptionTypeLabel vertical misalignment
-			frame.Shadow = ShadowType.None;
 			frame.ShadowType = ShadowType.None;
 
 			eventBox.Add (frame);
@@ -192,12 +183,8 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 				controller.SetStackFrame (DebuggingService.CurrentFrame);
 				controller.AllowExpanding = true;
 
-				if (Platform.IsMac) {
-					macExceptionValueTreeView = controller.GetMacControl (ObjectValueTreeViewFlags.ObjectValuePadFlags);
-					macExceptionValueTreeView.UIElementName = "ExceptionCaughtDialog";
-				} else {
-					exceptionValueTreeView = controller.GetGtkControl (ObjectValueTreeViewFlags.ExceptionCaughtFlags);
-				}
+				// Linux: the macOS tree view was removed.
+				exceptionValueTreeView = controller.GetGtkControl (ObjectValueTreeViewFlags.ExceptionCaughtFlags);
 			} else {
 				var objValueTreeView = new ObjectValueTreeView ();
 				objValueTreeView.Frame = DebuggingService.CurrentFrame;
@@ -210,34 +197,10 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 				exceptionValueTreeView = objValueTreeView;
 			}
 
-			if (useNewTreeView && Platform.IsMac) {
-				var scrolled = new AppKit.NSScrollView {
-					DocumentView = macExceptionValueTreeView,
-					AutohidesScrollers = true,
-					HasVerticalScroller = true,
-					HasHorizontalScroller = true,
-				};
-
-				// disable implicit animations
-				scrolled.WantsLayer = true;
-				scrolled.Layer.Actions = new NSDictionary (
-					"actions", NSNull.Null,
-					"contents", NSNull.Null,
-					"hidden", NSNull.Null,
-					"onLayout", NSNull.Null,
-					"onOrderIn", NSNull.Null,
-					"onOrderOut", NSNull.Null,
-					"position", NSNull.Null,
-					"sublayers", NSNull.Null,
-					"transform", NSNull.Null,
-					"bounds", NSNull.Null);
-
-				var host = new GtkNSViewHost (scrolled);
-				host.ShowAll ();
-				scrolledWidget = host;
-			} else {
-				exceptionValueTreeView.ModifyBase (StateType.Normal, Styles.ExceptionCaughtDialog.ValueTreeBackgroundColor.ToGdkColor ());
-				exceptionValueTreeView.ModifyBase (StateType.Active, Styles.ObjectValueTreeActiveBackgroundColor.ToGdkColor ());
+			{
+				// GTK3 has no base color (ModifyBase): override the background color instead.
+				exceptionValueTreeView.OverrideBackgroundColor (StateFlags.Normal, Styles.ExceptionCaughtDialog.ValueTreeBackgroundColor.ToCairoColor ().ToGdkRgba ());
+				exceptionValueTreeView.OverrideBackgroundColor (StateFlags.Active, Styles.ObjectValueTreeActiveBackgroundColor.ToCairoColor ().ToGdkRgba ());
 				exceptionValueTreeView.ModifyFont (Pango.FontDescription.FromString (Platform.IsWindows ? "9" : "11"));
 				exceptionValueTreeView.RulesHint = false;
 				exceptionValueTreeView.CanFocus = true;
@@ -260,11 +223,7 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 			label.Xalign = 0;
 			label.Xpad = 10;
 
-			if (exceptionValueTreeView != null) {
-				exceptionValueTreeView.SetCommonAccessibilityAttributes ("ExceptionCaughtDialog.ExceptionValueTreeView", label, null);
-			} else {
-				macExceptionValueTreeView.AccessibilityTitle = new NSString (label.Text);
-			}
+			exceptionValueTreeView.SetCommonAccessibilityAttributes ("ExceptionCaughtDialog.ExceptionValueTreeView", label, null);
 
 			var vbox = new VBox ();
 			vbox.PackStart (label, false, false, 12);
@@ -274,7 +233,7 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 			return vbox;
 		}
 
-		static void StackFrameLayout (CellLayout layout, CellRenderer cr, TreeModel model, TreeIter iter)
+		static void StackFrameLayout (ICellLayout layout, CellRenderer cr, ITreeModel model, TreeIter iter)
 		{
 			var frame = (ExceptionStackFrame)model.GetValue (iter, (int)ModelColumn.StackFrame);
 			var renderer = (StackFrameCellRenderer)cr;
@@ -511,8 +470,9 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 		Widget CreateInnerExceptionsTree ()
 		{
 			innerExceptionsTreeView = new InnerExceptionsTree ();
-			innerExceptionsTreeView.ModifyBase (StateType.Normal, Styles.ExceptionCaughtDialog.TreeBackgroundColor.ToGdkColor ()); // background
-			innerExceptionsTreeView.ModifyBase (StateType.Selected, Styles.ExceptionCaughtDialog.TreeSelectedBackgroundColor.ToGdkColor ()); // selected
+			// GTK3 has no base color (ModifyBase): override the background color instead.
+			innerExceptionsTreeView.OverrideBackgroundColor (StateFlags.Normal, Styles.ExceptionCaughtDialog.TreeBackgroundColor.ToCairoColor ().ToGdkRgba ()); // background
+			innerExceptionsTreeView.OverrideBackgroundColor (StateFlags.Selected, Styles.ExceptionCaughtDialog.TreeSelectedBackgroundColor.ToCairoColor ().ToGdkRgba ()); // selected
 			innerExceptionsTreeView.HeadersVisible = false;
 			innerExceptionsStore = new TreeStore (typeof (ExceptionInfo));
 
@@ -572,7 +532,7 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 				}
 			});
 			exception.Changed += delegate {
-				Application.Invoke ((o, args) => {
+				Gtk.Application.Invoke ((o, args) => {
 					innerExceptionsStore.EmitRowChanged (innerExceptionsStore.GetPath (iter), iter);
 					updateInnerExceptions ();
 					innerExceptionsTreeView.ExpandRow (innerExceptionsStore.GetPath (iter), true);
@@ -694,7 +654,7 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 
 		void ExceptionChanged (object sender, EventArgs e)
 		{
-			Application.Invoke ((o, args) => {
+			Gtk.Application.Invoke ((o, args) => {
 				if (hadInnerException != HasInnerException ())
 					Build ();
 				UpdateDisplay ();
@@ -742,7 +702,7 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 
 			Pango.FontDescription font = Pango.FontDescription.FromString (Platform.IsWindows ? "9" : "11");
 
-			public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 			{
 				using (var layout = new Pango.Layout (widget.PangoContext)) {
 					layout.FontDescription = font;
@@ -757,9 +717,33 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 				}
 			}
 
-			protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
 			{
-				using (var cr = Gdk.CairoHelper.Create (window)) {
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+			}
+
+			protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
+			{
+				using (var cr = gtk3cr.CreateSharedContext ()) {
 					cr.Rectangle (background_area.X, background_area.Y, background_area.Width, background_area.Height);
 
 					using (var layout = new Pango.Layout (widget.PangoContext)) {
@@ -853,7 +837,7 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 			return $"<span foreground='{foregroundColor}'>{markup}</span>";
 		}
 
-		public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
 			using (var layout = new Pango.Layout (Context)) {
 				Pango.Rectangle ink, logical;
@@ -872,9 +856,33 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 			}
 		}
 
-		protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+		protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
 		{
-			using (var cr = Gdk.CairoHelper.Create (window)) {
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+		{
+			OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+		}
+
+		protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+		{
+			OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+		}
+
+		protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
+		{
+			using (var cr = gtk3cr.CreateSharedContext ()) {
 
 				cr.Rectangle (background_area.ToCairoRect ());
 
@@ -1058,7 +1066,7 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 				CanFocus = false,
 				Name = "exceptionTypeLabel"
 			};
-			vb.PackStart (typeLabel);
+			vb.PackStart (typeLabel, true, true, 0);
 			messageLabel = new Label {
 				Xalign = 0,
 				NoShowAll = true,
@@ -1066,7 +1074,7 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 				CanFocus = false,
 				Name = "exceptionMessageLabel"
 			};
-			vb.PackStart (messageLabel);
+			vb.PackStart (messageLabel, true, true, 0);
 
 			var detailsBtn = new Xwt.LinkLabel (GettextCatalog.GetString ("Show Details"));
 			var hh = new HBox ();
@@ -1090,7 +1098,7 @@ widget ""*.exception_help_link_label"" style ""exception-help-link-label""
 			box.PackStart (vb, false, false, 0);
 
 			exception.Changed += delegate {
-				Application.Invoke ((o, args) => {
+				Gtk.Application.Invoke ((o, args) => {
 					LoadData ();
 				});
 			};

@@ -85,6 +85,7 @@ namespace MonoDevelop.Core
 				return;
 			// .NET only ships UTF/ASCII/Latin-1 by default; text files may use legacy code pages (T046).
 			System.Text.Encoding.RegisterProvider (System.Text.CodePagesEncodingProvider.Instance);
+			InstallApplicationDirectoryResolver ();
 
 			using var initTimer = Counters.RuntimeInitialization.BeginTiming ();
 			SetupInstrumentation ();
@@ -514,6 +515,29 @@ namespace MonoDevelop.Core
 			if (Type.GetType ("Mono.Runtime") == null) {
 				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 			}
+		}
+
+		static bool applicationDirectoryResolverInstalled;
+
+		/// <summary>
+		/// .NET resolves only what the host's deps.json lists; Mono also probed the application directory.
+		/// Add-in dependencies that live next to the IDE without being referenced by the host (e.g. Mono.Debugging
+		/// in build/bin, used by the debugger add-in) are found there.
+		/// </summary>
+		static void InstallApplicationDirectoryResolver ()
+		{
+			if (applicationDirectoryResolverInstalled)
+				return;
+			applicationDirectoryResolverInstalled = true;
+			System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, name) => ResolveFromDirectory (context, name, AppContext.BaseDirectory);
+		}
+
+		internal static Assembly ResolveFromDirectory (System.Runtime.Loader.AssemblyLoadContext context, AssemblyName name, string directory)
+		{
+			if (string.IsNullOrEmpty (name.Name) || string.IsNullOrEmpty (directory))
+				return null;
+			var path = System.IO.Path.Combine (directory, name.Name + ".dll");
+			return System.IO.File.Exists (path) ? context.LoadFromAssemblyPath (path) : null;
 		}
 
 		/// <summary>

@@ -19,10 +19,10 @@ namespace MonoDevelop.Debugger.Viewers
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Debugger.Viewers.ValueVisualizerDialog
 			this.Name = "MonoDevelop.Debugger.Viewers.ValueVisualizerDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Value Visualizer");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Value Visualizer");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.Debugger.Viewers.ValueVisualizerDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -37,7 +37,7 @@ namespace MonoDevelop.Debugger.Viewers
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("View as:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("View as:");
 			this.hbox1.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.label1]));
 			w2.Position = 0;
@@ -48,11 +48,11 @@ namespace MonoDevelop.Debugger.Viewers
 			w3.Position = 0;
 			w3.Expand = false;
 			w3.Fill = false;
-			w1.Add (this.mainBox);
+			w1.PackStart (this.mainBox, true, true, 0);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(w1 [this.mainBox]));
 			w4.Position = 0;
 			// Internal child MonoDevelop.Debugger.Viewers.ValueVisualizerDialog.ActionArea
-			global::Gtk.HButtonBox w5 = this.ActionArea;
+			global::Gtk.ButtonBox w5 = this.ActionArea;
 			w5.Name = "dialog1_ActionArea";
 			w5.Spacing = 10;
 			w5.BorderWidth = ((uint)(5));

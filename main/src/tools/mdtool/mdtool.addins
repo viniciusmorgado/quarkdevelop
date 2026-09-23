@@ -1,3 +1,5 @@
 <Addins>
-	<Directory include-subdirs="true">../AddIns</Directory>
+	<!-- Headless host: only the add-ins that work without the IDE. GUI add-ins (debugger, designer, editor, ...)
+	     depend on MonoDevelop.Ide and would fail to load when their extensions to Core paths are queried. -->
+	<Directory include-subdirs="true">../AddIns/MonoDevelop.CSharpBinding.Core</Directory>
 </Addins>

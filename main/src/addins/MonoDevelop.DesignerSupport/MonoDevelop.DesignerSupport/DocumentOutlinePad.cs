@@ -171,7 +171,7 @@ namespace MonoDevelop.DesignerSupport
 
 			public WrappedCentreLabel ()
 			{
-				WidgetFlags |= Gtk.WidgetFlags.NoWindow;
+				HasWindow = false;
 			}
 
 			public WrappedCentreLabel (string text)
@@ -207,31 +207,31 @@ namespace MonoDevelop.DesignerSupport
 				layout.SetText (text);
 			}
 
-			protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
-				if (evnt.Window != GdkWindow || layout == null) {
-					return base.OnExposeEvent (evnt);
+				if (layout == null) {
+					return base.OnDrawn (gtk3cr);
 				}
 				layout.Width = (int)(Allocation.Width * 2 / 3 * Pango.Scale.PangoScale);
-				Gtk.Style.PaintLayout (Style, GdkWindow, State, false, evnt.Area,
-				    this, null, Allocation.Width * 1 / 6 + Allocation.X , 12 + Allocation.Y, layout);
+				// GTK3 draws in widget coordinates: no allocation offset.
+				StyleContext.RenderLayout (gtk3cr, Allocation.Width * 1 / 6, 12, layout);
 				return true;
 			}
 
-			protected override void OnStyleSet (Gtk.Style previous_style)
+			protected override void OnStyleUpdated ()
 			{
 				CreateLayout ();
 				UpdateLayout ();
-				base.OnStyleSet (previous_style);
+				base.OnStyleUpdated ();
 			}
 
-			public override void Dispose ()
+			protected override void OnDestroyed ()
 			{
 				if (layout != null) {
 					layout.Dispose ();
 					layout = null;
 				}
-				base.Dispose ();
+				base.OnDestroyed ();
 			}
 		}
 	}

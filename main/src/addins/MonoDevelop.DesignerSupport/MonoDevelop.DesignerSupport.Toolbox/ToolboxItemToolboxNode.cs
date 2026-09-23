@@ -33,8 +33,6 @@ using System.IO;
 using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.Design;
-using System.Drawing.Design;
-using System.Runtime.Serialization.Formatters.Binary;
 
 using MonoDevelop.Core.Serialization;
 using MonoDevelop.Core;
@@ -44,39 +42,13 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 	[Serializable]
 	public class ToolboxItemToolboxNode : TypeToolboxNode
 	{
-		[ItemProperty ("itemcontents")]
-		string serializedToolboxItem;
-		
 		[ItemProperty ("itemtype")]
 		TypeReference toolboxItemType;
 		
-		public ToolboxItemToolboxNode (ToolboxItem item)
-			: base (item.TypeName, item.AssemblyName.FullName)
-		{
-			base.Name = item.DisplayName;
-			if (item.Bitmap != null)
-				base.Icon = ImageToPixbuf (item.Bitmap);
-			
-			foreach (ToolboxItemFilterAttribute tbfa in item.Filter)
-				base.ItemFilters.Add (tbfa);
-			
-			//we only need to serialise the ToolboxItem if it is non-standard, because we can reliably recreate the two built-in types
-			if (item.GetType () == typeof (ToolboxItem))
-				toolboxItemType = null; //no-op, but this has consequences 	
-			else if (item.GetType () == typeof (System.Web.UI.Design.WebControlToolboxItem))
-				toolboxItemType = new TypeReference (typeof (System.Web.UI.Design.WebControlToolboxItem));
-			else {
-				serializedToolboxItem = SerializeToolboxItem (item);
-				toolboxItemType = new TypeReference (item.GetType ());
-			} 
-		}
-		
-		//ToolboxItems don't handle assembly locations, so hack around this
-		public ToolboxItemToolboxNode (ToolboxItem item, string assemblyLocation)
-		  : base (item.TypeName, item.AssemblyName.FullName)
-		{
-			base.Type.AssemblyLocation = assemblyLocation;
-		}	
+		// The constructors taking a System.Drawing.Design.ToolboxItem, GetToolboxItem () and the
+		// BinaryFormatter (de)serialisation of custom ToolboxItems are removed: ToolboxItem is
+		// Windows Forms only on .NET and BinaryFormatter is gone (ADR 0009). The node still loads
+		// from saved toolbox data (a serialised custom item, "itemcontents", is ignored).
 		
 		//for deserialisation
 		public ToolboxItemToolboxNode ()
@@ -101,57 +73,8 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 			return code;
 		}
 		
-		public ToolboxItem GetToolboxItem ()
-		{
-			//get the type of the toolboxitem, and make sure it's loaded
-			Type tbiType = typeof (ToolboxItem);
-			if ((toolboxItemType != null) && (!string.IsNullOrEmpty (toolboxItemType.TypeName)))
-				tbiType = toolboxItemType.Load ();
-			
-			if ((serializedToolboxItem != null) && (serializedToolboxItem.Length > 0))
-				return DeserializeToolboxItem (serializedToolboxItem);
-			
-			//built-in type, no need to deserialise; we can recreate
-			Type clsType = base.Type.Load ();
-			ToolboxItem item = (ToolboxItem) Activator.CreateInstance (tbiType, new object[] {clsType});
-			return item;
-		}
-		
-		#region private utility methods
-		
-		ToolboxItem DeserializeToolboxItem (string serializedObject)
-		{
-			byte[] bytes = Convert.FromBase64String (serializedObject);
-			
-			MemoryStream ms = new MemoryStream(bytes);
-			BinaryFormatter BF = new BinaryFormatter ();
-			
-			object obj = BF.Deserialize (ms);
-   			ms.Close ();
-   			
-   			if (! (obj is ToolboxItem))
-   				throw new Exception ("Could not deserialise ToolboxItem for " + base.Name);
-   			
-   			return (ToolboxItem) obj;
-		}
-		
-		string SerializeToolboxItem (ToolboxItem toolboxItem)
-		{
-			MemoryStream ms = new MemoryStream ();
-			BinaryFormatter BF = new BinaryFormatter ();
-			
-			BF.Serialize (ms, toolboxItem);
-			byte[] bytes = ms.ToArray ();
-			
-			
-   			ms.Close ();
-   			return Convert.ToBase64String(bytes);
-		}
-		
 		public override string ItemDomain {
 			get { return GettextCatalog.GetString ("Web and Windows Forms Components"); }
 		}
-		
-		#endregion
 	}	
 }

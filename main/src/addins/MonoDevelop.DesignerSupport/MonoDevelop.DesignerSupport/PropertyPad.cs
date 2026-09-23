@@ -44,6 +44,7 @@ using Gtk;
 
 namespace MonoDevelop.DesignerSupport
 {
+#if MAC
 	class PropertyMacHostWidget : IPropertyGrid
 	{
 		public event EventHandler PropertyGridChanged;
@@ -124,6 +125,75 @@ namespace MonoDevelop.DesignerSupport
 			}
 		}
 	}
+#else
+	// The GTK property grid of MonoDevelop.Ide behind IPropertyGrid (the Mac build hosts the
+	// Xamarin.PropertyEditing view instead); the pg.PropertyGrid does not implement this interface.
+	sealed class PropertyGridGtkHost : IPropertyGrid
+	{
+		pg.PropertyGrid grid = new pg.PropertyGrid ();
+
+		public event EventHandler PropertyGridChanged {
+			add { grid.Changed += value; }
+			remove { grid.Changed -= value; }
+		}
+
+		public string Name {
+			get => grid.Name;
+			set => grid.Name = value;
+		}
+
+		public bool ShowHelp {
+			get => grid.ShowHelp;
+			set => grid.ShowHelp = value;
+		}
+
+		public ShadowType ShadowType {
+			get => grid.ShadowType;
+			set => grid.ShadowType = value;
+		}
+
+		public Widget Widget => grid;
+
+		public bool IsGridEditing => grid.IsEditing;
+
+		public bool ShowToolbar {
+			get => grid.ShowToolbar;
+			set => grid.ShowToolbar = value;
+		}
+
+		public bool Sensitive {
+			get => grid.Sensitive;
+			set => grid.Sensitive = value;
+		}
+
+		public object CurrentObject {
+			get => grid.CurrentObject;
+			set => grid.CurrentObject = value;
+		}
+
+		public void SetCurrentObject (object obj, object [] propertyProviders)
+			=> grid.SetCurrentObject (obj, propertyProviders);
+
+		public void BlankPad () => grid.BlankPad ();
+		public void Hide () => grid.Hide ();
+		public void Show () => grid.Show ();
+
+		public void PopulateGrid (bool saveEditSession) => grid.Populate (saveEditSession);
+
+		public void SetToolbarProvider (object toolbarProvider)
+			=> grid.SetToolbarProvider ((pg.PropertyGrid.IToolbarProvider)toolbarProvider);
+
+		public void CommitPendingChanges () => grid.CommitPendingChanges ();
+
+		public void Dispose ()
+		{
+			if (grid != null) {
+				grid.Destroy ();
+				grid = null;
+			}
+		}
+	}
+#endif
 
 	public interface IPropertyGrid : IPropertyPad
 	{
@@ -188,7 +258,7 @@ namespace MonoDevelop.DesignerSupport
 #if MAC
 			nativeWidget = new PropertyMacHostWidget ();
 #else
-			nativeWidget = new pg.PropertyGrid ();
+			nativeWidget = new PropertyGridGtkHost ();
 #endif
 			nativeWidget.PropertyGridChanged += NativeWidget_PropertyGridChanged;
 		}

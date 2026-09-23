@@ -12,7 +12,7 @@ namespace MonoDevelop.Debugger
 		private global::Gtk.TreeView tree;
 		private global::Gtk.HBox hbox2;
 		private global::Gtk.Label label2;
-		private global::Gtk.ComboBox comboDebs;
+		private global::Gtk.ComboBoxText comboDebs;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
 
@@ -21,11 +21,11 @@ namespace MonoDevelop.Debugger
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Debugger.AttachToProcessDialog
 			this.Name = "MonoDevelop.Debugger.AttachToProcessDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Attach to Process");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Attach to Process");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(3));
 			// Internal child MonoDevelop.Debugger.AttachToProcessDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -41,7 +41,7 @@ namespace MonoDevelop.Debugger
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Attach to:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Attach to:");
 			this.hbox1.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.label1]));
 			w2.Position = 0;
@@ -80,14 +80,14 @@ namespace MonoDevelop.Debugger
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Debugger:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Debugger:");
 			this.hbox2.Add (this.label2);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label2]));
 			w7.Position = 0;
 			w7.Expand = false;
 			w7.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.comboDebs = global::Gtk.ComboBox.NewText ();
+			this.comboDebs = new global::Gtk.ComboBoxText ();
 			this.comboDebs.Name = "comboDebs";
 			this.hbox2.Add (this.comboDebs);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.comboDebs]));
@@ -99,11 +99,11 @@ namespace MonoDevelop.Debugger
 			w9.Position = 2;
 			w9.Expand = false;
 			w9.Fill = false;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w10.Position = 0;
 			// Internal child MonoDevelop.Debugger.AttachToProcessDialog.ActionArea
-			global::Gtk.HButtonBox w11 = this.ActionArea;
+			global::Gtk.ButtonBox w11 = this.ActionArea;
 			w11.Name = "dialog1_ActionArea";
 			w11.Spacing = 6;
 			w11.BorderWidth = ((uint)(5));
@@ -126,7 +126,7 @@ namespace MonoDevelop.Debugger
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
-			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("Attach");
+			this.buttonOk.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Attach");
 			this.AddActionWidget (this.buttonOk, -5);
 			global::Gtk.ButtonBox.ButtonBoxChild w13 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w11 [this.buttonOk]));
 			w13.Position = 1;

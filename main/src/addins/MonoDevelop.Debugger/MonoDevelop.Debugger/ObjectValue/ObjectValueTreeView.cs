@@ -151,18 +151,49 @@ namespace MonoDevelop.Debugger
 				}
 			}
 
-			public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 			{
-				base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+				Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 				if (!icon.IsNull)
 					width += (int)(Xpad * 2 + img.Width);
 			}
 
-			protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
 			{
-				base.Render (window, widget, background_area, cell_area, expose_area, flags);
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+			}
+
+			void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			{
+				base.OnGetPreferredWidth (widget, out _, out width);
+				base.OnGetPreferredHeightForWidth (widget, width, out _, out height);
+				MonoDevelop.Components.Gtk3CompatExtensions.Gtk3CalcOffset (this, widget, cell_area, width, height, out x_offset, out y_offset);
+			}
+
+			protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
+			{
+				base.OnRender (gtk3cr, widget, background_area, cell_area, flags);
 				if (!icon.IsNull) {
-					using (var ctx = Gdk.CairoHelper.Create (window)) {
+					using (var ctx = gtk3cr.CreateSharedContext ()) {
 						using (var layout = new Pango.Layout (widget.PangoContext)) {
 							layout.FontDescription = IdeServices.FontService.SansFont.CopyModified (Ide.Gui.Styles.FontScale11);
 							layout.FontDescription.Family = Family;
@@ -206,23 +237,54 @@ namespace MonoDevelop.Debugger
 				}
 			}
 
-			public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 			{
 				if (Compact)
 					this.Ellipsize = Pango.EllipsizeMode.None;
-				base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+				Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 				if (Compact)
 					this.Ellipsize = Pango.EllipsizeMode.End;
+			}
+
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+			}
+
+			void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			{
+				base.OnGetPreferredWidth (widget, out _, out width);
+				base.OnGetPreferredHeightForWidth (widget, width, out _, out height);
+				MonoDevelop.Components.Gtk3CompatExtensions.Gtk3CalcOffset (this, widget, cell_area, width, height, out x_offset, out y_offset);
 			}
 		}
 
 		class CellRendererColorPreview : CellRenderer
 		{
-			protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+			protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 			{
 				var darkColor = Color.WithIncreasedLight (-0.15);
 
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (window)) {
+				using (Cairo.Context cr = gtk3cr.CreateSharedContext ()) {
 					double center_x = cell_area.X + Math.Round ((double)(cell_area.Width / 2d));
 					double center_y = cell_area.Y + Math.Round ((double)(cell_area.Height / 2d));
 
@@ -239,10 +301,34 @@ namespace MonoDevelop.Debugger
 				}
 			}
 
-			public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 			{
 				x_offset = y_offset = 0;
 				height = width = 16;
+			}
+
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
 			}
 
 			public Xwt.Drawing.Color Color { get; set; }
@@ -251,12 +337,12 @@ namespace MonoDevelop.Debugger
 		class CellRendererRoundedButton : CellRendererText {
 			const int TopBottomPadding = 1;
 
-			protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+			protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 			{
 				if (string.IsNullOrEmpty (Text)) {
 					return;
 				}
-				using (var cr = Gdk.CairoHelper.Create (window)) {
+				using (var cr = gtk3cr.CreateSharedContext ()) {
 					using (var layout = new Pango.Layout (widget.PangoContext)) {
 						layout.SetText (Text);
 						layout.FontDescription = FontDesc;
@@ -287,9 +373,9 @@ namespace MonoDevelop.Debugger
 				}
 			}
 
-			public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 			{
-				base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+				Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 				x_offset = y_offset = 0;
 				if (string.IsNullOrEmpty (Text)) {
 					width = 0;
@@ -304,6 +390,37 @@ namespace MonoDevelop.Debugger
 					layout.GetPixelSize (out w, out h);
 					width = w + (height - 2 * TopBottomPadding) + 2 * (int)Xpad;
 				}
+			}
+
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+			}
+
+			void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			{
+				base.OnGetPreferredWidth (widget, out _, out width);
+				base.OnGetPreferredHeightForWidth (widget, width, out _, out height);
+				MonoDevelop.Components.Gtk3CompatExtensions.Gtk3CalcOffset (this, widget, cell_area, width, height, out x_offset, out y_offset);
 			}
 		}
 
@@ -410,16 +527,19 @@ namespace MonoDevelop.Debugger
 			createMsg = GettextCatalog.GetString ("Click here to add a new watch");
 			CompletionWindowManager.WindowClosed += HandleCompletionWindowClosed;
 			PreviewWindowManager.WindowClosed += HandlePreviewWindowClosed;
-			ScrollAdjustmentsSet += HandleScrollAdjustmentsSet;
+			// GTK3 has no set-scroll-adjustments signal: follow the Scrollable adjustment properties.
+			AddNotification ("hadjustment", HandleScrollAdjustmentsSet);
+			AddNotification ("vadjustment", HandleScrollAdjustmentsSet);
 
 
-			expanderSize = (int)this.StyleGetProperty ("expander-size") + 4;//+4 is hardcoded in gtk.c code
-			horizontal_separator = (int)this.StyleGetProperty ("horizontal-separator");
-			grid_line_width = (int)this.StyleGetProperty ("grid-line-width");
-			focus_line_width = (int)this.StyleGetProperty ("focus-line-width") * 2;//we just use *2 version in GetMaxWidth
+			// GTK3 may return null for deprecated style properties: fall back to the GTK defaults.
+			expanderSize = (this.StyleGetProperty ("expander-size") is int es ? es : 14) + 4;//+4 is hardcoded in gtk.c code
+			horizontal_separator = this.StyleGetProperty ("horizontal-separator") is int hs ? hs : 4;
+			grid_line_width = this.StyleGetProperty ("grid-line-width") is int gl ? gl : 1;
+			focus_line_width = (this.StyleGetProperty ("focus-line-width") is int fl ? fl : 1) * 2;//we just use *2 version in GetMaxWidth
 		}
 
-		static void ValueDataFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		static void ValueDataFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			var val = (ObjectValue)model.GetValue (iter, ObjectColumn);
 			Xwt.Drawing.Color? color;
@@ -454,7 +574,7 @@ namespace MonoDevelop.Debugger
 			column.CellSetCellData (Model, iter, false, false);
 			var area = new Gdk.Rectangle (0, 0, 1000, 1000);
 			bool firstCell = true;
-			foreach (var cellRenderer in column.CellRenderers) {
+			foreach (var cellRenderer in column.Cells) {
 				if (!cellRenderer.Visible)
 					continue;
 				if (!firstCell && columnWidth > 0)
@@ -511,16 +631,18 @@ namespace MonoDevelop.Debugger
 		Adjustment oldHadjustment;
 		Adjustment oldVadjustment;
 		//Don't convert this event handler to override OnSetScrollAdjustments as it causes problems
-		void HandleScrollAdjustmentsSet (object o, ScrollAdjustmentsSetArgs args)
+		void HandleScrollAdjustmentsSet (object o, GLib.NotifyArgs args)
 		{
-			if (oldHadjustment != null) {
+			if (oldHadjustment != null)
 				oldHadjustment.ValueChanged -= UpdatePreviewPosition;
+			if (oldVadjustment != null)
 				oldVadjustment.ValueChanged -= UpdatePreviewPosition;
-			}
 			oldHadjustment = Hadjustment;
 			oldVadjustment = Vadjustment;
-			oldHadjustment.ValueChanged += UpdatePreviewPosition;
-			oldVadjustment.ValueChanged += UpdatePreviewPosition;
+			if (oldHadjustment != null)
+				oldHadjustment.ValueChanged += UpdatePreviewPosition;
+			if (oldVadjustment != null)
+				oldVadjustment.ValueChanged += UpdatePreviewPosition;
 		}
 
 		void UpdatePreviewPosition (object sender, EventArgs e)
@@ -577,7 +699,8 @@ namespace MonoDevelop.Debugger
 			valueCol.RemoveNotification ("width", OnColumnWidthChanged);
 			expCol.RemoveNotification ("width", OnColumnWidthChanged);
 
-			ScrollAdjustmentsSet -= HandleScrollAdjustmentsSet;
+			RemoveNotification ("hadjustment", HandleScrollAdjustmentsSet);
+			RemoveNotification ("vadjustment", HandleScrollAdjustmentsSet);
 			if (oldHadjustment != null) {
 				oldHadjustment.ValueChanged -= UpdatePreviewPosition;
 				oldVadjustment.ValueChanged -= UpdatePreviewPosition;
@@ -2079,7 +2202,7 @@ namespace MonoDevelop.Debugger
 				return;
 
 			if (selected.Length == 1) {
-				var editable = IdeApp.Workbench.RootWindow.Focus as Editable;
+				var editable = IdeApp.Workbench.RootWindow.Focus as IEditable;
 
 				if (editable != null) {
 					editable.CopyClipboard ();
@@ -2223,7 +2346,7 @@ namespace MonoDevelop.Debugger
 			if (GetPathAtPos (x, y, out path, out col)) {
 				var cellArea = GetCellArea (path, col);
 				x -= cellArea.X;
-				foreach (CellRenderer cr in col.CellRenderers) {
+				foreach (CellRenderer cr in col.Cells) {
 					int xo, w;
 					col.CellGetPosition (cr, out xo, out w);
 					var visible = cr.Visible;

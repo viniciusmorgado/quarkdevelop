@@ -175,7 +175,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [ ] T089 [US3] M5c: `CSharpBinding` (GUI) on Roslyn 5.9 + Publicizer (EditorFeatures from dnceng feed only via ADR 0004 amendment) → completion test (US3-2)
 - [ ] T090 [US3] M5c: `MonoDevelop.Refactoring` → builds; refactoring tests subset pass
 - [ ] T091 [P] [US3] M5c: `Xml` add-in → Xml tests pass
-- [ ] T092 [P] [US3] M5c: `DesignerSupport` (Stetic output frozen; `gui.stetic` deleted) → builds
+- [x] T092 [P] [US3] M5c: `DesignerSupport` (Stetic output frozen; `gui.stetic` deleted) → builds
 - [ ] T093 [P] [US3] M5c: `AssemblyBrowser` → builds
 - [ ] T094 [P] [US3] M5c: `RegexToolkit` (Thread.Abort removed) → builds
 - [ ] T095 [P] [US3] M5c: `HexEditor` (Stetic frozen) → builds
@@ -198,8 +198,8 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 
 ## Phase 6: User Story 4 — debugging .NET 10 programs (P2) — M5
 
-- [ ] T110 [US4] M5: vendor `Mono.Debugging` → `main/vendor/debugger-libs/Mono.Debugging/` + `UPSTREAM.md`, net10.0; submodule removed → builds
-- [ ] T111 [US4] M5: `MonoDevelop.Debugger` + `MonoDevelop.Debugger.VSCodeDebugProtocol` (VsCodeDebugProtocol 17.x/18.x) → builds
+- [x] T110 [US4] M5: vendor `Mono.Debugging` → `main/vendor/debugger-libs/Mono.Debugging/` + `UPSTREAM.md`, net10.0; submodule removed → builds
+- [x] T111 [US4] M5: `MonoDevelop.Debugger` + `MonoDevelop.Debugger.VSCodeDebugProtocol` (VsCodeDebugProtocol 17.x/18.x) → builds
 - [ ] T112 [US4] M5: `NetCoreDbgSession` (cherry-pick DotDevelop `379883b7c5`, MIT) + engine registration → debugger engine listed
 - [ ] T113 [US4] M5: `NetCoreDbgTests` in `main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests/` (breakpoint, locals, step, exit code) → `dotnet test … --filter FullyQualifiedName~NetCoreDbg` passes (SC-006)
 - [ ] T114 [US4] M5: `.vscode/launch.json` (coreclr attach/launch via netcoredbg) + `scripts/debug.sh` docs → `docs/linux/setup.md` section

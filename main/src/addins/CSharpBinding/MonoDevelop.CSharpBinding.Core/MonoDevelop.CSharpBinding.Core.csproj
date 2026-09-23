@@ -7,7 +7,8 @@
   <PropertyGroup>
     <AssemblyName>MonoDevelop.CSharpBinding.Core</AssemblyName>
     <RootNamespace>MonoDevelop.CSharp</RootNamespace>
-    <AddinBuildDir>CSharpBinding</AddinBuildDir>
+    <!-- Own folder: headless hosts (mdtool, tests) scan it without the GUI add-ins (AddIns/CSharpBinding). -->
+    <AddinBuildDir>MonoDevelop.CSharpBinding.Core</AddinBuildDir>
   </PropertyGroup>
 
   <ItemGroup>
