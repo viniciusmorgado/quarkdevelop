@@ -20,7 +20,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       ca-certificates curl unzip xz-utils file \
-      git jq shellcheck python3 \
+      git jq shellcheck python3 gettext \
       libgtk-3-0t64 libgtk-3-bin librsvg2-common adwaita-icon-theme \
       fonts-dejavu-core dbus-x11 at-spi2-core \
       xvfb xauth x11-utils imagemagick weston \

@@ -21,6 +21,10 @@ Implement `GettextCatalog` on NGettext (managed `.mo` reader, MIT), keeping the 
 existing `.mo` layout (`MONODEVELOP_LOCALE_PATH`). Direct `Mono.Unix.Catalog.GetString` calls in
 ported code are rewritten to `GettextCatalog.GetString`.
 
+Catalogs are compiled by `main/po/MonoDevelop.Translations.csproj` (Microsoft.Build.NoTargets SDK)
+with `msgfmt --check-format` into `main/build/locale/<lang>/LC_MESSAGES/monodevelop.mo`, replacing the
+autotools rules of `main/po/Makefile.am`; `gettext` is part of the development image.
+
 ### Consequences
 
 - Good: no native libintl dependency; works in Flatpak and tests.

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.Build.NoTargets">
+  <!--
+    Compiles the gettext catalogs (main/po/*.po) into main/build/locale/<lang>/LC_MESSAGES/monodevelop.mo,
+    replacing the autotools rules of main/po/Makefile.am (task T048, FR-018). Read at run time by
+    GettextCatalog (NGettext, ADR 0014) through MONODEVELOP_LOCALE_PATH or <prefix>/share/locale.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <MDLocaleDir>$(MonoDevelopBuildDir)locale/</MDLocaleDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <MDTranslation Include="*.po" Exclude="messages.po" />
+  </ItemGroup>
+
+  <Target Name="CompileTranslations" AfterTargets="Build"
+          Inputs="@(MDTranslation)"
+          Outputs="@(MDTranslation->'$(MDLocaleDir)%(Filename)/LC_MESSAGES/monodevelop.mo')">
+    <MakeDir Directories="$(MDLocaleDir)%(MDTranslation.Filename)/LC_MESSAGES" />
+    <Exec Command="msgfmt --check-format -o &quot;$(MDLocaleDir)%(MDTranslation.Filename)/LC_MESSAGES/monodevelop.mo&quot; &quot;%(MDTranslation.FullPath)&quot;" />
+  </Target>
+</Project>
