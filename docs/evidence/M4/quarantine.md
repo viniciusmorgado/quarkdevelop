@@ -4,7 +4,7 @@ Tests excluded from the gate with `[Category ("Quarantine")]` (constitution V). 
 
 ## MonoDevelop.Core.Tests
 
-Quarantined 75 test cases (74 methods; 80 at first run) on 2026-09-23. Bug: 47, legacy-fixture: 13, Flaky: 8, net4x-fixture: 6, Mono-only: 1.
+Quarantined 77 test cases (76 methods; 80 at first run) on 2026-09-23. Bug: 47, legacy-fixture: 13, Flaky: 10, net4x-fixture: 6, Mono-only: 1.
 
 | Test | Reason | Note | First error line | Owner | Date | Task |
 |---|---|---|---|---|---|---|
@@ -83,6 +83,8 @@ Quarantined 75 test cases (74 methods; 80 at first run) on 2026-09-23. Bug: 47, 
 | `MonoDevelop.Projects.ProjectWithWildcardsTests.LoadProjectWithWildcardLinks4` | Bug | project model / evaluator difference on SDK 10 | System.InvalidCastException : Unable to cast object of type 'MonoDevelop.Projects.UnknownSolutionItem' to type | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.SharedAssetsProjectTests.SaveSharedProject` | Bug | fails on .NET 10; root cause to be analysed | String lengths are both 942. Strings differ at index 236. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.SolutionTests.SkipBuildingUnmodifiedProjects(True,1,2)` | Bug | fails on .NET 10; root cause to be analysed | Expected: 1 | migration | 2026-09-23 | T135 |
+| `MonoDevelop.Projects.BuilderManagerTests.AtLeastOneBuilderPersolution` | Flaky | builder counts are timing-dependent; a failed assertion leaves the sync build blocked and its builder hangs later tests | Test exceeded Timeout value of 120000ms | migration | 2026-09-23 | T135 |
+| `MonoDevelop.Projects.FileWatcherTests.SaveProjectFileExternally_TwoSolutionsOpen_SolutionsHaveCommonDirectories` | Flaky | timing-dependent (file watcher / event timing); fails about 1 run in 3 | Expected: 1 | migration | 2026-09-23 | T135 |
 
 ### Released
 

@@ -310,6 +310,15 @@ namespace MonoDevelop.Projects
 			}
 		}
 
+		static async Task WaitForBuildersToShutDown (FilePath projectFile)
+		{
+			for (int i = 0; i < 100; i++) {
+				if (RemoteBuildEngineManager.ActiveEnginesCount == 0 && await RemoteBuildEngineManager.CountActiveBuildersForProject (projectFile) == 0)
+					return;
+				await Task.Delay (100);
+			}
+		}
+
 		[Test]
 		public async Task DisposingSolutionDisposesBuilder ()
 		{
@@ -328,6 +337,8 @@ namespace MonoDevelop.Projects
 				Assert.AreEqual (1, RemoteBuildEngineManager.ActiveEnginesCount);
 				Assert.AreEqual (1, await RemoteBuildEngineManager.CountActiveBuildersForProject (project.FileName));
 			}
+			// Disposal finishes asynchronously when project tasks are still running (WorkspaceObject.Dispose).
+			await WaitForBuildersToShutDown (projectFile);
 			Assert.AreEqual (0, await RemoteBuildEngineManager.CountActiveBuildersForProject (projectFile));
 			Assert.AreEqual (0, RemoteBuildEngineManager.ActiveEnginesCount);
 		}
@@ -357,6 +368,7 @@ namespace MonoDevelop.Projects
 				Assert.AreEqual (1, RemoteBuildEngineManager.EnginesCount);
 				Assert.AreEqual (0, await RemoteBuildEngineManager.CountActiveBuildersForProject (project.FileName));
 			}
+			await WaitForBuildersToShutDown (projectFile);
 			Assert.AreEqual (0, await RemoteBuildEngineManager.CountActiveBuildersForProject (projectFile));
 			Assert.AreEqual (0, RemoteBuildEngineManager.ActiveEnginesCount);
 			Assert.AreEqual (0, RemoteBuildEngineManager.EnginesCount);
@@ -493,6 +505,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task AtLeastOneBuilderPersolution ()
 		{
 			// There should always be at least one builder running per solution,
