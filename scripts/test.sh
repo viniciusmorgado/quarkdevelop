@@ -36,7 +36,12 @@ fi
 
 md_log "dotnet test ${filter:+--filter $filter}"
 status=0
-dotnet test "${args[@]}" "${build_args[@]}" "${extra[@]}" || status=$?
+# GTK tests (MonoDevelop.Ide.Gtk3.Tests) need a display: use Xvfb when there is none.
+runner=()
+if [[ -z "${DISPLAY:-}" && -z "${WAYLAND_DISPLAY:-}" ]] && command -v xvfb-run >/dev/null; then
+	runner=(xvfb-run -a -s "-screen 0 1280x1024x24")
+fi
+"${runner[@]}" dotnet test "${args[@]}" "${build_args[@]}" "${extra[@]}" || status=$?
 
 mapfile -t reports < <(find "$MD_OUT/tests" -name 'coverage.cobertura.xml')
 if [[ ${#reports[@]} -gt 0 ]]; then
@@ -49,7 +54,11 @@ if [[ ${#reports[@]} -gt 0 ]]; then
 
 	# Per-assembly line coverage: lines "<Assembly>   <percent>%" after the summary header.
 	current="$MD_OUT/coverage/line-coverage.txt"
-	awk '/^[A-Za-z][A-Za-z0-9.]+ +[0-9.]+%$/ { sub(/%$/, "", $2); print $1, $2 }' "$MD_OUT/coverage/Summary.txt" | sort > "$current"
+	# plus "total" = overall line coverage of the product assemblies (SC-003).
+	{
+		awk '/^[A-Za-z][A-Za-z0-9.]+ +[0-9.]+%$/ { sub(/%$/, "", $2); print $1, $2 }' "$MD_OUT/coverage/Summary.txt"
+		awk -F': ' '/^  Line coverage:/ { sub(/%$/, "", $2); print "total", $2 }' "$MD_OUT/coverage/Summary.txt"
+	} | sort > "$current"
 	if [[ "$update_baseline" == true ]]; then
 		cp "$current" "$baseline"
 		md_log "coverage baseline updated: $baseline"

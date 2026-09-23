@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Tests for code of MonoDevelop.Ide changed by the GTK3 / .NET 10 port (task T136), run under Xvfb.
+    The legacy Ide test suites join in M5c (T107).
+  -->
+  <PropertyGroup>
+    <AssemblyName>MonoDevelop.Ide.Gtk3.Tests</AssemblyName>
+    <RootNamespace>MonoDevelop.Ide.Gtk3.Tests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="GtkSharp" />
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.StringTools" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Frameworks" ExcludeAssets="runtime" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

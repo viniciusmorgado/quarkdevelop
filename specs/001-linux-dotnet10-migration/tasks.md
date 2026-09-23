@@ -34,7 +34,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [x] T013 [P] M1: ADRs 0001–0017 + index → `ls docs/adr/*.md | wc -l` ≥ 18
 - [x] T014 [P] M1: `docs/BREAKING-CHANGES.md` → file lists every ADR 0017 exclusion
 - [x] T015 M1: three independent reviews (analyze, feasibility, traceability) → `docs/evidence/M1/review-{A,B,C}.md`
-- [ ] T016 M1: apply review findings (this revision, constitution 1.0.1, ADR fixes, spec SC-002/003/005/007, quickstart/contract fixes) and re-run the consistency analysis → `docs/evidence/M1/analyze.md` with 0 CRITICAL
+- [ ] T016 M1: apply review findings (this revision, constitution 1.2.0 and its amendments in ADR 0001, ADR fixes, spec SC-002/003/005/007, quickstart/contract fixes) and re-run the consistency analysis → `docs/evidence/M1/analyze.md` with 0 CRITICAL
 - [x] T017 [P] M1: ADR 0018 warning policy (TreatWarningsAsErrors + per-project `WarningsNotAsErrors` baseline) → `docs/adr/0018-warning-policy.md`
 
 ---
@@ -144,6 +144,11 @@ tasks are split one project per task, new tasks for gaps found in review.
 
 ### M5b — `MonoDevelop.Ide` compiles on GTK3 (one area per task)
 
+Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests` (run under Xvfb by
+`scripts/test.sh`) for the behaviour it changes; its proof includes those tests passing.
+
+- [x] T136 [US3] M5b: `main/tests/MonoDevelop.Ide.Gtk3.Tests` in the Linux solution (Xvfb) with tests for the M5b behaviour changes so far: `SyncContext.AsyncDispatch` without `Delegate.BeginInvoke`, `Gtk3ExposeEvent` offsets/area/context restore, `Gtk3CompatExtensions.SizeRequest` → `./scripts/test.sh` runs them green
+
 - [x] T070 [US3] M5b: SDK-style `MonoDevelop.Ide.csproj` (GtkSharp 3, Publicizer for Roslyn internals, VS Composition explicit) with tracked `Gtk3PortPending.props`; `SyncContext.BeginInvoke` fixed → Ide builds with pending areas excluded
 - [ ] T071 [US3] M5b: port `MonoDevelop.Components/` (+ Theming, Extensions) → removed from pending list; builds
 - [ ] T072 [US3] M5b: port `Components.Docking`, `Components.DockNotebook` → builds
@@ -186,7 +191,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [ ] T106 [US3] M5c: main-loop stall probe during `MonoDevelop.Linux.sln` load (≤ 1 s) → evidence
 - [ ] T107 [US3] M5c: `Ide.Tests`, `IdeUnitTests`, `MonoDevelop.CSharpBinding.Tests` on NUnit 3.14 under Xvfb; quarantine per suite → `docs/evidence/M4/quarantine.md` updated
 - [ ] T108 [US3] M5c: `Main.sln` replaced by `MonoDevelop.Linux.sln` (ADR 0002); legacy build files removed or marked obsolete → `docs/BREAKING-CHANGES.md` updated
-- [ ] T109 [US3] M5c: evidence → `docs/evidence/M5/` (smoke logs, screenshots X11 + Wayland, grep = 0, startup time)
+- [ ] T109 [US3] M5c: evidence → `docs/evidence/M5/` (smoke logs, screenshots X11 + Wayland, grep = 0 for GTK2 APIs and for the ADR 0011 port helpers, startup time)
 
 ---
 

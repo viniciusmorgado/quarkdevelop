@@ -27,6 +27,17 @@
       <MONODEVELOP_MSBUILD_BUILDER>$(MonoDevelopBuildDir)bin/MonoDevelop.MSBuildBuilder.dll</MONODEVELOP_MSBUILD_BUILDER>
     </EnvironmentVariables>
   </RunConfiguration>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <!-- Coverage counts MonoDevelop product assemblies only (SC-003): vendored third-party code,
+               tests and test helpers are not measured. -->
+          <Exclude>[Xwt]*,[Xwt.*]*,[Microsoft.VisualStudio.*]*,[Mono.Addins.GuiGtk3]*,[MonoDevelop.Wpf.Primitives]*,[UnitTests]*,[*.Tests]*,[*.Tests.*]*,[MonoDevelop.TestStartupHook]*</Exclude>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
   <NUnit>
     <!-- A hung test (e.g. waiting for a build that cannot run) fails instead of aborting the run. -->
     <DefaultTimeout>120000</DefaultTimeout>
