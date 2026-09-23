@@ -255,7 +255,7 @@ namespace MonoDevelop.Ide.Commands
 			foreach (Components.Window window in IdeApp.CommandService.TopLevelWindowStack) {
 #if !WINDOWS
 				//we don't want include hidden windows
-				if (!window.IsRealized || !window.IsVisible || Components.Mac.GtkMacInterop.IsGdkQuartzWindow (window))
+				if (!window.IsRealized || !window.IsVisible)
 					continue;
 #endif
 

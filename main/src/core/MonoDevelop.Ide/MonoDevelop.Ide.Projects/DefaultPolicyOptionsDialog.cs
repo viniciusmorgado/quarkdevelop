@@ -43,7 +43,7 @@ namespace MonoDevelop.Ide.Projects
 {
 	public class DefaultPolicyOptionsDialog : OptionsDialog
 	{
-		ComboBox policiesCombo;
+		ComboBoxText policiesCombo;
 		MenuButton newButton;
 		Button deleteButton;
 		MenuButton exportButton;
@@ -65,7 +65,7 @@ namespace MonoDevelop.Ide.Projects
 			topBar.Spacing = 3;
 			topBar.PackStart (new Label (GettextCatalog.GetString ("Editing Policy:")), false, false, 0);
 			
-			policiesCombo = ComboBox.NewText ();
+			policiesCombo = new ComboBoxText ();
 			topBar.PackStart (policiesCombo, false, false, 0);
 			
 			deleteButton = new Button (GettextCatalog.GetString ("Delete Policy"));
@@ -129,9 +129,9 @@ namespace MonoDevelop.Ide.Projects
 			
 			ebox.ShowAll ();
 			
-			VBox.PackStart (ebox, false, false, 0);
-			VBox.BorderWidth = 0;
-			Box.BoxChild c = (Box.BoxChild) VBox [ebox];
+			ContentArea.PackStart (ebox, false, false, 0);
+			ContentArea.BorderWidth = 0;
+			Box.BoxChild c = (Box.BoxChild) ContentArea [ebox];
 			c.Position = 0;
 			
 			foreach (PolicySet ps in PolicyService.GetUserPolicySets ()) {

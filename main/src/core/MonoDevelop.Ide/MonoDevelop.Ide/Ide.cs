@@ -289,7 +289,7 @@ namespace MonoDevelop.Ide
 			AutoTestService.Start (commandService, Preferences.EnableAutomatedTesting);
 			AutoTestService.NotifyEvent ("MonoDevelop.Ide.IdeStart");
 
-			Gtk.LinkButton.SetUriHook ((button, uri) => Xwt.Desktop.OpenUrl (uri));
+			// GTK3 has no global LinkButton uri hook: link buttons open their uri with gtk_show_uri (the desktop default)
 
 			// Start initializing the type system service in the background
 			Runtime.GetService<TypeSystemService> ().Ignore ();
@@ -375,10 +375,16 @@ namespace MonoDevelop.Ide
 						MessageService.ShowError (GettextCatalog.GetString ("Could not load solution: {0}", file.FileName), ex);
 					}
 				} else if (file.FileName.HasExtension ("mpack")) {
+					// the GTK3 Mono.Addins GUI has no RunToInstallFile: confirm here and install with a progress dialog
 					var service = new SetupService (AddinManager.Registry);
-					AddinManagerWindow.RunToInstallFile (Workbench.RootWindow.Visible ? Workbench.RootWindow : null,
-					                                     service,
-					                                     file.FileName.FullPath);
+					var mpack = file.FileName.FullPath;
+					if (MessageService.Confirm (GettextCatalog.GetString ("Install the add-in package '{0}'?", mpack.FileName), new AlertButton (GettextCatalog.GetString ("Install")))) {
+						using (var monitor = new ProgressMonitoring.MessageDialogProgressMonitor (true, false, true)) {
+							var statusMonitor = new Core.ProgressMonitoring.ProgressStatusMonitor (monitor);
+							if (!await Task.Run (() => service.Install (statusMonitor, mpack)))
+								monitor.ReportError (GettextCatalog.GetString ("The add-in package '{0}' could not be installed.", mpack.FileName), null);
+						}
+					}
 				} else {
 					filteredFiles.Add (file);
 				}

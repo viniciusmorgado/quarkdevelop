@@ -104,30 +104,8 @@ namespace MonoDevelop.Ide.Updater
 
 		static void OpenAddinManagerWindow ()
 		{
-			if (!IdeApp.Workbench.RootWindow.Visible && WelcomePage.WelcomePageService.WelcomeWindow.nativeWidget is AppKit.NSWindow parentNsWindow) {
-				var dlg = AddinManagerWindow.Create ();
-
-				EventHandler shownEvent = null;
-				shownEvent = (s, e) => {
-					dlg.Shown -= shownEvent;
-					try {
-						var nativeWindow = Components.Mac.GtkMacInterop.GetNSWindow (dlg);
-						MessageService.CenterWindow (nativeWindow, parentNsWindow);
-						parentNsWindow.AddChildWindow (nativeWindow, AppKit.NSWindowOrderingMode.Above);
-					} catch (Exception ex) {
-						LoggingService.LogInternalError (ex);
-					}
-				};
-
-				dlg.Shown += shownEvent;
-				try {
-					dlg.Run ();
-				} finally {
-					dlg.Destroy ();
-				}
-			} else {
-				AddinManagerWindow.Run (IdeApp.Workbench.RootWindow);
-			}
+			// the macOS branch (parenting to the native welcome window) is gone on Linux
+			AddinManagerWindow.Run (IdeApp.Workbench.RootWindow);
 		}
 
 		public async static void ShowManager ()

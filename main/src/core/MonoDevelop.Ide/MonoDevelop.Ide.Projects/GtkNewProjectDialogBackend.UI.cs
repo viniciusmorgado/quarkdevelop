@@ -136,7 +136,7 @@ namespace MonoDevelop.Ide.Projects
 			topBannerLabel = new Label ();
 			topBannerLabel.Name = "topBannerLabel";
 			topBannerLabel.Accessible.Name = "topBannerLabel";
-			Pango.FontDescription font = topBannerLabel.Style.FontDescription.Copy (); // UNDONE: VV: Use FontService?
+			Pango.FontDescription font = topBannerLabel.GetStyleFont ().Copy (); // UNDONE: VV: Use FontService?
 			font.Size = (int)(font.Size * 2.0);
 			font.Weight = Pango.Weight.Bold;
 			topBannerLabel.ModifyFont (font);
@@ -147,14 +147,14 @@ namespace MonoDevelop.Ide.Projects
 			topLabelHBox.PackStart (topBannerLabel, false, false, 20);
 			topLabelEventBox.Add (topLabelHBox);
 
-			VBox.PackStart (topLabelEventBox, false, false, 0);
-			VBox.PackStart (topBannerBottomEdgeLineEventBox, false, false, 0);
+			ContentArea.PackStart (topLabelEventBox, false, false, 0);
+			ContentArea.PackStart (topBannerBottomEdgeLineEventBox, false, false, 0);
 
 			// Main templates section.
 			centreVBox = new VBox ();
 			centreVBox.Accessible.SetShouldIgnore (true);
 			centreVBox.Name = "centreVBox";
-			VBox.PackStart (centreVBox, true, true, 0);
+			ContentArea.PackStart (centreVBox, true, true, 0);
 			templatesHBox = new HBox ();
 			templatesHBox.Accessible.SetShouldIgnore (true);
 			templatesHBox.Name = "templatesHBox";
@@ -269,13 +269,13 @@ namespace MonoDevelop.Ide.Projects
 			templateSectionSeparatorEventBox.Name = "templateSectionSeparatorEventBox";
 			templateSectionSeparatorEventBox.HeightRequest = 1;
 			templateSectionSeparatorEventBox.ModifyBg (StateType.Normal, templateSectionSeparatorColor);
-			VBox.PackStart (templateSectionSeparatorEventBox, false, false, 0);
+			ContentArea.PackStart (templateSectionSeparatorEventBox, false, false, 0);
 
 			// Buttons at bottom of dialog.
 			var bottomHBox = new HBox ();
 			bottomHBox.Accessible.SetShouldIgnore (true);
 			bottomHBox.Name = "bottomHBox";
-			VBox.PackStart (bottomHBox, false, false, 0);
+			ContentArea.PackStart (bottomHBox, false, false, 0);
 
 			// Cancel button - bottom left.
 			var cancelButtonBox = new HButtonBox ();
@@ -297,7 +297,7 @@ namespace MonoDevelop.Ide.Projects
 			previousNextButtonBox.Name = "previousNextButtonBox";
 			previousNextButtonBox.BorderWidth = 16;
 			previousNextButtonBox.Spacing = 9;
-			bottomHBox.PackStart (previousNextButtonBox);
+			bottomHBox.PackStart (previousNextButtonBox, true, true, 0);
 			previousNextButtonBox.Layout = ButtonBoxStyle.End;
 
 			previousButton = new Button ();
@@ -306,7 +306,7 @@ namespace MonoDevelop.Ide.Projects
 			previousButton.Accessible.Description = GettextCatalog.GetString ("Return to the previous page");
 			previousButton.Label = GettextCatalog.GetString ("Previous");
 			previousButton.Sensitive = false;
-			previousNextButtonBox.PackEnd (previousButton);
+			previousNextButtonBox.PackEnd (previousButton, true, true, 0);
 
 			// Next button - bottom right.
 			nextButton = new Button ();
@@ -314,10 +314,10 @@ namespace MonoDevelop.Ide.Projects
 			nextButton.Accessible.Name = "nextButton";
 			nextButton.Accessible.Description = GettextCatalog.GetString ("Move to the next page");
 			nextButton.Label = GettextCatalog.GetString ("Next");
-			previousNextButtonBox.PackEnd (nextButton);
+			previousNextButtonBox.PackEnd (nextButton, true, true, 0);
 
 			// Remove default button action area.
-			VBox.Remove (ActionArea);
+			ContentArea.Remove (ActionArea);
 
 			if (Child != null) {
 				Child.ShowAll ();

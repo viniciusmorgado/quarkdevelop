@@ -388,7 +388,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 		protected override void OnRealized ()
 		{
 			base.OnRealized ();
-			this.GdkWindow.Background = this.Style.Base (StateType.Normal);
+			this.GdkWindow.Background = this.GetStyleBase (StateType.Normal);
 		}
 		
 		protected override bool OnMotionNotifyEvent (EventMotion e)
@@ -396,7 +396,8 @@ namespace MonoDevelop.Ide.CodeCompletion
 			if (!buttonPressed)
 				return base.OnMotionNotifyEvent (e);
 			int winWidth, winHeight;
-			this.GdkWindow.GetSize (out winWidth, out winHeight);
+			winWidth = this.GdkWindow.Width;
+			winHeight = this.GdkWindow.Height;
 			SelectedItemIndex = GetRowByPosition ((int)e.Y);
 			return true;
 		}

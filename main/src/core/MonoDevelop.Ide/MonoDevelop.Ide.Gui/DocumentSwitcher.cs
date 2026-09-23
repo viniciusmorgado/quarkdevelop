@@ -176,7 +176,7 @@ namespace MonoDevelop.Ide
 					yPos = padding;
 					cr.MoveTo (xPos, yPos);
 					layout.SetMarkup ("<b>" + cat.Title + "</b>");
-					cr.SetSourceColor (Style.Text (StateType.Normal).ToCairoColor ());
+					cr.SetSourceColor (this.GetStyleText (StateType.Normal).ToCairoColor ());
 					cr.ShowLayout (layout);
 					
 					if (cat.Items.Count == 0)
@@ -192,16 +192,7 @@ namespace MonoDevelop.Ide
 					int row = 0;
 					var iconHeight = Math.Max (h, cat.Items [0].Icon.Height + 2) + itemPadding * 2;
 					if (cat.FirstVisibleItem > 0) {
-						Gtk.Style.PaintArrow (Style, e.Window, State, ShadowType.None, 
-								new Rectangle ((int)xPos, (int)yPos, w, h), 
-								this, 
-								"", 
-								ArrowType.Up, 
-								true, 
-								(int)xPos, 
-								(int)yPos, 
-								w, 
-								h);
+						this.RenderArrow (cr, State, ArrowType.Up, (int)xPos, (int)yPos, w, h);
 						yPos += iconHeight;
 						curItem++;
 					}
@@ -210,16 +201,7 @@ namespace MonoDevelop.Ide
 						var item = cat.Items [i];
 						
 						if (curItem + 1 >= maxItems && row + 1 >= maxRows && i + 1 < cat.Items.Count) {
-							Gtk.Style.PaintArrow (Style, e.Window, State, ShadowType.None, 
-								new Rectangle ((int)xPos, (int)yPos, w, h), 
-								this, 
-								"", 
-								ArrowType.Down, 
-								true, 
-								(int)xPos, 
-								(int)yPos, 
-								w, 
-								h);
+							this.RenderArrow (cr, State, ArrowType.Down, (int)xPos, (int)yPos, w, h);
 							break;
 						}
 						
@@ -227,16 +209,16 @@ namespace MonoDevelop.Ide
 							int itemWidth = w + (int)item.Icon.Width + 2 + itemPadding * 2;
 							cr.Rectangle (xPos, yPos, itemWidth, iconHeight);
 							cr.LineWidth = 1;
-							cr.SetSourceColor (Style.Base (StateType.Selected).ToCairoColor ());
+							cr.SetSourceColor (this.GetStyleBase (StateType.Selected).ToCairoColor ());
 							cr.Fill ();
 						} else if (item == hoverItem) {
 							int itemWidth = w + (int)item.Icon.Width + 2 + itemPadding * 2;
 							cr.Rectangle (xPos + 0.5, yPos + 0.5, itemWidth - 1, iconHeight);
 							cr.LineWidth = 1;
-							cr.SetSourceColor (Style.Base (StateType.Selected).ToCairoColor ());
+							cr.SetSourceColor (this.GetStyleBase (StateType.Selected).ToCairoColor ());
 							cr.Stroke ();
 						}
-						cr.SetSourceColor (Style.Text (item == ActiveItem? StateType.Selected : StateType.Normal).ToCairoColor ());
+						cr.SetSourceColor (this.GetStyleText (item == ActiveItem? StateType.Selected : StateType.Normal).ToCairoColor ());
 						cr.MoveTo (xPos + item.Icon.Width + 2 + itemPadding, yPos + (iconHeight - h) / 2);
 						layout.SetText (Ellipsize (item.ListTitle ?? item.Title, maxLength));
 						cr.ShowLayout (layout);
@@ -790,13 +772,15 @@ namespace MonoDevelop.Ide
 		
 		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			base.OnDrawn (gtk3cr);
-			
+
 			int winWidth, winHeight;
 			this.GetSize (out winWidth, out winHeight);
-			
-			this.GdkWindow.DrawRectangle (this.Style.ForegroundGC (StateType.Insensitive), false, 0, 0, winWidth - 1, winHeight - 1);
+
+			gtk3cr.Rectangle (0.5, 0.5, winWidth - 1, winHeight - 1);
+			gtk3cr.SetSourceColor (this.GetStyleForeground (StateType.Insensitive).ToCairoColor ());
+			gtk3cr.LineWidth = 1;
+			gtk3cr.Stroke ();
 			return false;
 		}
 	}

@@ -545,7 +545,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		{
 			var result = AttachedViews.SelectMany (v => v.GetAllControllers ());
 			if (SourceController != null)
-				result = result.Concat (SourceController);
+				result = CoreExtensions.Concat (result, SourceController);
 			return result;
 		}
 

@@ -184,7 +184,7 @@ namespace MonoDevelop.Ide.Projects
 				if (template.AvailableLanguages.Count > 1)
 					HandlePopup (template, 0);
 				else
-					System.Media.SystemSounds.Beep.Play ();
+					ErrorBell (); // GTK3 replacement of the Windows-only System.Media.SystemSounds.Beep
 			}
 		}
 
@@ -591,11 +591,11 @@ namespace MonoDevelop.Ide.Projects
 				try {
 					CanMoveToNextPage = false;
 					// disable all controls on this dialog to prevent users actions
-					VBox.Sensitive = false;
+					ContentArea.Sensitive = false;
 					await controller.Create ();
 				} catch {
 					// if something goes wrong, we need to enable dialog contols
-					VBox.Sensitive = true;
+					ContentArea.Sensitive = true;
 					throw;
 				} finally {
 					CanMoveToNextPage = true;

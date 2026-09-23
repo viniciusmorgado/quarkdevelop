@@ -189,7 +189,7 @@ namespace MonoDevelop.Ide.Gui.Components
 
 		void UpdateFont ()
 		{
-			text_render.CustomFont = IdeApp.Preferences.CustomPadFont ?? tree.Style.FontDescription;
+			text_render.CustomFont = IdeApp.Preferences.CustomPadFont ?? tree.GetStyleFont ();
 			tree.ColumnsAutosize ();
 		}
 
@@ -444,7 +444,7 @@ namespace MonoDevelop.Ide.Gui.Components
 			NodeBuilder[] chain = nav.BuilderChain;
 			bool foundHandler = false;
 
-			DragOperation oper = ctx.Action == Gdk.DragAction.Copy ? DragOperation.Copy : DragOperation.Move;
+			DragOperation oper = ctx.SelectedAction == Gdk.DragAction.Copy ? DragOperation.Copy : DragOperation.Move;
 			DropPosition dropPos;
 			if (pos == Gtk.TreeViewDropPosition.After)
 				dropPos = DropPosition.After;
@@ -2167,16 +2167,14 @@ namespace MonoDevelop.Ide.Gui.Components
 		{
 			IsDestroyed = true;
 			IdeApp.Preferences.CustomPadFont.Changed -= CustomFontPropertyChanged;
+			// GTK3 has no gtk_object_destroy: the renderers and the column are released with the tree view
 			if (pix_render != null) {
-				pix_render.Destroy ();
 				pix_render = null;
 			}
 			if (complete_column != null) {
-				complete_column.Destroy ();
 				complete_column = null;
 			}
 			if (text_render != null) {
-				text_render.Destroy ();
 				text_render = null;
 			}
 
@@ -2521,9 +2519,9 @@ namespace MonoDevelop.Ide.Gui.Components
 				if (DisabledStyle) {
 					Gdk.Color fgColor;
 					if (Platform.IsMac && flags.HasFlag (Gtk.CellRendererState.Selected))
-						fgColor = widget.Style.Text (IdeTheme.UserInterfaceTheme == Theme.Light ? Gtk.StateType.Selected : Gtk.StateType.Normal);
+						fgColor = widget.GetStyleText (IdeTheme.UserInterfaceTheme == Theme.Light ? Gtk.StateType.Selected : Gtk.StateType.Normal);
 					else
-						fgColor = widget.Style.Text (Gtk.StateType.Insensitive);
+						fgColor = widget.GetStyleText (Gtk.StateType.Insensitive);
 					newmarkup = "<span foreground='" + fgColor.GetHex () + "'>" + TextMarkup + "</span>";
 				}
 

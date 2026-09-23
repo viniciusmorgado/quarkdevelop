@@ -262,8 +262,29 @@ namespace MonoDevelop.Ide.CodeCompletion
 		}
 
 		readonly VBox descriptionBox = new VBox (false, 0);
-		readonly VBox vb2 = new VBox (false, 0);
+		readonly MinimumWidthBox vb2 = new MinimumWidthBox ();
 		Cairo.Color foreColor;
+
+		// GTK3 has no size-request signal: the minimum width the GTK2 SizeRequested handler imposed
+		// is applied in GetPreferredWidth instead.
+		sealed class MinimumWidthBox : VBox
+		{
+			public Func<int> MinimumWidth;
+
+			public MinimumWidthBox () : base (false, 0)
+			{
+			}
+
+			protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+			{
+				base.OnGetPreferredWidth (out minimum_width, out natural_width);
+				if (MinimumWidth != null) {
+					int w = MinimumWidth ();
+					minimum_width = Math.Max (minimum_width, w);
+					natural_width = Math.Max (natural_width, w);
+				}
+			}
+		}
 
 		internal void SetDefaultScheme ()
 		{
@@ -305,12 +326,9 @@ namespace MonoDevelop.Ide.CodeCompletion
 			vb2.Spacing = 4;
 			vb2.PackStart (hb, true, true, 0);
 
-			vb2.SizeRequested += (o, args) => {
+			vb2.MinimumWidth = () => {
 				var w = Math.Max (headLabel.WidthRequest, headLabel.RealWidth);
-				var req = new Gtk.Requisition ();
-				req.Height = args.Requisition.Height;
-				req.Width = (int)Math.Max (w + PaddingLeft + PaddingTop, args.Requisition.Width);
-				args.Args[0] = req;
+				return (int)(w + PaddingLeft + PaddingTop);
 			};
 
 			Content = BackendHost.ToolkitEngine.WrapWidget (vb2, Xwt.NativeWidgetSizing.DefaultPreferredSize);

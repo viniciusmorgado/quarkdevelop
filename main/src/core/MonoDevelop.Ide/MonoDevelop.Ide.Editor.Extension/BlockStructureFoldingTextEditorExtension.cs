@@ -83,7 +83,7 @@ namespace MonoDevelop.Ide.Editor.Extension
 			var token = src.Token;
 
 			Task.Run (async () => {
-				var blockStructure = await outliningService.GetBlockStructureAsync (analysisDocument, token).ConfigureAwait (false);
+				var blockStructure = await outliningService.GetBlockStructureAsync (analysisDocument, BlockStructureOptions.Default, token).ConfigureAwait (false);
 				return UpdateFoldings (snapshot, blockStructure.Spans, caretLocation, (start, length) => editor.CreateFoldSegment (start, length), token);
 			}).ContinueWith (t => {
 				if (!token.IsCancellationRequested)

@@ -34,6 +34,7 @@
     <Compile Include="MonoDevelop.Ide/MimeTypeCatalog.cs" />
     <Compile Include="MonoDevelop.Ide.Editor/ITextEditorInitializationService.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/DisplayBindingService.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui/Gtk3IdeCompat.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/BackgroundProgressMonitor.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/StatusProgressMonitor.cs" />
     <Compile Include="MonoDevelop.Ide.Projects.OptionPanels/PortableRuntimeSelectorDialog.cs" />

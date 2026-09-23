@@ -75,7 +75,7 @@ namespace MonoDevelop.Ide.Projects
 
 		void CombPolicies_Changed (object sender, EventArgs e)
 		{
-			combPolicies.Accessible.Description = GettextCatalog.GetString ("Select policy, current: {0}", combPolicies.ActiveText);
+			combPolicies.Accessible.Description = GettextCatalog.GetString ("Select policy, current: {0}", combPolicies.GetActiveText ());
 		}
 
 		protected void OnRadioCustomToggled (object sender, System.EventArgs e)
@@ -108,7 +108,7 @@ namespace MonoDevelop.Ide.Projects
 		PolicySet GetPolicySet (bool notifyErrors)
 		{
 			if (radioCustom.Active) {
-				return PolicyService.GetPolicySet (combPolicies.ActiveText);
+				return PolicyService.GetPolicySet (combPolicies.GetActiveText ());
 			}
 			
 			var f = fileEntry.Path;
@@ -214,13 +214,12 @@ namespace MonoDevelop.Ide.Projects
 		
 		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (HasPolicies) {
 				return base.OnDrawn (gtk3cr);
 			}
-			
-			var win = evnt.Window;
-			win.Clear ();
+
+			// GTK3 has no GdkWindow.Clear: paint the themed background
+			StyleContext.RenderBackground (gtk3cr, 0, 0, Allocation.Width, Allocation.Height);
 			if (string.IsNullOrEmpty (message)) {
 				if (ShowEmptyItem)
 					return base.OnDrawn (gtk3cr);
@@ -234,7 +233,7 @@ namespace MonoDevelop.Ide.Projects
 				var a = Allocation;
 				var x = (a.Width - w) / 2;
 				var y = (a.Height - h ) / 2;
-				win.DrawLayout (Style.TextGC (Gtk.StateType.Normal), x, y, layout);
+				gtk3cr.DrawLayout (this, Gtk.StateType.Normal, x, y, layout);
 			}
 			return true;
 		}

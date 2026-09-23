@@ -185,10 +185,10 @@ namespace MonoDevelop.Ide.FindInFiles
 
 			var searchColor = GetBackgroundMarkerColor (widget.HighlightStyle);
 
-			var selectedSearchColor = widget.Style.Base (Gtk.StateType.Selected);
+			var selectedSearchColor = widget.GetStyleBase (Gtk.StateType.Selected);
 			selectedSearchColor = searchColor.AddLight (-0.2);
 			double b1 = HslColor.Brightness (searchColor);
-			double b2 = HslColor.Brightness (SearchResultWidget.AdjustColor (widget.Style.Base (Gtk.StateType.Normal), SyntaxHighlightingService.GetColor (widget.HighlightStyle, EditorThemeColors.Foreground)));
+			double b2 = HslColor.Brightness (SearchResultWidget.AdjustColor (widget.GetStyleBase (Gtk.StateType.Normal), SyntaxHighlightingService.GetColor (widget.HighlightStyle, EditorThemeColors.Foreground)));
 			// selected
 			markup = FormatMarkup (PangoHelper.ColorMarkupBackground (selectedMarkup, (int)startIndex, (int)endIndex, searchColor), trimStart, trimEnd, tabSize);
 			selectedMarkup = FormatMarkup (PangoHelper.ColorMarkupBackground (selectedMarkup, (int)startIndex, (int)endIndex, selectedSearchColor), trimStart, trimEnd, tabSize);

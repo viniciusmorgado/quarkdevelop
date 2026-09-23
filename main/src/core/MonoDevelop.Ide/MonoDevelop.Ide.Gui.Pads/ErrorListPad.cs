@@ -161,11 +161,11 @@ namespace MonoDevelop.Ide.Gui.Pads
 			btnBox.Accessible.SetShouldIgnore (true);
 			var imageView = new ImageView (image, Gtk.IconSize.Menu);
 			imageView.Accessible.SetShouldIgnore (true);
-			btnBox.PackStart (imageView);
+			btnBox.PackStart (imageView, true, true, 0);
 
 			label = new Label ();
 			label.Accessible.SetShouldIgnore (true);
-			btnBox.PackStart (label);
+			btnBox.PackStart (label, true, true, 0);
 
 			return btnBox;
 		}

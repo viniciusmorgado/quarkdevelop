@@ -75,7 +75,7 @@ namespace MonoDevelop.Ide.Projects
 			this.basePath = basePath;
 
 			BorderWidth = 6;
-			HasSeparator = false;
+			// GTK3 dialogs have no separator (Dialog.HasSeparator is gone)
 
 			InitializeComponents ();
 

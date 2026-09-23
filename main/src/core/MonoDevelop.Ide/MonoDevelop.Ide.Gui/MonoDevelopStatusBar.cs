@@ -134,7 +134,7 @@ namespace MonoDevelop.Ide
 			if (Direction == TextDirection.Ltr)
 				rect.X = Allocation.X + Allocation.Width - rect.Width;
 			else
-				rect.X = Allocation.X + Style.XThickness;
+				rect.X = Allocation.X + Style.Xthickness;
 			return rect;
 		}
 		
@@ -145,10 +145,11 @@ namespace MonoDevelop.Ide
 			if (HasResizeGrip) {
 				Gdk.Rectangle rect = GetGripRect ();
 				int w = rect.Width - Style.Xthickness;
-				int h = Allocation.Height - Style.YThickness;
-				if (h < 18 - Style.YThickness) h = 18 - Style.YThickness;
+				int h = Allocation.Height - Style.Ythickness;
+				if (h < 18 - Style.Ythickness) h = 18 - Style.Ythickness;
 				Gdk.WindowEdge edge = Direction == TextDirection.Ltr ? Gdk.WindowEdge.SouthEast : Gdk.WindowEdge.SouthWest;
-				Gtk.Style.PaintResizeGrip (Style, GdkWindow, State, evnt.Area, this, "statusbar", edge, rect.X, rect.Y, w, h);
+				using (var cr = evnt.CreateContext ())
+					this.RenderResizeGrip (cr, State, edge, rect.X, rect.Y, w, h);
 			}
  			return ret;
 		}

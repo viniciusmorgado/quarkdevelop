@@ -196,11 +196,11 @@ namespace MonoDevelop.Ide.WelcomePage
 
 					if (Owner.LogoImage != null) {
 						var lRect = new Rectangle (Allocation.X, Allocation.Y, (int)Owner.LogoImage.Width, (int)Owner.LogoImage.Height);
-						if (evnt.Region.RectIn (lRect) != OverlapType.Out)
+						if (evnt.Area.IntersectsWith (lRect)) // GTK3: the clip rectangle stands in for the GTK2 expose region
 							context.DrawImage (this, Owner.LogoImage, Allocation.X, Allocation.Y);
 					
 						var bgRect = new Rectangle (Allocation.X + (int)Owner.LogoImage.Width, Allocation.Y, Allocation.Width - (int)Owner.LogoImage.Width, (int)Owner.TopBorderImage.Height);
-						if (evnt.Region.RectIn (bgRect) != OverlapType.Out)
+						if (evnt.Area.IntersectsWith (bgRect))
 							for (int x = bgRect.X; x < bgRect.Right; x += (int)Owner.TopBorderImage.Width)
 								context.DrawImage (this, Owner.TopBorderImage.WithSize (Owner.TopBorderImage.Width, bgRect.Height), x, Allocation.Y);
 					}

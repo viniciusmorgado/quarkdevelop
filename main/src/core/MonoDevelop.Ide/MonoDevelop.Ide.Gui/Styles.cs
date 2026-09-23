@@ -340,27 +340,25 @@ namespace MonoDevelop.Ide.Gui
 
 		internal static void LoadStyle ()
 		{
-			Gtk.Style defaultStyle;
 			Gtk.Widget styledWidget;
 			if (IdeApp.Workbench == null || IdeApp.Workbench.RootWindow == null) {
 				styledWidget = new Gtk.Label (String.Empty);
-				defaultStyle = styledWidget.Style;
 			} else {
 				styledWidget = IdeApp.Workbench.RootWindow;
-				defaultStyle = Gtk.Rc.GetStyle (styledWidget);
 			}
 
-			BackgroundColor = defaultStyle.Background (Gtk.StateType.Normal).ToXwtColor ();	// must be the bg color from Gtkrc
-			BaseBackgroundColor = defaultStyle.Base (Gtk.StateType.Normal).ToXwtColor ();	// must be the base color from Gtkrc
-			BaseForegroundColor = defaultStyle.Foreground (Gtk.StateType.Normal).ToXwtColor ();	// must be the text color from Gtkrc
-			BaseSelectionBackgroundColor = defaultStyle.Base (Gtk.StateType.Selected).ToXwtColor ();
-			BaseSelectionTextColor = defaultStyle.Text (Gtk.StateType.Selected).ToXwtColor ();
+			// GTK3: the theme colors come from the widget's StyleContext (see Gtk3IdeCompat)
+			BackgroundColor = styledWidget.GetStyleBackground (Gtk.StateType.Normal).ToXwtColor ();	// must be the bg color from the theme
+			BaseBackgroundColor = styledWidget.GetStyleBase (Gtk.StateType.Normal).ToXwtColor ();	// must be the base color from the theme
+			BaseForegroundColor = styledWidget.GetStyleForeground (Gtk.StateType.Normal).ToXwtColor ();	// must be the text color from the theme
+			BaseSelectionBackgroundColor = styledWidget.GetStyleBase (Gtk.StateType.Selected).ToXwtColor ();
+			BaseSelectionTextColor = styledWidget.GetStyleText (Gtk.StateType.Selected).ToXwtColor ();
 
 			LinkForegroundColor = ((Gdk.Color)styledWidget.StyleGetProperty ("link-color")).ToXwtColor ();
 			if (LinkForegroundColor == Colors.Black) // the style returs black when not initialized
 				LinkForegroundColor = Colors.Blue;   // set the link color to generic blue until initialization is finished
 
-			DefaultFont = defaultStyle.FontDescription.Copy ();
+			DefaultFont = styledWidget.GetStyleFont ().Copy ();
 			DefaultFontName = DefaultFont.ToString ();
 
 			if (IdeApp.Preferences == null || IdeApp.Preferences.UserInterfaceTheme == Theme.Light)

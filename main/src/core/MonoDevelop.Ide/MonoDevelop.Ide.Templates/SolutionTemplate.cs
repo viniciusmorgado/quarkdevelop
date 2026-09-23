@@ -262,9 +262,8 @@ namespace MonoDevelop.Ide.Templates
 		internal IEnumerable<SolutionTemplate> GetGroupedTemplates ()
 		{
 			if (Parent != null)
-				return Parent.groupedTemplates
-					.Where (template => template != this)
-					.Concat (Parent);
+				return CoreExtensions.Concat (Parent.groupedTemplates
+					.Where (template => template != this), Parent);
 
 			return groupedTemplates;
 		}

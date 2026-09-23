@@ -165,7 +165,10 @@ namespace MonoDevelop.Ide.Gui.Documents
 
 			protected override Task OnSetContent (Stream content)
 			{
-				this.content = content.ReadAllBytes ();
+				using (var ms = new MemoryStream ()) {
+					content.CopyTo (ms);
+					this.content = ms.ToArray ();
+				}
 				HasUnsavedChanges = true;
 				NotifyChanged ();
 				return Task.CompletedTask;

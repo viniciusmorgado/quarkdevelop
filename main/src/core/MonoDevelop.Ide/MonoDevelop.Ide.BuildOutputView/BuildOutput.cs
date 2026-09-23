@@ -205,7 +205,7 @@ namespace MonoDevelop.Ide.BuildOutputView
 					WarningCount = warningCount
 				};
 
-				return result.Values.Concat (summaryNode);
+				return CoreExtensions.Concat (result.Values, summaryNode);
 			}
 
 			return result.Values;

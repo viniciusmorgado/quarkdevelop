@@ -176,7 +176,9 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
 #endif
             }
             finally {
+#if !DISABLE_CAS_USE
                 CodeAccessPermission.RevertAssert();
+#endif
             }
         }
 
@@ -206,7 +208,9 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                 factory = c.FactoryInstanceFromCode(code, options);
             }
             finally {
+#if !DISABLE_CAS_USE
                 CodeAccessPermission.RevertAssert();
+#endif
             }
             return factory;
         }
@@ -247,7 +251,9 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                     c.GenerateRegexType(pattern, options, fullname, regexes[i].IsPublic, code, tree, factory, mTimeout);
                 }
                 finally {
+#if !DISABLE_CAS_USE
                     CodeAccessPermission.RevertAssert();
+#endif
                 }
             }
         
@@ -3034,7 +3040,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         private static int _typeCount = 0;
         private static LocalDataStoreSlot _moduleSlot = Thread.AllocateDataSlot();
 
-        private  AssemblyBuilder _assembly;
+        private  PersistedAssemblyBuilder _assembly;
         private  ModuleBuilder  _module;
 
         // state of the type builder
@@ -3067,7 +3073,8 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                 assemblyAttributes.Add(securityRulesAttribute);
 #endif
 	
-                _assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(an, AssemblyBuilderAccess.RunAndSave, assemblyAttributes);
+                // .NET has no AssemblyBuilderAccess.RunAndSave: PersistedAssemblyBuilder builds the assembly for Save() only
+                _assembly = new PersistedAssemblyBuilder(an, typeof(object).Assembly, assemblyAttributes);
                 _module = _assembly.DefineDynamicModule(an.Name + ".dll");
 
                 if (attribs != null) {
@@ -3077,16 +3084,14 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                 }
 
                 if (resourceFile != null) {
-#if FEATURE_PAL
-                    // unmanaged resources are not supported
-                    throw new ArgumentOutOfRangeException("resourceFile");
-#else
-                    _assembly.DefineUnmanagedResource(resourceFile);
-#endif
+                    // unmanaged resources are not supported (.NET has no AssemblyBuilder.DefineUnmanagedResource)
+                    throw new PlatformNotSupportedException("Unmanaged resource files (" + nameof(resourceFile) + ") are not supported.");
                 }
             }
             finally {
+#if !DISABLE_CAS_USE
                 CodeAccessPermission.RevertAssert();
+#endif
             }
         }
 

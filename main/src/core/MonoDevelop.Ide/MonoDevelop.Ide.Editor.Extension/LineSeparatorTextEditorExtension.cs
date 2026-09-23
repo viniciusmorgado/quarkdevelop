@@ -31,6 +31,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.Editor;
+using Microsoft.CodeAnalysis.LineSeparators;
 using MonoDevelop.Core;
 
 namespace MonoDevelop.Ide.Editor.Extension

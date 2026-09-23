@@ -328,14 +328,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			while (directoryStack.Count > 0) {
 				var curPath = directoryStack.Pop ();
 
-				try {
-					var readPermission = new FileIOPermission(FileIOPermissionAccess.Read, curPath);
-					readPermission.Demand ();
-				} catch (Exception e) {
-					LoggingService.LogError ("Can't access path " + curPath, e);
-					yield break;
-				}
-
+				// the CAS FileIOPermission demand is gone: .NET has no code access security
 				foreach (string fileName in Directory.EnumerateFiles (curPath, "*")) {
 					if (Platform.IsWindows) {
 						var attr = File.GetAttributes (fileName);

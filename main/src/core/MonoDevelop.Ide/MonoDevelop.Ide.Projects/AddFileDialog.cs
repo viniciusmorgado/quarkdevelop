@@ -92,7 +92,7 @@ namespace MonoDevelop.Ide.Projects
 				result = MessageService.RunCustomDialog (fdiag, data.TransientFor ?? MessageService.RootWindow);
 				GetDefaultProperties (fdiag);
 				if (check.Active)
-					data.OverrideAction = combo.ActiveText;
+					data.OverrideAction = combo.GetActiveText ();
 				else
 					data.OverrideAction = null;
 				return result == (int) Gtk.ResponseType.Ok;

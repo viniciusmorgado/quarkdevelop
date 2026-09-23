@@ -692,10 +692,7 @@ namespace MonoDevelop.Ide
 			Xwt.Application.UnhandledException += (sender, e) => {
 				HandleException (e.ErrorException, false);
 			};
-			System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException += (sender, e) => {
-				HandleException (e.Exception, false);
-				e.Handled = true;
-			};
+			// the WPF dispatcher hook (Windows only) is gone: GLib and AppDomain handlers cover Linux
 		}
 
 		static void HandleException (Exception ex, bool willShutdown)

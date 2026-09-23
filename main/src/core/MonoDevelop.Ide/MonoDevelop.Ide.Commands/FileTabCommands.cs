@@ -143,12 +143,9 @@ namespace MonoDevelop.Ide.Commands
 
 			var activeNotebook = ((SdiWorkspaceWindow)active.Window).TabControl;
 
-			var contents = Microsoft.CodeAnalysis
-				.ImmutableArrayExtensions
-				.WhereAsArray (
-					IdeApp.Workbench.Documents.ToImmutableArray (),
-					doc => ((SdiWorkspaceWindow)doc.Window).TabControl == activeNotebook && (((SdiWorkspaceWindow)doc.Window).DockNotebookTab?.IsPinned ?? false)
-				);
+			var contents = IdeApp.Workbench.Documents
+				.Where (doc => ((SdiWorkspaceWindow)doc.Window).TabControl == activeNotebook && (((SdiWorkspaceWindow)doc.Window).DockNotebookTab?.IsPinned ?? false))
+				.ToImmutableArray ();
 			return contents;
 		}
 	}

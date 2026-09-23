@@ -1264,7 +1264,7 @@ namespace MonoDevelop.Ide.Editor
 				return res;
 			}
 			if (type.IsInstanceOfType (textEditorImpl))
-				res = res.Concat (textEditorImpl);
+				res = CoreExtensions.Concat (res, textEditorImpl);
 			
 			var ext = textEditorImpl.EditorExtension;
 			while (ext != null) {

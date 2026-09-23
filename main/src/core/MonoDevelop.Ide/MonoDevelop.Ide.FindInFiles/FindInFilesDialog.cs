@@ -435,7 +435,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			comboboxentryPath.Destroyed += ComboboxentryPathDestroyed;
 			LoadHistory ("MonoDevelop.FindReplaceDialogs.PathHistory", comboboxentryPath);
 			comboboxentryPath.Show ();
-			hboxPath.PackStart (comboboxentryPath);
+			hboxPath.PackStart (comboboxentryPath, true, true, 0);
 			
 			labelPath.MnemonicWidget = comboboxentryPath;
 
