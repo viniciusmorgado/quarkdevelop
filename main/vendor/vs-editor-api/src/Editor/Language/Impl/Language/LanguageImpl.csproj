@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Microsoft.VisualStudio.Language.Implementation</AssemblyName>
+    <RootNamespace>Microsoft.VisualStudio.Language.Intellisense.Implementation</RootNamespace>
+    <NoWarn>649;436;$(NoWarn)</NoWarn>
+    <NonShipping>true</NonShipping>
+    <IsPackable>false</IsPackable>
+    <AssemblyAttributeClsCompliant>true</AssemblyAttributeClsCompliant>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Threading" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Text\Util\TextUIUtil\TextUIUtil.csproj" />
+    <ProjectReference Include="..\..\Def\Language\LanguageDef.csproj" />
+    <ProjectReference Include="..\..\Util\LanguageUtil\LanguageUtil.csproj" />
+    <ProjectReference Include="..\..\..\Text\Util\TextDataUtil\TextDataUtil.csproj" />
+    <ProjectReference Include="..\..\..\Text\Def\TextUI\TextUI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

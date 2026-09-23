@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Microsoft.VisualStudio.CoreUtility</AssemblyName>
+    <RootNamespace>Microsoft.VisualStudio.Utilities</RootNamespace>
+    <PushToPublicFeed>true</PushToPublicFeed>
+    <NoWarn>649;436;$(NoWarn)</NoWarn>
+    <AssemblyAttributeClsCompliant>true</AssemblyAttributeClsCompliant>
+    <LocalizationEnabled>false</LocalizationEnabled>
+    <InsertNuget>true</InsertNuget>
+    <IncludeInOptProf>true</IncludeInOptProf>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Threading" />
+  </ItemGroup>
+</Project>

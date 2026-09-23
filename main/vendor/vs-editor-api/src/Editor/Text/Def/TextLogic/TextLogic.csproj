@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Microsoft.VisualStudio.Text.Logic</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
+    <PushToPublicFeed>true</PushToPublicFeed>
+    <NoWarn>649;436;$(NoWarn)</NoWarn>
+    <AssemblyAttributeClsCompliant>true</AssemblyAttributeClsCompliant>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TextData\TextData.csproj" />
+    <ProjectReference Include="..\..\..\Core\Def\CoreUtility.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Diagrams\Tagging.cd" />
+    <None Include="Diagrams\Undo.cd" />
+  </ItemGroup>
+</Project>

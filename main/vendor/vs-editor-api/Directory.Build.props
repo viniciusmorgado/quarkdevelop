@@ -1,0 +1,21 @@
+<Project>
+  <!--
+    Vendored vs-editor-api subset (see UPSTREAM.md), built for net10.0 with the repository props
+    (ADR 0003, ADR 0012). Upstream settings kept: Microsoft public-key signing (the assemblies keep
+    their identity and InternalsVisibleTo), assembly version 16.0.0.0, source globs, upstream NoWarn.
+  -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <PropertyGroup>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>true</EnableDefaultEmbeddedResourceItems>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)build/msfinal.snk</AssemblyOriginatorKeyFile>
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+    <AssemblyVersion>16.0.0.0</AssemblyVersion>
+    <!-- Upstream NoWarn (build/Project.props): XML doc comments, VS threading analyzers, obsolete code,
+         pedantic CA rules, CLS attribute. -->
+    <NoWarn>$(NoWarn);1573;1591;1572;1570;VSTHRD001;VSTHRD002;VSTHRD010;VSTHRD012;VSTHRD100;VSTHRD103;VSTHRD105;VSTHRD106;VSTHRD108;VSTHRD110;VSTHRD200;0618;CA1308;CA1001;CA1724;CA1707;CA1040;CA2225;CA1716;CA1018;3021</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)build/ThisAssembly.cs" />
+  </ItemGroup>
+</Project>

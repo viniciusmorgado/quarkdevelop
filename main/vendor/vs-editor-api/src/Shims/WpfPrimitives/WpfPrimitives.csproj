@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    MonoDevelop local patch (see ../../../UPSTREAM.md): the WPF value types and the few WPF classes that
+    the editor contracts mention (ISpaceReservationManager, adornments, WpfView code in SourceEditor2),
+    in their original namespaces. Not named WindowsBase: .NET ships a WindowsBase facade.
+  -->
+  <PropertyGroup>
+    <AssemblyName>MonoDevelop.Wpf.Primitives</AssemblyName>
+    <RootNamespace>System.Windows</RootNamespace>
+    <!-- Signed with the MonoDevelop key, not the Microsoft one used by the vendored assemblies. -->
+    <AssemblyOriginatorKeyFile>$(MonoDevelopRootDir)msbuild/MonoDevelop-Public.snk</AssemblyOriginatorKeyFile>
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="$(MSBuildThisFileDirectory)../../../build/ThisAssembly.cs" />
+  </ItemGroup>
+</Project>

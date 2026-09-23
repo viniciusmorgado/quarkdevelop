@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Microsoft.VisualStudio.Language.Intellisense</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
+    <PushToPublicFeed>true</PushToPublicFeed>
+    <AssemblyAttributeClsCompliant>true</AssemblyAttributeClsCompliant>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.ImageCatalog" />
+    <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Def\CoreUtility.csproj" />
+    <ProjectReference Include="..\..\..\..\Shims\WpfPrimitives\WpfPrimitives.csproj" />
+    <ProjectReference Include="..\..\..\Text\Def\TextData\TextData.csproj" />
+    <ProjectReference Include="..\..\..\Text\Def\TextLogic\TextLogic.csproj" />
+    <ProjectReference Include="..\..\..\Text\Def\TextUI\TextUI.csproj" />
+    <ProjectReference Include="..\Language\LanguageDef.csproj" />
+  </ItemGroup>
+  <!-- MonoDevelop local patch: WPF presenter styles (brushes, text formatting), not used by the GTK editor -->
+  <ItemGroup>
+    <Compile Remove="CompletionPresenterStyle.cs" />
+    <Compile Remove="ITextFormattable.cs" />
+    <Compile Remove="LegacyQuickInfo/QuickInfoPresenterStyle.cs" />
+    <Compile Remove="LightBulbPresenterStyle.cs" />
+    <Compile Remove="SignatureHelpPresenterStyle.cs" />
+  </ItemGroup>
+</Project>

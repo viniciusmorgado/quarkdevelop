@@ -1,0 +1,57 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net10.0": {
+      "System.ComponentModel.Composition": {
+        "type": "Direct",
+        "requested": "[10.0.12, )",
+        "resolved": "10.0.12",
+        "contentHash": "IY3Tj9IomTLOzXCBkOAftbBssN0Ub683o1TxxHPylnTli2N9SY9Bud6gYy/8rUU3K3+YyQII3NOYfVplj3YDjw=="
+      },
+      "Microsoft.VisualStudio.Threading.Analyzers": {
+        "type": "Transitive",
+        "resolved": "18.7.23",
+        "contentHash": "dyj6z8m+LFjpeH69hdnciCcRCmD0YgMlvuQEywiEshjqj/blgQ+PuWX8Vd5gkWQFoBN4e+TFxx6DvGNSv/gIKg=="
+      },
+      "Microsoft.VisualStudio.Threading.Only": {
+        "type": "Transitive",
+        "resolved": "18.7.23",
+        "contentHash": "iOaVAQLPt1KxFyYqZqKxqNu8BgQUiPLNeT8XhX+549eWaGw49e1MxjlkjTIBwvlfrU4lPp+Nm99oRpmsgN7RJw==",
+        "dependencies": {
+          "Microsoft.VisualStudio.Validation": "17.13.22"
+        }
+      },
+      "Microsoft.VisualStudio.CoreUtility": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.Threading": "[18.7.23, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Text.Data": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Threading": "[18.7.23, )"
+        }
+      },
+      "Microsoft.VisualStudio.Threading": {
+        "type": "CentralTransitive",
+        "requested": "[18.7.23, )",
+        "resolved": "18.7.23",
+        "contentHash": "IiK1otNipjvDIk8SClYwOP1uRZLpVA3luVMKSTPhhjhxqv2pp8/tzfLy/IB7HW+voeEodCTHh0q9LbLIBdGNKA==",
+        "dependencies": {
+          "Microsoft.VisualStudio.Threading.Analyzers": "18.7.23",
+          "Microsoft.VisualStudio.Threading.Only": "18.7.23",
+          "Microsoft.VisualStudio.Validation": "17.13.22"
+        }
+      },
+      "Microsoft.VisualStudio.Validation": {
+        "type": "CentralTransitive",
+        "requested": "[17.13.22, )",
+        "resolved": "17.13.22",
+        "contentHash": "fC20ITOxlUpGQ0ltAxITQbeFxwuB6OjLT3lByC4+/Gm46o/Mwv9hlIVrBhiUhnqdQzUUvr4EHkdiYe7WOSMLmw=="
+      }
+    }
+  }
+}

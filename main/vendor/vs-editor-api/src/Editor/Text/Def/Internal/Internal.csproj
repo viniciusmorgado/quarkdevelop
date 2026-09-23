@@ -1,0 +1,41 @@
+﻿<Project>
+  <PropertyGroup>
+    <!-- workaround for https://github.com/NuGet/Home/issues/5894 -->
+    <OriginalProjectName>Internal</OriginalProjectName>
+  </PropertyGroup>
+  <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props" />
+  <PropertyGroup>
+    <AssemblyName>Microsoft.VisualStudio.Text.Internal</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
+
+    <!-- Assembly is inserted and shipped but not a VS SDK package. -->
+    <PushToPublicFeed>true</PushToPublicFeed>
+    <NonSDKPackage>true</NonSDKPackage>
+
+    <NoWarn>649;436;$(NoWarn)</NoWarn>
+    <AssemblyAttributeClsCompliant>true</AssemblyAttributeClsCompliant>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" />
+    <Page Remove="themes\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.ImageCatalog" />
+    <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Def\CoreUtility.csproj" />
+    <ProjectReference Include="..\TextData\TextData.csproj" />
+    <ProjectReference Include="..\TextLogic\TextLogic.csproj" />
+    <ProjectReference Include="..\TextUI\TextUI.csproj" />
+    <ProjectReference Include="..\..\..\Language\Def\Intellisense\IntellisenseDef.csproj" />
+  </ItemGroup>
+  <!-- MonoDevelop local patch: WPF-only contracts (presenter style, visual tree, TextUIWpf), not used by the GTK editor -->
+  <ItemGroup>
+    <Compile Remove="Language/CompletionPresenterStylePrivate.cs" />
+    <Compile Remove="Language/Intellisense/VisualTreeExtensions.cs" />
+    <Compile Remove="TextUIWpf/**" />
+  </ItemGroup>
+<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
+</Project>

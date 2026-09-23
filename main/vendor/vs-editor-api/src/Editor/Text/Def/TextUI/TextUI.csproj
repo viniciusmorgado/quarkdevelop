@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Microsoft.VisualStudio.Text.UI</AssemblyName>
+    <RootNamespace>Microsoft.VisualStudio.Text.Editor</RootNamespace>
+    <PushToPublicFeed>true</PushToPublicFeed>
+    <NoWarn>649;436;$(NoWarn)</NoWarn>
+    <AssemblyAttributeClsCompliant>true</AssemblyAttributeClsCompliant>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Def\CoreUtility.csproj" />
+    <ProjectReference Include="..\..\..\..\Shims\WpfPrimitives\WpfPrimitives.csproj" />
+    <ProjectReference Include="..\TextData\TextData.csproj" />
+    <ProjectReference Include="..\TextLogic\TextLogic.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Diagrams\BasePrimitives.cd" />
+    <None Include="Diagrams\Editor.cd" />
+  </ItemGroup>
+</Project>
