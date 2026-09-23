@@ -186,7 +186,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [ ] T100 [US3] M5c: ADR 0020 NuGet client version + `MonoDevelop.PackageManagement` on NuGet 6.x/7.x → test add/update/remove/restore a package on an SDK project (FR-010)
 - [ ] T101 [US3] M5c: `MonoDevelop.UnitTesting` + VSTest → test discovers/runs NUnit + xUnit + MSTest samples (FR-011)
 - [ ] T102 [US3] M5c: `VersionControl` + `VersionControl.Git` on LibGit2Sharp 0.32 (reference DotDevelop `216f01c79f`, `2356bb926d`); libgit2/libgit-binary/libgit2sharp submodules removed → Git tests (status/diff/log on temp repo) pass (FR-009)
-- [ ] T103 [US3] M5c: `--smoke-test` in `IdeStartup.cs` per `contracts/smoke-test.md` → exit 0 under `xvfb-run`
+- [x] T103 [US3] M5c: `--smoke-test` in `IdeStartup.cs` per `contracts/smoke-test.md` → exit 0 under `xvfb-run`
 - [ ] T104 [US3] M5c: Wayland smoke (weston headless backend in the container, `XDG_RUNTIME_DIR` set, `GDK_BACKEND=wayland`) → exit 0 (FR-006)
 - [ ] T105 [US3] M5c: error-list navigation test (build Broken; activate error; editor at line) (US3-3) → test passes
 - [ ] T106 [US3] M5c: main-loop stall probe during `MonoDevelop.Linux.sln` load (≤ 1 s) → evidence

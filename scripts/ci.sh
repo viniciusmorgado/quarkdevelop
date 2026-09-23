@@ -45,15 +45,16 @@ mdtool_smoke() {
 }
 
 gui_smoke() {
-	# Until the IDE itself starts (M5c), the GUI smoke opens the Xwt sample gallery on GTK3.
-	# shellcheck disable=SC2016 # the inner script expands its own variables
-	xvfb-run -a -s "-screen 0 1280x860x24" bash -c '
-		dotnet main/build/samples/xwt/Gtk3Test.dll & pid=$!
-		sleep 10
-		kill -0 "$pid"
-		import -window root "$1/gui-smoke.png"
-		kill "$pid"' _ "$ci_out"
-	test -s "$ci_out/gui-smoke.png"
+	# The IDE's --smoke-test (contracts/smoke-test.md, T103): start under Xvfb, open a copy of the smoke
+	# solution, build it; exit 0 only when it builds with no errors and no unhandled exception was logged.
+	local dir
+	dir="$(mktemp -d)"
+	cp -r main/tests/linux-smoke/. "$dir/"
+	XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+		MD_SMOKE_OUT="$ci_out/gui-smoke" \
+		xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln"
+	rm -rf "$dir"
+	test -s "$ci_out/gui-smoke/screenshot.png"
 }
 
 step setup ./scripts/setup.sh

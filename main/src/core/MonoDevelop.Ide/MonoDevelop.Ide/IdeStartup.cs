@@ -63,6 +63,7 @@ namespace MonoDevelop.Ide
 		bool initialized;
 		static bool hideWelcomePage;
 		static StartupInfo startupInfo;
+		static SmokeTest smokeTest;
 
 		static TimeToCodeMetadata ttcMetadata;
 
@@ -126,6 +127,10 @@ namespace MonoDevelop.Ide
 			GLib.GType.Init ();
 
 			var args = options.RemainingArgs.ToArray ();
+			if (options.SmokeTest) {
+				smokeTest = SmokeTest.Start (ref args);
+				options.NoStartWindow = true;
+			}
 
 			IdeTheme.InitializeGtk (BrandingService.ApplicationName, ref args);
 			IdeStartupTracker.StartupTracker.MarkSection ("GtkInitialization");
@@ -341,6 +346,9 @@ namespace MonoDevelop.Ide
 				}
 				
 				monitor.Step (1);
+
+				if (smokeTest != null)
+					smokeTest.RunAsync ().Ignore ();
 			
 			} catch (Exception e) {
 				error = e;

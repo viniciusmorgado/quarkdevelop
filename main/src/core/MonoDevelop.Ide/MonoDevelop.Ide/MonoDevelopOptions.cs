@@ -54,6 +54,7 @@ namespace MonoDevelop.Ide
 				{ "h|?|help", "Show help", s => ShowHelp = true },
 				{ "perf-log", "Enable performance counter logging", s => PerfLog = true },
 				{ "no-redirect", "Disable redirection of stdout/stderr to a log file", s => RedirectOutput = false },
+				{ "smoke-test", "Open a solution (default: " + MonoDevelop.Ide.SmokeTest.DefaultSolution + "), build it and exit: 0 no errors, 1 build errors, 2 start-up/load failure or timeout", s => SmokeTest = true },
 			};
 		}
 
@@ -92,6 +93,7 @@ namespace MonoDevelop.Ide
 		public bool ShowHelp { get; set; }
 		public bool PerfLog { get; set; }
 		public bool RedirectOutput { get; set; }
+		public bool SmokeTest { get; set; }
 		public string Error { get; set; }
 		public IList<string> RemainingArgs { get; set; }
 		public IdeCustomizer IdeCustomizer { get; set; }
