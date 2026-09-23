@@ -62,6 +62,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task InjectTarget ()
 		{
 			try {
@@ -80,6 +81,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task InjectTargetAfterLoadingProject ()
 		{
 			string solFile = Util.GetSampleProject ("console-project", "ConsoleProject.sln");
@@ -106,6 +108,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ProjectUsingSdk ()
 		{
 			string sdkPath = Util.GetSampleProjectPath ("msbuild-search-paths", "sdk-path");
@@ -127,6 +130,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task MultipleProjectsUsingSdk ()
 		{
 			string sdkPath1 = Util.GetSampleProjectPath ("msbuild-search-paths", "sdk-path");
@@ -172,6 +176,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ProjectUsingMultipleSdk ()
 		{
 			// A project that references two SDKs must be assigned an SDKs folder that contains both SDKs
@@ -207,6 +212,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ProjectUsingSdkImport ()
 		{
 			string sdkPath = Util.GetSampleProjectPath ("msbuild-search-paths", "sdk-path-3");

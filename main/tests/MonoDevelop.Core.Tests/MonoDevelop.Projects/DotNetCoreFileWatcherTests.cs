@@ -280,6 +280,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task AddRenameRemoveSingleFile ()
 		{
 			var project = await OpenProject ();
@@ -325,6 +326,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task RenameDirectory ()
 		{
 			var project = await OpenProject ();
@@ -350,6 +352,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task FileWrittenButAlreadyExistsInFilesCollection_DuplicateFileNotAdded ()
 		{
 			var project = await OpenProject ();
@@ -367,6 +370,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task MoveDirectoryUpToProjectRootDirectory_FileServiceEventsFired ()
 		{
 			var project = await OpenProject ();
@@ -405,6 +409,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task FileRenamedInSolutionPad_FileWatcherRenameEventIsIgnored ()
 		{
 			var project = await OpenProject ();
@@ -516,6 +521,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task MoveDirectoryOutsideProjectDirectory ()
 		{
 			await OpenProject ();

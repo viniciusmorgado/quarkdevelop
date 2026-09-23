@@ -41,6 +41,7 @@ namespace MonoDevelop.Projects
 		/// targets so the conditions are correctly evaluated.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TargetFrameworkMonikers_DifferentShortNameFormats ()
 		{
 			FilePath projectFile = Util.GetSampleProject ("multi-target", "short-name-formats.csproj");

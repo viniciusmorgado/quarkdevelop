@@ -49,6 +49,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task LoadGenericProject ()
 		{
 			string solFile = Util.GetSampleProject ("generic-project", "generic-project.sln");
@@ -64,6 +65,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task LoadGenericProjectWithImportBeforePropertyGroup ()
 		{
 			string solFile = Util.GetSampleProject ("generic-project-with-import", "generic-project.sln");

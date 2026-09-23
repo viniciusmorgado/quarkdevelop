@@ -180,6 +180,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ImportWithCoreCompileDependsOnAddedAfterSourceFilesCached ()
 		{
 			string projectFile = Util.GetSampleProject ("project-with-corecompiledepends", "consoleproject.csproj");

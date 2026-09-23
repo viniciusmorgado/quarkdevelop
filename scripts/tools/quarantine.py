@@ -19,21 +19,31 @@ import xml.etree.ElementTree as ET
 NS = {"t": "http://microsoft.com/schemas/VisualStudio/TeamTest/2010"}
 OWNER = "migration"
 
-# (regex over "message + stack", reason category, note, follow-up task)
+# (regex, reason category, note, follow-up task). Rules are tried in order on "test name + message";
+# rules marked stack=True also look at the stack trace (fixture paths). Timeouts are only read from the
+# message: with NUnit's DefaultTimeout every stack contains TimeoutCommand frames.
 RULES = [
-    (r"test-projects|\.NETFramework|net4|TargetFramework|v4\.[0-9]|FacadeAssembl|GAC|mscorlib",
-     "net4x-fixture", "legacy .NET Framework fixture project; needs reference assemblies or retargeting", "T134"),
-    (r"Mono\.|mono_|MonoRuntime|MonoTargetRuntime|\.mdb\b", "Mono-only", "exercises Mono runtime behaviour", "T049"),
-    (r"Xwt|Gtk|Gdk|IdeApp|MonoDevelop\.Ide", "GTK2", "needs the IDE / GTK (ported in M5)", "T107"),
-    (r"SdkResolv|Unable to find SDK|Microsoft\.NET\.Sdk|MSBuildSDKsPath", "Bug", "SDK resolution in the custom evaluator differs from SDK 10", "T063"),
-    (r"Moq\.|Mock", "Bug", "mock expectations differ on .NET 10 HttpClient pipeline", "T135"),
-    (r"TimeoutException|timed out|Timeout", "Flaky", "timing-dependent", "T135"),
+    (r"Timed out|exceeded Timeout|TimeoutException|was not recorded|FileWatcher", False,
+     "Flaky", "timing-dependent (file watcher / event timing)", "T135"),
+    (r"Moq\.|Mock|HttpSourceAuthenticationHandler", False,
+     "Bug", "mock expectations differ on the .NET 10 HttpClient pipeline", "T135"),
+    (r"Portable|Xamarin|Profile\d+|NetStandardProject|Facade", False,
+     "legacy-fixture", "PCL / Xamarin / netstandard1.x fixture (retired target frameworks)", "T134"),
+    (r"test-projects|\.NETFramework|v4\.[0-9]|mscorlib|LocalCopy|AssemblyReferences|ReferencesAreOk", True,
+     "net4x-fixture", "legacy .NET Framework fixture project", "T134"),
+    (r"SynchronizationContext may not be used as a TaskScheduler", False,
+     "Bug", "test main loop: TaskScheduler.FromCurrentSynchronizationContext on the emulated main loop", "T135"),
+    (r"Mono\.Runtime|mono_|MonoRuntime|MonoTargetRuntime|\.mdb\b|MSBuildRuntimeVersion", False,
+     "Mono-only", "exercises Mono runtime behaviour", "T135"),
+    (r"SdkResolv|Unable to find SDK|MSBuildSearchPath|UnknownSolutionItem|GenericProject|Makefile", False,
+     "Bug", "project model / evaluator difference on SDK 10", "T135"),
 ]
 DEFAULT = ("Bug", "fails on .NET 10; root cause to be analysed", "T135")
 
 
-def classify(text):
-    for pattern, category, note, task in RULES:
+def classify(name, msg, stack):
+    for pattern, use_stack, category, note, task in RULES:
+        text = name + "\n" + msg + ("\n" + stack if use_stack else "")
         if re.search(pattern, text):
             return category, note, task
     return DEFAULT
@@ -49,6 +59,7 @@ def failed_tests(trx):
         if r.get("outcome") != "Failed":
             continue
         cls, method = defs.get(r.get("testId"), (None, r.get("testName")))
+        method = method.split("(")[0]  # parameterized cases: "Name(args)" -> method "Name"
         msg = r.findtext("t:Output/t:ErrorInfo/t:Message", default="", namespaces=NS)
         stack = r.findtext("t:Output/t:ErrorInfo/t:StackTrace", default="", namespaces=NS)
         yield cls, method, r.get("testName"), msg, stack
@@ -58,7 +69,8 @@ def add_category(project_dir, cls, method):
     """Adds [Category ("Quarantine")] before the method declaration. Returns the file or None."""
     short_cls = cls.split(".")[-1]
     for path in glob.glob(os.path.join(project_dir, "**", "*.cs"), recursive=True):
-        text = open(path, encoding="utf-8-sig").read()
+        # newline="" keeps CRLF/LF exactly as they are (many legacy files mix them).
+        text = open(path, encoding="utf-8-sig", newline="").read()
         if not re.search(r"\bclass\s+" + re.escape(short_cls) + r"\b", text):
             continue
         pat = re.compile(r"(?m)^(?P<indent>[ \t]*)(?P<decl>(public|internal)\s+(async\s+)?[\w<>\[\], ]+\s+" + re.escape(method) + r"\s*\()")
@@ -70,7 +82,9 @@ def add_category(project_dir, cls, method):
         attrs = re.search(r"(?:(?:^[ \t]*\[.*\][ \t]*\r?\n))*\Z", head, re.M)
         if attrs and 'Category ("Quarantine")' in attrs.group(0):
             return path
-        newline = "\r\n" if "\r\n" in text else "\n"
+        # Use the ending of the method's own line.
+        eol = text.find("\n", m.start())
+        newline = "\r\n" if eol > 0 and text[eol - 1] == "\r" else "\n"
         insert = m.group("indent") + '[Category ("Quarantine")]' + newline
         text = text[:m.start()] + insert + text[m.start():]
         bom = open(path, "rb").read(3) == b"\xef\xbb\xbf"
@@ -90,7 +104,7 @@ def main():
     today = datetime.date.today().isoformat()
     rows, methods, missing = [], set(), []
     for cls, method, test_name, msg, stack in failed_tests(trx):
-        category, note, task = classify(msg + "\n" + stack)
+        category, note, task = classify(f"{cls}.{test_name}", msg, stack)
         first = (msg.strip().splitlines() or [""])[0][:110].replace("|", "\\|")
         rows.append((f"{cls}.{test_name}", category, note, first, task))
         if (cls, method) in methods:

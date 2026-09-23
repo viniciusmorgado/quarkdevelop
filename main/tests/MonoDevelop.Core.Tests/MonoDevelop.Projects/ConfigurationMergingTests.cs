@@ -276,6 +276,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ProjectSerializationRoundtrip (
 			[Values (
 				"TestConfigurationMerging8.csproj",

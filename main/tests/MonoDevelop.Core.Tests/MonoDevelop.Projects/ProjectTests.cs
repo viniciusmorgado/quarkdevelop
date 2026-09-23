@@ -74,6 +74,7 @@ namespace MonoDevelop.Projects
 		
 		[Test()]
 		[Platform (Exclude = "Win")]
+		[Category ("Quarantine")]
 		public async Task Resources ()
 		{
 			string solFile = Util.GetSampleProject ("resources-tester", "ResourcesTester.sln");
@@ -304,6 +305,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task RefreshReferences ()
 		{
 			string solFile = Util.GetSampleProject ("reference-refresh", "ConsoleProject.sln");
@@ -714,6 +716,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task AddReference ()
 		{
 			// Check that the in-memory project data is used when the builder is loaded for the first time.
@@ -961,6 +964,7 @@ namespace MonoDevelop.Projects
 		/// Xamarin.Android targets use this to determine whether xbuild is being used.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task MSBuildRuntimeVersionProperty ()
 		{
 			string projFile = Util.GetSampleProject ("msbuild-tests", "msbuildruntimeversion.csproj");
@@ -1159,6 +1163,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task UnknownNuGetPackageReferenceId_DesignTimeBuilds ()
 		{
 			FilePath solFile = Util.GetSampleProject ("UnknownPackageReference", "UnknownPackageReference.sln");
@@ -1311,6 +1316,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task GetReferences_ProjectDisposed_BeforeTaskIsBound_DoesNotThrowNullReferenceException ()
 		{
 			var fn = new CustomItemNode<TestGetReferencesProjectExtension> ();

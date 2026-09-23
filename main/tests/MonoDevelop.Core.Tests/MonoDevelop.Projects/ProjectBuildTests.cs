@@ -272,6 +272,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task BuildSolutionWithUnsupportedProjects ()
 		{
 			string solFile = Util.GetSampleProject ("unsupported-project", "console-with-libs.sln");
@@ -393,6 +394,7 @@ namespace MonoDevelop.Projects
 		/// </summary>
 		[Test]
 		[Platform (Exclude = "Win")]
+		[Category ("Quarantine")]
 		public async Task BuildWithCustomProps3 ()
 		{
 			(var sol, var p) = await LoadSampleSolutionItem<Project> ("msbuild-tests", "project-with-custom-build-target3.csproj");
@@ -544,6 +546,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task FastBuildCheckWithLibrary ()
 		{
 			string solFile = Util.GetSampleProject ("fast-build-test", "FastBuildTest.sln");

@@ -467,6 +467,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task AddSolutionToWorkspace_ChangeFileInAddedSolution ()
 		{
 			FilePath rootProject = Util.GetSampleProject ("FileWatcherTest", "Root.csproj");

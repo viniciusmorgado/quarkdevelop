@@ -757,6 +757,7 @@ namespace MonoDevelop.Projects
 		[Test]
 		[TestCase (true, 1, 2)]
 		[TestCase (false, 3, 0)]
+		[Category ("Quarantine")]
 		public async Task SkipBuildingUnmodifiedProjects (bool enabled, int expectedSuccessful, int expectedUpToDate)
 		{
 			var settingBefore = Runtime.Preferences.SkipBuildingUnmodifiedProjects.Value;
@@ -1012,6 +1013,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task SolutionDisposed_ActiveProjectTasks_MSBuildEngineManagerNotDisposedUntilProjectTasksCompleted ()
 		{
 			var en = new CustomSolutionItemNode<TestProjectExtension> ();

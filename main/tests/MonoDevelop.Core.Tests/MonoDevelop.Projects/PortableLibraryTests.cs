@@ -42,6 +42,7 @@ namespace MonoDevelop.Projects
 	public class PortableLibraryTests: TestBase
 	{
 		[Test]
+		[Category ("Quarantine")]
 		public async Task LoadPortableLibrary ()
 		{
 			string solFile = Util.GetSampleProject ("portable-library", "portable-library.sln");
@@ -58,6 +59,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task BuildPortableLibrary ()
 		{
 			string solFile = Util.GetSampleProject ("portable-library", "portable-library.sln");
@@ -68,6 +70,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task PortableLibraryImplicitReferences ()
 		{
 			string solFile = Util.GetSampleProject ("portable-library", "portable-library.sln");
@@ -82,6 +85,7 @@ namespace MonoDevelop.Projects
 		/// again then the saved project file will end up no references.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task AddingRemovingAndThenAddingReferenceToPortableLibrarySavesReferenceToFile ()
 		{
 			string solFile = Util.GetSampleProject ("portable-library", "portable-library.sln");

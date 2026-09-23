@@ -47,7 +47,11 @@ namespace MonoDevelop.Projects
 			capaNode = new CustomCapabilityNode ();
 			WorkspaceObject.RegisterCustomExtension (capaNode);
 
-			// Register test addin.
+			// Register test addin. The Linux build puts it next to the test assemblies, where the test host
+			// already registers it; a second copy in the user add-ins folder would share its registry entry,
+			// and deleting that copy in Teardown would drop the entry for every later test.
+			if (AddinManager.Registry.GetAddin ("MonoDevelop.Core.Tests.Addin") != null)
+				return;
 			if (!Directory.Exists (AddinManager.Registry.DefaultAddinsFolder))
 				Directory.CreateDirectory (AddinManager.Registry.DefaultAddinsFolder);
 
@@ -64,6 +68,8 @@ namespace MonoDevelop.Projects
 			WorkspaceObject.UnregisterCustomExtension (capaNode);
 
 			// Unregister test addin.
+			if (testAddinAssemblyPath == null)
+				return;
 			File.Delete (testAddinAssemblyPath);
 			AddinManager.Registry.Update (null);
 		}

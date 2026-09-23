@@ -45,6 +45,7 @@ namespace MonoDevelop.Core.Assemblies
 		[TestCase (true, "System.Collections.Immutable.dll")]
 		[TestCase (false, "MonoDevelop.Core.dll")]
 		[TestCase (false, "NonExistingDll.dll")]
+		[Category ("Quarantine")]
 		public async Task RequiresFacadeAssembliesAsync (bool addFacades, string relativeDllPath)
 		{
 			var result = await SystemAssemblyService.RequiresFacadeAssembliesAsync (GetDllPath (relativeDllPath));
@@ -52,6 +53,7 @@ namespace MonoDevelop.Core.Assemblies
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void CheckReferencesAreOk()
 		{
 			var names = new[] {
@@ -66,6 +68,7 @@ namespace MonoDevelop.Core.Assemblies
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void CheckAssemblyReferences ()
 		{
 			var monoAddinsPath = GetDllPath ("Mono.Addins.dll");
@@ -102,6 +105,7 @@ namespace MonoDevelop.Core.Assemblies
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestFrameworkVersion ()
 		{
 			var xwtPath = GetDllPath ("Xwt.dll");

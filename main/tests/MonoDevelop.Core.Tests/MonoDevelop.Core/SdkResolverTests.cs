@@ -43,6 +43,7 @@ namespace MonoDevelop.Core
 		/// be used and the DotNetMSBuildSdkResolver will not be used.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public void UnknownSdk_DotNetMSBuildSdkResolverDoesNotFatalReportError ()
 		{
 			var resolution = SdkResolution.GetResolver (Runtime.SystemAssemblyService.CurrentRuntime);

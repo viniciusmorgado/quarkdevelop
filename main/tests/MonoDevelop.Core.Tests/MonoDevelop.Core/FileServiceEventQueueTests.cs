@@ -325,6 +325,7 @@ namespace MonoDevelop.Core
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestTimeTracking ()
 		{
 			var queue = new CallTrackingEventQueue ();

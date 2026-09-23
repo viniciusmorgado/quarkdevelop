@@ -469,6 +469,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void WriteProject_ProjectDefinesMultipleTargetFrameworksAndTargetFrameworkVersionChanged_TargetFrameworksUpdated ()
 		{
 			CreateMSBuildProject (

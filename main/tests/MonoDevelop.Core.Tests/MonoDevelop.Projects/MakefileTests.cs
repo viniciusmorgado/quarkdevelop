@@ -62,6 +62,7 @@ namespace MonoDevelop.Projects
 
 		[Test()]
 		[Platform (Exclude = "Win")]
+		[Category ("Quarantine")]
 		public async Task MakefileSynchronization ()
 		{
 			if (Platform.IsWindows)

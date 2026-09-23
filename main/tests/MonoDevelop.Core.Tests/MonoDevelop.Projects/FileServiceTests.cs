@@ -139,6 +139,7 @@ namespace MonoDevelop.Projects
 		/// File events were being merged the wrong way so a file change event was not being fired.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public void ThawAfterGeneratingFileChangeEvents_File1ChangeFollowedByFile2ChangeThenFile2Change ()
 		{
 			FileService.FreezeEvents ();

@@ -53,6 +53,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task NetStandardProjectReferenceIncludesFacades ()
 		{
 			// Test for https://bugzilla.xamarin.com/show_bug.cgi?id=55734

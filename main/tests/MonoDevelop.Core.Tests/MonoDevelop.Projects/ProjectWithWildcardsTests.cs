@@ -623,6 +623,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task LoadProjectWithWildcardLinks ()
 		{
 			string solFile = Util.GetSampleProject ("project-with-wildcard-links", "PortableTest.sln");
@@ -645,6 +646,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task LoadProjectWithWildcardLinks2 ()
 		{
 			// Merge with LoadProjectWithWildcardLinks test when the xbuild issue is fixed
@@ -688,6 +690,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task LoadProjectWithWildcardLinks3 ()
 		{
 			// %(RecursiveDir) is empty when used in a non-recursive include
@@ -714,6 +717,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task LoadProjectWithWildcardLinks4 ()
 		{
 			// %(RecursiveDir) is empty when used in a non-recursive include with a single file

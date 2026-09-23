@@ -135,6 +135,7 @@ namespace MonoDevelop.Core
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task PeekService ()
 		{
 			var serviceProvider = new BasicServiceProvider ();

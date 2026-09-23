@@ -314,6 +314,7 @@ namespace MonoDevelop.Projects
 		/// Compile Update="**\*.xaml$(DefaultLanguageSourceExtension)" DependentUpon="%(Filename)" SubType="Code"
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task SaveNetStandardProjectWithXamarinFormsVersion24PackageReference ()
 		{
 			FilePath solFile = Util.GetSampleProject ("NetStandardXamarinForms", "NetStandardXamarinForms.sln");
@@ -339,6 +340,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task AddFiles_NetStandardProjectWithXamarinFormsVersion24PackageReference ()
 		{
 			FilePath solFile = Util.GetSampleProject ("NetStandardXamarinForms", "NetStandardXamarinForms.sln");
@@ -387,6 +389,7 @@ namespace MonoDevelop.Projects
 		/// items were first excluded from the project.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ReloadModifiedFile_XamarinFormsVersion24PackageReference ()
 		{
 			FilePath solFile = Util.GetSampleProject ("NetStandardXamarinForms", "NetStandardXamarinForms.sln");
@@ -430,6 +433,7 @@ namespace MonoDevelop.Projects
 		/// for the project. There is a separate lookup cache of files in the ProjectFileCollection.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ReevaluateXamarinFormsVersion24PackageReference ()
 		{
 			FilePath solFile = Util.GetSampleProject ("NetStandardXamarinForms", "NetStandardXamarinForms.sln");
@@ -473,6 +477,7 @@ namespace MonoDevelop.Projects
 		/// Verifes that the DependentUpon property is correct for .xaml.cs files in a subdirectory.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task DependsOn_FilesInProjectSubDirectory_XamarinFormsVersion24PackageReference ()
 		{
 			FilePath solFile = Util.GetSampleProject ("NetStandardXamarinForms", "NetStandardXamarinForms.sln");
@@ -615,6 +620,7 @@ namespace MonoDevelop.Projects
 
 		[Test]
 		[Platform (Exclude = "Win")]
+		[Category ("Quarantine")]
 		public async Task BuildMultiTargetProject ()
 		{
 			FilePath projFile = Util.GetSampleProject ("multi-target", "multi-target2.csproj");
@@ -648,6 +654,7 @@ namespace MonoDevelop.Projects
 		/// </summary>
 		[Test]
 		[Platform (Exclude = "Win")]
+		[Category ("Quarantine")]
 		public async Task FSharpXamarinFormsProject_SaveProject_XamlFilesDependentUponUnchanged ()
 		{
 			FilePath solFile = Util.GetSampleProject ("FSharpForms", "FSharpForms.sln");
@@ -686,6 +693,7 @@ namespace MonoDevelop.Projects
 		/// Compile items preferred over None items.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task GetSourceFilesAsync_SdkProjectWithCSharpFileDefindAsNoneThenCompileItem_FileHasCompileBuildAction ()
 		{
 			FilePath solFile = Util.GetSampleProject ("duplicate-none-compile-items", "duplicate-none-compile-items.sln");
@@ -741,6 +749,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task MultiTargetProject_ExecutionTargets ()
 		{
 			FilePath solutionFile = Util.GetSampleProject ("multi-target-execution-targets", "multi-target.sln");

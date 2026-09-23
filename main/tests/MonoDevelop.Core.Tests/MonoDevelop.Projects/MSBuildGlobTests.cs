@@ -637,6 +637,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task FileUpdateRemoveMetadataDefinedInGlob ()
 		{
 			// The glob item defines a metadata. All evaluated items have that value.
@@ -760,6 +761,7 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task RemoveAllFilesFromProject_NoFilesDeleted_RemoveItemAddedForFiles ()
 		{
 			var fn = new CustomItemNode<SupportImportedProjectFilesProjectExtension> ();

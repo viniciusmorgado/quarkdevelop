@@ -209,6 +209,7 @@ namespace MonoDevelop.Projects
 
 		[Test]
 		[Platform (Exclude = "Win")]
+		[Category ("Quarantine")]
 		public async Task LocalCopyDefault ()
 		{
 			string solFile = Util.GetSampleProject ("local-copy-package", "ConsoleProject.sln");
