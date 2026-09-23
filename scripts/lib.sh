@@ -28,7 +28,12 @@ md_require_container() {
 # (constitution V, ADR 0018).
 md_new_cs_files() {
 	local base
-	base="$(git -C "$MD_ROOT" merge-base HEAD "${MD_BASE_REF:-main}" 2>/dev/null || true)"
+	# Upstream mono/monodevelop commit this fork starts from (pinned so the check works in fresh
+	# clones and after merges). Fails loudly if the history is missing (e.g. a shallow clone).
+	local base="ba01d2d6d3c84e92a6b5f360dac76ee821547529"
+	if ! git -C "$MD_ROOT" cat-file -e "$base^{commit}" 2>/dev/null; then
+		md_die "upstream base commit $base not found; fetch full history (git fetch --unshallow)"
+	fi
 	{
 		if [[ -n "$base" ]]; then
 			git -C "$MD_ROOT" diff --diff-filter=A --name-only "$base" -- '*.cs'

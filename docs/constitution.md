@@ -41,9 +41,11 @@ same image power local work and CI.
 
 ### IV. Incremental, Reversible, Verifiable Migration
 
-- Work proceeds in waves recorded in `specs/001-linux-dotnet10-migration/tasks.md`. Each commit
-  changes one task's scope, keeps `main/MonoDevelop.Linux.sln` building, and is revertible with
-  `git revert` without breaking earlier waves.
+- Work proceeds in waves recorded in `specs/001-linux-dotnet10-migration/tasks.md`. Each commit is
+  small, lists the task IDs it implements in a `Tasks:` trailer (enforced by `scripts/git-commit`),
+  keeps `main/MonoDevelop.Linux.sln` building, and is revertible with `git revert` without breaking
+  earlier waves. One task per commit is the default; a commit may cover several tasks only when
+  they cannot build independently.
 - Porting of UI code happens one area (project or folder) at a time; no commit ports more than one
   UI project wholesale.
 - A walking skeleton comes first: headless core → minimal GTK3 window → full IDE.
@@ -115,4 +117,4 @@ follows SemVer: MAJOR for removing or redefining a principle, MINOR for adding a
 materially expanding guidance, PATCH for clarifications. Every review and every the consistency analysis
 run checks compliance; deviations must be justified in the plan's Complexity Tracking table.
 
-**Version**: 1.1.0 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23
+**Version**: 1.2.0 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23

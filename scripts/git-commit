@@ -1,7 +1,24 @@
 #!/usr/bin/env bash
 # Commit with the project's only allowed identity (GitHub no-reply address).
+# Every commit must reference the specification task(s) it implements with a trailer line
+#   Tasks: T059, T060
+# (constitution IV: traceability from task to commit). Use "Tasks: none" for pure chores.
+#
 # Usage (inside the container): ./scripts/git-commit -m "message" [git commit args...]
 set -euo pipefail
 readonly NAME="Vinicius Morgado"
 readonly EMAIL="34577818+viniciusmorgado@users.noreply.github.com"
+
+message=""
+args=("$@")
+for ((i = 0; i < ${#args[@]}; i++)); do
+	case "${args[i]}" in
+		-m) message+="${args[i + 1]:-}"$'\n' ;;
+		-m*) message+="${args[i]#-m}"$'\n' ;;
+	esac
+done
+if ! grep -qE '^Tasks: (none|T[0-9]{3}(, ?T[0-9]{3})*)$' <<< "$message"; then
+	echo "git-commit: the message must contain a trailer line 'Tasks: Tnnn[, Tnnn...]' (or 'Tasks: none')" >&2
+	exit 1
+fi
 exec git -c user.name="$NAME" -c user.email="$EMAIL" commit "$@"

@@ -290,3 +290,7 @@ main/tests/StressTest/bin
 
 # script outputs (tests, coverage, logs)
 /out/
+
+# Python bytecode
+__pycache__/
+*.pyc

@@ -70,7 +70,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 
 - [x] T033 [US1] M3: SDK-style `MonoDevelop.Core.csproj` (545 explicit sources, CPM, only used packages: Mono.Addins(.Setup), Cecil, Mono.Unix, MSBuild* compile-only, Locator, CodeAnalysis.Common, Newtonsoft, ObjectPool, CodeDom, ConfigurationManager) in `MonoDevelop.Linux.sln` → `dotnet build main/src/core/MonoDevelop.Core` 0 errors
 - [x] T034 [US1] M3: Remoting removed from Core (RemotingService, ProcessHostController, DisposerFormatterSink out of the build; `ProcessHostConsole` extracted; `CreateExternalProcessObject` throws `NotSupportedException`; instrumentation autosave → JSON; remote/binary instrumentation → `PlatformNotSupportedException`) → no `System.Runtime.Remoting`/`BinaryFormatter` in Core compile items
-- [x] T035 [US1] M3: `CallContext` → `AsyncLocal` (`MonoDevelop.Projects/ItemInitializationContext.cs`) → covered by T046 tests
+- [x] T035 [US1] M3: `CallContext` → `AsyncLocal` (`MonoDevelop.Projects/ItemInitializationContext.cs`) → covered by T132 tests
 - [x] T036 [US1] M3: `Debug.Listeners` → `Trace.Listeners`; `RegistryHive.DynData` removed; monodoc `HelpService` behind `#if MONODOC`; WCF STS behind `#if WCF_STS`; obsolete serialization members removed (SYSLIB0051/0003); unused Decompiler using removed → build clean of these IDs
 - [x] T037 [US1] M3: `MonoDevelop.Core.addin.xml` imports only assemblies shipped next to Core (Newtonsoft, ObjectPool) → add-in registry loads Core without "assembly not found" (T046)
 
@@ -79,7 +79,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [x] T038 [US1] M3: `main/tests/UnitTests/UnitTests.csproj` → SDK-style net10.0, NUnit 3.14, no GuiUnit; `TestHost.EnsureInitialized` (called from `TestBase`) initializes `Runtime` once on an emulated main loop with an isolated profile (`main/tests/config`); `MonoDevelop.Tests.addins` → `../AddIns` → `dotnet build main/tests/UnitTests`
 - [x] T039 [US1] M3: `main/tests/MonoDevelop.Core.Tests.Addin` → SDK-style test add-in, output next to the test assemblies (`build/tests/`) → builds
 - [x] T040 [US1] M3: `main/tests/MonoDevelop.Core.Tests` → SDK-style, `OneTimeSetUp`/`OneTimeTearDown`, `Assert.Throws` instead of `ExpectedException`, `Assert.IsInstanceOf`, `Does.EndWith`, Moq 4.20/Castle 5.2 → `dotnet test --list-tests` lists 860 cases
-- [ ] T132 [US1] M3: retroactive tests for T034–T036 (JSON instrumentation autosave round-trip, `CreateExternalProcessObject` throws `NotSupportedException`, `ItemInitializationContext` delays initialization across awaits) → tests pass
+- [ ] T132 [US1] M3: retroactive tests for T034–T036 and the CA5369 fix (JSON instrumentation autosave round-trip, `CreateExternalProcessObject` throws `NotSupportedException`, `ItemInitializationContext` delays initialization across awaits, property deserialization rejects DTDs) → tests pass
 - [x] T133 [US1] M3: test host infrastructure: `TestHost` (main-loop sync context, isolated profile), `MonoDevelop.TestStartupHook` (MSBuildLocator before discovery), generated `.runsettings`, `Mono.Addins.CecilReflector` → `dotnet test --list-tests` discovers ≥ 850 Core tests
 - [ ] T041 [US1] M3: first run + quarantine record (reason, owner, date, task) → `docs/evidence/M4/quarantine.md`; `./scripts/test.sh` green with `Category!=Quarantine`
 
