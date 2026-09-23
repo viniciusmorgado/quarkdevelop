@@ -21,8 +21,13 @@
     <EnvironmentVariables>
       <DOTNET_STARTUP_HOOKS>$(MonoDevelopBuildDir)tests/MonoDevelop.TestStartupHook.dll</DOTNET_STARTUP_HOOKS>
       <MONODEVELOP_TEST_ROOT>$(MonoDevelopRootDir)tests</MONODEVELOP_TEST_ROOT>
+      <MONODEVELOP_MSBUILD_BUILDER>$(MonoDevelopBuildDir)bin/MonoDevelop.MSBuildBuilder.dll</MONODEVELOP_MSBUILD_BUILDER>
     </EnvironmentVariables>
   </RunConfiguration>
+  <NUnit>
+    <!-- A hung test (e.g. waiting for a build that cannot run) fails instead of aborting the run. -->
+    <DefaultTimeout>120000</DefaultTimeout>
+  </NUnit>
 </RunSettings>
 ]]></_MDRunSettings>
     </PropertyGroup>

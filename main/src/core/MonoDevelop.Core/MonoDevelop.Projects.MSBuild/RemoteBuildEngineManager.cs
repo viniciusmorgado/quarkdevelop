@@ -463,6 +463,12 @@ namespace MonoDevelop.Projects.MSBuild
 		/// </summary>
 		static string GetExeLocationInBundle (string toolsVersion)
 		{
+			// Hosts whose core assembly is not next to the builder (e.g. test hosts in build/tests) point to it
+			// explicitly.
+			var overridePath = Environment.GetEnvironmentVariable ("MONODEVELOP_MSBUILD_BUILDER");
+			if (!string.IsNullOrEmpty (overridePath) && File.Exists (overridePath))
+				return overridePath;
+
 			var mdBinDir = new FilePath (typeof (MSBuildProjectService).Assembly.Location).ParentDirectory;
 			foreach (var name in new [] { "MonoDevelop.MSBuildBuilder.dll", "MonoDevelop.MSBuildBuilder.exe" }) {
 				var candidate = mdBinDir.Combine (name);

@@ -202,6 +202,9 @@ namespace MonoDevelop.Projects
 			psi.ArgumentList.Add (file);
 			psi.ArgumentList.Add ("-nologo");
 			psi.ArgumentList.Add ("-v:q");
+			// No MSBuild node reuse or compiler server: a lingering server would inherit mdtool's stdout and
+			// stderr and keep them open after mdtool exits, blocking callers that read its output to the end.
+			psi.ArgumentList.Add ("--disable-build-servers");
 			using (var process = System.Diagnostics.Process.Start (psi)) {
 				await process.WaitForExitAsync ();
 				return process.ExitCode;

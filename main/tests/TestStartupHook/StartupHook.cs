@@ -33,6 +33,9 @@ internal sealed class StartupHook
 {
 	public static void Initialize ()
 	{
+		// Only the test host needs the hook: child processes (dotnet msbuild, the MSBuild builder,
+		// mdtool) register MSBuild themselves, and dotnet msbuild aborts when the hook runs in it.
+		System.Environment.SetEnvironmentVariable ("DOTNET_STARTUP_HOOKS", null);
 		if (!MSBuildLocator.IsRegistered)
 			MSBuildLocator.RegisterDefaults ();
 	}
