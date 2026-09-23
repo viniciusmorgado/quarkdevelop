@@ -102,7 +102,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			workspace.WorkspaceChanged -= OnWorkspaceChanged;
 			lock (gate) {
 				if (workspaces.TryGetValue (workspace, out var state)) {
-					state.CancellationTokenSource.Cancel ();
+					state.Dispose ();
 					workspaces.Remove (workspace);
 				}
 			}
@@ -239,13 +239,20 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		sealed class WorkspaceState
+		sealed class WorkspaceState : IDisposable
 		{
 			public readonly HashSet<DocumentId> Pending = new HashSet<DocumentId> ();
 			public readonly Dictionary<DocumentId, VersionStamp> Versions = new Dictionary<DocumentId, VersionStamp> ();
 			public readonly HashSet<DocumentId> WithItems = new HashSet<DocumentId> ();
 			public readonly CancellationTokenSource CancellationTokenSource = new CancellationTokenSource ();
 			public bool Scheduled;
+
+			public void Dispose ()
+			{
+				// Running computations hold the token, which stays valid (and cancelled) after disposal.
+				CancellationTokenSource.Cancel ();
+				CancellationTokenSource.Dispose ();
+			}
 		}
 	}
 }
