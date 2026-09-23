@@ -26,8 +26,8 @@ type extensions), and Roslyn 5.9 internals via Krafs.Publicizer (Roslyn no longe
 
 ## Technical Context
 
-**Language/Version**: C# on .NET 10 LTS (SDK 10.0.401 in the container; `global.json` feature band
-10.0.100 + `latestFeature`); `LangVersion` stays 8.0 during conversion, then SDK default.
+**Language/Version**: C# 14 (`LangVersion=latest`) on .NET 10 LTS (SDK 10.0.401 in the container;
+`global.json` feature band 10.0.100 + `latestFeature`).
 
 **Primary Dependencies**: GtkSharp 3.24.24.x (NuGet), Xwt + Xwt.Gtk3 (vendored), Mono.Addins /
 Mono.Addins.Setup / Mono.Addins.CecilReflector 1.4.1, Microsoft.CodeAnalysis 5.9.0 (+ EditorFeatures

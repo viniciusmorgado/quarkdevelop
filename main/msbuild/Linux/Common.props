@@ -11,7 +11,8 @@
     <BeforeMicrosoftNETSdkTargets>$(BeforeMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)OutputLayout.targets</BeforeMicrosoftNETSdkTargets>
 
     <TargetFramework Condition="'$(TargetFramework)' == '' and '$(TargetFrameworks)' == ''">net10.0</TargetFramework>
-    <LangVersion Condition="'$(LangVersion)' == ''">8.0</LangVersion>
+    <!-- The legacy code compiles unchanged with the SDK default (C# 14); verified for the core. -->
+    <LangVersion Condition="'$(LangVersion)' == ''">latest</LangVersion>
     <Nullable Condition="'$(Nullable)' == ''">disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <!-- Source trees contain files that must not compile on Linux; projects list their sources (ADR 0003). -->

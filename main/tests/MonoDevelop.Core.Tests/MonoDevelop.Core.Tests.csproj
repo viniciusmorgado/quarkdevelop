@@ -69,6 +69,7 @@
     <Compile Include="MonoDevelop.Projects/ExtensionChainTests.cs" />
     <Compile Include="MonoDevelop.Core/PropertyTests.cs" />
     <Compile Include="MonoDevelop.Core/MigrationBehaviorTests.cs" />
+    <Compile Include="MonoDevelop.Core/NativeLibraryMapTests.cs" />
     <Compile Include="MonoDevelop.Projects/GetAnalyzerFilesAsyncTests.cs" />
     <Compile Include="MonoDevelop.Core.Instrumentation/BucketTimingsTests.cs" />
     <Compile Include="MonoDevelop.Utilities/RaceCheckerTests.cs" />
@@ -97,6 +98,7 @@
     <ProjectReference Include="../MonoDevelop.Core.Tests.Addin/MonoDevelop.Core.Tests.Addin.csproj" />
     <!-- C# project support is an add-in loaded from build/AddIns; only build it (T053). -->
     <ProjectReference Include="../../src/addins/CSharpBinding/MonoDevelop.CSharpBinding.Core/MonoDevelop.CSharpBinding.Core.csproj" ReferenceOutputAssembly="false" />
+    <!-- MdtoolContractTests run the real tool (T064); it also builds the MSBuild builder in build/bin. -->
   </ItemGroup>
 
   <ItemGroup>

@@ -108,6 +108,7 @@
     <Compile Include="MonoDevelop.Core.Serialization/XmlMapAttributeProvider.cs" />
     <Compile Include="MonoDevelop.Core.Collections/Set.cs" />
     <Compile Include="MonoDevelop.Core/Gettext.cs" />
+    <Compile Include="MonoDevelop.Core/NativeLibraryMap.cs" />
     <Compile Include="MonoDevelop.Core.AddIns/PackageInstalledCondition.cs" />
     <Compile Include="MonoDevelop.Core/ComponentModelLocalization.cs" />
     <Compile Include="MonoDevelop.Core.AddIns/ITargetRuntimeFactory.cs" />
