@@ -34,19 +34,19 @@ using Xwt.Drawing;
 
 using Microsoft.TemplateEngine.Abstractions;
 using Microsoft.TemplateEngine.Abstractions.Mount;
-using Microsoft.TemplateEngine.Edge.Settings;
+using Microsoft.TemplateEngine.Utils;
 
 namespace MonoDevelop.Ide.Templates
 {
 	class MicrosoftTemplateEngineImageLoader : IImageLoader
 	{
 		static char[] DirectorySeparators = new [] { Path.DirectorySeparatorChar };
-		readonly SettingsLoader settings;
+		readonly IEngineEnvironmentSettings settings;
 		readonly ITemplateInfo template;
 
-		public MicrosoftTemplateEngineImageLoader (SettingsLoader settingsLoader, ITemplateInfo templateInfo)
+		public MicrosoftTemplateEngineImageLoader (IEngineEnvironmentSettings environmentSettings, ITemplateInfo templateInfo)
 		{
-			settings = settingsLoader;
+			settings = environmentSettings;
 			template = templateInfo;
 		}
 
@@ -55,35 +55,29 @@ namespace MonoDevelop.Ide.Templates
 			IMountPoint mountPoint;
 			IDirectory dir;
 
-			if (!settings.TryGetMountPointFromId (template.ConfigMountPointId, out mountPoint))
+			if (!settings.TryGetMountPoint (template.MountPointUri, out mountPoint))
 				yield break;
 
-			dir = mountPoint.Root;
+			using (mountPoint) {
+				dir = mountPoint.Root;
 
-			var path = baseName.Split (DirectorySeparators, StringSplitOptions.RemoveEmptyEntries);
-			for (int i = 0; i < path.Length - 1; i++) {
-				dir = dir.EnumerateDirectories (path[i], SearchOption.TopDirectoryOnly).FirstOrDefault ();
+				var path = baseName.Split (DirectorySeparators, StringSplitOptions.RemoveEmptyEntries);
+				for (int i = 0; i < path.Length - 1; i++) {
+					dir = dir.EnumerateDirectories (path[i], SearchOption.TopDirectoryOnly).FirstOrDefault ();
 
-				if (dir == null)
-					yield break;
+					if (dir == null)
+						yield break;
+				}
+
+				var pattern = string.Format ("{0}*{1}", path[path.Length - 1], ext);
+				foreach (var entry in dir.EnumerateFiles (pattern, SearchOption.TopDirectoryOnly).ToList ())
+					yield return entry.FullPath;
 			}
-
-			var pattern = string.Format ("{0}*{1}", path[path.Length - 1], ext);
-			foreach (var entry in dir.EnumerateFiles (pattern, SearchOption.TopDirectoryOnly))
-				yield return entry.FullPath;
-
-			yield break;
 		}
 
 		public Stream LoadImage (string fileName)
 		{
-			IMountPoint mountPoint;
-			IFile file;
-
-			if (!settings.TryGetFileFromIdAndPath (template.ConfigMountPointId, fileName, out file, out mountPoint))
-				return null;
-
-			return file.OpenRead ();
+			return MicrosoftTemplateEngine.OpenFile (template, fileName);
 		}
 	}
 }

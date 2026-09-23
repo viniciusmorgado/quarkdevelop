@@ -145,14 +145,20 @@ namespace MonoDevelop.Ide.Templates
 			return textBuilder.ToString ();
 		}
 
+		/// <summary>
+		/// Choices of a choice parameter: value → description (TE 10 choices also have a display name, unused here).
+		/// </summary>
 		public IReadOnlyDictionary<string, string> GetParameterChoices (string parameterName)
 		{
-			return templateInfo.Parameters.FirstOrDefault (parameter => parameter.Name == parameterName)?.Choices;
+			if (!templateInfo.ParameterDefinitions.TryGetValue (parameterName, out ITemplateParameter parameter) || parameter.Choices == null)
+				return null;
+
+			return parameter.Choices.ToDictionary (choice => choice.Key, choice => choice.Value?.Description);
 		}
 
 		public bool IsSupportedParameter(string parameterName)
 		{
-			return templateInfo.Parameters.FirstOrDefault (parameter => parameter.Name == parameterName) != null;
+			return templateInfo.ParameterDefinitions.ContainsKey (parameterName);
 		}
 	}
 }

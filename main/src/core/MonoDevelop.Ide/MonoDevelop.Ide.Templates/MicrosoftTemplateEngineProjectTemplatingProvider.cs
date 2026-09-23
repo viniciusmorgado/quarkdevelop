@@ -35,8 +35,6 @@ using Microsoft.TemplateEngine.Orchestrator.RunnableProjects;
 using MonoDevelop.Core;
 using Microsoft.TemplateEngine.Edge;
 using System.IO;
-using Microsoft.TemplateEngine.Orchestrator.RunnableProjects.Config;
-using Microsoft.TemplateEngine.Orchestrator.RunnableProjects.Macros;
 using System.Threading.Tasks;
 using Mono.Addins;
 using MonoDevelop.Ide.Codons;
@@ -83,18 +81,19 @@ namespace MonoDevelop.Ide.Templates
 			var result = await MicrosoftTemplateEngine.InstantiateAsync (templateInfo, config, parameters);
 
 			if (result.Status != CreationResultStatus.Success) {
-				string message = string.Format ("Could not create template. Id='{0}' {1} {2}", template.Id, result.Status, result.Message);
+				string message = string.Format ("Could not create template. Id='{0}' {1} {2}", template.Id, result.Status, result.ErrorMessage);
 				throw new InvalidOperationException (message);
 			}
 
+			var creationResult = result.CreationResult;
 			var filesToOpen = new List<string> ();
-			foreach (var postAction in result.ResultInfo.PostActions) {
-				switch (postAction.ActionId.ToString ().ToUpper ()) {
+			foreach (var postAction in creationResult.PostActions) {
+				switch (postAction.ActionId.ToString ().ToUpperInvariant ()) {
 				case "84C0DA21-51C8-4541-9940-6CA19AF04EE6":
 					if (postAction.Args.TryGetValue ("files", out var files))
 						foreach (var fi in files.Split (';'))
 							if (int.TryParse (fi.Trim (), out var i))
-								filesToOpen.Add (Path.Combine (config.ProjectLocation, GetPath (result.ResultInfo.PrimaryOutputs [i])));
+								filesToOpen.Add (Path.Combine (config.ProjectLocation, GetPath (creationResult.PrimaryOutputs [i])));
 					break;
 				case "D396686C-DE0E-4DE6-906D-291CD29FC5DE":
 					//TODO: Load project files
@@ -103,7 +102,7 @@ namespace MonoDevelop.Ide.Templates
 			}
 
 			//TODO: Once templates support "D396686C-DE0E-4DE6-906D-291CD29FC5DE" use that to load projects
-			foreach (var path in result.ResultInfo.PrimaryOutputs) {
+			foreach (var path in creationResult.PrimaryOutputs) {
 				var fullPath = Path.Combine (config.ProjectLocation, GetPath (path));
 				if (!File.Exists (fullPath)) {
 					// Work around a bug in the templating engine with multi project templates
@@ -179,7 +178,7 @@ namespace MonoDevelop.Ide.Templates
 			// If the template has no wizard then no extra parameters will be set.
 			if (template.HasWizard) {
 				var model = (IStringTagModel)config.Parameters;
-				foreach (ITemplateParameter parameter in template.templateInfo.Parameters) {
+				foreach (ITemplateParameter parameter in template.templateInfo.ParameterDefinitions) {
 					string parameterValue = (string)model.GetValue (parameter.Name);
 					if (parameterValue != null)
 						parameters [parameter.Name] = parameterValue;

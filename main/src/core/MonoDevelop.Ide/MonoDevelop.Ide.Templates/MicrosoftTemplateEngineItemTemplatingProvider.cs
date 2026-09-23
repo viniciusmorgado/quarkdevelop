@@ -56,11 +56,11 @@ namespace MonoDevelop.Ide.Templates
 			var result = await MicrosoftTemplateEngine.InstantiateAsync (itemTemplate.TemplateInfo, config, parameters);
 
 			if (result.Status != CreationResultStatus.Success) {
-				string message = string.Format ("Could not create template. Id='{0}' {1} {2}", template.Id, result.Status, result.Message);
+				string message = string.Format ("Could not create template. Id='{0}' {1} {2}", template.Id, result.Status, result.ErrorMessage);
 				throw new InvalidOperationException (message);
 			}
 
-			foreach (var path in result.ResultInfo.PrimaryOutputs) {
+			foreach (var path in result.CreationResult.PrimaryOutputs) {
 				string fullPath = Path.Combine (config.Directory, GetPath (path));
 
 				await MicrosoftTemplateEngine.FormatFile (project?.Policies, fullPath);
@@ -72,7 +72,7 @@ namespace MonoDevelop.Ide.Templates
 				IdeApp.Workbench.OpenDocument (fullPath, project).Ignore ();
 
 				if (project != null) {
-					await InstallNuGetPackages (project, result.ResultInfo);
+					await InstallNuGetPackages (project, result.CreationResult);
 				}
 			}
 		}
@@ -82,7 +82,7 @@ namespace MonoDevelop.Ide.Templates
 			var parameters = new Dictionary<string, string> ();
 
 			var model = (IStringTagModel)config;
-			foreach (ITemplateParameter parameter in template.TemplateInfo.Parameters) {
+			foreach (ITemplateParameter parameter in template.TemplateInfo.ParameterDefinitions) {
 				string parameterValue = (string)model.GetValue (parameter.Name);
 				if (parameterValue != null)
 					parameters [parameter.Name] = parameterValue;
@@ -121,7 +121,7 @@ namespace MonoDevelop.Ide.Templates
 		{
 			var packageReferences = GetPackageReferences (result).ToList ();
 
-			if (!packageReferences.Any ())
+			if (packageReferences.Count == 0)
 				return;
 
 			foreach (ItemTemplatePackageInstaller installer in AddinManager.GetExtensionObjects ("/MonoDevelop/Ide/ItemTemplatePackageInstallers")) {

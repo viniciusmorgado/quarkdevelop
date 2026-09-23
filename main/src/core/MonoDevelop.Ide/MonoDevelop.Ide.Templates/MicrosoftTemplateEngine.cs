@@ -28,15 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.TemplateEngine.Abstractions;
 using Microsoft.TemplateEngine.Abstractions.Mount;
+using Microsoft.TemplateEngine.Abstractions.TemplatePackage;
 using Microsoft.TemplateEngine.Edge;
 using Microsoft.TemplateEngine.Edge.Settings;
 using Microsoft.TemplateEngine.Edge.Template;
-using Microsoft.TemplateEngine.Orchestrator.RunnableProjects;
-using Microsoft.TemplateEngine.Orchestrator.RunnableProjects.Config;
-using Microsoft.TemplateEngine.Orchestrator.RunnableProjects.Macros;
 using Microsoft.TemplateEngine.Utils;
 using Mono.Addins;
 using MonoDevelop.Core;
@@ -50,52 +49,38 @@ namespace MonoDevelop.Ide.Templates
 {
 	class MicrosoftTemplateEngine
 	{
-		static EngineEnvironmentSettings environmentSettings = new EngineEnvironmentSettings (new MyTemplateEngineHost (), (env) => new SettingsLoader (env));
-		static TemplateCreator templateCreator = new TemplateCreator (environmentSettings);
+		static readonly AddinTemplatePackageProvider packageProvider = new AddinTemplatePackageProvider ();
+		// TE 3.0 kept its template cache on disk and deleted it before every scan; TE 10 keeps the settings in memory.
+		static readonly EngineEnvironmentSettings environmentSettings = new EngineEnvironmentSettings (CreateHost (packageProvider), virtualizeSettings: true);
+		static readonly TemplatePackageManager templatePackageManager = new TemplatePackageManager (environmentSettings);
+		static readonly TemplateCreator templateCreator = new TemplateCreator (environmentSettings);
+		static readonly object scanLock = new object ();
 		static bool initialized;
 		static bool dontUpdateCache = true;
 
 		static List<MicrosoftTemplateEngineSolutionTemplate> projectTemplates = new List<MicrosoftTemplateEngineSolutionTemplate> ();
 		static List<MicrosoftTemplateEngineItemTemplate> itemTemplates = new List<MicrosoftTemplateEngineItemTemplate> ();
 
+		// Template sources: those of the add-in extension nodes, plus those added by unit tests (CreateProjectTemplate).
+		static IReadOnlyList<string> addinScanPaths = Array.Empty<string> ();
+		static readonly List<string> additionalScanPaths = new List<string> ();
+
 		static void UpdateCache ()
 		{
 			if (dontUpdateCache)//Avoid updating cache while scan paths are added during registration 
 				return;
 
-			// Prevent a TypeInitializationException in when calling SettingsLoader.Save when no templates
-			// are available, which throws an exception, by returning here. This prevents the MonoDevelop.Ide addin
-			// from loading. In practice this should not happen unless the .NET Core addin is disabled.
 			var projectTemplateNodes = AddinManager.GetExtensionNodes<TemplateExtensionNode> ("/MonoDevelop/Ide/Templates");
 			var itemTemplateNodes = AddinManager.GetExtensionNodes<ItemTemplateExtensionNode> ("/MonoDevelop/Ide/ItemTemplates");
-			if (!projectTemplateNodes.Any () && !itemTemplateNodes.Any ())
-				return;
 
-			var paths = new Paths (environmentSettings);
+			addinScanPaths = projectTemplateNodes.Select (t => t.ScanPath)
+				.Concat (itemTemplateNodes.Select (t => t.ScanPath))
+				.Select (path => StringParserService.Parse (path))
+				.Where (path => !string.IsNullOrEmpty (path))
+				.Distinct ()
+				.ToList ();
 
-			//TODO: Uncomment this IF, but also add logic to invalidate/check if new templates were added from newly installed AddOns...
-			//if (!paths.Exists (paths.User.BaseDir) || !paths.Exists (paths.User.FirstRunCookie)) {
-			paths.DeleteDirectory (paths.User.BaseDir);//Delete cache
-			var settingsLoader = (SettingsLoader)environmentSettings.SettingsLoader;
-
-			foreach (var path in projectTemplateNodes.Select (t => t.ScanPath).Distinct ()) {
-				string scanPath = StringParserService.Parse (path);
-				if (!string.IsNullOrEmpty (scanPath)) {
-					settingsLoader.UserTemplateCache.Scan (scanPath);
-				}
-			}
-
-			foreach (var path in itemTemplateNodes.Select (t => t.ScanPath).Distinct ()) {
-				string scanPath = StringParserService.Parse (path);
-				if (!string.IsNullOrEmpty (scanPath)) {
-					settingsLoader.UserTemplateCache.Scan (scanPath);
-				}
-			}
-
-			settingsLoader.Save ();
-			paths.WriteAllText (paths.User.FirstRunCookie, "");
-			//}
-			var templateInfos = settingsLoader.UserTemplateCache.List (false, t => new MatchInfo ()).ToDictionary (m => m.Info.Identity, m => m.Info);
+			var templateInfos = ScanTemplates ();
 			var newProjectTemplates = new List<MicrosoftTemplateEngineSolutionTemplate> ();
 			foreach (var template in projectTemplateNodes) {
 				ITemplateInfo templateInfo;
@@ -117,6 +102,38 @@ namespace MonoDevelop.Ide.Templates
 				newItemTemplates.Add (new MicrosoftTemplateEngineItemTemplate (template, templateInfo));
 			}
 			itemTemplates = newItemTemplates;
+		}
+
+		/// <summary>
+		/// Rescans every template source and returns the templates found, by identity.
+		/// </summary>
+		static Dictionary<string, ITemplateInfo> ScanTemplates ()
+		{
+			var templateInfos = new Dictionary<string, ITemplateInfo> ();
+			lock (scanLock) {
+				var scanPaths = addinScanPaths.Concat (additionalScanPaths)
+					.SelectMany (path => InstallRequestPathResolution.ExpandMaskedPath (path, environmentSettings))
+					.Distinct ()
+					.ToList ();
+				packageProvider.SetScanPaths (scanPaths);
+
+				IReadOnlyList<ITemplateInfo> templates;
+				try {
+					// Run off the calling (UI) thread's synchronization context: the TE API is async only.
+					templates = Task.Run (async () => {
+						// TE 3.0 deleted its cache before every scan; TE 10 rebuilds it.
+						await templatePackageManager.RebuildTemplateCacheAsync (CancellationToken.None).ConfigureAwait (false);
+						return await templatePackageManager.GetTemplatesAsync (CancellationToken.None).ConfigureAwait (false);
+					}).GetAwaiter ().GetResult ();
+				} catch (Exception ex) {
+					LoggingService.LogError ("Could not scan the templates", ex);
+					return templateInfos;
+				}
+
+				foreach (var templateInfo in templates)
+					templateInfos [templateInfo.Identity] = templateInfo;
+			}
+			return templateInfos;
 		}
 
 		static void OnProjectTemplateExtensionChanged (object sender, ExtensionNodeEventArgs args)
@@ -161,17 +178,19 @@ namespace MonoDevelop.Ide.Templates
 		/// </summary>
 		static internal SolutionTemplate CreateProjectTemplate (string templateId, string scanPath)
 		{
-			var settingsLoader = (SettingsLoader)environmentSettings.SettingsLoader;
-			settingsLoader.UserTemplateCache.Scan (scanPath);
-			settingsLoader.Save ();
+			lock (scanLock) {
+				if (!additionalScanPaths.Contains (scanPath))
+					additionalScanPaths.Add (scanPath);
+			}
 
-			var templateInfo = settingsLoader.UserTemplateCache.TemplateInfo
-				.FirstOrDefault (t => t.Identity == templateId);
+			ScanTemplates ().TryGetValue (templateId, out ITemplateInfo templateInfo);
 
 			return new MicrosoftTemplateEngineSolutionTemplate (templateId, templateId, null, templateInfo);
 		}
 
-		public static Task<TemplateCreationResult> InstantiateAsync (
+		// TE 3.0 asked the host before overwriting existing files and the default host always agreed:
+		// TE 10 has no such callback, forceCreation keeps that behaviour.
+		public static Task<ITemplateCreationResult> InstantiateAsync (
 			ITemplateInfo templateInfo,
 			NewProjectConfiguration config,
 			IReadOnlyDictionary<string, string> parameters)
@@ -182,13 +201,11 @@ namespace MonoDevelop.Ide.Templates
 				config.GetValidProjectName (),
 				config.ProjectLocation,
 				parameters,
-				true,
-				false,
-				null
+				forceCreation: true
 			);
 		}
 
-		public static Task<TemplateCreationResult> InstantiateAsync (
+		public static Task<ITemplateCreationResult> InstantiateAsync (
 			ITemplateInfo templateInfo,
 			NewItemConfiguration config,
 			IReadOnlyDictionary<string, string> parameters)
@@ -199,9 +216,7 @@ namespace MonoDevelop.Ide.Templates
 				config.NameWithoutExtension,
 				config.Directory,
 				parameters,
-				true,
-				false,
-				null
+				forceCreation: true
 			);
 		}
 
@@ -241,7 +256,10 @@ namespace MonoDevelop.Ide.Templates
 		{
 			List<TemplateParameter> priorityParameters = null;
 			var parameters = new List<string> ();
-			var cacheParameters = templateInfo.CacheParameters.Where (m => !string.IsNullOrEmpty (m.Value.DefaultValue));
+			// TE 3.0 CacheParameters: the non-choice parameters. TE 10 also lists the implicit 'name' parameter
+			// (its default is the template's sourceName), which must not become a default parameter.
+			var cacheParameters = templateInfo.ParameterDefinitions
+				.Where (p => !p.IsChoice () && p.Name != "name" && !string.IsNullOrEmpty (p.DefaultValue));
 
 			if (!cacheParameters.Any ())
 				return defaultParameters;
@@ -252,8 +270,8 @@ namespace MonoDevelop.Ide.Templates
 			}
 
 			foreach (var p in cacheParameters) {
-				if (priorityParameters == null || !priorityParameters.Exists (t => t.Name == p.Key))
-					parameters.Add ($"{p.Key}={p.Value.DefaultValue}");
+				if (priorityParameters == null || !priorityParameters.Exists (t => t.Name == p.Name))
+					parameters.Add ($"{p.Name}={p.DefaultValue}");
 			}
 
 			return defaultParameters += string.Join (",", parameters);
@@ -261,9 +279,8 @@ namespace MonoDevelop.Ide.Templates
 
 		public static string GetLanguage (ITemplateInfo templateInfo)
 		{
-			ICacheTag languageTag;
-			if (templateInfo.Tags.TryGetValue ("language", out languageTag)) {
-				return languageTag.DefaultValue;
+			if (templateInfo.TagsCollection.TryGetValue ("language", out string language) && language != null) {
+				return language;
 			}
 
 			return string.Empty;
@@ -277,21 +294,34 @@ namespace MonoDevelop.Ide.Templates
 		{
 			path = NormalizePath (template, path);
 
-			var settingsLoader = (SettingsLoader)environmentSettings.SettingsLoader;
+			return OpenFile (template, path);
+		}
 
-			IMountPoint mountPoint;
-			IFile file;
-			if (settingsLoader.TryGetFileFromIdAndPath (template.ConfigMountPointId, path, out file, out mountPoint)) {
-				return file.OpenRead ();
+		/// <summary>
+		/// Reads a file of the template's source (folder or .nupkg), path being relative to its root.
+		/// </summary>
+		internal static Stream OpenFile (ITemplateInfo template, string path)
+		{
+			if (!environmentSettings.TryGetMountPoint (template.MountPointUri, out IMountPoint mountPoint))
+				return null;
+
+			// TE 10 mount points are disposable (a .nupkg is closed with its mount point): return a copy.
+			using (mountPoint) {
+				IFile file = mountPoint.FileInfo (path);
+				if (file == null || !file.Exists)
+					return null;
+
+				var content = new MemoryStream ();
+				using (var stream = file.OpenRead ())
+					stream.CopyTo (content);
+				content.Position = 0;
+				return content;
 			}
-
-			return null;
 		}
 
 		public static Xwt.Drawing.Image GetImage (ITemplateInfo template, string path)
 		{
-			var settingsLoader = (SettingsLoader) environmentSettings.SettingsLoader;
-			var loader = new MicrosoftTemplateEngineImageLoader (settingsLoader, template);
+			var loader = new MicrosoftTemplateEngineImageLoader (environmentSettings, template);
 
 			path = NormalizePath (template, path);
 
@@ -309,24 +339,67 @@ namespace MonoDevelop.Ide.Templates
 			return StringParserService.Parse (path, tags);
 		}
 
-		class MyTemplateEngineHost : DefaultTemplateEngineHost
+		static Microsoft.TemplateEngine.Edge.DefaultTemplateEngineHost CreateHost (ITemplatePackageProviderFactory packageProviderFactory)
 		{
-			static readonly AssemblyComponentCatalog builtIns = new AssemblyComponentCatalog (new[] {
-				typeof (RunnableProjectGenerator).Assembly,
-			});
+			// Built-in components: mount points (folders, .nupkg), constraints and bind sources of the Edge, and the
+			// RunnableProjects generator with its macros. The Edge's own template package provider (the global
+			// templates installed with 'dotnet new install') is left out: templates come from the add-ins only.
+			var builtIns = Microsoft.TemplateEngine.Edge.Components.AllComponents
+				.Where (component => component.Type != typeof (ITemplatePackageProviderFactory))
+				.Concat (Microsoft.TemplateEngine.Orchestrator.RunnableProjects.Components.AllComponents)
+				.Append ((typeof (ITemplatePackageProviderFactory), packageProviderFactory))
+				.ToList ();
 
-			public MyTemplateEngineHost () : base (BrandingService.ApplicationName, BuildInfo.CompatVersion, "en-US", new Dictionary<string, string> { { "dotnet-cli-version", "0" } }, builtIns)
+			// The only host parameter MonoDevelop ever answered (TE 3.0 overrode TryGetHostParamDefault for it).
+			var defaults = new Dictionary<string, string> {
+				{ "HostIdentifier", BrandingService.ApplicationName }
+			};
+
+			return new Microsoft.TemplateEngine.Edge.DefaultTemplateEngineHost (BrandingService.ApplicationName, BuildInfo.CompatVersion, defaults, builtIns);
+		}
+
+		/// <summary>
+		/// Template sources registered by the add-ins (.nupkg files or template folders). TE 3.0 scanned them straight
+		/// into its settings cache; in TE 10 a template package provider hands them to the TemplatePackageManager.
+		/// </summary>
+		class AddinTemplatePackageProvider : ITemplatePackageProviderFactory, ITemplatePackageProvider
+		{
+			static readonly Guid FactoryId = new Guid ("5e4a8c33-7d0f-4a8e-9a55-2f5c4b4d8e61");
+
+			IReadOnlyList<string> scanPaths = Array.Empty<string> ();
+
+			public Guid Id => FactoryId;
+
+			public string DisplayName => "MonoDevelop add-in templates";
+
+			public ITemplatePackageProviderFactory Factory => this;
+
+			public event Action TemplatePackagesChanged;
+
+			public ITemplatePackageProvider CreateProvider (IEngineEnvironmentSettings settings)
 			{
+				return this;
 			}
 
-			public override bool TryGetHostParamDefault (string paramName, out string value)
+			public void SetScanPaths (IReadOnlyList<string> paths)
 			{
-				if (paramName == "HostIdentifier") {
-					value = this.HostIdentifier;
-					return true;
+				scanPaths = paths;
+				TemplatePackagesChanged?.Invoke ();
+			}
+
+			public Task<IReadOnlyList<ITemplatePackage>> GetAllTemplatePackagesAsync (CancellationToken cancellationToken)
+			{
+				var packages = new List<ITemplatePackage> ();
+				foreach (string path in scanPaths) {
+					if (File.Exists (path)) {
+						packages.Add (new TemplatePackage (this, path, File.GetLastWriteTimeUtc (path)));
+					} else if (Directory.Exists (path)) {
+						packages.Add (new TemplatePackage (this, path, Directory.GetLastWriteTimeUtc (path)));
+					} else {
+						LoggingService.LogDebug ("Template source {0} not found.", path);
+					}
 				}
-				value = null;
-				return false;
+				return Task.FromResult<IReadOnlyList<ITemplatePackage>> (packages);
 			}
 		}
 	}
