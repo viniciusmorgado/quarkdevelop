@@ -45,7 +45,7 @@ same image power local work and CI.
   small, lists the task IDs it implements in a `Tasks:` trailer (enforced by `scripts/git-commit`),
   keeps `main/MonoDevelop.Linux.sln` building, and is revertible with `git revert` without breaking
   earlier waves. One task per commit is the default; a commit may cover several tasks only when
-  they cannot build independently.
+  they cannot build independently, and it then says why in a `Coupled:` line.
 - Porting of UI code happens one area (project or folder) at a time; no commit ports more than one
   UI project wholesale.
 - A walking skeleton comes first: headless core → minimal GTK3 window → full IDE.
@@ -117,4 +117,4 @@ follows SemVer: MAJOR for removing or redefining a principle, MINOR for adding a
 materially expanding guidance, PATCH for clarifications. Every review and every the consistency analysis
 run checks compliance; deviations must be justified in the plan's Complexity Tracking table.
 
-**Version**: 1.2.0 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23
+**Version**: 1.2.1 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23 (amendment log: ADR 0001)

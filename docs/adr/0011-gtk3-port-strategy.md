@@ -28,6 +28,15 @@ the semantic changes of drawing and size negotiation (2); a new toolkit is a rew
   `.stetic` files are deleted.
 - Progress metric: `grep -rlE 'ExposeEvent|Gdk\.GC|SizeRequested'` over the Linux solution → 0.
 
+**Amendment (2026-09-23, analyze revision 4, H3).** Thin, stateless port helpers are allowed while
+M5b/M5c run: `MonoDevelop.Components/Gtk3Compat.cs` and the output of `scripts/tools/gtk3-codemod.py`.
+They keep GTK2-era coordinates and sizes working on top of GTK3 APIs (`Gtk3ExposeEvent`,
+`Gtk3SizeRequest`, `CellRenderer` size helpers). They are not a GTK2 API emulation layer: nothing
+re-creates `Gdk.GC`, `Gtk.Rc`, expose events or GTK2 size negotiation. They are tested in
+`MonoDevelop.Ide.Gtk3.Tests` (T136). Their use is a second progress metric, reported in T109, and
+must reach 0 by the end of M5c:
+`grep -rlE 'Gtk3ExposeEvent|Gtk3SizeRequest|Gtk3BaseSizeRequest|Gtk3BaseGetSize|Gtk3CompatExtensions' main/src`.
+
 ### Consequences
 
 - Good: native GTK3 behavior (Wayland, HiDPI, CSS theming).

@@ -28,3 +28,14 @@ Artifacts are reviewed by independent reviewers before implementation.
 
 - Good: every milestone has checkable acceptance commands; `tasks.md` checkboxes are the resume point.
 - Bad: documentation overhead per change.
+
+## Amendments to the constitution
+
+The constitution (`docs/constitution.md`) is amended only together with an entry here
+(Governance).
+
+| Version | Change | Motivation and impact |
+|---|---|---|
+| 1.1.0 (MINOR) | Principle V: `dotnet format` is enforced on C# files added by the fork. Legacy files are reformatted one project at a time in dedicated commits. | Reformatting 5,600 legacy files in behaviour commits would hide every real change. `scripts/build.sh --check` enforces the rule (analyze revision 2, C2). |
+| 1.2.0 (MINOR) | Principle IV: every commit carries a `Tasks:` trailer. One task per commit is the default, and several tasks are allowed only when they cannot build independently. | Makes task→commit traceability checkable (analyze revision 3, C1). It relaxes the earlier "one task's scope per commit" wording for interdependent tasks. The relaxation is bounded by the next row. |
+| 1.2.1 (PATCH) | Enforcement of IV, V and Governance in `scripts/git-commit`: several tasks need a `Coupled: <reason>` line; legacy files may not have their line endings rewritten outside `Format-only:` commits; task commits other than T016 are refused while `docs/evidence/M1/analyze.md` reports CRITICAL issues. | Analyze revision 4 (C1, C3, H1) showed that the written rules were not enforced. No principle changes. |

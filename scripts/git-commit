@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
-# Commit with the project's only allowed identity (GitHub no-reply address).
-# Every commit must reference the specification task(s) it implements with a trailer line
-#   Tasks: T059, T060
-# (constitution IV: traceability from task to commit). Use "Tasks: none" for pure chores.
+# Commit with the project's only allowed identity (GitHub no-reply address) and the process rules of
+# the constitution (IV, V, Governance):
+#   - Every commit references the migration task(s) it implements with a trailer line
+#       Tasks: T059
+#     ("Tasks: none" for pure chores). More than one task needs a line "Coupled: <reason>" saying why
+#     the tasks cannot be committed separately.
+#   - Staged changes to files that exist in the upstream base must not rewrite line endings (a diff
+#     much larger than its whitespace-insensitive version), unless the message has a line
+#     "Format-only: <reason>" and the commit changes nothing else.
+#   - While docs/evidence/M1/analyze.md reports CRITICAL issues, only commits for T016 (or with a
+#     line "Analyze-override: <reason>") are accepted.
 #
 # Usage (inside the container): ./scripts/git-commit -m "message" [git commit args...]
 set -euo pipefail
 readonly NAME="Vinicius Morgado"
 readonly EMAIL="34577818+viniciusmorgado@users.noreply.github.com"
+readonly UPSTREAM_BASE="ba01d2d6d3c84e92a6b5f360dac76ee821547529"
+root="$(git rev-parse --show-toplevel)"
 
 message=""
 args=("$@")
@@ -17,8 +26,39 @@ for ((i = 0; i < ${#args[@]}; i++)); do
 		-m*) message+="${args[i]#-m}"$'\n' ;;
 	esac
 done
-if ! grep -qE '^Tasks: (none|T[0-9]{3}(, ?T[0-9]{3})*)$' <<< "$message"; then
-	echo "git-commit: the message must contain a trailer line 'Tasks: Tnnn[, Tnnn...]' (or 'Tasks: none')" >&2
+
+fail() {
+	echo "git-commit: $*" >&2
 	exit 1
+}
+
+trailer="$(grep -E '^Tasks: (none|T[0-9]{3}(, ?T[0-9]{3})*)$' <<< "$message" || true)"
+[[ -n "$trailer" ]] || fail "the message must contain a trailer line 'Tasks: Tnnn[, Tnnn...]' (or 'Tasks: none')"
+
+task_count="$(grep -oE 'T[0-9]{3}' <<< "$trailer" | sort -u | wc -l)"
+if (( task_count > 1 )) && ! grep -qE '^Coupled: .+' <<< "$message"; then
+	fail "more than one task in the trailer: add a line 'Coupled: <reason>' or split the commit"
 fi
+
+# Line-ending rewrites of legacy files (constitution V: reformatting only in dedicated commits).
+if ! grep -qE '^Format-only: .+' <<< "$message"; then
+	while IFS= read -r file; do
+		git cat-file -e "$UPSTREAM_BASE:$file" 2>/dev/null || continue
+		all="$(git diff --cached --numstat -- "$file" | awk '{ print $1 + $2 }')"
+		ws="$(git diff --cached -w --ignore-blank-lines --numstat -- "$file" | awk '{ print $1 + $2 }')"
+		if [[ -n "$all" ]] && (( all > 2 * ${ws:-0} + 20 )); then
+			fail "$file: $all changed lines but only ${ws:-0} ignoring whitespace (line-ending rewrite?). Keep the file's endings, or commit it alone with 'Format-only: <reason>'"
+		fi
+	done < <(git diff --cached --name-only --diff-filter=M)
+fi
+
+# Implementation stops while the cross-artifact analysis reports CRITICAL issues (Governance).
+analyze="$root/docs/evidence/M1/analyze.md"
+if [[ -f "$analyze" ]]; then
+	critical="$(sed -nE 's/^\*\*CRITICAL issues: ([0-9]+)\*\*.*/\1/p' "$analyze" | head -1)"
+	if [[ "${critical:-0}" -gt 0 ]] && ! grep -q 'T016' <<< "$trailer" && ! grep -qE '^Analyze-override: .+' <<< "$message"; then
+		fail "docs/evidence/M1/analyze.md reports $critical CRITICAL issue(s): only T016 commits (or 'Analyze-override: <reason>') are accepted"
+	fi
+fi
+
 exec git -c user.name="$NAME" -c user.email="$EMAIL" commit "$@"

@@ -246,6 +246,10 @@ published artifacts.
   and the quarantine count per suite never increases after the suite is first converted.
 - **SC-003**: By M4, line coverage of the core library is at least 60% and of the whole Linux
   solution at least 40%; afterwards coverage never decreases between accepted changes (ratchet).
+  "Whole Linux solution" means the MonoDevelop product assemblies built by it: vendored third-party
+  code (`main/vendor`), samples, test projects and test helpers are excluded (coverlet filter in
+  `main/msbuild/Linux/Test.targets`); `scripts/test.sh` records it as the `total` line of the
+  ratchet file `docs/evidence/M4/coverage-baseline.txt`.
 - **SC-004**: The command-line build of the sample console project and the sample solution succeeds
   and the broken sample fails, in every pipeline run (the check is a pipeline step).
 - **SC-005**: The graphical smoke test (start, open sample solution, build, zero errors, exit)
