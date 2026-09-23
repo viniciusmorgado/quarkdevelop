@@ -1,0 +1,45 @@
+<ExtensionModel>
+
+	<!--
+		UI-free part of the C# language binding (task T053). Moved from CSharpBinding.addin.xml:
+		the GUI add-in keeps editor, refactoring and option-panel extensions.
+	-->
+
+	<Extension path = "/MonoDevelop/ProjectModel/MSBuildItemTypes">
+		<DotNetProjectType
+			id="MonoDevelop.CSharp.Project.CSharpProject"
+			language="C#"
+			extension="csproj"
+			guid="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+			type="MonoDevelop.CSharp.Project.CSharpProject"
+			/>
+	</Extension>
+
+	<Extension path = "/MonoDevelop/ProjectModel/ProjectModelExtensions">
+		<Condition id="MSBuildTargetIsAvailable" target="$(MSBuildExtensionsPath)\Microsoft\Portable\v4.0\Microsoft.Portable.CSharp.targets">
+			<ProjectFlavor guid="{786C830F-07A1-408B-BD7F-6EE04809D6DB}" type="MonoDevelop.CSharp.Project.PortableCSharpProjectFlavor" language="C#" alias="C#PortableLibrary"/>
+		</Condition>
+	</Extension>
+
+	<!-- The GUI binding used MonoDevelop.CSharp.CSharpEnhancedCodeProvider (NRefactory); the plain
+	     System.CodeDom provider is enough for the project model. -->
+	<Extension path = "/MonoDevelop/ProjectModel/LanguageBindings">
+		<LanguageBinding id = "C#"
+		                 extensions = ".cs"
+		                 singleLineCommentTag = "//"
+		                 blockCommentStartTag = "/*"
+		                 blockCommentEndTag = "*/"
+		                 codeDomType = "Microsoft.CSharp.CSharpCodeProvider, System.CodeDom" />
+	</Extension>
+
+	<Extension path = "/MonoDevelop/Core/MimeTypes">
+		<MimeType id="text/x-csharp" _description="C# source code" icon="md-csharp-file" isText="true" roslynName="C#" contentType="CSharp">
+			<File pattern="*.cs" />
+			<File pattern="*.csx" />
+		</MimeType>
+		<MimeType id="application/x-csproject" _description="C# project file" baseType="application/x-msbuild">
+			<File pattern="*.csproj" />
+		</MimeType>
+	</Extension>
+
+</ExtensionModel>

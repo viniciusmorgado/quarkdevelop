@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    UI-free C# project support (task T053): the C# project type, compiler parameters, language
+    binding and MIME types, usable by mdtool and the core tests without MonoDevelop.Ide. The GUI
+    CSharpBinding add-in depends on this add-in and no longer compiles these sources (task T089).
+  -->
+  <PropertyGroup>
+    <AssemblyName>MonoDevelop.CSharpBinding.Core</AssemblyName>
+    <RootNamespace>MonoDevelop.CSharp</RootNamespace>
+    <AddinBuildDir>CSharpBinding</AddinBuildDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="AddinInfo.cs" />
+    <Compile Include="../MonoDevelop.CSharp.Project/CSharpProjectExtension.cs" Link="MonoDevelop.CSharp.Project/CSharpProjectExtension.cs" />
+    <Compile Include="../MonoDevelop.CSharp.Project/CSharpCompilerParameters.cs" Link="MonoDevelop.CSharp.Project/CSharpCompilerParameters.cs" />
+    <Compile Include="../MonoDevelop.CSharp.Project/CSharpLanguageVersionHelper.cs" Link="MonoDevelop.CSharp.Project/CSharpLanguageVersionHelper.cs" />
+    <Compile Include="../MonoDevelop.CSharp.Project/CSharpResourceIdBuilder.cs" Link="MonoDevelop.CSharp.Project/CSharpResourceIdBuilder.cs" />
+    <Compile Include="../MonoDevelop.CSharp.Project/PortableCSharpProjectFlavor.cs" Link="MonoDevelop.CSharp.Project/PortableCSharpProjectFlavor.cs" />
+    <Compile Include="../MonoDevelop.CSharp/CSharpBindingCompilerManager.cs" Link="MonoDevelop.CSharp/CSharpBindingCompilerManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="MonoDevelop.CSharpBinding.Core.addin.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="MonoDevelop.CSharpBinding" />
+    <InternalsVisibleTo Include="MonoDevelop.Core.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" Private="false" />
+    <PackageReference Include="Mono.Addins" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" ExcludeAssets="runtime" />
+    <PackageReference Include="System.CodeDom" ExcludeAssets="runtime" />
+  </ItemGroup>
+</Project>

@@ -95,6 +95,8 @@
     <ProjectReference Include="../../src/core/MonoDevelop.Core/MonoDevelop.Core.csproj" />
     <ProjectReference Include="../UnitTests/UnitTests.csproj" />
     <ProjectReference Include="../MonoDevelop.Core.Tests.Addin/MonoDevelop.Core.Tests.Addin.csproj" />
+    <!-- C# project support is an add-in loaded from build/AddIns; only build it (T053). -->
+    <ProjectReference Include="../../src/addins/CSharpBinding/MonoDevelop.CSharpBinding.Core/MonoDevelop.CSharpBinding.Core.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

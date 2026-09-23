@@ -37,7 +37,6 @@ using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Core.Execution;
 using MonoDevelop.CSharp.Project;
-using MonoDevelop.Ide;
 using MonoDevelop.Projects;
 
 
@@ -78,7 +77,8 @@ namespace MonoDevelop.CSharp
 					}
 				} while (count++ < 5 && !isWriteable);
 				if (!isWriteable) {
-					MessageService.ShowError (string.Format (GettextCatalog.GetString ("Can't lock file: {0}."), outputName));
+					// Headless (T053): report through the build monitor instead of an IDE dialog.
+					monitor.ReportError (string.Format (GettextCatalog.GetString ("Can't lock file: {0}."), outputName), null);
 					return null;
 				}
 			}
@@ -167,7 +167,7 @@ namespace MonoDevelop.CSharp
 				}
 			}
 
-			if (alreadyAddedReference.Any (reference => SystemAssemblyService.RequiresFacadeAssembliesAsync (reference).WaitAndGetResult (monitor.CancellationToken))) {
+			if (alreadyAddedReference.Any (reference => SystemAssemblyService.RequiresFacadeAssembliesAsync (reference).WaitAsync (monitor.CancellationToken).GetAwaiter ().GetResult ())) {
 				LoggingService.LogInfo ("Found PCLv2 assembly.");
 				var facades = runtime.FindFacadeAssembliesForPCL (project.TargetFramework);
 				foreach (var facade in facades)

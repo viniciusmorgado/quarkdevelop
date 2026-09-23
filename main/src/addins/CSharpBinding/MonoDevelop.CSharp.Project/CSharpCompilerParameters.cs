@@ -32,10 +32,8 @@ using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Host;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Serialization;
-using MonoDevelop.Ide;
 using MonoDevelop.Projects;
 
 namespace MonoDevelop.CSharp.Project
@@ -116,31 +114,22 @@ namespace MonoDevelop.CSharp.Project
 			codeAnalysisRuleSet = pset.GetPathValue ("CodeAnalysisRuleSet");
 		}
 
-		static MetadataReferenceResolver CreateMetadataReferenceResolver (IMetadataService metadataService, string projectDirectory, string outputDirectory)
-		{
-			ImmutableArray<string> assemblySearchPaths;
-			if (projectDirectory != null && outputDirectory != null) {
-				assemblySearchPaths = ImmutableArray.Create (projectDirectory, outputDirectory);
-			} else if (projectDirectory != null) {
-				assemblySearchPaths = ImmutableArray.Create (projectDirectory);
-			} else if (outputDirectory != null) {
-				assemblySearchPaths = ImmutableArray.Create (outputDirectory);
-			} else {
-				assemblySearchPaths = ImmutableArray<string>.Empty;
-			}
+		/// <summary>
+		/// Creates the metadata reference resolver of a project's compilation. Provided by the IDE
+		/// (Roslyn workspace services, set by the GUI C# binding, task T089); null in headless hosts
+		/// such as mdtool, where the compilation options are only used for project settings.
+		/// </summary>
+		public static Func<DotNetProject, MetadataReferenceResolver> MetadataReferenceResolverProvider { get; set; }
 
-			return new WorkspaceMetadataFileReferenceResolver (metadataService, new RelativePathResolver (assemblySearchPaths, baseDirectory: projectDirectory));
-		}
+		/// <summary>
+		/// Returns the global code-analysis rule set of the IDE (set by the GUI C# binding, task T089).
+		/// </summary>
+		public static Func<RuleSet> GlobalRuleSetProvider { get; set; }
 
 		public override CompilationOptions CreateCompilationOptions ()
 		{
 			var project = (CSharpProject)ParentProject;
-			var workspace = IdeApp.TypeSystemService.GetWorkspace (project.ParentSolution);
-			var metadataReferenceResolver = CreateMetadataReferenceResolver (
-					workspace.Services.GetService<IMetadataService> (),
-					project.BaseDirectory,
-					ParentConfiguration.OutputDirectory
-			);
+			var metadataReferenceResolver = MetadataReferenceResolverProvider?.Invoke (project);
 
 			var outputKind = outputType == null ? GetOutputKindFromProject (project) : OutputTypeToOutputKind (outputType);
 			bool isLibrary = outputKind == OutputKind.DynamicallyLinkedLibrary;
@@ -207,7 +196,7 @@ namespace MonoDevelop.CSharp.Project
 		{
 			var result = new Dictionary<string, ReportDiagnostic> ();
 
-			var globalRuleSet = IdeApp.TypeSystemService.RuleSetManager.GetGlobalRuleSet ();
+			var globalRuleSet = GlobalRuleSetProvider?.Invoke ();
 			if (globalRuleSet != null) {
 				AddSpecificDiagnosticOptions (result, globalRuleSet);
 			}
