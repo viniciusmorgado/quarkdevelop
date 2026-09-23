@@ -1,0 +1,17 @@
+<Project>
+  <!--
+    MonoDevelop output layout (unchanged from MonoDevelop 8.6), for SDK-style projects:
+      core assemblies and executables  -> main/build/bin/
+      add-ins (AddinBuildDir set)      -> main/build/AddIns/<AddinBuildDir>/
+      tests (IsTestProject)            -> main/build/tests/<project>/
+    Imported through $(BeforeMicrosoftNETSdkTargets) (set in Common.props): after the project body,
+    so AddinBuildDir is visible, and before the SDK derives OutDir/TargetDir/deps.json paths.
+    A project can override the location with MDOutDir.
+  -->
+  <PropertyGroup>
+    <MDOutDir Condition="'$(MDOutDir)' == '' and '$(IsTestProject)' == 'true'">$(MonoDevelopBuildDir)tests/$(MSBuildProjectName)/</MDOutDir>
+    <MDOutDir Condition="'$(MDOutDir)' == '' and '$(AddinBuildDir)' != ''">$(MonoDevelopBuildDir)AddIns/$([MSBuild]::EnsureTrailingSlash('$(AddinBuildDir)'))</MDOutDir>
+    <MDOutDir Condition="'$(MDOutDir)' == ''">$(MonoDevelopBuildDir)bin/</MDOutDir>
+    <OutputPath>$(MDOutDir)</OutputPath>
+  </PropertyGroup>
+</Project>

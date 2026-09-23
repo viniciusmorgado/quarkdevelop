@@ -29,6 +29,7 @@
     <PackageVersion Include="Microsoft.Build.Framework" Version="$(MSBuildPackageVersion)" />
     <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="$(MSBuildPackageVersion)" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="$(MSBuildPackageVersion)" />
+    <PackageVersion Include="Microsoft.NET.StringTools" Version="$(MSBuildPackageVersion)" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
 
     <!-- Roslyn (ADR 0010) -->
@@ -42,6 +43,7 @@
 
     <!-- Libraries used by the core -->
     <PackageVersion Include="System.CodeDom" Version="10.0.12" />
+    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="10.0.12" />
     <PackageVersion Include="StreamJsonRpc" Version="2.25.29" />
     <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.13.41" />
     <PackageVersion Include="Microsoft.VisualStudio.Threading" Version="18.7.23" />

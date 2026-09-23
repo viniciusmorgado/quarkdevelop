@@ -4,23 +4,11 @@
     main/Directory.Build.targets after the project body so project-set properties
     (AddinBuildDir, MDOutputKind) are visible.
 
-    Output layout (unchanged from MonoDevelop 8.6):
-      core assemblies and executables  -> main/build/bin/
-      add-ins (AddinBuildDir set)      -> main/build/AddIns/<AddinBuildDir>/
-      tests (IsTestProject)            -> main/build/tests/<project>/
+    The output layout is set in OutputLayout.targets (imported before the SDK targets).
   -->
-  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
-    <OutDir Condition="'$(OutDir)' == ''">$(MonoDevelopBuildDir)tests/$(MSBuildProjectName)/</OutDir>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(AddinBuildDir)' != '' and '$(IsTestProject)' != 'true'">
-    <OutDir>$(MonoDevelopBuildDir)AddIns/$([MSBuild]::EnsureTrailingSlash('$(AddinBuildDir)'))</OutDir>
     <!-- Add-ins share the host's dependencies; do not copy the NuGet closure next to each add-in. -->
     <CopyLocalLockFileAssemblies Condition="'$(CopyLocalLockFileAssemblies)' == ''">false</CopyLocalLockFileAssemblies>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(OutDir)' == ''">
-    <OutDir>$(MonoDevelopBuildDir)bin/</OutDir>
   </PropertyGroup>
 
   <!-- Friend assemblies are signed with the MonoDevelop public key. -->
@@ -36,6 +24,8 @@
       <LogicalName Condition="'%(EmbeddedResource.LogicalName)' == ''">%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemDefinitionGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)warning-baselines/$(MSBuildProjectName).props" Condition="Exists('$(MSBuildThisFileDirectory)warning-baselines/$(MSBuildProjectName).props')" />
 
   <Import Project="$(MSBuildThisFileDirectory)BuildVariables.targets" Condition="'$(GenerateMonoDevelopBuildVariables)' == 'true'" />
 </Project>
