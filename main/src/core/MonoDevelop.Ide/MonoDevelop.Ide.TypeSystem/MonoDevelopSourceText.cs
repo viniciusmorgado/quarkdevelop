@@ -61,7 +61,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		#region Lines
-		protected override TextLineCollection GetLinesCore ()
+		public override TextLineCollection GetLinesCore () // public: Roslyn is publicized (Roslyn 5.9)
 		{
 			return new LineInfo (this);
 		}
@@ -131,7 +131,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			return base.WithChanges (changes);
 		}
 
-		protected override TextLineCollection GetLinesCore ()
+		public override TextLineCollection GetLinesCore () // public: Roslyn is publicized (Roslyn 5.9)
 		{
 			var textDoc = doc as IReadonlyTextDocument;
 			if (textDoc != null) {

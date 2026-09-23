@@ -67,11 +67,11 @@ namespace MonoDevelop.Ide.TypeSystem
 				this.workspaceCache = new WorkspaceFilesCache ();
 
 				metadataHandler = new Lazy<MetadataReferenceHandler> (() => new MetadataReferenceHandler (workspace.MetadataReferenceManager, projectMap));
-				hostDiagnosticUpdateSource = new Lazy<HostDiagnosticUpdateSource> (() => new HostDiagnosticUpdateSource (workspace, workspace.compositionManager.GetExportedValue<IDiagnosticUpdateSourceRegistrationService> ()));
+				hostDiagnosticUpdateSource = new Lazy<HostDiagnosticUpdateSource> (() => new HostDiagnosticUpdateSource (workspace));
 
-				var persistentStorageLocationService = (MonoDevelopPersistentStorageLocationService)workspace.Services.GetService<IPersistentStorageLocationService> ();
+				var persistentStorageLocationService = workspace.Services.GetService<IPersistentStorageConfiguration> () as MonoDevelopPersistentStorageLocationService;
 				if (workspace.MonoDevelopSolution != null)
-					persistentStorageLocationServiceRegistration = persistentStorageLocationService.RegisterPrimaryWorkspace (workspace.Id);
+					persistentStorageLocationServiceRegistration = persistentStorageLocationService?.RegisterPrimaryWorkspace (workspace.Id);
 			}
 
 			#region Solution mapping
@@ -182,24 +182,23 @@ namespace MonoDevelop.Ide.TypeSystem
 					(p as MonoDevelop.Projects.DotNetProject)?.RoslynLanguageName ?? LanguageNames.CSharp,
 					p.FileName,
 					fileName,
-					null, // outputRefPath
-					null, // defaultNamespace
 					cp?.CreateCompilationOptions (),
 					cp?.CreateParseOptions (config),
 					documents,
 					cacheInfo.ProjectReferences,
 					cacheInfo.References.Select (x => x.CurrentSnapshot),
-					analyzerReferences: cacheInfo.AnalyzerFiles.SelectAsArray (x => {
+					// Select + ToImmutableArray: SelectAsArray is ambiguous between Roslyn assemblies once publicized.
+					analyzerReferences: cacheInfo.AnalyzerFiles.Select (x => {
 						var analyzer = new MonoDevelopAnalyzer (x, hostDiagnosticUpdateSource.Value, projectId, workspace, loader, LanguageNames.CSharp);
 						analyzersToDispose.Add (analyzer);
 						return analyzer.GetReference ();
-					}),
-					analyzerConfigDocuments: projectDocuments.EditorConfigDocuments,
+					}).ToImmutableArray (),
 					additionalDocuments: projectDocuments.AdditionalDocuments,
 					isSubmission: false,
 					hostObjectType: null,
-					hasAllInformation: true
-				);
+					outputRefFilePath: null
+				// Roslyn 5.9: analyzer config documents are set with WithAnalyzerConfigDocuments (hasAllInformation defaults to true).
+				).WithAnalyzerConfigDocuments (projectDocuments.EditorConfigDocuments);
 
 				info = workspace.WithDynamicDocuments (p, info);
 
@@ -514,8 +513,8 @@ namespace MonoDevelop.Ide.TypeSystem
 			{
 				workspace.OnSolutionAdded (solutionInfo);
 				
-				var service = (MonoDevelopPersistentStorageLocationService)workspace.Services.GetService<IPersistentStorageLocationService> ();
-				service.SetupSolution (workspace);
+				var service = workspace.Services.GetService<IPersistentStorageConfiguration> () as MonoDevelopPersistentStorageLocationService;
+				service?.SetupSolution (workspace);
 
 				Runtime.RunInMainThread (IdeServices.TypeSystemService.UpdateRegisteredOpenDocuments);
 			}

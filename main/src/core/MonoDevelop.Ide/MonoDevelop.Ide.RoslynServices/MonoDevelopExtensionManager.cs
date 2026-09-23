@@ -30,12 +30,11 @@ using System.Composition;
 using System.Linq;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CodeRefactorings;
-using Microsoft.CodeAnalysis.ErrorLogger;
 using Microsoft.CodeAnalysis.Extensions;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.VisualStudio.Text;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Ide.RoslynServices
 {
@@ -53,31 +52,27 @@ namespace MonoDevelop.Ide.RoslynServices
 
 		public IWorkspaceService CreateService (HostWorkspaceServices workspaceServices)
 		{
-			var optionService = workspaceServices.GetService<IOptionService> ();
-			var errorReportingService = workspaceServices.GetService<IErrorReportingService> ();
-			var errorLoggerService = workspaceServices.GetService<IErrorLoggerService> ();
-			return new ExtensionManager (optionService, errorReportingService, errorLoggerService, _errorHandlers);
+			return new ExtensionManager (_errorHandlers);
 		}
 
-		internal class ExtensionManager : Microsoft.CodeAnalysis.Editor.EditorLayerExtensionManager.ExtensionManager
+		// Roslyn 5.9: EditorLayerExtensionManager (EditorFeatures) is gone; derive from the Workspaces-layer
+		// AbstractExtensionManager and log through LoggingService instead of IErrorLoggerService.
+		internal class ExtensionManager : AbstractExtensionManager
 		{
-			readonly IErrorLoggerService errorLoggerService;
+			readonly List<IExtensionErrorHandler> errorHandlers;
 
-			public ExtensionManager (
-				IOptionService optionsService,
-				IErrorReportingService errorReportingService,
-				IErrorLoggerService errorLoggerService,
-				List<IExtensionErrorHandler> errorHandlers) : base(optionsService, errorReportingService, errorLoggerService, errorHandlers)
+			public ExtensionManager (List<IExtensionErrorHandler> errorHandlers)
 			{
-				this.errorLoggerService = errorLoggerService;
+				this.errorHandlers = errorHandlers;
 			}
 
-			public override void HandleException (object provider, Exception exception)
+			public override void HandleNonCancellationException (object provider, Exception exception)
 			{
+				var name = provider?.GetType ().Name ?? "Roslyn extension";
 #if !DEBUG
 				// Disable info bar for crashing analyzers in release builds.
 				if (provider is CodeFixProvider || provider is FixAllProvider || provider is CodeRefactoringProvider) {
-					errorLoggerService?.LogException (provider, exception);
+					LoggingService.LogInternalError (name, exception);
 					return;
 				}
 #endif
@@ -86,12 +81,20 @@ namespace MonoDevelop.Ide.RoslynServices
 				//       https://devdiv.visualstudio.com/DevDiv/_workitems/edit/960181 .
 				//       Without this, as soon as the above bug is hit, most useful C# tooltips stop appearing until
 				//       you close/reopen the solution.
-				if (provider.GetType().FullName == "Microsoft.CodeAnalysis.CSharp.QuickInfo.CSharpSemanticQuickInfoProvider") {
-					errorLoggerService?.LogException (provider, exception);
+				if (provider?.GetType().FullName == "Microsoft.CodeAnalysis.CSharp.QuickInfo.CSharpSemanticQuickInfoProvider") {
+					LoggingService.LogInternalError (name, exception);
 					return;
 				}
 
-				base.HandleException (provider, exception);
+				LoggingService.LogInternalError (name, exception);
+				DisableProvider (provider);
+				foreach (var handler in errorHandlers) {
+					try {
+						handler.HandleError (provider, exception);
+					} catch (Exception e) {
+						LoggingService.LogError ("Extension error handler failed", e);
+					}
+				}
 			}
 		}
 	}

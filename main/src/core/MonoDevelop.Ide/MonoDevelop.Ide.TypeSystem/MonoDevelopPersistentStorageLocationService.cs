@@ -23,43 +23,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using System.Collections.Generic;
 using System.Composition;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.Options;
-using Microsoft.CodeAnalysis.SQLite;
 using Microsoft.CodeAnalysis.Storage;
-using Microsoft.CodeAnalysis.SolutionSize;
 using MonoDevelop.Core;
-using System.Diagnostics.Contracts;
-using System.Diagnostics;
 
 namespace MonoDevelop.Ide.TypeSystem
 {
-	[ExportWorkspaceService (typeof (IPersistentStorageLocationService), ServiceLayer.Host), Shared]
-	class MonoDevelopPersistentStorageLocationService : IPersistentStorageLocationService
+	// Roslyn 5.9 replaced IPersistentStorageLocationService (and its StorageLocationChanging event) with
+	// IPersistentStorageConfiguration, which is queried per solution; storage is only provided for the
+	// solution of the primary MonoDevelop workspace, in the solution preferences directory.
+	[ExportWorkspaceService (typeof (IPersistentStorageConfiguration), ServiceLayer.Host), Shared]
+	class MonoDevelopPersistentStorageLocationService : IPersistentStorageConfiguration
 	{
 		private readonly object _gate = new object ();
 		private WorkspaceId primaryWorkspace = WorkspaceId.Empty;
 		private SolutionId _currentSolutionId = null;
 		private string _currentWorkingFolderPath = null;
 
-		public event EventHandler<PersistentStorageLocationChangingEventArgs> StorageLocationChanging;
-
 		[ImportingConstructor]
 		[Obsolete (MefConstruction.ImportingConstructorMessage, error: true)]
 		public MonoDevelopPersistentStorageLocationService ()
 		{
 		}
+
+		public bool ThrowOnFailure => false;
 
 		public IDisposable RegisterPrimaryWorkspace (WorkspaceId id)
 		{
@@ -87,6 +79,9 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		public bool IsSupported (Workspace workspace) => workspace is MonoDevelopWorkspace;
+
+		public string TryGetStorageLocation (SolutionKey solutionKey)
+			=> TryGetStorageLocation (solutionKey.Id);
 
 		public string TryGetStorageLocation (SolutionId solutionId)
 		{
@@ -119,11 +114,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 				try {
 					if (!string.IsNullOrWhiteSpace (workingFolderPath)) {
-						OnWorkingFolderChanging_NoLock (
-							new PersistentStorageLocationChangingEventArgs (
-								visualStudioWorkspace.CurrentSolution.Id,
-								workingFolderPath,
-								mustUseNewStorageLocationImmediately: false));
+						OnWorkingFolderChanging_NoLock (visualStudioWorkspace.CurrentSolution.Id, workingFolderPath);
 					}
 				} catch {
 					// don't crash just because solution having problem getting working folder information
@@ -140,12 +131,10 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		private void OnWorkingFolderChanging_NoLock (PersistentStorageLocationChangingEventArgs eventArgs)
+		private void OnWorkingFolderChanging_NoLock (SolutionId solutionId, string newStorageLocation)
 		{
-			StorageLocationChanging?.Invoke (this, eventArgs);
-
-			_currentSolutionId = eventArgs.SolutionId;
-			_currentWorkingFolderPath = eventArgs.NewStorageLocation;
+			_currentSolutionId = solutionId;
+			_currentWorkingFolderPath = newStorageLocation;
 		}
 
 		void DisconnectCurrentStorage ()
@@ -156,12 +145,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				if (solution != null)
 					solution.Modified -= OnSolutionModified;
 
-				// We want to make sure everybody synchronously detaches
-				OnWorkingFolderChanging_NoLock (
-					new PersistentStorageLocationChangingEventArgs (
-						_currentSolutionId,
-						newStorageLocation: null,
-						mustUseNewStorageLocationImmediately: true));
+				OnWorkingFolderChanging_NoLock (_currentSolutionId, newStorageLocation: null);
 				primaryWorkspace = WorkspaceId.Empty;
 			}
 		}

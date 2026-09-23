@@ -27,7 +27,6 @@ using System;
 using System.Collections.Immutable;
 using System.Threading;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Editor;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Composition;
 using MonoDevelop.Ide.TypeSystem;
@@ -37,13 +36,13 @@ namespace MonoDevelop.Ide.Editor.Extension
 	[Obsolete]
 	class TagCommentsTextEditorExtension : TextEditorExtension, IQuickTaskProvider
 	{
-		ITodoListProvider todoListProvider = CompositionManager.Instance.GetExportedValue<ITodoListProvider> ();
+		// Roslyn 5.9: ITodoListProvider is gone, task list items come from MonoDevelopTaskListProvider.
 		CancellationTokenSource src = new CancellationTokenSource ();
 		bool isDisposed;
 
 		protected override void Initialize ()
 		{
-			todoListProvider.TodoListUpdated += OnTodoListUpdated;
+			MonoDevelopTaskListProvider.TaskListUpdated += OnTodoListUpdated;
 		}
 
 		public override void Dispose ()
@@ -54,7 +53,7 @@ namespace MonoDevelop.Ide.Editor.Extension
 
 			this.tasks = ImmutableArray<QuickTask>.Empty;
 			OnTasksUpdated (EventArgs.Empty);
-			todoListProvider.TodoListUpdated -= OnTodoListUpdated;
+			MonoDevelopTaskListProvider.TaskListUpdated -= OnTodoListUpdated;
 			base.Dispose ();
 		}
 
@@ -66,7 +65,7 @@ namespace MonoDevelop.Ide.Editor.Extension
 		protected virtual void OnTasksUpdated (EventArgs e) => TasksUpdated?.Invoke (this, e);
 		public ImmutableArray<QuickTask> QuickTasks => tasks;
 
-		void OnTodoListUpdated (object sender, TodoItemsUpdatedArgs args)
+		void OnTodoListUpdated (object sender, TaskListUpdatedEventArgs args)
 		{
 			src.Cancel ();
 			src = new CancellationTokenSource ();
@@ -88,13 +87,14 @@ namespace MonoDevelop.Ide.Editor.Extension
 			if (project == null)
 				return;
 
-			var newTasks = ImmutableArray.CreateBuilder<QuickTask> (args.TodoItems.Length);
+			var newTasks = ImmutableArray.CreateBuilder<QuickTask> (args.TaskListItems.Length);
 			Runtime.RunInMainThread (() => {
-				foreach (var todoItem in args.TodoItems) {
+				foreach (var todoItem in args.TaskListItems) {
 					if (token.IsCancellationRequested)
 						return;
 
-					var offset = Editor.LocationToOffset (todoItem.MappedLine + 1, todoItem.MappedColumn + 1);
+					var position = todoItem.MappedSpan.StartLinePosition;
+					var offset = Editor.LocationToOffset (position.Line + 1, position.Character + 1);
 					var newTask = new QuickTask (todoItem.Message, offset, DiagnosticSeverity.Info);
 					newTasks.Add (newTask);
 				}

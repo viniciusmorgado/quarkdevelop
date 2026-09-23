@@ -23,20 +23,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using System.Threading;
-using Microsoft.CodeAnalysis.Editor;
 using MonoDevelop.Core;
-using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.CodeAnalysis.Indentation;
 using Microsoft.CodeAnalysis.Text;
 using System.Linq;
+using Roslyn.Utilities;
 
 namespace MonoDevelop.Ide.Editor.Extension
 {
+	// Roslyn 5.9: IEditorFormattingService (EditorFeatures) is gone; typed character formatting uses the
+	// Workspaces ISyntaxFormattingService. Format on return is no longer offered by that service.
 	[Obsolete]
 	partial class EditorFormattingServiceTextEditorExtension : TextEditorExtension
 	{
@@ -52,36 +54,28 @@ namespace MonoDevelop.Ide.Editor.Extension
 			var doc = DocumentContext.AnalysisDocument;
 			if (doc == null)
 				return result;
-			
-			var formattingService = doc.GetLanguageService<IEditorFormattingService> ();
+
+			var formattingService = doc.Project.Services.GetService<ISyntaxFormattingService> ();
 			if (formattingService == null)
 				return result;
 
-			if (descriptor.SpecialKey == SpecialKey.Return) {
-				if (formattingService.SupportsFormatOnReturn)
-					TryFormat (formattingService, descriptor.KeyChar, Editor.CaretOffset, true, default (CancellationToken));
-			} else if (formattingService.SupportsFormattingOnTypedCharacter(doc, descriptor.KeyChar)) {
-				TryFormat (formattingService, descriptor.KeyChar, Editor.CaretOffset, false, default (CancellationToken));
-			}
+			if (descriptor.SpecialKey != SpecialKey.Return)
+				TryFormat (formattingService, descriptor.KeyChar, Editor.CaretOffset, default (CancellationToken));
 			return result;
 		}
 
-		bool TryFormat (IEditorFormattingService formattingService, char typedChar, int position, bool formatOnReturn, CancellationToken cancellationToken)
+		bool TryFormat (ISyntaxFormattingService formattingService, char typedChar, int position, CancellationToken cancellationToken)
 		{
 			var document = DocumentContext.AnalysisDocument;
-			IEnumerable<TextChange> changes;
-			if (formatOnReturn) {
-				if (!formattingService.SupportsFormatOnReturn)
-					return false;
-				changes = formattingService.GetFormattingChangesOnReturnAsync (document, position, cancellationToken).WaitAndGetResult (cancellationToken);
-			} else {
-				if (!formattingService.SupportsFormattingOnTypedCharacter (document, typedChar))
-					return false;
-				changes = formattingService.GetFormattingChangesAsync (document, typedChar, position, cancellationToken).WaitAndGetResult (cancellationToken);
-				var line = Editor.GetLineByOffset (position);
-				if (typedChar == '#') {
-					changes = changes.Where (c => c.Span.Start >= line.Offset);
-				}
+			var parsedDocument = ParsedDocument.CreateSynchronously (document, cancellationToken);
+			if (!formattingService.ShouldFormatOnTypedCharacter (parsedDocument, typedChar, position, cancellationToken))
+				return false;
+
+			var formattingOptions = document.GetSyntaxFormattingOptionsAsync (cancellationToken).AsTask ().WaitAndGetResult (cancellationToken);
+			IEnumerable<TextChange> changes = formattingService.GetFormattingChangesOnTypedCharacter (parsedDocument, position, new IndentationOptions (formattingOptions), cancellationToken);
+			var line = Editor.GetLineByOffset (position);
+			if (typedChar == '#') {
+				changes = changes.Where (c => c.Span.Start >= line.Offset);
 			}
 
 			if (changes == null) {

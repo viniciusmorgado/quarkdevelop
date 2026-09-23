@@ -30,7 +30,6 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Monodoc;
 using MonoDevelop.Core.Execution;
 using System.IO;
 using MonoDevelop.Core;

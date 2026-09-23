@@ -32,10 +32,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis.CodeStyle;
-using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Options;
-using Microsoft.CodeAnalysis.Options.Providers;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles;
 using MonoDevelop.Core;
@@ -48,29 +46,52 @@ using System.Collections.Immutable;
 namespace MonoDevelop.Ide.RoslynServices.Options
 {
 	/// <summary>
-	/// Handles options persisting and bridging between roslyn and MonoDevelop.
+	/// Roslyn 5.9 discovers option persisters through <see cref="IOptionPersisterProvider"/>. The global
+	/// option service imports the providers, so the service is imported lazily to break the cycle.
 	/// </summary>
-	[Export (typeof (IOptionPersister))]
-	sealed class MonoDevelopGlobalOptionPersister : IOptionPersister, IDisposable
+	[Export (typeof (IOptionPersisterProvider))]
+	sealed class MonoDevelopGlobalOptionPersisterProvider : IOptionPersisterProvider
 	{
-		readonly IGlobalOptionService globalOptionService;
-		readonly RoslynPreferences preferences;
-
-		Dictionary<IOption, Func<TextStylePolicy, object>> mapping = new Dictionary<IOption, Func<TextStylePolicy, object>> {
-				{ FormattingOptions.UseTabs, policy => !policy.TabsToSpaces },
-				{ FormattingOptions.TabSize, policy => policy.TabWidth },
-				{ FormattingOptions.IndentationSize, policy => policy.IndentWidth },
-				{ FormattingOptions.NewLine, policy => policy.GetEolMarker () },
-		};
+		readonly Lazy<IGlobalOptionService> globalOptionService;
+		MonoDevelopGlobalOptionPersister persister;
 
 		[ImportingConstructor]
-		public MonoDevelopGlobalOptionPersister (IGlobalOptionService globalOptionService) : this (globalOptionService, null)
+		public MonoDevelopGlobalOptionPersisterProvider (Lazy<IGlobalOptionService> globalOptionService)
+		{
+			this.globalOptionService = globalOptionService;
+		}
+
+		public IOptionPersister GetOrCreatePersister ()
+		{
+			lock (this) {
+				return persister ?? (persister = new MonoDevelopGlobalOptionPersister (globalOptionService));
+			}
+		}
+	}
+
+	/// <summary>
+	/// Handles options persisting and bridging between roslyn and MonoDevelop.
+	/// </summary>
+	sealed class MonoDevelopGlobalOptionPersister : IOptionPersister, IDisposable
+	{
+		readonly Lazy<IGlobalOptionService> globalOptionService;
+		readonly RoslynPreferences preferences;
+
+		Dictionary<IOption2, Func<TextStylePolicy, object>> mapping = new Dictionary<IOption2, Func<TextStylePolicy, object>> {
+				{ FormattingOptions2.UseTabs, policy => !policy.TabsToSpaces },
+				{ FormattingOptions2.TabSize, policy => policy.TabWidth },
+				{ FormattingOptions2.IndentationSize, policy => policy.IndentWidth },
+				{ FormattingOptions2.NewLine, policy => policy.GetEolMarker () },
+		};
+
+		internal MonoDevelopGlobalOptionPersister (Lazy<IGlobalOptionService> globalOptionService) : this (globalOptionService, null)
 		{
 		}
 
-		internal MonoDevelopGlobalOptionPersister (IGlobalOptionService globalOptionService, RoslynPreferences preferences)
+		internal MonoDevelopGlobalOptionPersister (Lazy<IGlobalOptionService> globalOptionService, RoslynPreferences preferences)
 		{
-			Contract.ThrowIfNull (globalOptionService);
+			if (globalOptionService == null)
+				throw new ArgumentNullException (nameof (globalOptionService));
 			this.globalOptionService = globalOptionService;
 
 			this.preferences = preferences ?? IdeApp.Preferences.Roslyn;
@@ -88,7 +109,7 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 			PropertyService.PropertyChanged -= OnPropertyChanged;
 		}
 
-		public bool TryFetch (OptionKey optionKey, out object value)
+		public bool TryFetch (OptionKey2 optionKey, out object value)
 		{
 			// Policy mapping to roslyn options
 			if (mapping.TryGetValue (optionKey.Option, out var policyValueGetter)) {
@@ -116,7 +137,7 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 			return false;
 		}
 
-		public bool TryPersist (OptionKey optionKey, object value)
+		public bool TryPersist (OptionKey2 optionKey, object value)
 		{
 			// Property bindings
 			if (preferences.TryGetUpdater (optionKey, out string storageKey, out var updater)) {
@@ -133,7 +154,7 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 				var propertyName = optionKey.GetPropertyName ();
 				if (propertyName == null) // empty storage location
 					return false;
-				MonitorChanges (storageKey, optionKey);
+				MonitorChanges (propertyName, optionKey);
 				try {
 					if (optionKey.Option.DefaultValue != null) {
 						if (optionKey.Option.DefaultValue.Equals (value)) {
@@ -153,13 +174,13 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 			return false;
 		}
 
-		readonly Dictionary<string, List<OptionKey>> _optionsToMonitorForChanges = new Dictionary<string, List<OptionKey>> ();
+		readonly Dictionary<string, List<OptionKey2>> _optionsToMonitorForChanges = new Dictionary<string, List<OptionKey2>> ();
 
-		public void MonitorChanges (string propertyName, OptionKey optionKey)
+		public void MonitorChanges (string propertyName, OptionKey2 optionKey)
 		{
 			// We're about to fetch the value, so make sure that if it changes we'll know about it
 			lock (_optionsToMonitorForChanges) {
-				var optionKeysToMonitor = _optionsToMonitorForChanges.GetOrAdd (propertyName, _ => new List<OptionKey> ());
+				var optionKeysToMonitor = _optionsToMonitorForChanges.GetOrAdd (propertyName, _ => new List<OptionKey2> ());
 
 				if (!optionKeysToMonitor.Contains (optionKey))
 					optionKeysToMonitor.Add (optionKey);
@@ -173,53 +194,24 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 					return;
 
 				foreach (var optionToRefresh in optionsToRefresh) {
-					globalOptionService.RefreshOption (optionToRefresh, Deserialize (newValue, optionToRefresh.Option.Type));
+					globalOptionService.Value.RefreshOption (optionToRefresh, Deserialize (newValue, optionToRefresh.Option.Type));
 				}
 			}
 		}
 
-		static void PrintOptionKey (OptionKey optionKey)
+		static void PrintOptionKey (OptionKey2 optionKey)
 		{
 			Console.WriteLine ($"Name '{optionKey.Option.Name}' Language '{optionKey.Language}' LanguageSpecific'{optionKey.Option.IsPerLanguage}'");
-
-			var locations = optionKey.Option.StorageLocations;
-			if (locations.IsDefault) {
-				return;
-			}
-
-			foreach (var loc in locations) {
-				switch (loc) {
-				case RoamingProfileStorageLocation roaming:
-					Console.WriteLine ($"    roaming: {roaming.GetKeyNameForLanguage (optionKey.Language)}");
-					break;
-				case LocalUserProfileStorageLocation local:
-					Console.WriteLine ($"    local: {local.KeyName}");
-					break;
-				case EditorConfigStorageLocation<int> edconf:
-					Console.WriteLine ($"    editorconfig: {edconf.KeyName}");
-					break;
-				case EditorConfigStorageLocation<string> edconf:
-					Console.WriteLine ($"    editorconfig: {edconf.KeyName}");
-					break;
-				case EditorConfigStorageLocation<bool> edconf:
-					Console.WriteLine ($"    editorconfig: {edconf.KeyName}");
-					break;
-				case EditorConfigStorageLocation<Microsoft.CodeAnalysis.CodeStyle.CodeStyleOption<bool>> edconf:
-					Console.WriteLine ($"    editorconfig: {edconf.KeyName}");
-					break;
-				default:
-					Console.WriteLine ($"    unknown: {loc.GetType ()}");
-					break;
-				}
-			}
+			// Roslyn 5.9: storage locations are gone, options only have a configuration name.
+			Console.WriteLine ($"    config: {optionKey.Option.Definition.ConfigName} editorconfig: {optionKey.Option.Definition.IsEditorConfigOption}");
 		}
 
 		#region Serialization
 		static object Serialize (object value, Type optionType)
 		{
 			// We store these as strings, so serialize
-			if (value is ICodeStyleOption codeStyleOption)
-				return codeStyleOption.ToXElement ().ToString ();
+			if (value is ICodeStyleOption || value is ICodeStyleOption2)
+				return RoslynPreferences.SerializeCodeStyleOption (value);
 
 			if (optionType == typeof (NamingStylePreferences) && value is NamingStylePreferences valueToSerialize)
 				return valueToSerialize.CreateXElement ().ToString ();

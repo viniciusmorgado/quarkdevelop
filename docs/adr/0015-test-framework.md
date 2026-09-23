@@ -30,3 +30,10 @@ Tests (~3.8k) use GuiUnit (NUnitLite-based, submodule) or NUnit 2.7 and run thro
 
 - Good: standard tooling, IDE/CI integration, coverage.
 - Bad: the `mdtool run-md-tests` runner becomes obsolete (removed from the Linux build).
+
+**Amendment (2026-09-23): coverage ratchet during the port.** `scripts/test.sh` fails when an
+assembly listed in `docs/evidence/M4/coverage-baseline.txt`, or the product `total`, drops. There is
+one exception. A commit that moves legacy sources back into the build (shrinking
+`Gtk3PortPending.props`) adds coverable lines that were never tested, which can lower the total. Such
+a commit may update the baseline (`./scripts/test.sh --update-baseline`) if its message states the
+old and new values. New code never lowers the ratchet.

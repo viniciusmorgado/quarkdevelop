@@ -66,7 +66,7 @@ namespace MonoDevelop.Ide.TypeSystem.MetadataReferences
 	{
 		public IWorkspaceService CreateService (HostWorkspaceServices workspaceServices)
 		{
-			var temporaryStorage = workspaceServices.GetService<ITemporaryStorageService> ();
+			var temporaryStorage = workspaceServices.GetService<ITemporaryStorageServiceInternal> ();
 			return new MonoDevelopMetadataReferenceManager (temporaryStorage);
 		}
 	}

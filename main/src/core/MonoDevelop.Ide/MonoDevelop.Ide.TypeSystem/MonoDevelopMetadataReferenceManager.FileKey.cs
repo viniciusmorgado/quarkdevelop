@@ -3,7 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Roslyn.Utilities;
+// Roslyn 5.9: PathUtilities, FileUtilities and Hash are ambiguous once Roslyn is publicized; use the BCL.
 
 namespace MonoDevelop.Ide.TypeSystem
 {
@@ -28,7 +28,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			/// <param name="timestamp">Last write time (UTC).</param>
 			public FileKey (string fullPath, DateTime timestamp)
 			{
-				Debug.Assert (PathUtilities.IsAbsolute (fullPath));
+				Debug.Assert (Path.IsPathRooted (fullPath));
 				Debug.Assert (timestamp.Kind == DateTimeKind.Utc);
 
 				FullPath = fullPath;
@@ -38,12 +38,12 @@ namespace MonoDevelop.Ide.TypeSystem
 			/// <exception cref="IOException"/>
 			public static FileKey Create (string fullPath)
 			{
-				return new FileKey (fullPath, FileUtilities.GetFileTimeStamp (fullPath));
+				return new FileKey (fullPath, File.GetLastWriteTimeUtc (fullPath));
 			}
 
 			public override int GetHashCode ()
 			{
-				return Hash.Combine (
+				return HashCode.Combine (
 					StringComparer.OrdinalIgnoreCase.GetHashCode (this.FullPath),
 					this.Timestamp.GetHashCode ());
 			}

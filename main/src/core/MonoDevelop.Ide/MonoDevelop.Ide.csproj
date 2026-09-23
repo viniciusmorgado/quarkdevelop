@@ -27,7 +27,6 @@
     <Compile Include="MonoDevelop.Ide.Composition/ObscuringTipManager.cs" />
     <Compile Include="MonoDevelop.Ide.Composition/PlatformCatalog.cs" />
     <Compile Include="MonoDevelop.Ide.Composition/PlatformExtensions.cs" />
-    <Compile Include="MonoDevelop.Ide.Composition/RoslynWaitIndicator.cs" />
     <Compile Include="MonoDevelop.Ide.Composition/SuggestedActionCategoryRegistryService.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/DynamicFileManager.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/IDynamicDocumentInfoProvider.cs" />
@@ -653,6 +652,8 @@
     <Compile Include="MonoDevelop.Ide.Templates/PackageReferencesForCreatedProject.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/ProjectTemplatePackageInstaller.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/MonoDevelopTextLoader.cs" />
+    <Compile Include="MonoDevelop.Ide.TypeSystem/MonoDevelopTaskListProvider.cs" />
+    <Compile Include="MonoDevelop.Ide.TypeSystem/EditorTextBufferExtensions.cs" />
     <Compile Include="MonoDevelop.Ide.CustomTools/PublicResXFileCodeGenerator.cs" />
     <Compile Include="MonoDevelop.Components/ImageLoader.cs" />
     <Compile Include="MonoDevelop.Ide.CodeCompletion/ParameterHintingData.cs" />
@@ -981,7 +982,6 @@
     <Compile Include="MonoDevelop.Ide.CodeCompletion/CompletionTriggerReason.cs" />
     <Compile Include="MonoDevelop.Ide.CodeCompletion/CompletionSelectionStatus.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/EditorNotificationServiceFactory.cs" />
-    <Compile Include="MonoDevelop.Ide.TypeSystem/TextPolicyDocumentOptionsProvider.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngineProjectTemplatingProvider.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngineSolutionTemplate.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngineProcessedTemplateResult.cs" />
@@ -1099,8 +1099,6 @@
     <Compile Include="MonoDevelop.Ide.Editor.Extension/TagCommentsTextEditorExtension.cs" />
     <Compile Include="MonoDevelop.Ide.Composition/CompositionManager.Caching.cs" />
     <Compile Include="MonoDevelop.Ide.RoslynServices/MonoDevelopDocumentTrackingService.cs" />
-    <Compile Include="MonoDevelop.Ide.RoslynServices/MonoDevelopProjectCacheHostServiceFactory.cs" />
-    <Compile Include="MonoDevelop.Ide.RoslynServices/MonoDevelopWorkspaceCacheService.cs" />
     <Compile Include="MonoDevelop.Components.MainToolbar/RoslynSearchCategory.cs" />
     <Compile Include="MonoDevelop.Components.MainToolbar/RoslynSearchCategory.DeclaredSymbolInfoResult.cs" />
     <Compile Include="MonoDevelop.Ide.RoslynServices/RoslynService.cs" />
@@ -1111,7 +1109,6 @@
     <Compile Include="MonoDevelop.Ide.Desktop/IPlatformTelemetryDetails.cs" />
     <Compile Include="MonoDevelop.Ide.Editor.Extension/CompletionStatistics.cs" />
     <Compile Include="MonoDevelop.Ide.RoslynServices/MonoDevelopNotificationServiceFactory.cs" />
-    <Compile Include="MonoDevelop.Ide.RoslynServices/MonoDevelopTaskSchedulerFactory.cs" />
     <Compile Include="MonoDevelop.Ide.Editor.Highlighting/IEditorThemeProvider.cs" />
     <Compile Include="MonoDevelop.Ide.Editor.Highlighting/ISyntaxHighlightingDefinitionProvider.cs" />
     <Compile Include="MonoDevelop.Ide/PlatformMemoryStatusEventArgs.cs" />
@@ -1128,7 +1125,6 @@
     <Compile Include="MonoDevelop.Ide.TypeSystem/MonoDevelopMetadataReferenceManager.MetadataCache.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/MonoDevelopMetadataReferenceManager.RecoverableMetadataValueSource.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/MonoDevelopMetadataReferenceManager.MetadataReferenceCache.cs" />
-    <Compile Include="MonoDevelop.Components.MainToolbar/RoslynSearchCategory.ShimNavigateToSearchService.cs" />
     <Compile Include="MonoDevelop.Ide.Editor.Extension/EditorFormattingServiceTextEditorExtension.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/MonoDevelopRuleSetManager.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/MonoDevelopWorkspace.DocumentMap.cs" />
@@ -1226,7 +1222,6 @@
     <Compile Include="MonoDevelop.Components.AutoTest.Results/WebViewResult.cs" />
     <Compile Include="MonoDevelop.Components.AutoTest/AppQueryRunner.Cocoa.Webview.cs" />
     <Compile Include="MonoDevelop.Ide.RoslynServices/MonoDevelopExtensionManager.cs" />
-    <Compile Include="MonoDevelop.Ide.RoslynServices/MonoDevelopErrorLoggerService.cs" />
     <Compile Include="MonoDevelop.Components.Commands/IdeCommandManager.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/WorkbenchStatusBar.cs" />
     <Compile Include="MonoDevelop.Components.Docking/MacSplitterWidget.cs" />

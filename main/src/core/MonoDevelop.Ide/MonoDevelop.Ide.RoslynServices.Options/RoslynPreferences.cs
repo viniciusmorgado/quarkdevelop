@@ -28,13 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Completion;
-using Microsoft.CodeAnalysis.Editor.Options;
-using Microsoft.CodeAnalysis.Editor.Shared.Options;
-using Microsoft.CodeAnalysis.Editor.Implementation.TodoComments;
-using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Options;
-using Microsoft.CodeAnalysis.Shared.Options;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Composition;
 using Roslyn.Utilities;
@@ -90,75 +84,53 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 			readonly Lazy<ConfigurationProperty<bool>> triggerOnTypingLetters;
 			public ConfigurationProperty<bool> TriggerOnTypingLetters => triggerOnTypingLetters.Value;
 
+			// Roslyn 5.9 moved the editor, completion and solution crawler options (FeatureOnOffOptions,
+			// CompletionOptions storage, ServiceFeatureOnOffOptions, SymbolSearchOptions) out of the
+			// Workspaces/Features layers: callers now pass option records explicitly. Those preferences are
+			// plain MonoDevelop properties (default values of Roslyn 3.4); only options that still exist as
+			// Roslyn global options are bound two-way through Wrap.
 			internal PerLanguagePreferences (string language, RoslynPreferences preferences)
 			{
 				this.language = language;
 				roslynPreferences = preferences;
 
-				AutoFormattingOnCloseBrace = preferences.Wrap<bool> (
-					new OptionKey (FeatureOnOffOptions.AutoFormattingOnCloseBrace, language),
-					language + ".AutoFormattingOnCloseBrace"
-				);
-
-				AutoFormattingOnReturn = preferences.Wrap<bool> (
-					new OptionKey (FormattingOptions.AutoFormattingOnReturn, language),
-					language + ".AutoFormattingOnReturn"
-				);
-
-				AutoFormattingOnSemicolon = preferences.Wrap<bool> (
-					new OptionKey (FeatureOnOffOptions.AutoFormattingOnSemicolon, language),
-					language + ".AutoFormattingOnSemicolon"
-				);
-				AutoFormattingOnTyping = preferences.Wrap<bool> (
-					new OptionKey (FeatureOnOffOptions.AutoFormattingOnTyping, language),
-					language + ".AutoFormattingOnTyping"
-				);
-
-				FormatOnPaste = preferences.Wrap<bool> (
-					new OptionKey (FeatureOnOffOptions.FormatOnPaste, language),
-					language + ".FormatOnPaste"
-				);
+				AutoFormattingOnCloseBrace = Create (nameof (AutoFormattingOnCloseBrace), true, migrate: true);
+				AutoFormattingOnReturn = Create (nameof (AutoFormattingOnReturn), true, migrate: true);
+				AutoFormattingOnSemicolon = Create (nameof (AutoFormattingOnSemicolon), true, migrate: true);
+				AutoFormattingOnTyping = Create (nameof (AutoFormattingOnTyping), true, migrate: true);
+				FormatOnPaste = Create (nameof (FormatOnPaste), true, migrate: true);
 
 				PlaceSystemNamespaceFirst = preferences.Wrap<bool> (
-					new OptionKey (Microsoft.CodeAnalysis.Editing.GenerationOptions.PlaceSystemNamespaceFirst, language),
+					new OptionKey2 (Microsoft.CodeAnalysis.Editing.GenerationOptions.PlaceSystemNamespaceFirst, language),
 					language + ".PlaceSystemNamespaceFirst"
 				);
 
 				SeparateImportDirectiveGroups = preferences.Wrap<bool> (
-					new OptionKey (Microsoft.CodeAnalysis.Editing.GenerationOptions.SeparateImportDirectiveGroups, language),
+					new OptionKey2 (Microsoft.CodeAnalysis.Editing.GenerationOptions.SeparateImportDirectiveGroups, language),
 					language + ".SeparateImportDirectiveGroups"
 				);
 
-				ShowCompletionItemFilters = preferences.Wrap<bool> (
-					new OptionKey (CompletionOptions.ShowCompletionItemFilters, language),
-					language + ".ShowCompletionItemFilters"
-				);
+				ShowCompletionItemFilters = Create (nameof (ShowCompletionItemFilters), true, migrate: true);
+				ShowItemsFromUnimportedNamespaces = Create<bool?> (nameof (ShowItemsFromUnimportedNamespaces), IdeApp.Preferences.AddImportedItemsToCompletionList.Value, migrate: true);
+				SuggestForTypesInNuGetPackages = Create (nameof (SuggestForTypesInNuGetPackages), true);
 
-				ShowItemsFromUnimportedNamespaces = preferences.Wrap<bool?> (
-					new OptionKey (CompletionOptions.ShowItemsFromUnimportedNamespaces, language),
-					IdeApp.Preferences.AddImportedItemsToCompletionList.Value,
-					language + ".ShowItemsFromUnimportedNamespaces"
-				);
+				SolutionCrawlerClosedFileDiagnostic = new ClosedFileDiagnosticProperty (
+					Create<bool?> ("ClosedFileDiagnostic", null), language, roslynPreferences);
 
-				SuggestForTypesInNuGetPackages = preferences.Wrap (
-					new OptionKey (Microsoft.CodeAnalysis.SymbolSearch.SymbolSearchOptions.SuggestForTypesInNuGetPackages, language),
-					true
-				);
+				TriggerOnDeletion = Create<bool?> (nameof (TriggerOnDeletion), null, migrate: true);
 
-				SolutionCrawlerClosedFileDiagnostic = new ClosedFileDiagnosticProperty (preferences.Wrap<bool?> (
-					new OptionKey (ServiceFeatureOnOffOptions.ClosedFileDiagnostic, language)
-				), language, roslynPreferences);
-
-				TriggerOnDeletion = preferences.Wrap<bool?> (
-					new OptionKey (CompletionOptions.TriggerOnDeletion, language),
-					language + ".TriggerOnDeletion"
-				);
-
-				triggerOnTypingLetters = new Lazy<ConfigurationProperty<bool>> (() => preferences.Wrap<bool> (
-					new OptionKey (CompletionOptions.TriggerOnTypingLetters, language),
+				triggerOnTypingLetters = new Lazy<ConfigurationProperty<bool>> (() => Create (
+					nameof (TriggerOnTypingLetters),
 					MonoDevelop.Ide.Editor.DefaultSourceEditorOptions.Instance.EnableAutoCodeCompletion,
-					language + ".TriggerOnTypingLetters"
+					migrate: true
 				));
+			}
+
+			ConfigurationProperty<T> Create<T> (string name, T defaultValue, bool migrate = false)
+			{
+				// Property names of the preferences that no longer map to a Roslyn option.
+				var propertyName = globalKey + "." + language + "." + name;
+				return ConfigurationProperty.Create (propertyName, defaultValue, migrate ? language + "." + name : null);
 			}
 
 			class ClosedFileDiagnosticProperty : ConfigurationProperty<bool>

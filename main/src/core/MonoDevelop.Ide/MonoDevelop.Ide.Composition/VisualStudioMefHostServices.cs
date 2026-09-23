@@ -35,7 +35,8 @@ namespace Microsoft.VisualStudio.LanguageServices
         /// <summary>
         /// Creates a new <see cref="HostWorkspaceServices"/> associated with the specified workspace.
         /// </summary>
-        protected internal override HostWorkspaceServices CreateWorkspaceServices(Workspace workspace)
+        // Roslyn 5.9 + Publicizer: overrides of publicized protected members must be public.
+        public override HostWorkspaceServices CreateWorkspaceServices(Workspace workspace)
             => new MefWorkspaceServices(this, workspace);
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace Microsoft.VisualStudio.LanguageServices
             {
                 ExtensionTypeName = extensionTypeName;
                 MetadataTypeName = metadataTypeName;
-                _hash = Hash.Combine(metadataTypeName.GetHashCode(), extensionTypeName.GetHashCode());
+                _hash = HashCode.Combine(metadataTypeName.GetHashCode(), extensionTypeName.GetHashCode());
             }
 
             public bool Equals(ExportKey other)
@@ -91,7 +92,7 @@ namespace Microsoft.VisualStudio.LanguageServices
                 => obj is ExportKey key && Equals(key);
 
             public override int GetHashCode()
-                => Hash.Combine(MetadataTypeName.GetHashCode(), ExtensionTypeName.GetHashCode());
+                => HashCode.Combine(MetadataTypeName.GetHashCode(), ExtensionTypeName.GetHashCode());
         }
     }
 }

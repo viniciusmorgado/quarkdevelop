@@ -25,22 +25,19 @@
 // THE SOFTWARE.
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.SolutionCrawler;
 
 namespace MonoDevelop.Ide.TypeSystem
 {
+	// Roslyn 5.9 removed the solution crawler (ISolutionCrawlerRegistrationService); diagnostics are pulled
+	// on demand, so registering a workspace is no longer needed and these are no-ops.
 	static class WorkspaceExtensions
 	{
 		internal static void RegisterSolutionCrawler (Workspace workspace)
 		{
-			var solutionCrawlerRegistrationService = workspace.Services.GetService<ISolutionCrawlerRegistrationService> ();
-			solutionCrawlerRegistrationService.Register (workspace);
 		}
 
 		internal static void UnregisterSolutionCrawler (Workspace workspace)
 		{
-			var solutionCrawlerRegistrationService = workspace.Services.GetService<ISolutionCrawlerRegistrationService> ();
-			solutionCrawlerRegistrationService.Unregister (workspace);
 		}
 	}
 }

@@ -34,23 +34,26 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 {
 	static class OptionsExtensions
 	{
-		public static IEnumerable<string> GetPropertyNames (this OptionKey optionKey)
+		// Roslyn 5.9 options no longer carry roaming/local-user storage locations; the MonoDevelop property
+		// name is derived from the option's configuration name (and language for per-language options).
+		public static IEnumerable<string> GetPropertyNames (this OptionKey2 optionKey)
 		{
-			// Prevent NRE being thrown on iteration.
-			if (optionKey.Option.StorageLocations.IsDefaultOrEmpty)
-				yield break;
-
-			foreach (var storageLocation in optionKey.Option.StorageLocations) {
-				if (storageLocation is RoamingProfileStorageLocation roamingLocation)
-					yield return roamingLocation.GetKeyNameForLanguage (optionKey.Language);
-				if (storageLocation is LocalUserProfileStorageLocation userLocation)
-					yield return userLocation.KeyName;
-			}
+			var name = GetPropertyName (optionKey);
+			if (name != null)
+				yield return name;
 		}
 
-		public static string GetPropertyName (this OptionKey optionKey) => GetPropertyNames (optionKey).FirstOrDefault ();
+		public static string GetPropertyName (this OptionKey2 optionKey)
+		{
+			var configName = optionKey.Option?.Definition?.ConfigName;
+			if (string.IsNullOrEmpty (configName))
+				return null;
+			if (optionKey.Language != null)
+				return "Roslyn." + optionKey.Language + "." + configName;
+			return "Roslyn." + configName;
+		}
 
-		public static TextStylePolicy GetTextStylePolicy (this OptionKey optionKey)
+		public static TextStylePolicy GetTextStylePolicy (this OptionKey2 optionKey)
 		{
 			var mimeChain = IdeServices.DesktopService.GetMimeTypeInheritanceChainForRoslynLanguage (optionKey.Language);
 			if (mimeChain == null) {

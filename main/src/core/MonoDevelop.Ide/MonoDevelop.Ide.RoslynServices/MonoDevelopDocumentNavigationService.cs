@@ -2,6 +2,7 @@ using System;
 using System.Composition;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
@@ -43,6 +44,30 @@ namespace MonoDevelop.Ide.RoslynServices
 		public MonoDevelopDocumentNavigationService (VisualStudioDocumentNavigationServiceFactory visualStudioDocumentNavigationServiceFactory)
 		{
 			this.factory = visualStudioDocumentNavigationServiceFactory;
+		}
+
+		// Roslyn 5.9 IDocumentNavigationService is asynchronous and returns navigable locations;
+		// they wrap the synchronous MonoDevelop implementation below (navigation runs on the UI thread).
+		public Task<bool> CanNavigateToSpanAsync (Workspace workspace, DocumentId documentId, TextSpan textSpan, bool allowInvalidSpan, CancellationToken cancellationToken)
+			=> Task.FromResult (CanNavigateToSpan (workspace, documentId, textSpan));
+
+		public Task<bool> CanNavigateToPositionAsync (Workspace workspace, DocumentId documentId, int position, int virtualSpace, bool allowInvalidPosition, CancellationToken cancellationToken)
+			=> Task.FromResult (CanNavigateToPosition (workspace, documentId, position, virtualSpace));
+
+		public Task<INavigableLocation> GetLocationForSpanAsync (Workspace workspace, DocumentId documentId, TextSpan textSpan, bool allowInvalidSpan, CancellationToken cancellationToken)
+		{
+			if (!CanNavigateToSpan (workspace, documentId, textSpan))
+				return Task.FromResult<INavigableLocation> (null);
+			return Task.FromResult<INavigableLocation> (new NavigableLocation ((options, token) =>
+				Runtime.RunInMainThread (() => TryNavigateToSpan (workspace, documentId, textSpan, null))));
+		}
+
+		public Task<INavigableLocation> GetLocationForPositionAsync (Workspace workspace, DocumentId documentId, int position, int virtualSpace, bool allowInvalidPosition, CancellationToken cancellationToken)
+		{
+			if (!CanNavigateToPosition (workspace, documentId, position, virtualSpace))
+				return Task.FromResult<INavigableLocation> (null);
+			return Task.FromResult<INavigableLocation> (new NavigableLocation ((options, token) =>
+				Runtime.RunInMainThread (() => TryNavigateToPosition (workspace, documentId, position, virtualSpace, null))));
 		}
 
 		public bool CanNavigateToSpan (Workspace workspace, DocumentId documentId, TextSpan textSpan)
@@ -204,31 +229,6 @@ namespace MonoDevelop.Ide.RoslynServices
 			return TextSpan.FromBounds (GetPositionWithinDocumentBounds (span.Start, documentLength), GetPositionWithinDocumentBounds (span.End, documentLength));
 		}
 
-		private static Document OpenDocument (Workspace workspace, DocumentId documentId, OptionSet options)
-		{
-			options = options ?? workspace.Options;
-
-			// Always open the document again, even if the document is already open in the 
-			// workspace. If a document is already open in a preview tab and it is opened again 
-			// in a permanent tab, this allows the document to transition to the new state.
-			if (workspace.CanOpenDocuments) {
-				if (options.GetOption (NavigationOptions.PreferProvisionalTab)) {
-					// If we're just opening the provisional tab, then do not "activate" the document
-					// (i.e. don't give it focus).  This way if a user is just arrowing through a set 
-					// of FindAllReferences results, they don't have their cursor placed into the document.
-					//TODO: MAC we don't support this kind of opening
-					workspace.OpenDocument (documentId, true);
-				} else {
-					workspace.OpenDocument (documentId, true);
-				}
-			}
-
-			if (!workspace.IsDocumentOpen (documentId)) {
-				return null;
-			}
-
-			return workspace.CurrentSolution.GetDocument (documentId);
-		}
 
 		private bool NavigateTo (Document document, TextSpan span)
 		{

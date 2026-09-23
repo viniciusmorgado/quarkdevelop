@@ -40,14 +40,14 @@ using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui;
 using Microsoft.VisualStudio.Platform;
 using Microsoft.VisualStudio.Text;
-using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using MonoDevelop.Ide.CodeTemplates;
 using System.Linq;
 using System.Text;
 using MonoDevelop.Ide.Editor.Highlighting;
 using MonoDevelop.Ide.Fonts;
-using Microsoft.CodeAnalysis.Editor;
+using Roslyn.Utilities;
 
 namespace MonoDevelop.Ide.CodeCompletion
 {
@@ -286,10 +286,12 @@ namespace MonoDevelop.Ide.CodeCompletion
 
 				if (CompletionItem.Rules.FormatOnCommit) {
 					var spanToFormat = triggerSnapshotSpan.TranslateTo (currentBuffer.CurrentSnapshot, SpanTrackingMode.EdgeInclusive);
-					var formattingService = context.AnalysisDocument.GetLanguageService<IEditorFormattingService> ();
+					var analysisDocument = context.AnalysisDocument;
 
-					if (formattingService != null) {
-						var changes = formattingService.GetFormattingChangesAsync (context.AnalysisDocument, spanToFormat.Span.ToTextSpan (), CancellationToken.None).WaitAndGetResult (CancellationToken.None);
+					// Roslyn 5.9: IEditorFormattingService (EditorFeatures) is gone, format the span with the Formatter.
+					if (analysisDocument != null) {
+						var formatted = Formatter.FormatAsync (analysisDocument, new TextSpan (spanToFormat.Start, spanToFormat.Length), cancellationToken: CancellationToken.None).WaitAndGetResult (CancellationToken.None);
+						var changes = formatted.GetTextChangesAsync (analysisDocument, CancellationToken.None).WaitAndGetResult (CancellationToken.None);
 						editor.ApplyTextChanges (changes);
 					}
 				}

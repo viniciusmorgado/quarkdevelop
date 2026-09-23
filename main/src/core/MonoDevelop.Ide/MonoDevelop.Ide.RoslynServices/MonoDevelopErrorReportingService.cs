@@ -26,9 +26,10 @@
 using System;
 using System.Composition;
 using System.Reflection;
-using Microsoft.CodeAnalysis.Extensions;
+using Microsoft.CodeAnalysis.ErrorReporting;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
+using Microsoft.CodeAnalysis.Telemetry;
 using MonoDevelop.Core;
 
 namespace MonoDevelop.Ide.RoslynServices
@@ -38,23 +39,37 @@ namespace MonoDevelop.Ide.RoslynServices
 	{
 		public IWorkspaceService CreateService (HostWorkspaceServices workspaceServices)
 		{
-			return new MonoDevelopErrorReportingService (workspaceServices.GetRequiredService<IInfoBarService> ());
+			// Roslyn 5.9 has no IInfoBarService; the info bar helper is no longer a workspace service.
+			return new MonoDevelopErrorReportingService (MonoDevelopInfoBarService.Instance);
 		}
 
 		sealed class MonoDevelopErrorReportingService : IErrorReportingService
 		{
-			readonly IInfoBarService _infoBarService;
+			readonly MonoDevelopInfoBarService _infoBarService;
 
-			public MonoDevelopErrorReportingService (IInfoBarService infoBarService)
+			public MonoDevelopErrorReportingService (MonoDevelopInfoBarService infoBarService)
 			{
 				_infoBarService = infoBarService;
 			}
 
+			public string HostDisplayName => BrandingService.ApplicationName;
+
 			public void ShowErrorInfoInActiveView (string message, params InfoBarUI [] items) =>
 				_infoBarService.ShowInfoBarInActiveView (message, items);
 
-			public void ShowGlobalErrorInfo (string message, params InfoBarUI [] items) =>
+			public void ShowGlobalErrorInfo (string message, TelemetryFeatureName featureName, Exception exception, params InfoBarUI [] items)
+			{
+				if (exception != null)
+					LoggingService.LogError (message, exception);
 				_infoBarService.ShowInfoBarInGlobalView (message, items);
+			}
+
+			public void ShowFeatureNotAvailableErrorInfo (string message, TelemetryFeatureName featureName, Exception exception)
+			{
+				if (exception != null)
+					LoggingService.LogError (message, exception);
+				_infoBarService.ShowInfoBarInGlobalView (message);
+			}
 
 			// These are usually analyzers which would crash the process.
 			public void ShowDetailedErrorInfo (Exception exception)

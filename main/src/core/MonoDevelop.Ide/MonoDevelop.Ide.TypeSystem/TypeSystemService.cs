@@ -634,49 +634,8 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		readonly FastSerializer sharedSerializer = new FastSerializer ();
-
-		T DeserializeObject<T> (string path) where T : class
-		{
-			var t = Counters.ParserService.ObjectDeserialized.BeginTiming (path);
-			try {
-				using (var fs = new FileStream (path, System.IO.FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan)) {
-					using (var reader = new BinaryReaderWith7BitEncodedInts (fs)) {
-						lock (sharedSerializer) {
-							return (T)sharedSerializer.Deserialize (reader);
-						}
-					}
-				}
-			} catch (Exception e) {
-				LoggingService.LogError ("Error while trying to deserialize " + typeof(T).FullName + ". stack trace:" + Environment.StackTrace, e);
-				return default(T);
-			} finally {
-				t.Dispose ();
-			}
-		}
-
-		void SerializeObject (string path, object obj)
-		{
-			if (obj == null)
-				throw new ArgumentNullException (nameof(obj));
-
-			var t = Counters.ParserService.ObjectSerialized.BeginTiming (path);
-			try {
-				using (var fs = new FileStream (path, System.IO.FileMode.Create, FileAccess.Write)) {
-					using (var writer = new BinaryWriterWith7BitEncodedInts (fs)) {
-						lock (sharedSerializer) {
-							sharedSerializer.Serialize (writer, obj);
-						}
-					}
-				}
-			} catch (Exception e) {
-				Console.WriteLine ("-----------------Serialize stack trace:");
-				Console.WriteLine (Environment.StackTrace);
-				LoggingService.LogError ("Error while writing type system cache. (object:" + obj.GetType () + ")", e);
-			} finally {
-				t.Dispose ();
-			}
-		}
+		// The unused NRefactory FastSerializer based extension object cache (DeserializeObject, SerializeObject,
+		// StoreExtensionObject) was removed with NRefactory (ADR 0019).
 
 		/// <summary>
 		/// Removes all cache directories which are older than 30 days.
@@ -727,25 +686,6 @@ namespace MonoDevelop.Ide.TypeSystem
 				Directory.SetLastWriteTime (cacheDir, DateTime.Now);
 			} catch (Exception e) {
 				LoggingService.LogError ("Error while touching cache directory " + cacheDir, e);
-			}
-		}
-
-		void StoreExtensionObject (string cacheDir, object extensionObject)
-		{
-			if (cacheDir == null)
-				throw new ArgumentNullException (nameof(cacheDir));
-			if (extensionObject == null)
-				throw new ArgumentNullException (nameof(extensionObject));
-			var fileName = Path.GetTempFileName ();
-			SerializeObject (fileName, extensionObject);
-			var cacheFile = Path.Combine (cacheDir, extensionObject.GetType ().FullName + ".cache");
-
-			try {
-				if (File.Exists (cacheFile))
-					File.Delete (cacheFile);
-				File.Move (fileName, cacheFile);
-			} catch (Exception e) {
-				LoggingService.LogError ("Error whil saving cache " + cacheFile + " for extension object:" + extensionObject, e);
 			}
 		}
 

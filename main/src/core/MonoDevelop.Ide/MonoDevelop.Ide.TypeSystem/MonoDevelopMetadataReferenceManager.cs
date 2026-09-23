@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.IO;
 using MonoDevelop.Core;
-using Roslyn.Utilities;
 using System.Threading;
 using System.Reflection;
 using System.Globalization;
@@ -40,20 +39,21 @@ using System.Collections.Immutable;
 using System.Runtime.InteropServices;
 using MonoDevelop.Core.Assemblies;
 using Microsoft.CodeAnalysis.Host;
-using Microsoft.CodeAnalysis.PooledObjects;
 using System.Reflection.PortableExecutable;
 using System.Diagnostics;
 
 namespace MonoDevelop.Ide.TypeSystem
 {
+	// Roslyn 5.9: ITemporaryStorageService/ITemporaryStreamStorage were replaced by ITemporaryStorageServiceInternal
+	// and stream handles; the metadata is copied to memory-mapped temporary storage and read back through an
+	// UnmanagedMemoryStream owned by the module metadata (as VisualStudioMetadataReferenceManager does).
 	partial class MonoDevelopMetadataReferenceManager : IWorkspaceService
 	{
 		readonly MetadataCache _metadataCache;
 		readonly MetadataReferenceCache _metadataReferenceCache;
-		readonly ITemporaryStorageService _temporaryStorageService;
-		static readonly ConditionalWeakTable<Metadata, object> lifetimeMap = new ConditionalWeakTable<Metadata, object> ();
+		readonly ITemporaryStorageServiceInternal _temporaryStorageService;
 
-		internal MonoDevelopMetadataReferenceManager (ITemporaryStorageService temporaryStorageService)
+		internal MonoDevelopMetadataReferenceManager (ITemporaryStorageServiceInternal temporaryStorageService)
 		{
 			_metadataCache = new MetadataCache ();
 			_metadataReferenceCache = new MetadataReferenceCache ();
@@ -73,25 +73,23 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 
 			// use temporary storage
-			var storages = new List<ITemporaryStreamStorage> ();
+			var storages = new List<ITemporaryStorageStreamHandle> ();
 			var newMetadata = CreateAssemblyMetadataFromTemporaryStorage (key, storages);
 
 			// don't dispose assembly metadata since it shares module metadata
-			if (!_metadataCache.TryGetOrAddMetadata (key, new RecoverableMetadataValueSource (newMetadata, storages, lifetimeMap), out metadata)) {
+			if (!_metadataCache.TryGetOrAddMetadata (key, new RecoverableMetadataValueSource (newMetadata, storages), out metadata)) {
 				newMetadata.Dispose ();
 			}
 
 			return metadata;
 		}
 
-		internal IEnumerable<ITemporaryStreamStorage> GetStorages (string fullPath, DateTime snapshotTimestamp)
+		internal IReadOnlyList<ITemporaryStorageStreamHandle> GetStorages (string fullPath, DateTime snapshotTimestamp)
 		{
 			var key = new FileKey (fullPath, snapshotTimestamp);
 			// check existing metadata
 			if (_metadataCache.TryGetSource (key, out var source)) {
-				if (source is RecoverableMetadataValueSource metadata) {
-					return metadata.GetStorages ();
-				}
+				return source.GetStorages ();
 			}
 
 			return null;
@@ -99,39 +97,34 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		/// <exception cref="IOException"/>
 		/// <exception cref="BadImageFormatException" />
-		AssemblyMetadata CreateAssemblyMetadataFromTemporaryStorage (FileKey fileKey, List<ITemporaryStreamStorage> storages)
+		AssemblyMetadata CreateAssemblyMetadataFromTemporaryStorage (FileKey fileKey, List<ITemporaryStorageStreamHandle> storages)
 		{
 			var moduleMetadata = CreateModuleMetadataFromTemporaryStorage (fileKey, storages);
 			return CreateAssemblyMetadata (fileKey, moduleMetadata, storages, CreateModuleMetadataFromTemporaryStorage);
 		}
 
-		ModuleMetadata CreateModuleMetadataFromTemporaryStorage (FileKey moduleFileKey, List<ITemporaryStreamStorage> storages)
+		ModuleMetadata CreateModuleMetadataFromTemporaryStorage (FileKey moduleFileKey, List<ITemporaryStorageStreamHandle> storages)
 		{
-			GetStorageInfoFromTemporaryStorage (moduleFileKey, out var storage, out var stream, out var pImage);
-
-			var metadata = ModuleMetadata.CreateFromMetadata (pImage, (int)stream.Length);
-
-			// first time, the metadata is created. tie lifetime.
-			lifetimeMap.Add (metadata, stream);
+			var handle = WriteMetadataToTemporaryStorage (moduleFileKey);
+			var metadata = CreateModuleMetadata (handle);
 
 			// hold onto storage if requested
 			if (storages != null) {
-				storages.Add (storage);
+				storages.Add (handle);
 			}
 
 			return metadata;
 		}
 
-		void GetStorageInfoFromTemporaryStorage (FileKey moduleFileKey, out ITemporaryStreamStorage storage, out Stream stream, out IntPtr pImage)
+		ITemporaryStorageStreamHandle WriteMetadataToTemporaryStorage (FileKey moduleFileKey)
 		{
-			int size;
-			using (var copyStream = SerializableBytes.CreateWritableStream ()) {
+			using (var copyStream = new MemoryStream ()) {
 				// open a file and let it go as soon as possible
-				using (var fileStream = FileUtilities.OpenRead (moduleFileKey.FullPath)) {
+				using (var fileStream = new FileStream (moduleFileKey.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete)) {
 					var headers = new PEHeaders (fileStream);
 
 					var offset = headers.MetadataStartOffset;
-					size = headers.MetadataSize;
+					var size = headers.MetadataSize;
 
 					// given metadata contains no metadata info.
 					// throw bad image format exception so that we can show right diagnostic to user.
@@ -143,46 +136,58 @@ namespace MonoDevelop.Ide.TypeSystem
 				}
 
 				// copy over the data to temp storage and let pooled stream go
-				storage = _temporaryStorageService.CreateTemporaryStreamStorage (CancellationToken.None);
-
 				copyStream.Position = 0;
-				storage.WriteStream (copyStream);
+				return _temporaryStorageService.WriteToTemporaryStorage (copyStream, CancellationToken.None);
+			}
+		}
+
+		/// <summary>
+		/// Creates module metadata that owns the stream read back from the temporary storage.
+		/// </summary>
+		internal static unsafe ModuleMetadata CreateModuleMetadata (ITemporaryStorageStreamHandle handle)
+		{
+			var stream = handle.ReadFromTemporaryStorage ();
+			if (stream is UnmanagedMemoryStream unmanagedStream) {
+				// The stream is kept alive as long as the metadata through the onDispose callback.
+				return ModuleMetadata.CreateFromMetadata ((IntPtr)unmanagedStream.PositionPointer, (int)unmanagedStream.Length, unmanagedStream.Dispose);
 			}
 
-			// get stream that owns direct access memory
-			stream = storage.ReadStream (CancellationToken.None);
-
-			// stream size must be same as what metadata reader said the size should be.
-			Contract.ThrowIfFalse (stream.Length == size);
-
-			// under VS host, direct access should be supported
-			var directAccess = (ISupportDirectMemoryAccess)stream;
-			pImage = directAccess.GetPointer ();
+			// Not a memory-mapped stream: copy the metadata into native memory owned by the metadata.
+			using (stream) {
+				var length = (int)stream.Length;
+				var pointer = Marshal.AllocHGlobal (length);
+				try {
+					using (var target = new UnmanagedMemoryStream ((byte*)pointer, length, length, FileAccess.Write))
+						stream.CopyTo (target);
+				} catch {
+					Marshal.FreeHGlobal (pointer);
+					throw;
+				}
+				return ModuleMetadata.CreateFromMetadata (pointer, length, () => Marshal.FreeHGlobal (pointer));
+			}
 		}
 
 		void StreamCopy (Stream source, Stream destination, int start, int length)
 		{
 			source.Position = start;
 
-			var buffer = SharedPools.ByteArray.Allocate ();
+			var buffer = new byte [Math.Min (length, 81920)];
 
 			var read = 0;
 			var left = length;
-			while ((read = source.Read (buffer, 0, Math.Min (left, buffer.Length))) != 0) {
+			while (left > 0 && (read = source.Read (buffer, 0, Math.Min (left, buffer.Length))) != 0) {
 				destination.Write (buffer, 0, read);
 				left -= read;
 			}
-
-			SharedPools.ByteArray.Free (buffer);
 		}
 
 		/// <exception cref="IOException"/>
 		/// <exception cref="BadImageFormatException" />
 		AssemblyMetadata CreateAssemblyMetadata (
-		   FileKey fileKey, ModuleMetadata manifestModule, List<ITemporaryStreamStorage> storages,
-		   Func<FileKey, List<ITemporaryStreamStorage>, ModuleMetadata> moduleMetadataFactory)
+		   FileKey fileKey, ModuleMetadata manifestModule, List<ITemporaryStorageStreamHandle> storages,
+		   Func<FileKey, List<ITemporaryStorageStreamHandle>, ModuleMetadata> moduleMetadataFactory)
 		{
-			var moduleBuilder = ArrayBuilder<ModuleMetadata>.GetInstance ();
+			var moduleBuilder = ImmutableArray.CreateBuilder<ModuleMetadata> ();
 
 			string assemblyDir = null;
 			foreach (string moduleName in manifestModule.GetModuleNames ()) {
@@ -191,7 +196,7 @@ namespace MonoDevelop.Ide.TypeSystem
 					assemblyDir = Path.GetDirectoryName (fileKey.FullPath);
 				}
 
-				var moduleFileKey = FileKey.Create (PathUtilities.CombineAbsoluteAndRelativePaths (assemblyDir, moduleName));
+				var moduleFileKey = FileKey.Create (Path.Combine (assemblyDir, moduleName));
 				var metadata = moduleMetadataFactory (moduleFileKey, storages);
 
 				moduleBuilder.Add (metadata);
@@ -202,7 +207,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 
 			return AssemblyMetadata.Create (
-				moduleBuilder.ToImmutableAndFree ());
+				moduleBuilder.ToImmutable ());
 		}
 
 		public PortableExecutableReference GetOrCreateMetadataReferenceSnapshot (string filePath, MetadataReferenceProperties properties)
@@ -223,42 +228,5 @@ namespace MonoDevelop.Ide.TypeSystem
 			_metadataReferenceCache.ClearCache ();
 			_metadataCache.ClearCache();
 		}
-
-
-		// TODO: Figure out if we want to support metadata importers
-		// See how metadata importers work in roslyn VS impl. This contains code that handles setting the framework paths
-		/*
-		ImmutableArray<string> GetRuntimeDirectories ()
-		{
-			var paths = new HashSet<string> (FilePath.PathComparer) {
-				RuntimeEnvironment.GetRuntimeDirectory (),
-			};
-
-			if (Core.Platform.IsWindows) {
-				// These values don't make sense on non-Windows
-				paths.Add (Environment.GetFolderPath (Environment.SpecialFolder.Windows));
-				paths.Add (Environment.GetFolderPath (Environment.SpecialFolder.ProgramFiles));
-				paths.Add (Environment.GetFolderPath (Environment.SpecialFolder.ProgramFilesX86));
-			}
-
-			// Add all the runtimes' framework folders which contain assemblies
-			// TODO: Maybe listen for runtime initialization events?
-			foreach (var runtime in Runtime.SystemAssemblyService.GetTargetRuntimes ()) {
-				paths.AddRange (runtime.GetAllFrameworkFolders ());
-			}
-
-			// Normalize the paths and return.
-			return paths.Select (FileUtilities.NormalizeDirectoryPath).ToImmutableArray ();
-		}
-		*/
-
-		// This should be added to TargetRuntime.cs
-		/*
-		public IEnumerable<string> GetAllFrameworkFolders ()
-		{
-			EnsureInitialized ();
-			return frameworkBackends.SelectMany (backend => backend.Value.GetFrameworkFolders ());
-		}
-		*/
 	}
 }

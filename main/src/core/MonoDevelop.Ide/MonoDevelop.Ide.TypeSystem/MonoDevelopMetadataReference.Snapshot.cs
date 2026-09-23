@@ -26,12 +26,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Threading;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Execution;
+using Microsoft.CodeAnalysis.Serialization;
 using Microsoft.CodeAnalysis.Host;
 using MonoDevelop.Core;
 
@@ -62,12 +61,14 @@ namespace MonoDevelop.Ide.TypeSystem
 			internal Snapshot (MonoDevelopMetadataReferenceManager provider, MetadataReferenceProperties properties, string fullPath)
 				: base (properties, fullPath)
 			{
-				Contract.Requires (Properties.Kind == MetadataImageKind.Assembly);
+				Debug.Assert (Properties.Kind == MetadataImageKind.Assembly);
 				_provider = provider;
 
 				_timestamp = new Lazy<DateTime> (() => {
 					try {
-						return Roslyn.Utilities.FileUtilities.GetFileTimeStamp (this.FilePath);
+						if (!File.Exists (this.FilePath))
+							throw new FileNotFoundException (null, this.FilePath);
+						return File.GetLastWriteTimeUtc (this.FilePath);
 					} catch (IOException e) {
 						// Reading timestamp of a file might fail. 
 						// Let's remember the failure and report it to the compiler when it asks for metadata.
@@ -80,7 +81,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				}, LazyThreadSafetyMode.PublicationOnly);
 			}
 
-			protected override Metadata GetMetadataImpl ()
+			public override Metadata GetMetadataImpl ()
 			{
 				// Fetch the timestamp first, so as to populate _error if needed
 				var timestamp = _timestamp.Value;
@@ -108,7 +109,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				return false;
 			}
 
-			protected override DocumentationProvider CreateDocumentationProvider ()
+			public override DocumentationProvider CreateDocumentationProvider ()
 			{
 				DocumentationProvider provider = null;
 				try {
@@ -124,7 +125,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				return provider;
 			}
 
-			protected override PortableExecutableReference WithPropertiesImpl (MetadataReferenceProperties properties)
+			public override PortableExecutableReference WithPropertiesImpl (MetadataReferenceProperties properties)
 			{
 				return new Snapshot (_provider, properties, FilePath);
 			}
@@ -134,10 +135,9 @@ namespace MonoDevelop.Ide.TypeSystem
 				return "Metadata File: " + FilePath;
 			}
 
-			IEnumerable<ITemporaryStreamStorage> ISupportTemporaryStorage.GetStorages ()
-			{
-				return _provider.GetStorages (FilePath, _timestamp.Value);
-			}
+			// Roslyn 5.9: ISupportTemporaryStorage exposes the temporary storage stream handles.
+			IReadOnlyList<ITemporaryStorageStreamHandle> ISupportTemporaryStorage.StorageHandles
+				=> _provider.GetStorages (FilePath, _timestamp.Value);
 
 			class RoslynDocumentationProvider : DocumentationProvider
 			{
@@ -157,7 +157,7 @@ namespace MonoDevelop.Ide.TypeSystem
 					return 42; // singleton
 				}
 
-				protected override string GetDocumentationForSymbol (string documentationMemberID, CultureInfo preferredCulture, CancellationToken cancellationToken = default (CancellationToken))
+				public override string GetDocumentationForSymbol (string documentationMemberID, CultureInfo preferredCulture, CancellationToken cancellationToken = default (CancellationToken))
 				{
 					return MonoDocDocumentationProvider.GetDocumentation (documentationMemberID);
 				}

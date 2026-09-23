@@ -39,7 +39,7 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 		// Holds the mapping of key -> property updater
 		readonly Dictionary<string, Action<object>> wrapMap = new Dictionary<string, Action<object>> ();
 
-		internal bool TryGet (OptionKey key, out string propertyKey, out object value)
+		internal bool TryGet (OptionKey2 key, out string propertyKey, out object value)
 		{
 			propertyKey = null;
 			value = null;
@@ -67,7 +67,7 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 			return propertyKey != null;
 		}
 
-		internal bool TryGetUpdater (OptionKey key, out string propertyKey, out Action<object> updater) {
+		internal bool TryGetUpdater (OptionKey2 key, out string propertyKey, out Action<object> updater) {
 			propertyKey = key.GetPropertyName ();
 			if (propertyKey != null)
 				return wrapMap.TryGetValue (propertyKey, out updater);
@@ -85,7 +85,7 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 		/// <param name="optionKey">Roslyn option.</param>
 		/// <param name="monodevelopPropertyName">The property name to migrate from.</param>
 		/// <typeparam name="T">The property type</typeparam>
-		public ConfigurationProperty<T> Wrap<T> (OptionKey optionKey, string monodevelopPropertyName = null)
+		public ConfigurationProperty<T> Wrap<T> (OptionKey2 optionKey, string monodevelopPropertyName = null)
 			=> Wrap (optionKey, (T)optionKey.Option.DefaultValue, monodevelopPropertyName);
 
 		/// <summary>
@@ -98,7 +98,7 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 		/// <param name="defaultValue">The overridden default value.</param>
 		/// <param name="monodevelopPropertyName">The property name to migrate from.</param>
 		/// <typeparam name="T">The property type</typeparam>
-		public ConfigurationProperty<T> Wrap<T> (OptionKey optionKey, T defaultValue, string monodevelopPropertyName = null)
+		public ConfigurationProperty<T> Wrap<T> (OptionKey2 optionKey, T defaultValue, string monodevelopPropertyName = null)
 		{
 			var name = optionKey.GetPropertyName ();
 
@@ -120,10 +120,11 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 		internal static bool TryGetSerializationMethods<T> (Type type, out Func<T, string> serializer, out Func<string, T> deserializer)
 		{
 			// It is unfortunate, but roslyn has a special serialization mechanism, so use that.
-			if (IsOfGenericType (type, typeof (CodeStyleOption<>))) {
+			// Roslyn 5.9 internal options use CodeStyleOption2<T>; public ones still use CodeStyleOption<T>.
+			if (IsOfGenericType (type, typeof (CodeStyleOption<>)) || IsOfGenericType (type, typeof (CodeStyleOption2<>))) {
 				var fromXElement = type.GetMethod ("FromXElement", BindingFlags.Public | BindingFlags.Static);
 
-				serializer = value => ((ICodeStyleOption)value)?.ToXElement ().ToString ();
+				serializer = value => SerializeCodeStyleOption (value);
 				deserializer = serializedValue => serializedValue != null ? (T)fromXElement.Invoke (null, new object [] { XElement.Parse (serializedValue) }) : default(T);
 				return true;
 			}
@@ -137,6 +138,18 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 			serializer = null;
 			deserializer = null;
 			return false;
+		}
+
+		internal static string SerializeCodeStyleOption (object value)
+		{
+			switch (value) {
+			case ICodeStyleOption option:
+				return option.ToXElement ().ToString ();
+			case ICodeStyleOption2 option2:
+				return option2.ToXElement ().ToString ();
+			default:
+				return null;
+			}
 		}
 
 		static bool IsOfGenericType (Type type, Type genericType)

@@ -147,6 +147,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests` (run under Xvfb by
 `scripts/test.sh`) for the behaviour it changes; its proof includes those tests passing.
 
+- [x] T137 [US3] M5b: Roslyn 5.9 host layer of the Ide (TypeSystem, RoslynServices, options, EditorConfig, task list, navigation, search) ported to the Roslyn 5.9 APIs through Publicizer, removed host services taken out of the build (list in the commit) → 0 declaration-level errors in those files (full Ide compile); bodies continue in T071–T082
 - [x] T136 [US3] M5b: `main/tests/MonoDevelop.Ide.Gtk3.Tests` in the Linux solution (Xvfb) with tests for the M5b behaviour changes so far: `SyncContext.AsyncDispatch` without `Delegate.BeginInvoke`, `Gtk3ExposeEvent` offsets/area/context restore, `Gtk3CompatExtensions.SizeRequest` → `./scripts/test.sh` runs them green
 
 - [x] T070 [US3] M5b: SDK-style `MonoDevelop.Ide.csproj` (GtkSharp 3, Publicizer for Roslyn internals, VS Composition explicit) with tracked `Gtk3PortPending.props`; `SyncContext.BeginInvoke` fixed → Ide builds with pending areas excluded

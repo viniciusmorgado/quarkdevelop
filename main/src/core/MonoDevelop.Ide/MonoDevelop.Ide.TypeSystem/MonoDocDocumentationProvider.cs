@@ -42,6 +42,16 @@ namespace MonoDevelop.Ide.TypeSystem
 		static bool hadError;
 		static Dictionary<string, string> commentCache = new Dictionary<string, string> ();
 
+		// MonoDoc is not available on .NET (HelpService.HelpTree is always null without MONODOC).
+		static XmlDocument GetHelpXml (object helpTree, string id)
+		{
+#if MONODOC
+			return ((Monodoc.RootTree)helpTree).GetHelpXml (id);
+#else
+			return null;
+#endif
+		}
+
 		public static string GetDocumentation (string idString)
 		{
 			// If we had an exception while getting the help xml the monodoc help provider
@@ -60,7 +70,7 @@ namespace MonoDevelop.Ide.TypeSystem
 #pragma warning disable 618
 				switch (idString[0]) {
 				case 'T':
-					doc = helpTree.GetHelpXml (idString);
+					doc = GetHelpXml (helpTree, idString);
 					if (doc == null)
 						return null;
 					return doc.SelectSingleNode ("/Type/Docs").OuterXml;
@@ -68,7 +78,7 @@ namespace MonoDevelop.Ide.TypeSystem
 					var openIdx = idString.LastIndexOf ('(');
 					var idx = idString.LastIndexOf ('.', openIdx < 0 ? idString.Length - 1 : openIdx);
 					var typeId = "T:" + idString.Substring (2, idx - 2);
-					doc = helpTree.GetHelpXml (typeId);
+					doc = GetHelpXml (helpTree, typeId);
 					if (doc == null)
 						return null;
 					string memberName;
@@ -105,7 +115,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				case 'E':
 					idx = idString.LastIndexOf ('.', idString.Length - 1 );
 					typeId = "T:" + idString.Substring (2, idx - 2);
-					doc = helpTree.GetHelpXml (typeId);
+					doc = GetHelpXml (helpTree, typeId);
 					if (doc == null)
 						return null;
 					memberName = idString.Substring (idx + 1);
@@ -159,13 +169,13 @@ namespace MonoDevelop.Ide.TypeSystem
 					return null;
 #pragma warning disable 618
 				if (entity.Kind == SymbolKind.NamedType) {
-					doc = helpTree.GetHelpXml (idString);
+					doc = GetHelpXml (helpTree, idString);
 				} else {
 					var containingType = entity.ContainingType;
 					if (containingType == null)
 						return null;
 					var parentId = containingType.GetDocumentationCommentId ();
-					doc = helpTree.GetHelpXml (parentId);
+					doc = GetHelpXml (helpTree, parentId);
 					if (doc == null)
 						return null;
 					XmlNode node = SelectNode (doc, entity);

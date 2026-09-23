@@ -30,6 +30,20 @@ using Microsoft.CodeAnalysis.Host.Mef;
 
 namespace MonoDevelop.Ide.TypeSystem
 {
+	/// <summary>
+	/// MEF metadata view with the exported file extensions (Roslyn 5.9 no longer ships FileExtensionsMetadata).
+	/// </summary>
+	sealed class FileExtensionsMetadata
+	{
+		public IEnumerable<string> Extensions { get; }
+
+		public FileExtensionsMetadata (IDictionary<string, object> data)
+		{
+			data.TryGetValue ("Extensions", out var value);
+			Extensions = value is string extension ? new [] { extension } : (value as IEnumerable<string>) ?? Array.Empty<string> ();
+		}
+	}
+
 	[Export]
 	class DynamicFileManager
 	{

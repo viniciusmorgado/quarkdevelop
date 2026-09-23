@@ -26,26 +26,28 @@
 using System;
 using System.Composition;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Editor.Shared;
 using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.VisualStudio.Text;
+using Microsoft.CodeAnalysis.Shared;
 using MonoDevelop.Ide;
 using MonoDevelop.Ide.TypeSystem;
 
 namespace MonoDevelop.Ide.RoslynServices
 {
-	[ExportWorkspaceService (typeof (ITextBufferSupportsFeatureService), ServiceLayer.Host), Shared]
-	internal sealed class MonoDevelopDocumentSupportsFeatureService : ITextBufferSupportsFeatureService
+	// Roslyn 5.9: ITextBufferSupportsFeatureService (EditorFeatures) became the document-based
+	// IDocumentSupportsFeatureService; contained (projected) documents are detected from the document.
+	[ExportWorkspaceService (typeof (IDocumentSupportsFeatureService), ServiceLayer.Host), Shared]
+	internal sealed class MonoDevelopDocumentSupportsFeatureService : IDocumentSupportsFeatureService
 	{
-		public bool SupportsCodeFixes (ITextBuffer textBuffer) => !IsContainedBuffer (textBuffer);
-		public bool SupportsNavigationToAnyPosition (ITextBuffer textBuffer) => !IsContainedBuffer (textBuffer);
-		public bool SupportsRefactorings (ITextBuffer textBuffer) => !IsContainedBuffer (textBuffer);
-		public bool SupportsRename (ITextBuffer textBuffer) => !IsContainedBuffer (textBuffer);
+		public bool SupportsCodeFixes (Document document) => !IsContainedDocument (document);
+		public bool SupportsNavigationToAnyPosition (Document document) => !IsContainedDocument (document);
+		public bool SupportsRefactorings (Document document) => !IsContainedDocument (document);
+		public bool SupportsRename (Document document) => !IsContainedDocument (document);
+		public bool SupportsSemanticSnippets (Document document) => !IsContainedDocument (document);
 
-		static bool IsContainedBuffer (ITextBuffer textBuffer)
+		static bool IsContainedDocument (Document document)
 		{
-			if (textBuffer == null) return false;
-			return textBuffer.Properties.ContainsProperty (typeof (IMonoDevelopHostDocument));
+			if (document == null) return false;
+			return MonoDevelopHostDocumentRegistration.FromDocument (document) != null;
 		}
 	}
 }

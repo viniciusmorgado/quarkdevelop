@@ -65,6 +65,10 @@ namespace MonoDevelop.Ide.TypeSystem
 	{
 		ConcurrentDictionary<WorkspaceRegistration, OpenDocumentInfo> openDocuments = new ConcurrentDictionary<WorkspaceRegistration, OpenDocumentInfo> ();
 
+		// Roslyn 5.9 + Publicizer: WorkspaceRegistration.WorkspaceChanged and its backing field share a name
+		// (CS0229), so the event is accessed through reflection.
+		static readonly System.Reflection.EventInfo WorkspaceChangedEvent = typeof (WorkspaceRegistration).GetEvent ("WorkspaceChanged");
+
 		readonly ImmutableArray<MetadataReference> defaultReferences = ImmutableArray.Create<MetadataReference> (
 			MetadataReference.CreateFromFile (typeof (object).Assembly.Location));
 
@@ -75,9 +79,8 @@ namespace MonoDevelop.Ide.TypeSystem
 		public MiscellaneousFilesWorkspace ()
 			: base (CompositionManager.Instance.HostServices, WorkspaceKind.MiscellaneousFiles)
 		{
-			foreach (var factory in AddinManager.GetExtensionObjects<Microsoft.CodeAnalysis.Options.IDocumentOptionsProviderFactory> ("/MonoDevelop/Ide/TypeService/OptionProviders"))
-				Services.GetRequiredService<Microsoft.CodeAnalysis.Options.IOptionService> ().RegisterDocumentOptionsProvider (factory.TryCreate (this));
-
+			// Roslyn 5.9 has no document options providers (IDocumentOptionsProviderFactory): options come
+			// from .editorconfig and the global options.
 			defaultProjectId = ProjectId.CreateNewId (DefaultProjectName);
 
 			var compilationOptions = new CSharpCompilationOptions (OutputKind.ConsoleApplication);
@@ -132,7 +135,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			if (openDocuments.ContainsKey (workspaceRegistration))
 				return;
 
-			workspaceRegistration.WorkspaceChanged += Registration_WorkspaceChanged;
+			WorkspaceChangedEvent.AddEventHandler (workspaceRegistration, new EventHandler (Registration_WorkspaceChanged));
 
 			var openDocumentInfo = new OpenDocumentInfo {
 				SourceTextContainer = textContainer,
@@ -184,7 +187,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 
 			var workspaceRegistration = GetWorkspaceRegistration (textContainer);
-			workspaceRegistration.WorkspaceChanged -= Registration_WorkspaceChanged;
+			WorkspaceChangedEvent.RemoveEventHandler (workspaceRegistration, new EventHandler (Registration_WorkspaceChanged));
 
 			if (openDocuments.TryRemove (workspaceRegistration, out var openDocumentInfo)) {
 				RemoveDocument (openDocumentInfo);
@@ -292,7 +295,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			return base.CanApplyChange (feature);
 		}
 
-		protected override void ApplyDocumentTextChanged (DocumentId id, SourceText text)
+		public override void ApplyDocumentTextChanged (DocumentId id, SourceText text)
 		{
 			var openDocument = openDocuments.FirstOrDefault (doc => doc.Value.DocumentId == id);
 			if (openDocument.Value != null) {
@@ -321,7 +324,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			{
 			}
 
-			public override Task<TextAndVersion> LoadTextAndVersionAsync (Workspace workspace, DocumentId documentId, CancellationToken cancellationToken)
+			public override Task<TextAndVersion> LoadTextAndVersionAsync (LoadTextOptions options, CancellationToken cancellationToken)
 			{
 				return Task.FromResult (TextAndVersion.Create (emptySourceText, VersionStamp.Default));
 			}

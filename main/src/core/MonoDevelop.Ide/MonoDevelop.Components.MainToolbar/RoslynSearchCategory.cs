@@ -37,9 +37,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Host;
-using Microsoft.CodeAnalysis.LanguageServices;
 using Microsoft.CodeAnalysis.NavigateTo;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 using MonoDevelop.Components.MainToolbar;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Instrumentation;
@@ -121,23 +119,10 @@ namespace MonoDevelop.Components.MainToolbar
 			return null;
 		}
 
-		static INavigateToSearchService_RemoveInterfaceAboveAndRenameThisAfterInternalsVisibleToUsersUpdate TryGetNavigateToSearchService (Project project)
+		// Roslyn 5.9: INavigateToSearchService searches several projects at once and streams results through callbacks.
+		static INavigateToSearchService TryGetNavigateToSearchService (Project project)
 		{
-			var languageServices = project.LanguageServices;
-			// TODO: remove this once INavigateToSearchService_RemoveInterfaceAboveAndRenameThisAfterInternalsVisibleToUsersUpdate is removed and just use INavigateToSearchService
-			var searchService = languageServices.GetService<INavigateToSearchService_RemoveInterfaceAboveAndRenameThisAfterInternalsVisibleToUsersUpdate> ();
-			if (searchService != null)
-				return searchService;
-
-#pragma warning disable CS0618 // Type or member is obsolete
-#pragma warning disable CS0612 // Type or member is obsolete
-			var legacyService = languageServices.GetService<INavigateToSearchService> ();
-			if (legacyService != null)
-				return new ShimNavigateToSearchService (legacyService);
-#pragma warning restore CS0612 // Type or member is obsolete
-#pragma warning restore CS0618 // Type or member is obsolete
-
-			return null;
+			return project.Services.GetService<INavigateToSearchService> ();
 		}
 
 		public override Task GetResults (ISearchResultCallback searchResultCallback, SearchPopupSearchPattern searchPattern, CancellationToken token)
@@ -154,63 +139,75 @@ namespace MonoDevelop.Components.MainToolbar
 
 					// TODO: Fill this right.
 					var priorityDocuments = ImmutableArray.Create<Document> ();
-					// Maybe use language services instead of AbstractNavigateToSearchService
-					var aggregatedResults = await Task.WhenAll (IdeApp.TypeSystemService.AllWorkspaces
-										.Select (ws => ws.CurrentSolution)
-										.SelectMany (sol => sol.Projects)
-										.Select (async proj => {
-											using (proj.Solution.Services.CacheService?.EnableCaching (proj.Id)) {
-												var searchService = TryGetNavigateToSearchService (proj);
-												if (searchService == null)
-													return ImmutableArray<INavigateToSearchResult>.Empty;
-												return await searchService.SearchProjectAsync (proj, priorityDocuments, searchPattern.Pattern, kinds ?? searchService.KindsProvided, token).ConfigureAwait (false);
-											}
-										})
-					).ConfigureAwait (false);
-
-					foreach (var results in aggregatedResults) {
-						foreach (var result in results) {
-							int laneLength = result.NameMatchSpans.Length;
-							int index = laneLength > 0 ? result.NameMatchSpans [0].Start : -1;
-
-							int rank = 0;
-							if (result.MatchKind == NavigateToMatchKind.Exact) {
-								rank = int.MaxValue;
-							} else {
-								int patternLength = searchPattern.Pattern.Length;
-								rank = searchPattern.Pattern.Length - result.Name.Length;
-								rank -= index;
-
-								rank -= laneLength * 100;
-
-								// Favor matches with less splits. That is, 'abc def' is better than 'ab c def'.
-								int baseRank = (patternLength - laneLength - 1) * 5000;
-
-								// First matching letter close to the begining is better
-								// The more matched letters the better
-								rank = baseRank - (index + (laneLength - patternLength));
-
-								// rank up matches which start with a filter substring
-								if (index == 0)
-									rank += result.NameMatchSpans [0].Length * 50;
-							}
-
-							if (!result.IsCaseSensitive)
-								rank /= 2;
-
-							searchResultCallback.ReportResult (new DeclaredSymbolInfoResult (
+					var reportLock = new object ();
+					var searches = new List<Task> ();
+					foreach (var solution in IdeApp.TypeSystemService.AllWorkspaces.Select (ws => ws.CurrentSolution)) {
+						foreach (var group in solution.Projects.GroupBy (p => p.Language)) {
+							var searchService = TryGetNavigateToSearchService (group.First ());
+							if (searchService == null)
+								continue;
+							searches.Add (searchService.SearchProjectsAsync (
+								solution,
+								group.ToImmutableArray (),
+								priorityDocuments,
 								searchPattern.Pattern,
-								result.Name,
-								rank,
-								result
-							));
+								kinds ?? searchService.KindsProvided,
+								activeDocument: null,
+								onResultsFound: results => {
+									lock (reportLock)
+										ReportResults (searchResultCallback, searchPattern, results);
+									return Task.CompletedTask;
+								},
+								onProjectCompleted: () => Task.CompletedTask,
+								token));
 						}
 					}
+					await Task.WhenAll (searches).ConfigureAwait (false);
 				} catch {
 					token.ThrowIfCancellationRequested ();
 					throw;
 				}
 			}, token);
+		}
+
+		static void ReportResults (ISearchResultCallback searchResultCallback, SearchPopupSearchPattern searchPattern, ImmutableArray<INavigateToSearchResult> results)
+		{
+			foreach (var result in results) {
+				int laneLength = result.NameMatchSpans.Length;
+				int index = laneLength > 0 ? result.NameMatchSpans [0].Start : -1;
+
+				int rank = 0;
+				if (result.MatchKind == NavigateToMatchKind.Exact) {
+					rank = int.MaxValue;
+				} else {
+					int patternLength = searchPattern.Pattern.Length;
+					rank = searchPattern.Pattern.Length - result.Name.Length;
+					rank -= index;
+
+					rank -= laneLength * 100;
+
+					// Favor matches with less splits. That is, 'abc def' is better than 'ab c def'.
+					int baseRank = (patternLength - laneLength - 1) * 5000;
+
+					// First matching letter close to the begining is better
+					// The more matched letters the better
+					rank = baseRank - (index + (laneLength - patternLength));
+
+					// rank up matches which start with a filter substring
+					if (index == 0)
+						rank += result.NameMatchSpans [0].Length * 50;
+				}
+
+				if (!result.IsCaseSensitive)
+					rank /= 2;
+
+				searchResultCallback.ReportResult (new DeclaredSymbolInfoResult (
+					searchPattern.Pattern,
+					result.Name,
+					rank,
+					result
+				));
+			}
 		}
 	}
 }

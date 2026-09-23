@@ -24,55 +24,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Composition;
 using System.Linq;
-using Microsoft.CodeAnalysis.Editor;
-using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
-using Microsoft.CodeAnalysis.Extensions;
-using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.Shared.TestHooks;
+using Microsoft.CodeAnalysis.ErrorReporting;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui.Components;
 
 namespace MonoDevelop.Ide.RoslynServices
 {
-	[ExportWorkspaceService (typeof (IInfoBarService), layer: ServiceLayer.Host), Shared]
-	sealed class MonoDevelopInfoBarService : ForegroundThreadAffinitizedObject, IInfoBarService
+	// Roslyn 5.9 removed IInfoBarService (it lived in EditorFeatures); this is now a plain helper used by
+	// MonoDevelopErrorReportingService, and UI work is marshalled with Runtime.RunInMainThread.
+	sealed class MonoDevelopInfoBarService
 	{
-		readonly IForegroundNotificationService _foregroundNotificationService;
-		readonly IAsynchronousOperationListener _listener;
-
-		[ImportingConstructor]
-		public MonoDevelopInfoBarService (IThreadingContext threadingContext, IForegroundNotificationService foregroundNotificationService, IAsynchronousOperationListenerProvider listenerProvider)
-			: base (threadingContext)
-		{
-			_foregroundNotificationService = foregroundNotificationService;
-			_listener = listenerProvider.GetListener (FeatureAttribute.InfoBar);
-		}
+		public static MonoDevelopInfoBarService Instance { get; } = new MonoDevelopInfoBarService ();
 
 		public void ShowInfoBarInActiveView (string message, params InfoBarUI [] items)
 		{
-			ThisCanBeCalledOnAnyThread ();
 			ShowInfoBar (activeView: true, message: message, items: items);
 		}
 
 		public void ShowInfoBarInGlobalView (string message, params InfoBarUI [] items)
 		{
-			ThisCanBeCalledOnAnyThread ();
 			ShowInfoBar (activeView: false, message: message, items: items);
 		}
 
 		void ShowInfoBar (bool activeView, string message, params InfoBarUI [] items)
 		{
 			// We can be called from any thread since errors can occur anywhere, however we can only construct and InfoBar from the UI thread.
-			_foregroundNotificationService.RegisterNotification (() => {
+			Runtime.RunInMainThread (() => {
 				if (TryGetInfoBarHost (activeView, out var infoBarHost)) {
 					var options = new InfoBarOptions (message) {
 						Items = ToUIItems (items)
 					};
 					infoBarHost.AddInfoBar (options);
 				}
-			}, _listener.BeginAsyncOperation (nameof (ShowInfoBar)));
+			}).Ignore ();
 
 			static InfoBarItem [] ToUIItems (InfoBarUI [] items)
 				=> items?.Select (x => new InfoBarItem (x.Title, ToUIKind (x.Kind), x.Action, x.CloseAfterAction)).ToArray ();
@@ -96,7 +81,7 @@ namespace MonoDevelop.Ide.RoslynServices
 
 		bool TryGetInfoBarHost (bool activeView, out IInfoBarHost infoBarHost)
 		{
-			AssertIsForeground ();
+			Runtime.AssertMainThread ();
 
 			infoBarHost = null;
 			if (!IdeApp.IsInitialized || IdeApp.Workbench == null)

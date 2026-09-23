@@ -53,7 +53,7 @@
 using System;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Core.Text;
-using Microsoft.CodeAnalysis.Editor;
+using Microsoft.CodeAnalysis.TaskList;
 
 namespace MonoDevelop.Ide.TypeSystem
 {
@@ -83,7 +83,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 	internal static class TodoItemExtensions
 	{
-		public static Tag ToTag (this TodoItem item)
+		public static Tag ToTag (this TaskListItem item) // Roslyn 5.9: TodoItem became TaskListItem
 		{
 			var message = item.Message;
 			var index = message.IndexOf (':');
@@ -102,8 +102,8 @@ namespace MonoDevelop.Ide.TypeSystem
 				tag = message.Substring (0, index);
 			}
 
-			int line = item.MappedLine + 1;
-			int column = item.MappedColumn + 1;
+			int line = item.MappedSpan.StartLinePosition.Line + 1;
+			int column = item.MappedSpan.StartLinePosition.Character + 1;
 
 			return new Tag (tag, message, new Editor.DocumentRegion (line, column, line, column));
 		}

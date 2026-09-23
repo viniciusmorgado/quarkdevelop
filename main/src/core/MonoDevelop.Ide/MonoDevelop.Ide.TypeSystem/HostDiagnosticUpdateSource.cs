@@ -26,113 +26,105 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
+using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslyn.Utilities;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Ide.TypeSystem
 {
-	// exporting both Abstract and HostDiagnosticUpdateSource is just to make testing easier.
-	// use HostDiagnosticUpdateSource when abstract one is not needed for testing purpose
-
-	// FIXME: Not sure we can use this until roslyn supports multi-workspace or we go single workspace
-	//[Export (typeof (AbstractHostDiagnosticUpdateSource))]
-	//[Export (typeof (HostDiagnosticUpdateSource))]
-	internal sealed class HostDiagnosticUpdateSource : AbstractHostDiagnosticUpdateSource
+	// Roslyn 5.9 removed the push-based diagnostic update sources (AbstractHostDiagnosticUpdateSource,
+	// IDiagnosticUpdateSourceRegistrationService, DiagnosticsUpdatedArgs). Host diagnostics (analyzer load
+	// failures) are now kept here, logged and exposed through the DiagnosticsUpdated event.
+	internal sealed class HostDiagnosticUpdateSource
 	{
 		private readonly MonoDevelopWorkspace _workspace;
 		private readonly object _gate = new object ();
-		private readonly Dictionary<ProjectId, HashSet<object>> _diagnosticMap = new Dictionary<ProjectId, HashSet<object>> ();
+		private readonly Dictionary<ProjectId, Dictionary<object, ImmutableArray<Diagnostic>>> _diagnosticMap = new Dictionary<ProjectId, Dictionary<object, ImmutableArray<Diagnostic>>> ();
 
-		public HostDiagnosticUpdateSource (MonoDevelopWorkspace workspace, IDiagnosticUpdateSourceRegistrationService registrationService)
+		public HostDiagnosticUpdateSource (MonoDevelopWorkspace workspace)
 		{
 			_workspace = workspace;
-
-			registrationService.Register (this);
 		}
 
-		public override Microsoft.CodeAnalysis.Workspace Workspace {
+		public Microsoft.CodeAnalysis.Workspace Workspace {
 			get {
 				return _workspace;
 			}
 		}
 
-		private void RaiseDiagnosticsCreatedForProject (ProjectId projectId, object key, IEnumerable<DiagnosticData> items)
+		/// <summary>
+		/// Raised with the project whose host diagnostics changed.
+		/// </summary>
+		public event EventHandler<ProjectId> DiagnosticsUpdated;
+
+		public ImmutableArray<Diagnostic> GetDiagnostics (ProjectId projectId)
 		{
-			var args = DiagnosticsUpdatedArgs.DiagnosticsCreated (
-				CreateId (projectId, key),
-				_workspace,
-				solution: null,
-				projectId: projectId,
-				documentId: null,
-				diagnostics: items.AsImmutableOrEmpty ());
-
-			RaiseDiagnosticsUpdated (args);
-		}
-
-		private void RaiseDiagnosticsRemovedForProject (ProjectId projectId, object key)
-		{
-			var args = DiagnosticsUpdatedArgs.DiagnosticsRemoved (
-				CreateId (projectId, key),
-				_workspace,
-				solution: null,
-				projectId: projectId,
-				documentId: null);
-
-			RaiseDiagnosticsUpdated (args);
-		}
-
-		private object CreateId (ProjectId projectId, object key) => Tuple.Create (this, projectId, key);
-
-		public void UpdateDiagnosticsForProject (ProjectId projectId, object key, IEnumerable<DiagnosticData> items)
-		{
-			Contract.ThrowIfNull (projectId);
-			Contract.ThrowIfNull (key);
-			Contract.ThrowIfNull (items);
-
 			lock (_gate) {
-				_diagnosticMap.GetOrAdd (projectId, id => new HashSet<object> ()).Add (key);
+				if (!_diagnosticMap.TryGetValue (projectId, out var map))
+					return ImmutableArray<Diagnostic>.Empty;
+				return map.Values.SelectMany (d => d).ToImmutableArray ();
+			}
+		}
+
+		public void UpdateDiagnosticsForProject (ProjectId projectId, object key, IEnumerable<Diagnostic> items)
+		{
+			if (projectId == null)
+				throw new ArgumentNullException (nameof (projectId));
+			if (key == null)
+				throw new ArgumentNullException (nameof (key));
+			if (items == null)
+				throw new ArgumentNullException (nameof (items));
+
+			var diagnostics = items.ToImmutableArray ();
+			lock (_gate) {
+				if (!_diagnosticMap.TryGetValue (projectId, out var map))
+					_diagnosticMap [projectId] = map = new Dictionary<object, ImmutableArray<Diagnostic>> ();
+				map [key] = diagnostics;
 			}
 
-			RaiseDiagnosticsCreatedForProject (projectId, key, items);
+			foreach (var diagnostic in diagnostics)
+				LoggingService.LogWarning ("{0}: {1}", diagnostic.Id, diagnostic.GetMessage ());
+
+			DiagnosticsUpdated?.Invoke (this, projectId);
 		}
 
 		public void ClearAllDiagnosticsForProject (ProjectId projectId)
 		{
-			Contract.ThrowIfNull (projectId);
+			if (projectId == null)
+				throw new ArgumentNullException (nameof (projectId));
 
-			HashSet<object> projectDiagnosticKeys;
+			bool removed;
 			lock (_gate) {
-				if (_diagnosticMap.TryGetValue (projectId, out projectDiagnosticKeys)) {
-					_diagnosticMap.Remove (projectId);
-				}
+				removed = _diagnosticMap.Remove (projectId);
 			}
 
-			if (projectDiagnosticKeys != null) {
-				foreach (var key in projectDiagnosticKeys) {
-					RaiseDiagnosticsRemovedForProject (projectId, key);
-				}
-			}
-
-			ClearAnalyzerDiagnostics (projectId);
+			if (removed)
+				DiagnosticsUpdated?.Invoke (this, projectId);
 		}
 
 		public void ClearDiagnosticsForProject (ProjectId projectId, object key)
 		{
-			Contract.ThrowIfNull (projectId);
-			Contract.ThrowIfNull (key);
+			if (projectId == null)
+				throw new ArgumentNullException (nameof (projectId));
+			if (key == null)
+				throw new ArgumentNullException (nameof (key));
 
 			var raiseEvent = false;
 			lock (_gate) {
-				if (_diagnosticMap.TryGetValue (projectId, out var projectDiagnosticKeys)) {
-					raiseEvent = projectDiagnosticKeys.Remove (key);
+				if (_diagnosticMap.TryGetValue (projectId, out var map)) {
+					raiseEvent = map.Remove (key);
 				}
 			}
 
-			if (raiseEvent) {
-				RaiseDiagnosticsRemovedForProject (projectId, key);
-			}
+			if (raiseEvent)
+				DiagnosticsUpdated?.Invoke (this, projectId);
+		}
+
+		public void ClearAnalyzerReferenceDiagnostics (AnalyzerFileReference fileReference, string language, ProjectId projectId)
+		{
+			ClearDiagnosticsForProject (projectId, fileReference);
 		}
 	}
 }

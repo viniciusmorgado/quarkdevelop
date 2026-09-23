@@ -28,8 +28,6 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Editor;
-using Microsoft.CodeAnalysis.Editor.Implementation.TodoComments;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.TypeSystem;
 using MonoDevelop.Projects;
@@ -45,20 +43,18 @@ namespace MonoDevelop.Ide.Tasks
 
 		public static void Initialize ()
 		{
-			Runtime.ServiceProvider.WhenServiceInitialized<CompositionManager> (compositionManager => {
-				var todoListProvider = compositionManager.GetExportedValue<ITodoListProvider> ();
-				todoListProvider.TodoListUpdated += OnTodoListUpdated;
-			});
+			// Roslyn 5.9 has no ITodoListProvider; MonoDevelopTaskListProvider computes the task list items.
+			MonoDevelopTaskListProvider.TaskListUpdated += OnTodoListUpdated;
+			UpdateTokens ();
 
 			Runtime.ServiceProvider.WhenServiceInitialized<RootWorkspace> (workspace => {
-				workspace.SolutionLoaded += OnSolutionLoaded;
 				workspace.WorkspaceItemClosed += OnWorkspaceItemClosed;
 				Legacy.Initialize ();
 			});
 			CommentTag.SpecialCommentTagsChanged += OnSpecialTagsChanged;
 		}
 
-		static bool TryGetDocument (Microsoft.CodeAnalysis.Common.UpdatedEventArgs args, out Document doc, out MonoDevelop.Projects.Project project)
+		static bool TryGetDocument (TaskListUpdatedEventArgs args, out Document doc, out MonoDevelop.Projects.Project project)
 		{
 			doc = null;
 			project = null;
@@ -78,7 +74,7 @@ namespace MonoDevelop.Ide.Tasks
 		}
 
 		static object lockObject = new object ();
-		static Dictionary<object, TodoItemsUpdatedArgs> cachedUntilViewCreated = new Dictionary<object, TodoItemsUpdatedArgs> ();
+		static Dictionary<object, TaskListUpdatedEventArgs> cachedUntilViewCreated = new Dictionary<object, TaskListUpdatedEventArgs> ();
 
 		internal static void LoadCachedContents ()
 		{
@@ -95,13 +91,13 @@ namespace MonoDevelop.Ide.Tasks
 			}
 		}
 
-		public static CommentTaskChange ToCommentTaskChange (TodoItemsUpdatedArgs args)
+		public static CommentTaskChange ToCommentTaskChange (TaskListUpdatedEventArgs args)
 		{
 			if (!TryGetDocument (args, out var doc, out var project))
 				return null;
 
 			var file = doc.FilePath;
-			var tags = args.TodoItems.Length == 0 ? (IReadOnlyList<Tag>)null : args.TodoItems.SelectAsArray (x => x.ToTag ());
+			var tags = args.TaskListItems.Length == 0 ? (IReadOnlyList<Tag>)null : args.TaskListItems.Select (x => x.ToTag ()).ToArray ();
 			return new CommentTaskChange (file, tags, project);
 		}
 
@@ -111,7 +107,7 @@ namespace MonoDevelop.Ide.Tasks
 		internal static void ResetCachedContents (Func<int, bool> shouldTriggerLoad)
 		{
 			lock (lockObject) {
-				cachedUntilViewCreated = new Dictionary<object, TodoItemsUpdatedArgs> ();
+				cachedUntilViewCreated = new Dictionary<object, TaskListUpdatedEventArgs> ();
 				triggerLoad = shouldTriggerLoad;
 			}
 		}
@@ -127,7 +123,7 @@ namespace MonoDevelop.Ide.Tasks
 
 		#endregion
 
-		static bool TryCache (TodoItemsUpdatedArgs args)
+		static bool TryCache (TaskListUpdatedEventArgs args)
 		{
 			if (cachedUntilViewCreated == null)
 				return false;
@@ -144,7 +140,7 @@ namespace MonoDevelop.Ide.Tasks
 			}
 		}
 
-		static void OnTodoListUpdated (object sender, TodoItemsUpdatedArgs args)
+		static void OnTodoListUpdated (object sender, TaskListUpdatedEventArgs args)
 		{
 			if (TryCache (args))
 				return;
@@ -152,12 +148,6 @@ namespace MonoDevelop.Ide.Tasks
 			var change = ToCommentTaskChange (args);
 			if (change != null)
 				IdeServices.TaskService.InformCommentTasks (new CommentTasksChangedEventArgs (new [] { change }));
-		}
-
-		static async void OnSolutionLoaded (object sender, SolutionEventArgs args)
-		{
-			var ws = await IdeApp.TypeSystemService.GetWorkspaceAsync (args.Solution);
-			UpdateWorkspaceOptions (ws);
 		}
 
 		static void OnWorkspaceItemClosed (object sender, WorkspaceItemEventArgs args)
@@ -174,16 +164,15 @@ namespace MonoDevelop.Ide.Tasks
 			}
 		}
 
-		static void UpdateWorkspaceOptions (Microsoft.CodeAnalysis.Workspace ws)
+		// Roslyn 5.9: the TODO token list is no longer a workspace option; tokens are passed to the task list provider.
+		static void UpdateTokens ()
 		{
-			// Roslyn uses | as separator.
-			ws.Options = ws.Options.WithChangedOption (TodoCommentOptions.TokenList, CommentTag.ToString (CommentTag.SpecialCommentTags, "|"));
+			MonoDevelopTaskListProvider.SetTokens (CommentTag.SpecialCommentTags.Select (t => t.Tag + ":" + t.Priority));
 		}
 
 		static void OnSpecialTagsChanged (object sender, EventArgs args)
 		{
-			foreach (var ws in IdeApp.TypeSystemService.AllWorkspaces)
-				UpdateWorkspaceOptions (ws);
+			UpdateTokens ();
 		}
 	}
 }

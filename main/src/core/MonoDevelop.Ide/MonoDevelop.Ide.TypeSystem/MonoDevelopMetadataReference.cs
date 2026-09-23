@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.IO;
 using Microsoft.CodeAnalysis;
 using MonoDevelop.Core;
@@ -26,7 +25,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			string filePath,
 			MetadataReferenceProperties properties)
 		{
-			Contract.Requires (properties.Kind == MetadataImageKind.Assembly);
+			Debug.Assert (properties.Kind == MetadataImageKind.Assembly);
 
 			FilePath = filePath;
 			_provider = provider;

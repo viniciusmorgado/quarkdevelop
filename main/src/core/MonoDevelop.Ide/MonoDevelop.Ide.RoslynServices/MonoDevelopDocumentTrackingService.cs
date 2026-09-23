@@ -100,12 +100,13 @@ namespace MonoDevelop.Ide.RoslynServices
 			if (docs == null)
 				return ImmutableArray<DocumentId>.Empty;
 
-			var ids = ArrayBuilder<DocumentId>.GetInstance (docs.Count);
+			// Roslyn's ArrayBuilder is compiled into several Roslyn assemblies (ambiguous once publicized).
+			var ids = ImmutableArray.CreateBuilder<DocumentId> (docs.Count);
 			foreach (var doc in docs)
 				if (doc.DocumentContext?.AnalysisDocument != null)
 					ids.Add (doc.DocumentContext?.AnalysisDocument.Id);
 
-			return ids.ToImmutableAndFree ();
+			return ids.ToImmutable ();
 		}
 
 		public event EventHandler<EventArgs> NonRoslynBufferTextChanged;

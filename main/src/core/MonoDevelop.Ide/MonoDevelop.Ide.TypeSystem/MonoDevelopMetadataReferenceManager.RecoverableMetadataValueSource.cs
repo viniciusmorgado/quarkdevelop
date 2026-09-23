@@ -25,39 +25,36 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
-using Microsoft.CodeAnalysis.PooledObjects;
-using Roslyn.Utilities;
 
 namespace MonoDevelop.Ide.TypeSystem
 {
 	partial class MonoDevelopMetadataReferenceManager
 	{
-		class RecoverableMetadataValueSource : ValueSource<AssemblyMetadata>
+		// Roslyn 5.9 removed ValueSource<T>; this is a plain weakly-held value recoverable from temporary storage.
+		class RecoverableMetadataValueSource
 		{
 			readonly WeakReference<AssemblyMetadata> _weakValue;
-			readonly List<ITemporaryStreamStorage> _storages;
-			readonly ConditionalWeakTable<Metadata, object> _lifetimeMap;
+			readonly List<ITemporaryStorageStreamHandle> _storages;
 
-			public RecoverableMetadataValueSource (AssemblyMetadata value, List<ITemporaryStreamStorage> storages, ConditionalWeakTable<Metadata, object> lifetimeMap)
+			public RecoverableMetadataValueSource (AssemblyMetadata value, List<ITemporaryStorageStreamHandle> storages)
 			{
 				Contract.ThrowIfFalse (storages.Count > 0);
 
 				_weakValue = new WeakReference<AssemblyMetadata> (value);
 				_storages = storages;
-				_lifetimeMap = lifetimeMap;
 			}
 
-			public IEnumerable<ITemporaryStreamStorage> GetStorages ()
+			public IReadOnlyList<ITemporaryStorageStreamHandle> GetStorages ()
 			{
 				return _storages;
 			}
 
-			public override AssemblyMetadata GetValue (CancellationToken cancellationToken)
+			public bool HasValue => _weakValue.TryGetTarget (out _);
+
+			public AssemblyMetadata GetValue ()
 			{
 				if (_weakValue.TryGetTarget (out var value)) {
 					return value;
@@ -68,41 +65,21 @@ namespace MonoDevelop.Ide.TypeSystem
 
 			AssemblyMetadata RecoverMetadata ()
 			{
-				var moduleBuilder = ArrayBuilder<ModuleMetadata>.GetInstance (_storages.Count);
+				var moduleBuilder = ImmutableArray.CreateBuilder<ModuleMetadata> (_storages.Count);
 
 				foreach (var storage in _storages) {
-					moduleBuilder.Add (GetModuleMetadata (storage));
+					moduleBuilder.Add (CreateModuleMetadata (storage));
 				}
 
-				var metadata = AssemblyMetadata.Create (moduleBuilder.ToImmutableAndFree ());
+				var metadata = AssemblyMetadata.Create (moduleBuilder.ToImmutable ());
 				_weakValue.SetTarget (metadata);
 
 				return metadata;
 			}
 
-			ModuleMetadata GetModuleMetadata (ITemporaryStreamStorage storage)
-			{
-				var stream = storage.ReadStream (CancellationToken.None);
-
-				// under VS host, direct access should be supported
-				var directAccess = (ISupportDirectMemoryAccess)stream;
-				var pImage = directAccess.GetPointer ();
-
-				var metadata = ModuleMetadata.CreateFromMetadata (pImage, (int)stream.Length);
-
-				// memory management.
-				_lifetimeMap.Add (metadata, stream);
-				return metadata;
-			}
-
-			public override bool TryGetValue (out AssemblyMetadata value)
+			public bool TryGetValue (out AssemblyMetadata value)
 			{
 				return _weakValue.TryGetTarget (out value);
-			}
-
-			public override Task<AssemblyMetadata> GetValueAsync (CancellationToken cancellationToken)
-			{
-				return Task.FromResult (GetValue (cancellationToken));
 			}
 		}
 	}

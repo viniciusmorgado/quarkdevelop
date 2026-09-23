@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
-using Roslyn.Utilities;
+using System.Linq;
 
 namespace MonoDevelop.Ide.TypeSystem
 {
@@ -15,7 +15,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			readonly object _gate = new object ();
 
 			// value is ValueSource so that how metadata is re-acquired back are different per entry. 
-			readonly Dictionary<FileKey, ValueSource<AssemblyMetadata>> _metadataCache = new Dictionary<FileKey, ValueSource<AssemblyMetadata>> ();
+			readonly Dictionary<FileKey, RecoverableMetadataValueSource> _metadataCache = new Dictionary<FileKey, RecoverableMetadataValueSource> ();
 
 			int _capacity = InitialCapacity;
 
@@ -26,7 +26,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				}
 			}
 
-			public bool TryGetSource (FileKey key, out ValueSource<AssemblyMetadata> source)
+			public bool TryGetSource (FileKey key, out RecoverableMetadataValueSource source)
 			{
 				lock (_gate) {
 					return _metadataCache.TryGetValue (key, out source);
@@ -44,7 +44,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				return false;
 			}
 
-			public bool TryGetOrAddMetadata (FileKey key, ValueSource<AssemblyMetadata> newMetadata, out AssemblyMetadata metadata)
+			public bool TryGetOrAddMetadata (FileKey key, RecoverableMetadataValueSource newMetadata, out AssemblyMetadata metadata)
 			{
 				lock (_gate) {
 					if (TryGetMetadata_NoLock (key, out metadata)) {
@@ -68,23 +68,15 @@ namespace MonoDevelop.Ide.TypeSystem
 					return;
 				}
 
-				using (var pooledObject = SharedPools.Default<List<FileKey>> ().GetPooledObject ()) {
-					var keysToRemove = pooledObject.Object;
-					foreach (var kv in _metadataCache) {
-						// metadata doesn't exist anymore. delete it from cache
-						if (!kv.Value.HasValue) {
-							keysToRemove.Add (kv.Key);
-						}
-					}
+				// metadata doesn't exist anymore. delete it from cache
+				var keysToRemove = _metadataCache.Where (kv => !kv.Value.HasValue).Select (kv => kv.Key).ToList ();
+				foreach (var key in keysToRemove) {
+					_metadataCache.Remove (key);
+				}
 
-					foreach (var key in keysToRemove) {
-						_metadataCache.Remove (key);
-					}
-
-					// cache is too small, increase it
-					if (_metadataCache.Count >= _capacity) {
-						_capacity *= CapacityMultiplier;
-					}
+				// cache is too small, increase it
+				if (_metadataCache.Count >= _capacity) {
+					_capacity *= CapacityMultiplier;
 				}
 			}
 

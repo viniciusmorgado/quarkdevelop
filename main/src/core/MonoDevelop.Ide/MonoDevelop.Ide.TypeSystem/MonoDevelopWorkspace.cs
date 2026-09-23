@@ -42,7 +42,8 @@ using System.ComponentModel;
 using Mono.Addins;
 using Microsoft.CodeAnalysis.Extensions;
 using Microsoft.CodeAnalysis.Internal.Log;
-using Microsoft.CodeAnalysis.Shared.Options;
+using Microsoft.CodeAnalysis.ErrorReporting;
+using Microsoft.CodeAnalysis.Telemetry;
 using Microsoft.CodeAnalysis.Shared.Utilities;
 using Microsoft.CodeAnalysis.SolutionCrawler;
 using MonoDevelop.Ide.Composition;
@@ -68,16 +69,8 @@ namespace MonoDevelop.Ide.TypeSystem
 		CompositionManager compositionManager;
 		DynamicFileManager dynamicFileManager;
 
-		// Background compiler is used to trigger compilations in the background for the solution and hold onto them
-		// so in case nothing references the solution in current stacks, they're not collected.
-		// We previously used to experience pathological GC times on large solutions, and this was caused
-		// by the compilations being freed out of memory due to only being weakly referenced, and recomputing them on
-		// a case by case basis.
-		BackgroundCompiler backgroundCompiler;
-
-		// Background parser is an optimized task queue for the roslyn use-case, where a parse that's already in-progress
-		// is not canceled, but used later on to help incremental parsing.
-		BackgroundParser backgroundParser;
+		// Roslyn 5.9 removed BackgroundCompiler and BackgroundParser: the workspace keeps compilations and
+		// parses incrementally by itself.
 
 		internal readonly WorkspaceId Id;
 
@@ -133,38 +126,16 @@ namespace MonoDevelop.Ide.TypeSystem
 					workspace.ActiveConfigurationChanged += HandleActiveConfigurationChanged;
 			});
 			
-			backgroundCompiler = new BackgroundCompiler (this);
-			backgroundParser = new BackgroundParser (this);
-			backgroundParser.Start ();
-
-			var cacheService = Services.GetService<IWorkspaceCacheService> ();
-			if (cacheService != null)
-				cacheService.CacheFlushRequested += OnCacheFlushRequested;
-
-			// Trigger running compiler syntax and semantic errors via the diagnostic analyzer engine
+			// Roslyn 5.9: the workspace cache service, the solution crawler, the runtime full solution analysis
+			// options (RuntimeOptions/InternalRuntimeDiagnosticOptions), the solution size threshold and
+			// document options providers are gone. Diagnostics are pulled on demand, the background analysis
+			// scope is a global option and document options come from .editorconfig (plus global options).
 			TypeSystemService.Preferences.FullSolutionAnalysisRuntimeEnabled = true;
-			Options = Options.WithChangedOption (Microsoft.CodeAnalysis.Diagnostics.InternalRuntimeDiagnosticOptions.Syntax, true)
-				.WithChangedOption (Microsoft.CodeAnalysis.Diagnostics.InternalRuntimeDiagnosticOptions.Semantic, true)
-            // Turn on FSA on a new workspace addition
-				.WithChangedOption (RuntimeOptions.FullSolutionAnalysis, true)
-				.WithChangedOption (RuntimeOptions.FullSolutionAnalysisInfoBarShown, false)
-
-			// Always use persistent storage regardless of solution size, at least until a consensus is reached
-			// https://github.com/mono/monodevelop/issues/4149 https://github.com/dotnet/roslyn/issues/25453
-			    .WithChangedOption (Microsoft.CodeAnalysis.Storage.StorageOptions.SolutionSizeThreshold, MonoDevelop.Core.Platform.IsLinux ? int.MaxValue : 0);
-
-			if (TypeSystemService.EnableSourceAnalysis) {
-				var solutionCrawler = Services.GetService<ISolutionCrawlerRegistrationService> ();
-				solutionCrawler.Register (this);
-			}
 
 			TypeSystemService.EnableSourceAnalysis.Changed += OnEnableSourceAnalysisChanged;
 
 			// TODO: Unhack C# here when monodevelop workspace supports more than C#
 			TypeSystemService.Preferences.FullSolutionAnalysisRuntimeEnabledChanged += OnEnableFullSourceAnalysisChanged;
-
-			foreach (var factory in AddinManager.GetExtensionObjects<Microsoft.CodeAnalysis.Options.IDocumentOptionsProviderFactory>("/MonoDevelop/Ide/TypeService/OptionProviders"))
-				Services.GetRequiredService<Microsoft.CodeAnalysis.Options.IOptionService> ().RegisterDocumentOptionsProvider (factory.TryCreate (this));
 
 			desktopService = await serviceProvider.GetService<DesktopService> ().ConfigureAwait (false);
 			documentManager = await serviceProvider.GetService<DocumentManager> ().ConfigureAwait (false);
@@ -172,6 +143,8 @@ namespace MonoDevelop.Ide.TypeSystem
 
 			if (MonoDevelopSolution != null) {
 				Runtime.RunInMainThread (() => desktopService.MemoryMonitor.StatusChanged += OnMemoryStatusChanged).Ignore ();
+				// TODO comments were computed by Roslyn's solution crawler before Roslyn 5.9.
+				MonoDevelopTaskListProvider.Register (this);
 			}
 
 			this.dynamicFileManager = compositionManager.GetExportedValue<DynamicFileManager> ();
@@ -197,41 +170,36 @@ namespace MonoDevelop.Ide.TypeSystem
 			if (!ShouldTurnOffFullSolutionAnalysis ())
 				return;
 
-			Options = Options.WithChangedOption (RuntimeOptions.FullSolutionAnalysis, false);
+			// Roslyn 5.9: low memory forces the minimal background analysis scope.
+			SolutionCrawlerOptionsStorage.LowMemoryForcedMinimalBackgroundAnalysis = true;
 			TypeSystemService.Preferences.FullSolutionAnalysisRuntimeEnabled = false;
 			if (IsUserOptionOn ()) {
 				// let user know full analysis is turned off due to memory concern.
 				// make sure we show info bar only once for the same solution.
-				Options = Options.WithChangedOption (RuntimeOptions.FullSolutionAnalysisInfoBarShown, true);
+				fullSolutionAnalysisInfoBarShown = true;
 
 				const string LowVMMoreInfoLink = "https://go.microsoft.com/fwlink/?linkid=2003417&clcid=0x409";
 				Services.GetService<IErrorReportingService> ().ShowGlobalErrorInfo (
 					GettextCatalog.GetString ("{0} has suspended some advanced features to improve performance", BrandingService.ApplicationName),
+					TelemetryFeatureName.Workspace,
+					null,
 					new InfoBarUI ("Learn more", InfoBarUI.UIKind.HyperLink, () => desktopService.ShowUrl (LowVMMoreInfoLink), closeAfterAction: false),
-					new InfoBarUI ("Restore", InfoBarUI.UIKind.Button, () => Options = Options.WithChangedOption (RuntimeOptions.FullSolutionAnalysis, true))
+					new InfoBarUI ("Restore", InfoBarUI.UIKind.Button, () => {
+						SolutionCrawlerOptionsStorage.LowMemoryForcedMinimalBackgroundAnalysis = false;
+						TypeSystemService.Preferences.FullSolutionAnalysisRuntimeEnabled = true;
+					})
 				);
 			}
 		}
 
-		void OnCacheFlushRequested (object sender, EventArgs args)
-		{
-			if (backgroundCompiler != null) {
-				backgroundCompiler.Dispose ();
-				backgroundCompiler = null; // PartialSemanticsEnabled will now return false
-			}
-
-			// No longer need cache notifications
-			var cacheService = Services.GetService<IWorkspaceCacheService> ();
-			if (cacheService != null)
-				cacheService.CacheFlushRequested -= OnCacheFlushRequested;
-		}
+		bool fullSolutionAnalysisInfoBarShown;
 
 		bool ShouldTurnOffFullSolutionAnalysis ()
 		{
 			// conditions
 			// 1. if our full solution analysis option is on (not user full solution analysis option, but our internal one) and
 			// 2. if infobar is never shown to users for this solution
-			return Options.GetOption (RuntimeOptions.FullSolutionAnalysis) && !Options.GetOption (RuntimeOptions.FullSolutionAnalysisInfoBarShown);
+			return TypeSystemService.Preferences.FullSolutionAnalysisRuntimeEnabled && !fullSolutionAnalysisInfoBarShown;
 		}
 
 		bool IsUserOptionOn ()
@@ -249,14 +217,8 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		void OnEnableSourceAnalysisChanged(object sender, EventArgs args)
 		{
-			var solutionCrawler = Services.GetService<ISolutionCrawlerRegistrationService> ();
-			if (TypeSystemService.EnableSourceAnalysis)
-				solutionCrawler.Register (this);
-			else
-				solutionCrawler.Unregister (this);
-
-			var diagnosticAnalyzer = compositionManager.GetExportedValue<Microsoft.CodeAnalysis.Diagnostics.IDiagnosticAnalyzerService> ();
-			diagnosticAnalyzer.Reanalyze (this);
+			// Roslyn 5.9: there is no solution crawler to (un)register; ask for a diagnostics refresh.
+			Services.GetService<Microsoft.CodeAnalysis.Diagnostics.IDiagnosticAnalyzerService> ()?.RequestDiagnosticRefresh ();
 		}
 
 		void OnEnableFullSourceAnalysisChanged (object sender, EventArgs args)
@@ -264,14 +226,16 @@ namespace MonoDevelop.Ide.TypeSystem
 			// we only want to turn on FSA if the option is explicitly enabled,
 			// we don't want to turn it off here.
 			if (TypeSystemService.Preferences.FullSolutionAnalysisRuntimeEnabled) {
-				Options = Options.WithChangedOption (RuntimeOptions.FullSolutionAnalysis, true);
+				SolutionCrawlerOptionsStorage.LowMemoryForcedMinimalBackgroundAnalysis = false;
+				Services.GetService<Microsoft.CodeAnalysis.Diagnostics.IDiagnosticAnalyzerService> ()?.RequestDiagnosticRefresh ();
 			}
 		}
 
-		protected internal override bool PartialSemanticsEnabled => backgroundCompiler != null;
+		// Roslyn 5.9 removed BackgroundCompiler; partial semantics are always enabled (as in the VS workspace).
+		public override bool PartialSemanticsEnabled => !disposed;
 
 		// This is called by OnSolutionRemoved and on Dispose.
-		protected override void ClearSolutionData ()
+		public override void ClearSolutionData ()
 		{
 			if (MonoDevelopSolution != null) {
 				foreach (var prj in MonoDevelopSolution.GetAllProjects ()) {
@@ -333,7 +297,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		// This is called by OnProjectRemoved.
-		protected override void ClearProjectData (ProjectId projectId)
+		public override void ClearProjectData (ProjectId projectId)
 		{
 			var actualProject = ProjectMap.RemoveProject (projectId);
 			// Do not unload the project if there are still project ids mappings defined for this project.
@@ -345,7 +309,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			base.ClearProjectData (projectId);
 		}
 
-		protected override void Dispose (bool finalize)
+		public override void Dispose (bool finalize)
 		{
 			if (disposed)
 				return;
@@ -354,13 +318,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 			CancelLoad ();
 
-			var cacheService = Services.GetService<IWorkspaceCacheService> ();
-			if (cacheService != null)
-				cacheService.CacheFlushRequested -= OnCacheFlushRequested;
-
-			var cacheHostService = Services.GetService<IProjectCacheHostService> () as IDisposable;
-			cacheHostService?.Dispose ();
-
+			MonoDevelopTaskListProvider.Unregister (this);
 			ProjectHandler.Dispose ();
 			MetadataReferenceManager.ClearCache ();
 
@@ -373,14 +331,6 @@ namespace MonoDevelop.Ide.TypeSystem
 
 			if (workspace != null) {
 				workspace.ActiveConfigurationChanged -= HandleActiveConfigurationChanged;
-			}
-
-			var solutionCrawler = Services.GetService<ISolutionCrawlerRegistrationService> ();
-			solutionCrawler.Unregister (this);
-
-			if (backgroundCompiler != null) {
-				backgroundCompiler.Dispose ();
-				backgroundCompiler = null; // PartialSemanticsEnabled will now return false
 			}
 
 			base.Dispose (finalize);
@@ -642,12 +592,10 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		ProjectChanges projectChanges;
 
-		protected override void OnDocumentClosing (DocumentId documentId)
+		public override void OnDocumentClosing (DocumentId documentId)
 		{
 			base.OnDocumentClosing (documentId);
 			OpenDocuments.Remove (documentId);
-
-			backgroundParser.CancelParse (documentId);
 		}
 
 //		internal override bool CanChangeActiveContextDocument {
@@ -702,7 +650,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				_filePath = filePath;
 			}
 
-			public override Task<TextAndVersion> LoadTextAndVersionAsync(Workspace workspace, DocumentId documentId, CancellationToken cancellationToken)
+			public override Task<TextAndVersion> LoadTextAndVersionAsync(LoadTextOptions options, CancellationToken cancellationToken)
 			{
 				return Task.FromResult(TextAndVersion.Create(_textContainer.CurrentText, VersionStamp.Create(), _filePath));
 			}
@@ -717,15 +665,14 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		protected override void OnDocumentTextChanged (Document document)
+		public override void OnDocumentTextChanged (Document document)
 		{
+			// Roslyn 5.9: no BackgroundParser, the workspace parses on demand.
 			base.OnDocumentTextChanged (document);
-
-			backgroundParser.Parse (document);
 		}
 
 		//FIXME: this should NOT be async. our implementation is doing some very expensive things like formatting that it shouldn't need to do.
-		protected override void ApplyDocumentTextChanged (DocumentId id, SourceText text)
+		public override void ApplyDocumentTextChanged (DocumentId id, SourceText text)
 		{
 			lock (projectModifyLock)
 				tryApplyState_documentTextChangedTasks.Add (ApplyDocumentTextChangedCore (id, text));
@@ -963,7 +910,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		protected override void ApplyAnalyzerConfigDocumentTextChanged (DocumentId id, SourceText text)
+		public override void ApplyAnalyzerConfigDocumentTextChanged (DocumentId id, SourceText text)
 		{
 			lock (projectModifyLock)
 				tryApplyState_documentTextChangedTasks.Add (ApplyDocumentTextChangedCore (id, text, isAnalyzerConfigFile: true));
@@ -1027,7 +974,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		/// <value>The task that can be awaited to validate saving has finished.</value>
 		internal Task ProjectSaveTask { get; private set; } = Task.CompletedTask;
 
-		internal override bool TryApplyChanges (Solution newSolution, IProgressTracker progressTracker)
+		public override bool TryApplyChanges (Solution newSolution, IProgress<CodeAnalysisProgress> progressTracker)
 		{
 			// this is supported on the main thread only
 			// see https://github.com/dotnet/roslyn/pull/18043
@@ -1107,13 +1054,13 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		protected override void ApplyProjectChanges (ProjectChanges projectChanges)
+		public override void ApplyProjectChanges (ProjectChanges projectChanges)
 		{
 			this.projectChanges = projectChanges;
 			base.ApplyProjectChanges (projectChanges);
 		}
 
-		protected override void ApplyDocumentAdded (DocumentInfo info, SourceText text)
+		public override void ApplyDocumentAdded (DocumentInfo info, SourceText text)
 		{
 			var mdProject = GetMonoProject (info);
 
@@ -1151,7 +1098,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			return null;
 		}
 
-		protected override void ApplyAnalyzerConfigDocumentAdded (DocumentInfo info, SourceText text)
+		public override void ApplyAnalyzerConfigDocumentAdded (DocumentInfo info, SourceText text)
 		{
 			var mdProject = GetMonoProject (info);
 
@@ -1229,7 +1176,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			return folder;
 		}
 
-		protected override void ApplyDocumentRemoved (DocumentId documentId)
+		public override void ApplyDocumentRemoved (DocumentId documentId)
 		{
 			var document = GetDocument (documentId);
 			var mdProject = GetMonoProject (documentId.ProjectId);
@@ -1256,7 +1203,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			tryApplyState_changedProjects.Add (mdProject);
 		}
 
-		protected override void ApplyAnalyzerConfigDocumentRemoved (DocumentId documentId)
+		public override void ApplyAnalyzerConfigDocumentRemoved (DocumentId documentId)
 		{
 			LoggingService.LogInfo ("ApplyAnalyzerConfigDocumentRemoved {0}", documentId);
 			base.ApplyAnalyzerConfigDocumentRemoved (documentId);
@@ -1329,7 +1276,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			return true;
 		}
 
-		protected override void ApplyMetadataReferenceAdded (ProjectId projectId, MetadataReference metadataReference)
+		public override void ApplyMetadataReferenceAdded (ProjectId projectId, MetadataReference metadataReference)
 		{
 			if (!TryGetMetadataReferenceMapping (projectId, metadataReference, out var mdProject, out string path, out var systemAssemblyOpt))
 				return;
@@ -1370,7 +1317,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			this.OnMetadataReferenceAdded (projectId, metadataReference);
 		}
 
-		protected override void ApplyMetadataReferenceRemoved (ProjectId projectId, MetadataReference metadataReference)
+		public override void ApplyMetadataReferenceRemoved (ProjectId projectId, MetadataReference metadataReference)
 		{
 			if (!TryGetMetadataReferenceMapping (projectId, metadataReference, out var mdProject, out string path, out var systemAssemblyOpt))
 				return;
@@ -1405,7 +1352,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			return null;
 		}
 
-		protected override void ApplyProjectReferenceAdded (ProjectId projectId, ProjectReference projectReference)
+		public override void ApplyProjectReferenceAdded (ProjectId projectId, ProjectReference projectReference)
 		{
 			var mdProject = GetMonoProject (projectId) as MonoDevelop.Projects.DotNetProject;
 			var projectToReference = GetMonoProject (projectReference.ProjectId);
@@ -1417,7 +1364,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			this.OnProjectReferenceAdded (projectId, projectReference);
 		}
 
-		protected override void ApplyProjectReferenceRemoved (ProjectId projectId, ProjectReference projectReference)
+		public override void ApplyProjectReferenceRemoved (ProjectId projectId, ProjectReference projectReference)
 		{
 			var mdProject = GetMonoProject (projectId) as MonoDevelop.Projects.DotNetProject;
 			var projectToReference = GetMonoProject (projectReference.ProjectId);
@@ -1433,7 +1380,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		protected override void ApplyDocumentInfoChanged (DocumentId id, DocumentInfo info)
+		public override void ApplyDocumentInfoChanged (DocumentId id, DocumentInfo info)
 		{
 			var currentSolution = CurrentSolution;
 			var document = currentSolution.GetDocument (id);
@@ -1681,7 +1628,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		internal override void SetDocumentContext (DocumentId documentId)
+		public override void SetDocumentContext (DocumentId documentId)
 		{
 			base.OnDocumentContextUpdated (documentId);
 		}

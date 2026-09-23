@@ -36,6 +36,10 @@ namespace MonoDevelop.Ide.TypeSystem
 {
 	internal sealed class MonoDevelopAnalyzer : IDisposable
 	{
+		// Roslyn 5.9 + Publicizer: AnalyzerFileReference.AnalyzerLoadFailed and its backing field share a name
+		// (CS0229), so the event is accessed through reflection.
+		static readonly EventInfo AnalyzerLoadFailedEvent = typeof (AnalyzerFileReference).GetEvent ("AnalyzerLoadFailed");
+
 		private readonly HostDiagnosticUpdateSource _hostDiagnosticUpdateSource;
 		private readonly ProjectId _projectId;
 		private readonly Microsoft.CodeAnalysis.Workspace _workspace;
@@ -45,7 +49,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		// these 2 are mutable states that must be guarded under the _gate.
 		private readonly object _gate = new object ();
 		private AnalyzerReference _analyzerReference = null;
-		private ImmutableArray<DiagnosticData> _analyzerLoadErrors = ImmutableArray<DiagnosticData>.Empty;
+		private ImmutableArray<Diagnostic> _analyzerLoadErrors = ImmutableArray<Diagnostic>.Empty;
 
 		public MonoDevelopAnalyzer (FilePath fullPath, HostDiagnosticUpdateSource hostDiagnosticUpdateSource, ProjectId projectId, Microsoft.CodeAnalysis.Workspace workspace, IAnalyzerAssemblyLoader loader, string language)
 		{
@@ -75,7 +79,7 @@ namespace MonoDevelop.Ide.TypeSystem
 						// Pass down a custom loader that will ensure we are watching for file changes once we actually load the assembly.
 						var assemblyLoaderForFileTracker = new AnalyzerAssemblyLoaderThatEnsuresFileBeingWatched (this);
 						_analyzerReference = new AnalyzerFileReference (FullPath, assemblyLoaderForFileTracker);
-						((AnalyzerFileReference)_analyzerReference).AnalyzerLoadFailed += OnAnalyzerLoadError;
+						AnalyzerLoadFailedEvent.AddEventHandler (_analyzerReference, new EventHandler<AnalyzerLoadFailureEventArgs> (OnAnalyzerLoadError));
 					} else {
 						_analyzerReference = new VisualStudioUnresolvedAnalyzerReference (FullPath, this);
 					}
@@ -87,13 +91,47 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		private void OnAnalyzerLoadError (object sender, AnalyzerLoadFailureEventArgs e)
 		{
-			var data = AnalyzerHelper.CreateAnalyzerLoadFailureDiagnostic (_projectId, _language, FullPath, e);
+			var data = CreateAnalyzerLoadFailureDiagnostic (_language, FullPath, e);
 
 			lock (_gate) {
 				_analyzerLoadErrors = _analyzerLoadErrors.Add (data);
 			}
 
 			_hostDiagnosticUpdateSource.UpdateDiagnosticsForProject (_projectId, this, _analyzerLoadErrors);
+		}
+
+		// Roslyn 5.9 no longer exposes AnalyzerHelper.CreateAnalyzerLoadFailureDiagnostic; build an equivalent
+		// diagnostic with the compiler's analyzer load failure ids.
+		static Diagnostic CreateAnalyzerLoadFailureDiagnostic (string language, string fullPath, AnalyzerLoadFailureEventArgs e)
+		{
+			bool isVB = language == LanguageNames.VisualBasic;
+			string id, title;
+			switch (e.ErrorCode) {
+			case AnalyzerLoadFailureEventArgs.FailureErrorCode.UnableToCreateAnalyzer:
+				id = isVB ? "BC42376" : "CS8032";
+				title = "An instance of analyzer cannot be created";
+				break;
+			case AnalyzerLoadFailureEventArgs.FailureErrorCode.NoAnalyzers:
+				id = isVB ? "BC42377" : "CS8033";
+				title = "The assembly does not contain any analyzers";
+				break;
+			case AnalyzerLoadFailureEventArgs.FailureErrorCode.ReferencesFramework:
+				id = isVB ? "BC42503" : "CS8850";
+				title = "The assembly references the .NET Framework, which is not supported";
+				break;
+			case AnalyzerLoadFailureEventArgs.FailureErrorCode.ReferencesNewerCompiler:
+				id = isVB ? "BC42505" : "CS9057";
+				title = "The analyzer assembly references a newer version of the compiler";
+				break;
+			default:
+				id = isVB ? "BC42378" : "CS8034";
+				title = "Unable to load Analyzer assembly";
+				break;
+			}
+
+			var message = e.TypeName != null ? $"{title}: {fullPath} ({e.TypeName}): {e.Message}" : $"{title}: {fullPath}: {e.Message}";
+			var descriptor = new DiagnosticDescriptor (id, title, "{0}", "Compiler", DiagnosticSeverity.Warning, isEnabledByDefault: true);
+			return Diagnostic.Create (descriptor, Location.None, message);
 		}
 
 		public void Dispose ()
@@ -109,7 +147,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			ResetReferenceAndErrors (out var reference, out var loadErrors);
 
 			if (reference is AnalyzerFileReference fileReference) {
-				fileReference.AnalyzerLoadFailed -= OnAnalyzerLoadError;
+				AnalyzerLoadFailedEvent.RemoveEventHandler (fileReference, new EventHandler<AnalyzerLoadFailureEventArgs> (OnAnalyzerLoadError));
 
 				if (!loadErrors.IsEmpty) {
 					_hostDiagnosticUpdateSource.ClearDiagnosticsForProject (_projectId, this);
@@ -119,13 +157,13 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		private void ResetReferenceAndErrors (out AnalyzerReference reference, out ImmutableArray<DiagnosticData> loadErrors)
+		private void ResetReferenceAndErrors (out AnalyzerReference reference, out ImmutableArray<Diagnostic> loadErrors)
 		{
 			lock (_gate) {
 				loadErrors = _analyzerLoadErrors;
 				reference = _analyzerReference;
 
-				_analyzerLoadErrors = ImmutableArray<DiagnosticData>.Empty;
+				_analyzerLoadErrors = ImmutableArray<Diagnostic>.Empty;
 				_analyzerReference = null;
 			}
 		}
