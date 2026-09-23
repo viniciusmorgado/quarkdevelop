@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    GTK3 add-in manager UI from mono-addins (vendored, see UPSTREAM.md), on net10.0 with the GtkSharp
+    3.24.24 and Mono.Addins 1.4.1 NuGet packages (ADR 0005). Replaces the GTK2 Mono.Addins.Gui.
+  -->
+  <PropertyGroup>
+    <AssemblyName>Mono.Addins.GuiGtk3</AssemblyName>
+    <RootNamespace>Mono.Addins.GuiGtk3</RootNamespace>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <AssemblyOriginatorKeyFile>mono-addins.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icons/*.png" LogicalName="%(Filename)%(Extension)" />
+    <EmbeddedResource Include="interfaces/*.ui.xml" LogicalName="Mono.Addins.GuiGtk3.interfaces.%(Filename)" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GtkSharp" />
+    <PackageReference Include="Mono.Addins" />
+    <PackageReference Include="Mono.Addins.Setup" />
+  </ItemGroup>
+</Project>
