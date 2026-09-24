@@ -76,8 +76,15 @@ namespace MonoDevelop.Projects.Extensions
 			set { type = value; }
 		}
 
+		// Projects of a solution are created in parallel: the first lookups loading an add-in's assemblies at the same
+		// time made Mono.Addins report "Type not found" for all but one of them (the item became an UnknownSolutionItem).
+		static readonly object itemTypeLock = new object ();
+
 		public virtual Type ItemType {
-			get { return Addin.GetType (type, true); }
+			get {
+				lock (itemTypeLock)
+					return Addin.GetType (type, true);
+			}
 		}
 		
 		public virtual bool CanHandleFile (string fileName, string typeGuid)

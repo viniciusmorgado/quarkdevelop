@@ -33,24 +33,48 @@ namespace MonoDevelop.DotNetCore.NodeBuilders
 	class PackageDependencyInfo
 	{
 		ImmutableArray<PackageDependencyInfo> dependencies = ImmutableArray<PackageDependencyInfo>.Empty;
-		readonly PackageDependency dependency;
+		readonly string name;
+		readonly string version;
+		readonly ImmutableArray<string> dependencyNames;
+		readonly bool isDiagnostic;
+		readonly string diagnosticCode;
+		readonly string diagnosticMessage;
 
 		public PackageDependencyInfo (PackageDependency dependency)
+			: this (dependency.Name, dependency.Version, dependency.Dependencies, dependency.IsDiagnostic, dependency.DiagnosticCode, dependency.DiagnosticMessage)
 		{
-			this.dependency = dependency;
+		}
+
+		/// <summary>
+		/// A dependency read from the restore output (ProjectAssetsFileReader) instead of the design-time build.
+		/// </summary>
+		internal PackageDependencyInfo (
+			string name,
+			string version,
+			ImmutableArray<string> dependencyNames,
+			bool isDiagnostic = false,
+			string diagnosticCode = null,
+			string diagnosticMessage = null)
+		{
+			this.name = name;
+			this.version = version;
+			this.dependencyNames = dependencyNames.IsDefault ? ImmutableArray<string>.Empty : dependencyNames;
+			this.isDiagnostic = isDiagnostic;
+			this.diagnosticCode = diagnosticCode;
+			this.diagnosticMessage = diagnosticMessage;
 		}
 
 		public bool HasChildDiagnostic { get; set; }
 		public bool IsBuilt { get; set; }
 
-		public string Name => dependency.Name;
-		public string Version => dependency.Version;
+		public string Name => name;
+		public string Version => version;
 
-		public string DiagnosticCode => dependency.DiagnosticCode;
-		public string DiagnosticMessage => dependency.DiagnosticMessage;
-		public bool IsDiagnostic => dependency.IsDiagnostic;
+		public string DiagnosticCode => diagnosticCode;
+		public string DiagnosticMessage => diagnosticMessage;
+		public bool IsDiagnostic => isDiagnostic;
 
-		public ImmutableArray<string> DependencyNames => dependency.Dependencies;
+		public ImmutableArray<string> DependencyNames => dependencyNames;
 
 		public ImmutableArray<PackageDependencyInfo> Dependencies {
 			get { return dependencies; }

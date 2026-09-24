@@ -93,8 +93,14 @@ namespace MonoDevelop.DotNetCore.NodeBuilders
 				var dependencies = await Project.GetPackageDependencies (configurationSelector, tokenSource.Token)
 					.ConfigureAwait (false);
 
-				if (!tokenSource.IsCancellationRequested)
-					return LoadPackageDependencies (dependencies);
+				if (!tokenSource.IsCancellationRequested) {
+					var frameworks = LoadPackageDependencies (dependencies);
+					// .NET 5 and later SDKs return no target frameworks and no dependency graph from the design-time
+					// build (only the top-level packages): read them from the restore output instead.
+					if (frameworks.Count == 0)
+						frameworks = ProjectAssetsFileReader.Read (Project);
+					return frameworks;
+				}
 
 				return null;
 			});
@@ -137,6 +143,16 @@ namespace MonoDevelop.DotNetCore.NodeBuilders
 				}
 			}
 
+			return BuildDependencyTree (frameworks, packageDependencies);
+		}
+
+		/// <summary>
+		/// Links the frameworks and packages to the dependencies they name (keys of <paramref name="packageDependencies"/>).
+		/// </summary>
+		internal static List<PackageDependencyInfo> BuildDependencyTree (
+			List<PackageDependencyInfo> frameworks,
+			Dictionary<string, PackageDependencyInfo> packageDependencies)
+		{
 			foreach (PackageDependencyInfo framework in frameworks) {
 				BuildChildDependencies (packageDependencies, framework);
 			}

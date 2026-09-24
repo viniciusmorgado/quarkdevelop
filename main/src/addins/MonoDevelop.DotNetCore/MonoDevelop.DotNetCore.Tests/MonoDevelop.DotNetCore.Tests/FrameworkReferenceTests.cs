@@ -44,6 +44,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task UnknownNuGetPackageReferenceId_DesignTimeBuilds ()
 		{
 			if (!IsDotNetCoreSdk30OrLaterInstalled ()) {

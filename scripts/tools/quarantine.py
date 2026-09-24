@@ -23,6 +23,11 @@ OWNER = "migration"
 # rules marked stack=True also look at the stack trace (fixture paths). Timeouts are only read from the
 # message: with NUnit's DefaultTimeout every stack contains TimeoutCommand frames.
 RULES = [
+    (r"start process 'msbuild'|Should_pack_multi_target_project", False,
+     "network", "restores packages from nuget.org (msbuild /t:Restore, netstandard1.x packages; no network in tests); "
+     "DependenciesNodeSdkProjectTests restores from a local feed", "T099"),
+    (r"TypeScriptCompile", False,
+     "SDK-change", "the .NET 10 Web SDK defines no TypeScriptCompile build action for .ts files", "T135"),
     (r"Xam\.Test\.MSBuild\.Sdk", False,
      "network", "restores an MSBuild SDK package from nuget.org (no network in tests); "
      "PackageOperationsEndToEndTests resolves one from a local feed", "T100"),

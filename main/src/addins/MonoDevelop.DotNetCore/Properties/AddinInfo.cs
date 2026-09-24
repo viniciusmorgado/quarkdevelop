@@ -18,4 +18,5 @@ using Mono.Addins.Description;
 [assembly:AddinDependency ("Debugger.VsCodeDebugProtocol", MonoDevelop.BuildInfo.Version)]
 [assembly:AddinDependency ("DesignerSupport", MonoDevelop.BuildInfo.Version)]
 [assembly:AddinDependency ("PackageManagement", MonoDevelop.BuildInfo.Version)]
-[assembly:AddinDependency ("UnitTesting", MonoDevelop.BuildInfo.Version)]
+// UnitTesting is not ported yet (T101); the .NET test platform adapter is not compiled.
+// [assembly:AddinDependency ("UnitTesting", MonoDevelop.BuildInfo.Version)]

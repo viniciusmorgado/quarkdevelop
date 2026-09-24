@@ -64,7 +64,7 @@ namespace MonoDevelop.DotNetCore
 			"2.1", "2.0", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"
 		};
 		static string [] supportedNetCoreAppVersions = {
-			"3.1", "3.0", "2.2", "2.1", "2.0", "1.1", "1.0"
+			"10.0", "9.0", "8.0", "3.1", "3.0", "2.2", "2.1", "2.0", "1.1", "1.0"
 		};
 
 		public IEnumerable<TargetFramework> GetKnownFrameworks ()
@@ -96,10 +96,11 @@ namespace MonoDevelop.DotNetCore
 
 		public static IEnumerable<TargetFramework> GetNetStandardTargetFrameworks ()
 		{
-			if (DotNetCoreRuntime.IsNetCore30Installed () || MonoRuntimeInfoExtensions.CurrentRuntimeVersion.SupportsNetStandard21 ())
+			// .NET 5+ runtimes run .NET Standard 2.1 and 2.0 libraries too.
+			if (DotNetCoreRuntime.IsNetCore30OrHigherInstalled () || MonoRuntimeInfoExtensions.CurrentRuntimeVersion.SupportsNetStandard21 ())
 				yield return CreateTargetFramework (".NETStandard", "2.1");
 				
-			if (DotNetCoreRuntime.IsNetCore2xInstalled () || MonoRuntimeInfoExtensions.CurrentRuntimeVersion.SupportsNetStandard20 ())
+			if (DotNetCoreRuntime.IsNetCore2xOrHigherInstalled () || MonoRuntimeInfoExtensions.CurrentRuntimeVersion.SupportsNetStandard20 ())
 				yield return CreateTargetFramework (".NETStandard", "2.0");
 
 			foreach (var targetFramework in GetTargetFrameworksVersion1x (".NETStandard", HighestNetStandard1xMinorVersionSupported).Reverse ())

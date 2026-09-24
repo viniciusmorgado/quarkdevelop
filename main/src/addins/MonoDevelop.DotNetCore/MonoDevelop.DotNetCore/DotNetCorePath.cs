@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Assemblies;
 
 namespace MonoDevelop.DotNetCore
 {
@@ -114,10 +115,28 @@ namespace MonoDevelop.DotNetCore
 				return "/usr/local/share/dotnet/dotnet";
 
 			if (Platform.IsLinux)
-				return "/usr/share/dotnet/dotnet";
+				return GetDotNetHostPathOnLinux ();
 
 			// Windows.
 			return "dotnet.exe";
+		}
+
+		/// <summary>
+		/// The dotnet host Core builds and runs with (DotNetCoreSdkInfo: DOTNET_HOST_PATH, DOTNET_ROOT, PATH) instead of the
+		/// fixed /usr/share/dotnet/dotnet, with links resolved so that sdk/ and shared/ are found next to it
+		/// (distribution packages install /usr/bin/dotnet -> /usr/lib/dotnet/dotnet).
+		/// </summary>
+		static string GetDotNetHostPathOnLinux ()
+		{
+			string path = DotNetCoreSdkInfo.GetDotNetHostPath ();
+			try {
+				var target = File.ResolveLinkTarget (path, returnFinalTarget: true);
+				if (target != null)
+					return target.FullName;
+			} catch (IOException) {
+				// Not found: DotNetCorePath reports the host as missing.
+			}
+			return path;
 		}
 	}
 }

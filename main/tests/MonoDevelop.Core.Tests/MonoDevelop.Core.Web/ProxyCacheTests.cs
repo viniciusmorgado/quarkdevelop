@@ -1,10 +1,7 @@
 //
-// GlobalToolTests.cs
+// ProxyCacheTests.cs
 //
-// Author:
-//       Rodrigo Moya <rodrigo.moya@xamarin.com>
-//
-// Copyright (c) 2019 Microsoft, Corp. (http://microsoft.com)
+// Copyright (c) 2026 MonoDevelop contributors
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,29 +21,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Threading;
-using System.Threading.Tasks;
-using MonoDevelop.DotNetCore.GlobalTools;
-using MonoDevelop.Ide;
+using System;
+using System.Net;
 using NUnit.Framework;
-using UnitTests;
 
-namespace MonoDevelop.DotNetCore.Tests
+namespace MonoDevelop.Core.Web
 {
 	[TestFixture]
-	class GlobalToolTests : TestBase
+	public class ProxyCacheTests
 	{
+		/// <summary>
+		/// On .NET the default proxy returns null for a uri that is not proxied (Mono returned the uri): the NuGet
+		/// add-in's update check failed with a NullReferenceException for every solution with package references (T099).
+		/// </summary>
 		[Test]
-		public void DetectNonInstalledTools ()
+		public void DefaultProxyWithoutAddressMeansNoProxy ()
 		{
-			Assert.False (DotNetCoreGlobalToolManager.IsInstalled ("fake-tool"));
-		}
+#pragma warning disable SYSLIB0014 // ProxyCache reads WebRequest.DefaultWebProxy (the system proxy settings).
+			IWebProxy defaultProxy = WebRequest.DefaultWebProxy;
+			try {
+				WebRequest.DefaultWebProxy = new TestProxy (null);
 
-		[Test, Ignore ("Installs global tools from nuget.org")]
-		public async Task CanInstallMissingTools ()
-		{
-			Assert.True (await DotNetCoreGlobalToolManager.Install ("dotnet-aspnet-codegenerator", CancellationToken.None));
-			Assert.True (await DotNetCoreGlobalToolManager.Install ("dotnet-script", CancellationToken.None));
+				Assert.IsNull (new ProxyCache ().GetProxy (new Uri ("https://api.nuget.org/v3/index.json")));
+			} finally {
+				WebRequest.DefaultWebProxy = defaultProxy;
+			}
+#pragma warning restore SYSLIB0014
 		}
 	}
 }

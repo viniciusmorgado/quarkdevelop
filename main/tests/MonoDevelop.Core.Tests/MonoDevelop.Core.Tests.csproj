@@ -96,6 +96,7 @@
     <Compile Include="MonoDevelop.Core/ServiceProviderTests.cs" />
     <Compile Include="MonoDevelop.Core.Web/ProxyAuthenticationHandlerTests.cs" />
     <Compile Include="MonoDevelop.Core.Web/TestProxy.cs" />
+    <Compile Include="MonoDevelop.Core.Web/ProxyCacheTests.cs" />
     <Compile Include="MonoDevelop.Core.Web/LambdaMessageHandler.cs" />
     <Compile Include="MonoDevelop.Core.Web/HttpSourceAuthenticationHandlerTests.cs" />
     <Compile Include="MonoDevelop.Core/SdkResolverTests.cs" />

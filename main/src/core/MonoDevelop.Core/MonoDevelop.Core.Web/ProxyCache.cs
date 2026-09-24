@@ -121,7 +121,11 @@ namespace MonoDevelop.Core.Web
 			// return that we don't need a proxy and we should try to connect directly.
 			IWebProxy proxy = WebRequest.DefaultWebProxy;
 			if (proxy != null) {
-				Uri proxyAddress = new Uri (proxy.GetProxy (uri).AbsoluteUri);
+				// .NET returns no proxy address (null) when the uri is not proxied; Mono returned the uri itself.
+				Uri proxyUri = proxy.GetProxy (uri);
+				if (proxyUri == null)
+					return false;
+				Uri proxyAddress = new Uri (proxyUri.AbsoluteUri);
 				if (String.Equals (proxyAddress.AbsoluteUri, uri.AbsoluteUri))
 					return false;
 				if (proxy.IsBypassed (uri))

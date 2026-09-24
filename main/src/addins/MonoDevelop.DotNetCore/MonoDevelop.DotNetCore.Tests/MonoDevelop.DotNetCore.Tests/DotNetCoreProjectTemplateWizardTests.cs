@@ -26,6 +26,7 @@
 
 using System.Linq;
 using System.Reflection;
+using MonoDevelop.Core;
 using MonoDevelop.Core.StringParsing;
 using MonoDevelop.DotNetCore.Templating;
 using MonoDevelop.Ide.Templates;
@@ -43,6 +44,14 @@ namespace MonoDevelop.DotNetCore.Tests
 		{
 			wizard = new DotNetCoreProjectTemplateWizard ();
 			AddSupportedParameters (null);
+		}
+
+		// The wizard asks the templating service (template engine: main thread only) for the template's parameters.
+		int GetTotalPages ()
+		{
+#pragma warning disable VSTHRD002 // the test thread is not the main loop thread: no deadlock
+			return Runtime.RunInMainThread (() => wizard.TotalPages).GetAwaiter ().GetResult ();
+#pragma warning restore VSTHRD002
 		}
 
 		bool WizardHasParameter (string name)
@@ -68,7 +77,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			AddSupportedParameters ("NetStandard");
 			DotNetCoreRuntimesInstalled ("2.0.1");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (1, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -103,7 +112,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			AddSupportedParameters ("NetStandard;FSharpNetStandard");
 			DotNetCoreRuntimesInstalled ("2.0.1");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (1, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -124,7 +133,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled (new string[0]);
 			MonoRuntimeInfoExtensions.CurrentRuntimeVersion = new Version ("5.4.0");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (1, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -160,7 +169,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled (new string[0]);
 			MonoRuntimeInfoExtensions.CurrentRuntimeVersion = new Version ("5.16.0");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (1, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -180,7 +189,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.0.3");
 			DotNetCoreSdksInstalled ("2.1.2");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -199,7 +208,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("1.1.1");
 			DotNetCoreSdksInstalled ("1.0.1");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -225,7 +234,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.0.3", "1.1.2", "1.0.4");
 			DotNetCoreSdksInstalled ("2.1.2", "1.0.4", "1.0.1");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (1, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -282,7 +291,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("1.1.2");
 			DotNetCoreSdksInstalled ("1.0.4");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -303,7 +312,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.0.5", "1.1.2");
 			DotNetCoreSdksInstalled ("2.1.4", "1.0.4");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -329,7 +338,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.1.14", "2.2.8", "3.0.1", "3.1.0", $"{DotNetCoreSdk.DotNetCoreUnsupportedTargetFrameworkVersion.Major}.{DotNetCoreSdk.DotNetCoreUnsupportedTargetFrameworkVersion.Minor}.0");
 			DotNetCoreSdksInstalled ("2.1.702", "2.2.402", "3.0.101", "3.1.100", $"{DotNetCoreSdk.DotNetCoreUnsupportedTargetFrameworkVersion.Major}.{DotNetCoreSdk.DotNetCoreUnsupportedTargetFrameworkVersion.Minor}.0");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (1, pages);
 			Assert.AreEqual (4, wizard.TargetFrameworks.Count);
@@ -344,7 +353,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.0.3");
 			DotNetCoreSdksInstalled ("2.0.3");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -363,7 +372,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			AddSupportedParameters ("NetCoreLibrary");
 			DotNetCoreRuntimesInstalled (new string[0]);
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -381,7 +390,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.1.1");
 			DotNetCoreSdksInstalled ("2.1.301");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -410,7 +419,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.1.2");
 			DotNetCoreSdksInstalled ("2.1.302");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -441,7 +450,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.1.5", "1.1.2");
 			DotNetCoreSdksInstalled ("2.1.403", "1.0.4");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -465,7 +474,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("3.0.100", sdk2x);
 			DotNetCoreSdksInstalled ("3.0.100", sdk2x);
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -487,7 +496,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("3.0.0-preview-27324-5");
 			DotNetCoreSdksInstalled ("3.0.0-preview-27324-5");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard21"));
@@ -520,7 +529,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.2.0");
 			DotNetCoreSdksInstalled ("2.2.101");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -551,7 +560,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.2.6");
 			DotNetCoreSdksInstalled ("2.2.401");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -584,7 +593,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.2.3", "1.1.2");
 			DotNetCoreSdksInstalled ("2.2.202", "1.0.4");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (0, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));
@@ -605,7 +614,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			DotNetCoreRuntimesInstalled ("2.1.0", "2.0.3");
 			DotNetCoreSdksInstalled ("2.1.300", "2.0.3");
 
-			int pages = wizard.TotalPages;
+			int pages = GetTotalPages ();
 
 			Assert.AreEqual (1, pages);
 			Assert.IsFalse (WizardHasParameter ("UseNetStandard20"));

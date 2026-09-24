@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using System.Text;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Ide;
 using MonoDevelop.Ide.Updater;
 
@@ -127,8 +128,10 @@ namespace MonoDevelop.DotNetCore
 
 		static string GetMSBuildSdksLocation ()
 		{
-			if (MSBuildSdks.Installed)
-				return MSBuildSdks.MSBuildSDKsPath;
+			// The SDK whose MSBuild builds the projects (Core's DotNetCoreTargetRuntime), not Mono's MSBuild SDKs.
+			var sdk = (Runtime.SystemAssemblyService.CurrentRuntime as DotNetCoreTargetRuntime)?.Sdk;
+			if (sdk != null)
+				return sdk.MSBuildPath.Combine ("Sdks");
 
 			return GetNotInstalledString ();
 		}

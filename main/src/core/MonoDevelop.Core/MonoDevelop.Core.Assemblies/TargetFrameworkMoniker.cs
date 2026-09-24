@@ -240,6 +240,10 @@ namespace MonoDevelop.Core.Assemblies
 			if (IsNetFramework (framework))
 				return GetShortNetFrameworkName (framework);
 
+			// .NET 5 and later are .NETCoreApp frameworks named net<version> (net10.0), not netcoreapp<version>.
+			if (framework.Identifier == ".NETCoreApp" && System.Version.TryParse (framework.Version, out var version) && version.Major >= 5)
+				return "net" + framework.Version;
+
 			string identifier = GetShortFrameworkIdentifier (framework);
 			return identifier + framework.Version;
 		}

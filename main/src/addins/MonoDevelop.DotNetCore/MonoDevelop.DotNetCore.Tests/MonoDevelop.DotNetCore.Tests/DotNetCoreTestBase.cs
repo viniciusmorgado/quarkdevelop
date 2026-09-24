@@ -33,12 +33,17 @@ using UnitTests;
 
 namespace MonoDevelop.DotNetCore.Tests
 {
-	[RequireService (typeof (TypeSystemService))]
+	// No [RequireService (typeof (TypeSystemService))]: the tests load projects with the project service only, and waiting
+	// for the type system service from the NUnit set-up never completes in the test host (no IDE workspace).
 	class DotNetCoreTestBase : TestBase
 	{
 		protected override Task InternalSetup (string rootDir)
 		{
-			Xwt.Application.Initialize (Xwt.ToolkitType.Gtk);
+			// As a guest of the GTK main loop, as in the IDE. Xwt installs its synchronization context (the GTK main loop,
+			// not pumped by the test thread) on the calling thread: keep the test's, or the async set-up never resumes.
+			var context = System.Threading.SynchronizationContext.Current;
+			Xwt.Application.InitializeAsGuest (Xwt.ToolkitType.Gtk3);
+			System.Threading.SynchronizationContext.SetSynchronizationContext (context);
 			return base.InternalSetup (rootDir);
 		}
 

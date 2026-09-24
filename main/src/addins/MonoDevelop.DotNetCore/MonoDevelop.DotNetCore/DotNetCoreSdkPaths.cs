@@ -73,7 +73,7 @@ namespace MonoDevelop.DotNetCore
 			if (forceLookUpGlobalJson) {
 				GlobalJsonPath = LookUpGlobalJson (workingDir);
 			}
-			var specificVersion = ReadGlobalJson ();
+			var specificVersion = ReadGlobalJson (out string rollForward);
 
 			//if !global.json, returns latest
 			if (string.IsNullOrEmpty (specificVersion)) {
@@ -96,7 +96,9 @@ namespace MonoDevelop.DotNetCore
 			targetVersion = SdkVersions.FirstOrDefault (x => x.OriginalString.IndexOf (specificVersion, StringComparison.InvariantCulture) == 0);
 			if (targetVersion == null) {
 				//if global.json exists and !matches then:
-				if (requiredVersion >= DotNetCoreVersion.Parse ("2.1")) {
+				if (!string.IsNullOrEmpty (rollForward)) {
+					targetVersion = RollForward (requiredVersion, rollForward);
+				} else if (requiredVersion >= DotNetCoreVersion.Parse ("2.1")) {
 					targetVersion = SdkVersions.Where (version => version.Major == requiredVersion.Major
 																	&& version.Minor == requiredVersion.Minor)
 												.OrderByDescending (version => version.Patch).FirstOrDefault (x => {
@@ -248,8 +250,45 @@ namespace MonoDevelop.DotNetCore
 			return globalJsonPath.FullName;
 		}
 
-		string ReadGlobalJson ()
+		/// <summary>
+		/// The global.json rollForward policies of the .NET Core 3.0 SDK and later
+		/// (https://learn.microsoft.com/dotnet/core/tools/global-json#rollforward): e.g. version 10.0.100 with
+		/// latestFeature selects SDK 10.0.401. The latest* policies select the newest matching SDK, the others the
+		/// closest one above the requested version; "disable" requires the exact version.
+		/// </summary>
+		internal DotNetCoreVersion RollForward (DotNetCoreVersion requiredVersion, string rollForward)
 		{
+			var candidates = SdkVersions.Where (version => version >= requiredVersion);
+			switch (rollForward.ToLowerInvariant ()) {
+			case "patch":
+			case "latestpatch":
+				candidates = candidates.Where (version => version.Major == requiredVersion.Major &&
+					version.Minor == requiredVersion.Minor &&
+					version.Patch / 100 == requiredVersion.Patch / 100);
+				break;
+			case "feature":
+			case "latestfeature":
+				candidates = candidates.Where (version => version.Major == requiredVersion.Major && version.Minor == requiredVersion.Minor);
+				break;
+			case "minor":
+			case "latestminor":
+				candidates = candidates.Where (version => version.Major == requiredVersion.Major);
+				break;
+			case "major":
+			case "latestmajor":
+				break;
+			default:
+				return null;
+			}
+
+			if (rollForward.StartsWith ("latest", StringComparison.OrdinalIgnoreCase))
+				return candidates.OrderByDescending (version => version).FirstOrDefault ();
+			return candidates.OrderBy (version => version).FirstOrDefault ();
+		}
+
+		string ReadGlobalJson (out string rollForward)
+		{
+			rollForward = null;
 			if (string.IsNullOrEmpty (GlobalJsonPath))
 				return string.Empty;
 
@@ -258,6 +297,7 @@ namespace MonoDevelop.DotNetCore
 					var token = JObject.Parse (r.ReadToEnd ());
 
 					if (token != null && token.TryGetValue ("sdk", out var sdkToken)) {
+						rollForward = sdkToken ["rollForward"]?.Value<string> ();
 						var version = sdkToken ["version"];
 						if (version != null)
 							return version.Value<string>();

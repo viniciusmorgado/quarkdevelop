@@ -1,10 +1,7 @@
 //
-// GlobalToolTests.cs
+// XwtGtk3Tests.cs
 //
-// Author:
-//       Rodrigo Moya <rodrigo.moya@xamarin.com>
-//
-// Copyright (c) 2019 Microsoft, Corp. (http://microsoft.com)
+// Copyright (c) 2026 MonoDevelop contributors
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,29 +21,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Threading;
-using System.Threading.Tasks;
-using MonoDevelop.DotNetCore.GlobalTools;
-using MonoDevelop.Ide;
 using NUnit.Framework;
-using UnitTests;
 
-namespace MonoDevelop.DotNetCore.Tests
+namespace MonoDevelop.Ide.Gtk3.Tests
 {
+	/// <summary>Xwt widgets on the GTK 3 backend (main/vendor/xwt).</summary>
 	[TestFixture]
-	class GlobalToolTests : TestBase
+	public class XwtGtk3Tests
 	{
+		/// <summary>
+		/// The close button of the IDE's info bars (XwtInfoBar, shown e.g. by the .NET Core add-in when no SDK is found)
+		/// is a borderless button styled before it has content: the GTK 3 backend dereferenced its missing child (T099).
+		/// </summary>
 		[Test]
-		public void DetectNonInstalledTools ()
+		public void BorderlessButtonWithoutContent ()
 		{
-			Assert.False (DotNetCoreGlobalToolManager.IsInstalled ("fake-tool"));
-		}
+			GtkFixture.Require ();
+			EditorTestEnvironment.EnsureInitialized ();
 
-		[Test, Ignore ("Installs global tools from nuget.org")]
-		public async Task CanInstallMissingTools ()
-		{
-			Assert.True (await DotNetCoreGlobalToolManager.Install ("dotnet-aspnet-codegenerator", CancellationToken.None));
-			Assert.True (await DotNetCoreGlobalToolManager.Install ("dotnet-script", CancellationToken.None));
+			var button = new Xwt.Button { Style = Xwt.ButtonStyle.Borderless };
+			button.Label = "Close";
+
+			Assert.AreEqual (Xwt.ButtonStyle.Borderless, button.Style);
+			button.Dispose ();
 		}
 	}
 }

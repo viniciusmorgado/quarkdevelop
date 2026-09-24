@@ -151,6 +151,8 @@ namespace MonoDevelop.Core.Assemblies
 			Assert.AreEqual ("net472", TargetFrameworkMoniker.NET_4_7_2.ShortName);
 			Assert.AreEqual ("net40", TargetFrameworkMoniker.NET_4_0.ShortName);
 			Assert.AreEqual ("netcoreapp3.1", new TargetFrameworkMoniker (".NETCoreApp", "3.1").ShortName);
+			Assert.AreEqual ("net5.0", new TargetFrameworkMoniker (".NETCoreApp", "5.0").ShortName);
+			Assert.AreEqual ("net10.0", new TargetFrameworkMoniker (".NETCoreApp", "10.0").ShortName);
 			Assert.AreEqual ("netstandard2.0", new TargetFrameworkMoniker (".NETStandard", "2.0").ShortName);
 			Assert.AreEqual ("monoandroid9.0", new TargetFrameworkMoniker ("MonoAndroid", "9.0").ShortName);
 

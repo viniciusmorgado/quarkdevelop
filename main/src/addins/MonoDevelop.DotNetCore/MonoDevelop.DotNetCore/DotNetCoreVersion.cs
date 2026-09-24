@@ -244,6 +244,10 @@ namespace MonoDevelop.DotNetCore
 				return version >= MinimumSupportedSdkVersion30;
 			}
 
+			// .NET 5 and later SDKs (the IDE is built for .NET 10, ADR 0007).
+			if (version.Major >= 5)
+				return true;
+
 			return false;
 		}
 	}

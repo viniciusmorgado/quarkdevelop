@@ -41,7 +41,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		bool runtimeInstalled;
 		string sdkRootPath;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetupTestFixture ()
 		{
 			sdkInstalled = DotNetCoreSdk.IsInstalled;
@@ -52,7 +52,7 @@ namespace MonoDevelop.DotNetCore.Tests
 			runtimeVersions = DotNetCoreRuntime.Versions;
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void TearDownTestFixture ()
 		{
 			DotNetCoreSdk.SetInstalled (sdkInstalled);

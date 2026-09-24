@@ -189,6 +189,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task NetStandardLibrary_NewtonsoftJsonNuGetPackageReference ()
 		{
 			FilePath projectFileName = Util.GetSampleProject ("DotNetCoreDependenciesFolder", "NetStandardJsonNet.csproj");
@@ -247,6 +248,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task NetStandardLibrary_OneNuGetDiagnosticWarningsForSystemComponentModelEventBasedAsync ()
 		{
 			FilePath projectFileName = Util.GetSampleProject ("DotNetCoreDependenciesFolder", "NetStandardOneNuGetWarning.csproj");
@@ -282,6 +284,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task NetStandardLibrary_TwoNuGetDiagnosticWarningsForSystemComponentModelEventBasedAsync ()
 		{
 			FilePath projectFileName = Util.GetSampleProject ("DotNetCoreDependenciesFolder", "NetStandardTwoNuGetWarnings.csproj");
@@ -326,6 +329,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		/// Diagnostic is for a child dependency and not the top level NuGet package referenced by the project.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task NetStandardLibrary_OneIndirectNuGetDiagnosticWarningsForSystemNetHttp ()
 		{
 			FilePath projectFileName = Util.GetSampleProject ("DotNetCoreDependenciesFolder", "NetStandardOneIndirectNuGetWarning.csproj");
@@ -367,6 +371,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task MultiTarget_NetStandardAndNetCoreApp_NewtonsoftJsonNuGetPackageReference ()
 		{
 			FilePath projectFileName = Util.GetSampleProject ("multi-target", "multi-target3.csproj");

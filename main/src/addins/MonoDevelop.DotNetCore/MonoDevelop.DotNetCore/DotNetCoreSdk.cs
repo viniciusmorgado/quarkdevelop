@@ -36,7 +36,8 @@ namespace MonoDevelop.DotNetCore
 	public static class DotNetCoreSdk
 	{
 		static readonly Version DotNetCoreVersion2_1 = new Version (2, 1, 0);
-		internal static readonly DotNetCoreVersion DotNetCoreUnsupportedTargetFrameworkVersion = new DotNetCoreVersion (3, 2, 0);
+		// Target frameworks newer than .NET 10, the newest one this IDE was built and tested with (ADR 0007).
+		internal static readonly DotNetCoreVersion DotNetCoreUnsupportedTargetFrameworkVersion = new DotNetCoreVersion (11, 0, 0);
 
 		static DotNetCoreSdk ()
 		{
@@ -93,7 +94,8 @@ namespace MonoDevelop.DotNetCore
 		/// </summary>
 		internal static bool IsSupported (TargetFramework framework)
 		{
-			return IsSupported (framework.Id, Versions, MSBuildSdks.Installed);
+			// There are no .NET Core SDKs bundled with MSBuild on .NET (the MSBuildSdks class was Mono's).
+			return IsSupported (framework.Id, Versions, msbuildSdksInstalled: false);
 		}
 
 		/// <summary>

@@ -283,7 +283,8 @@ namespace MonoDevelop.DotNetCore
 			base.OnItemReady ();
 			FileService.FileChanged += FileService_FileChanged;
 
-			if (!IdeApp.IsInitialized)
+			// Headless hosts (mdtool, tests) have no RootWorkspace: do not run IdeApp's static constructor (GTK widgets).
+			if (Runtime.PeekService<RootWorkspace> () == null || !IdeApp.IsInitialized)
 				return;
 
 			if (HasSdk && !IsDotNetCoreSdkInstalled ()) {
@@ -432,7 +433,7 @@ namespace MonoDevelop.DotNetCore
 
 		public bool IsDotNetCoreSdkInstalled ()
 		{
-			if (DotNetCoreSdk.IsInstalled || MSBuildSdks.Installed)
+			if (DotNetCoreSdk.IsInstalled)
 				return DotNetCoreSdk.IsSupported (Project.TargetFramework);
 			return false;
 		}

@@ -182,7 +182,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T096 [P] [US3] M5c: `DocFood` (Stetic frozen) → builds
 - [x] T097 [P] [US3] M5c: `ChangeLogAddIn` → builds
 - [x] T098 [P] [US3] M5c: `MonoDevelop.Gettext` add-in → builds
-- [ ] T099 [US3] M5c: `MonoDevelop.DotNetCore` (GUI) → DotNetCore tests subset pass
+- [x] T099 [US3] M5c: `MonoDevelop.DotNetCore` (GUI) → DotNetCore tests subset pass
 - [x] T100 [US3] M5c: ADR 0020 NuGet client version + `MonoDevelop.PackageManagement` on NuGet 6.x/7.x → test add/update/remove/restore a package on an SDK project (FR-010)
 - [x] T101 [US3] M5c: `MonoDevelop.UnitTesting` + VSTest → test discovers/runs NUnit + xUnit + MSTest samples (FR-011)
 - [x] T102 [US3] M5c: `VersionControl` + `VersionControl.Git` on LibGit2Sharp 0.32 (reference DotDevelop `216f01c79f`, `2356bb926d`); libgit2/libgit-binary/libgit2sharp submodules removed → Git tests (status/diff/log on temp repo) pass (FR-009)

@@ -61,6 +61,8 @@ Compared with MonoDevelop 8.6:
 | Assembly browser: MonoDoc documentation of the browsed members | removed (no MonoDoc) |
 | Assembly browser decompiler | ICSharpCode.Decompiler 11 (was 5): the decompiled C# and IL follow the newer ILSpy output |
 | C# test markers in the editor and source locations of tests | back with the UnitTesting add-in (T101), for NUnit, xUnit and MSTest |
+| .NET Core 1.x / 2.0 project templates shipped with the IDE (2017 packages) and the .NET Core SDKs bundled with Mono's MSBuild | removed; the `.NET` templates come from the installed SDK (.NET 10 console, library and test templates; older SDKs keep their 2.1–3.1 entries) |
+| .NET Core test adapter of the DotNetCore add-in (`DotNetCoreTestPlatformAdapter`) | deferred to the `MonoDevelop.UnitTesting` port (T101) |
 
 ## Add-in authors
 

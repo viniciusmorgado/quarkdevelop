@@ -227,6 +227,18 @@ and the empty `MonoDevelop.UnitTesting.NUnit.Runners` project are not built; the
 markers are in the UnitTesting manifest, and CSharpBinding's `UnitTestTextEditorExtension` and
 `CSharpNUnitSourceCodeLocationFinder` are compiled again.
 
+## T099 — the .NET Core add-in (M5c)
+
+`MonoDevelop.DotNetCore` is an SDK-style net10.0 add-in on GTK 3. SDK discovery uses Core's
+`DotNetCoreTargetRuntime` / `DotNetCoreSdkInfo`: the add-in's `DotNetCorePath` takes the host Core uses (with links
+resolved) instead of `/usr/share/dotnet/dotnet`, and the Mono-only `MSBuildSdks` / `MSBuildSdksPathGlobalPropertyProvider`
+are not compiled. SDKs of .NET 5 and later are supported, `global.json` `rollForward` policies are honoured (the
+repository's `10.0.100` + `latestFeature` selects SDK 10.0.401), and the New Project dialog lists the console, library
+and test templates of the installed SDK (`dotnet/templates/10.0.*`). The Dependencies folder reads the package graph
+from `obj/project.assets.json` (SDK 5+ design-time builds return top-level packages only): frameworks, NuGet packages
+with their dependencies and restore warnings, and project references. The add-in ships no NuGet assembly (only
+`MonoDevelop.DotNetCore.dll` in `build/AddIns/MonoDevelop.DotNetCore`).
+
 Commands (dev container):
 
 ```bash
@@ -247,3 +259,22 @@ projects; the Test Results pad lists 3 passed and 3 failed tests
 ([T101-unittesting.png](T101-unittesting.png), [T101-test-results.png](T101-test-results.png)).
 
 ![The Unit Tests pad after running the samples](T101-unittesting.png)
+
+  main/src/addins/MonoDevelop.DotNetCore/MonoDevelop.DotNetCore.Tests/MonoDevelop.DotNetCore.Tests.csproj'
+# a copy of tests/linux-smoke whose Hello project references Moq, restored, with the Dependencies node expanded in
+# .vs/Smoke/xs/UserPrefs.xml
+./scripts/pm bash -lc 'xvfb-run -a -s "-screen 0 1600x1000x24" bash -c "dotnet main/build/bin/MonoDevelop.dll -no-redirect \
+  out/ide-deps/Smoke.sln > out/ide.log 2>&1 & sleep 90; import -window root out/ide.png; kill %1"'
+```
+
+Result (2026-09-24): the IDE loads the add-in with no error in `out/ide.log`; the Dependencies node of Hello shows
+Frameworks (Microsoft.NETCore.App), NuGet (Moq 4.20.72, with the NU1603 restore warning of its Castle.Core
+dependency) and Projects (Greeter) ([T099-dotnetcore.png](T099-dotnetcore.png)).
+
+Tests: `MonoDevelop.DotNetCore.Tests` (NUnit 3) 256 run outside quarantine: 251 passed, 5 skipped (legacy `[Ignore]`
+and .NET Core 3 SDK checks); 13 quarantined (11 restore from nuget.org, a PCL fixture, a Web SDK change;
+[quarantine.md](../M4/quarantine.md)). `DependenciesNodeSdkProjectTests` restores a net10.0 project from a local feed
+and checks the Dependencies folder; `DotNetCoreSdkTemplatesTests` finds the SDK 10 templates in the templating service.
+The .NET Core 1.x-3.1 template tests (`DotNetCoreProjectTemplateTests`, `IdeUnitTests`, nuget.org) are not compiled (T107).
+
+![The Dependencies folder of an SDK-style project](T099-dotnetcore.png)

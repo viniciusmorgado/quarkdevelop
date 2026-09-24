@@ -96,6 +96,9 @@ namespace MonoDevelop.DotNetCore
 
 		public static string GetDisplayName (this TargetFramework framework)
 		{
+			if (framework.IsNetCoreAppOrHigher (DotNetCoreVersion.Parse ("5.0")))
+				return ".NET " + framework.Id.Version;
+
 			if (framework.IsNetCoreApp ())
 				return string.Format (".NET Core {0}", framework.Id.Version);
 

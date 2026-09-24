@@ -61,10 +61,7 @@ namespace MonoDevelop.DotNetCore
 			if (DotNetCoreRuntime.IsInstalled && RuntimeVersionSupported (conditionNode, DotNetCoreRuntime.Versions))
 				return true;
 
-			// Mono's MSBuild SDKs currently includes .NET Core SDK 1.0.
-			if (MSBuildSdks.Installed && SdkVersionSupported (conditionNode, MinimumSupportedVersion))
-				return DotNetCoreRuntime.IsInstalled || !RequiresRuntime (conditionNode);
-
+			// Mono's MSBuild bundled the .NET Core 1.0 SDKs (MSBuildSdks); MSBuild on .NET is the installed SDK's.
 			return false;
 		}
 

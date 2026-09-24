@@ -282,6 +282,29 @@ namespace MonoDevelop.DotNetCore.Tests
 			}
 		}
 
+		static readonly string [] RollForwardSdkVersions = { "9.0.300", "10.0.105", "10.0.201", "10.0.401" };
+
+		[TestCase ("10.0.100", "latestFeature", "10.0.401")]
+		[TestCase ("10.0.100", "feature", "10.0.105")]
+		[TestCase ("10.0.100", "latestPatch", "10.0.105")]
+		[TestCase ("10.0.100", "patch", "10.0.105")]
+		[TestCase ("9.0.100", "latestMajor", "10.0.401")]
+		[TestCase ("9.0.100", "minor", "9.0.300")]
+		[TestCase ("9.0.100", "latestMinor", "9.0.300")]
+		[TestCase ("10.0.500", "latestFeature", null)]
+		[TestCase ("10.0.102", "disable", null)]
+		public void RollForwardPolicySelectsInstalledSdk (string requestedVersion, string rollForward, string expectedVersion)
+		{
+			var resolver = new DotNetCoreSdkPaths ();
+			resolver.SdkVersions = RollForwardSdkVersions
+				.Select (DotNetCoreVersion.Parse)
+				.ToArray ();
+
+			var version = resolver.RollForward (DotNetCoreVersion.Parse (requestedVersion), rollForward);
+
+			Assert.AreEqual (expectedVersion, version?.OriginalString);
+		}
+
 		[TearDown]
 		public void TearDown ()
 		{

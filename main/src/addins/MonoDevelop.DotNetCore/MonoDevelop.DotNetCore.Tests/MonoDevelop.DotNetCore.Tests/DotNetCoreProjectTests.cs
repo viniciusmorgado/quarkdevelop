@@ -111,6 +111,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		/// LibC project references LibB project which references LibA project.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task GetReferences_ThreeProjectReferences_TransitivelyReferencedProjectsIncluded ()
 		{
 			FilePath solutionFileName = Util.GetSampleProject ("TransitiveProjectReferences", "TransitiveProjectReferences.sln");
@@ -151,6 +152,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		/// defined in the LibC project so the transitive project reference should not be included.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task GetReferences_ThreeProjectReferencesAndReferenceOutputAssemblyIsFalse_ReferenceOutputAssemblyIsFalseProjectsNotReturned ()
 		{
 			FilePath solutionFileName = Util.GetSampleProject ("TransitiveProjectReferences", "TransitiveProjectReferences.sln");
@@ -178,6 +180,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task GetReferences_ThreeProjectReferencesJsonNet_JsonNetReferenceAvailableToReferencingProjects ()
 		{
 			string solutionFileName = Util.GetSampleProject ("TransitiveProjectReferences", "TransitiveProjectReferences.sln");
@@ -212,6 +215,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		/// project can add a reference to any PCL project.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task CanReference_PortableClassLibrary_FromNetStandardOrNetCoreAppProject ()
 		{
 			string solutionFileName = Util.GetSampleProject ("dotnetcore-pcl", "dotnetcore-pcl.sln");
@@ -259,6 +263,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		/// tests that the correct build actions are used for different folders.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task AspNetCoreProject_DefaultBuildActions ()
 		{
 			string projectFileName = Util.GetSampleProject ("aspnetcore", "aspnetcore.csproj");
@@ -444,6 +449,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task NetStandard_EnsureGeneratedAssemblyInfoAvailableToTypeSystem ()
 		{
 			var solFile = Util.GetSampleProject ("netstandard-sdk", "netstandard-sdk.sln");

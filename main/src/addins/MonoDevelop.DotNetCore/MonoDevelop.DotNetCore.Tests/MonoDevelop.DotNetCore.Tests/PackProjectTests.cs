@@ -38,6 +38,7 @@ namespace MonoDevelop.DotNetCore.Tests
 	public class PackProjectTests
 	{
 		[Test]
+		[Category ("Quarantine")]
 		public async Task Should_pack_multi_target_project ()
 		{
 			FilePath solFile = Util.GetSampleProject ("DotNetCoreMultiTargetFrameworkProperty", "DotNetCoreMultiTargetFrameworkProperty.sln");

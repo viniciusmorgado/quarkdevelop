@@ -34,9 +34,12 @@ namespace Xwt.GtkBackend
 		{
 			if (miniMode) {
 				Widget.Drawn += HandleDrawn;
-				int w, h;
-				Widget.Child.GetSizeRequest (out w, out h);
-				Widget.SetSizeRequest (w, h);
+				// A button without content yet (the style is set before the label or image) has no child.
+				if (Widget.Child != null) {
+					int w, h;
+					Widget.Child.GetSizeRequest (out w, out h);
+					Widget.SetSizeRequest (w, h);
+				}
 			}
 		}
 
