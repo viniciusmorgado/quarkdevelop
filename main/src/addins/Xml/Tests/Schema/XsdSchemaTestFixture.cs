@@ -230,7 +230,7 @@ namespace MonoDevelop.Xml.Tests.Schema
 		/// xs:boolean tests.
 		/// </summary>
 		[Test]
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		public async Task MixedAttributeHasValueTrue()
 		{
 			await Init ();

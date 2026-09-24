@@ -95,7 +95,7 @@ namespace MonoDevelop.RegexToolkit
 			this.label8 = new global::Gtk.Label ();
 			this.label8.Name = "label8";
 			this.label8.Xalign = 0F;
-			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("Regular Expression");
+			this.label8.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Regular Expression");
 			this.label8.UseUnderline = true;
 			this.vbox6.Add (this.label8);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox6 [this.label8]));
@@ -121,7 +121,7 @@ namespace MonoDevelop.RegexToolkit
 			this.checkbuttonReplace = new global::Gtk.CheckButton ();
 			this.checkbuttonReplace.CanFocus = true;
 			this.checkbuttonReplace.Name = "checkbuttonReplace";
-			this.checkbuttonReplace.Label = global::Mono.Unix.Catalog.GetString ("Replace");
+			this.checkbuttonReplace.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Replace");
 			this.checkbuttonReplace.Active = true;
 			this.checkbuttonReplace.DrawIndicator = true;
 			this.checkbuttonReplace.UseUnderline = true;
@@ -149,7 +149,7 @@ namespace MonoDevelop.RegexToolkit
 			this.expandMatches = new global::Gtk.CheckButton ();
 			this.expandMatches.CanFocus = true;
 			this.expandMatches.Name = "expandMatches";
-			this.expandMatches.Label = global::Mono.Unix.Catalog.GetString ("Expand matches");
+			this.expandMatches.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Expand matches");
 			this.expandMatches.Active = true;
 			this.expandMatches.DrawIndicator = true;
 			this.expandMatches.UseUnderline = true;
@@ -180,7 +180,7 @@ namespace MonoDevelop.RegexToolkit
 			this.label10 = new global::Gtk.Label ();
 			this.label10.Name = "label10";
 			this.label10.Xalign = 0F;
-			this.label10.LabelProp = global::Mono.Unix.Catalog.GetString ("Options:");
+			this.label10.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Options:");
 			this.label10.UseMarkup = true;
 			this.label10.UseUnderline = true;
 			this.vbox4.Add (this.label10);
@@ -220,7 +220,7 @@ namespace MonoDevelop.RegexToolkit
 			this.label9 = new global::Gtk.Label ();
 			this.label9.Name = "label9";
 			this.label9.Xalign = 0F;
-			this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("Input:");
+			this.label9.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Input:");
 			this.label9.UseMarkup = true;
 			this.label9.UseUnderline = true;
 			this.HelpWidget.Add (this.label9);
@@ -278,7 +278,7 @@ namespace MonoDevelop.RegexToolkit
 			// Notebook tab
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Matches");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Matches");
 			this.notebook2.SetTabLabel (this.scrolledwindow2, this.label3);
 			this.label3.ShowAll ();
 			// Container child notebook2.Gtk.Notebook+NotebookChild
@@ -299,7 +299,7 @@ namespace MonoDevelop.RegexToolkit
 			// Notebook tab
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Replace");
+			this.label4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Replace");
 			this.notebook2.SetTabLabel (this.scrolledwindow4, this.label4);
 			this.label4.ShowAll ();
 			this.hbox4.Add (this.notebook2);

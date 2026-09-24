@@ -69,7 +69,10 @@ namespace MonoDevelop.Xml.Editor
 		public static string CreateSchema (MonoDevelop.Ide.Editor.TextEditor doc, string xml)
 		{
 			using (var dataSet = new System.Data.DataSet()) {
-				dataSet.ReadXml(new StringReader (xml), System.Data.XmlReadMode.InferSchema);
+				// CA5366: read through an XmlReader that ignores DTDs and resolves nothing (was DataSet.ReadXml (TextReader)).
+				var readerSettings = new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore, XmlResolver = null };
+				using var reader = XmlReader.Create (new StringReader (xml), readerSettings);
+				dataSet.ReadXml(reader, System.Data.XmlReadMode.InferSchema);
 				using (var writer = new EncodedStringWriter (Encoding.UTF8)) {
 					using (var xmlWriter = CreateXmlTextWriter (doc, writer)) {
 						dataSet.WriteXmlSchema(xmlWriter);

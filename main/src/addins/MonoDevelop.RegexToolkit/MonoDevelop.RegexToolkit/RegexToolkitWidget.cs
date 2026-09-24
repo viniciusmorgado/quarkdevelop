@@ -27,6 +27,7 @@ using System;
 using Gtk;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using System.IO;
@@ -41,7 +42,10 @@ namespace MonoDevelop.RegexToolkit
 		ListStore optionsStore;
 		TreeStore resultStore;
 		
-		Thread regexThread;
+		// .NET has no Thread.Abort: a new query cancels the previous one, and a match timeout bounds
+		// runaway (catastrophically backtracking) expressions.
+		static readonly TimeSpan MatchTimeout = TimeSpan.FromSeconds (5);
+		CancellationTokenSource regexCancellation;
 		public string Regex { 
 			get {
 				return entryRegEx.Text;
@@ -120,19 +124,12 @@ namespace MonoDevelop.RegexToolkit
 
 		void UpdateRegex ()
 		{
-			if (regexThread != null && regexThread.IsAlive) {
-				regexThread.Abort ();
-				regexThread.Join ();
-				regexThread = null;
-			}
-
-			regexThread = new Thread (delegate () {
-				PerformQuery (inputTextview.Buffer.Text, this.entryRegEx.Text, this.entryReplace.Text, GetOptions ());
-			});
-
-			regexThread.IsBackground = true;
-			regexThread.Name = "regex thread";
-			regexThread.Start ();
+			regexCancellation?.Cancel ();
+			var cancellation = regexCancellation = new CancellationTokenSource ();
+			// The widgets are read here, on the GTK thread; the query runs on the thread pool.
+			string input = inputTextview.Buffer.Text, pattern = this.entryRegEx.Text, replacement = this.entryReplace.Text;
+			var options = GetOptions ();
+			_ = Task.Run (() => PerformQuery (input, pattern, replacement, options, cancellation.Token));
 			SetFindMode (!checkbuttonReplace.Active);
 		}
 
@@ -141,13 +138,18 @@ namespace MonoDevelop.RegexToolkit
 			this.entryRegEx.InsertText (text);
 		}
 		
-		void PerformQuery (string input, string pattern, string replacement, RegexOptions options)
+		void PerformQuery (string input, string pattern, string replacement, RegexOptions options, CancellationToken token)
 		{
 			try {
-				Regex regex = new Regex (pattern, options);
+				Regex regex = new Regex (pattern, options, MatchTimeout);
+				// Evaluate off the GTK thread (MatchCollection is lazy: Count runs every match).
+				var matches = regex.Matches (input);
+				_ = matches.Count;
+				string replaced = String.IsNullOrEmpty (replacement) ? null : regex.Replace (input, replacement);
 				Application.Invoke ((o, args) => {
+					if (token.IsCancellationRequested)
+						return;
 					this.resultStore.Clear ();
-					var matches = regex.Matches (input);
 					foreach (Match match in matches) {
 						TreeIter iter = this.resultStore.AppendValues (Stock.Find, String.Format (GettextCatalog.GetString ("Match '{0}'"), match.Value), match.Index, match.Length);
 						int i = 0;
@@ -170,17 +172,19 @@ namespace MonoDevelop.RegexToolkit
 					if (this.expandMatches.Active) {
 						this.resultsTreeview.ExpandAll ();
 					}
-					if (!String.IsNullOrEmpty (replacement))
-						this.replaceResultTextview.Buffer.Text = regex.Replace (input, replacement);
+					if (replaced != null)
+						this.replaceResultTextview.Buffer.Text = replaced;
 				});
-			} catch (ThreadAbortException) {
-				Thread.ResetAbort ();
+			} catch (RegexMatchTimeoutException) {
+				if (!token.IsCancellationRequested) {
+					Application.Invoke ((o, args) => {
+						Ide.IdeApp.Workbench.StatusBar.ShowError (GettextCatalog.GetString ("The expression took too long to evaluate"));
+					});
+				}
 			} catch (ArgumentException) {
 				Application.Invoke ((o, args) => {
 					Ide.IdeApp.Workbench.StatusBar.ShowError (GettextCatalog.GetString ("Invalid expression"));
 				});
-			} finally {
-				regexThread = null;
 			}
 		}
 

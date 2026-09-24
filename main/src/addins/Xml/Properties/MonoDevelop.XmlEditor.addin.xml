@@ -28,9 +28,8 @@
 		<Association extension = ".stetic" />
 	</Extension>
 	
-	<Extension path="/MonoDevelop/TextEditor/LegacyEditorSupport">
-		<LegacyEditorSupport id="xml" providerType="MonoDevelop.Xml.Editor.LegacyEditorSupportProvider" />
-	</Extension>
+	<!-- Linux: /MonoDevelop/TextEditor/LegacyEditorSupport belongs to the Cocoa/WPF TextEditor add-in
+	     (excluded, ADR 0012); SourceEditor2 is the only editor, so XML files need no legacy-editor routing. -->
 
 	<Extension path = "/MonoDevelop/Xml/Editor/XmlSchemas">
 		<Schema file="schemas/xml.xsd" />

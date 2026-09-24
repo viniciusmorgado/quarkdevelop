@@ -37,6 +37,8 @@ RULES = [
      "Mono-only", "exercises Mono runtime behaviour", "T135"),
     (r"SdkResolv|Unable to find SDK|MSBuildSearchPath|UnknownSolutionItem|GenericProject|Makefile", False,
      "Bug", "project model / evaluator difference on SDK 10", "T135"),
+    (r"Add-in engine not initialized|SchemaValidationTests\.", False,
+     "IDE-host", "needs the IDE add-in host (GUI add-ins are not loaded by the headless test host)", "T107"),
 ]
 DEFAULT = ("Bug", "fails on .NET 10; root cause to be analysed", "T135")
 

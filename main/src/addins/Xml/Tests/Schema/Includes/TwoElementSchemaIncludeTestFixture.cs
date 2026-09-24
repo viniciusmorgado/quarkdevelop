@@ -10,10 +10,10 @@ namespace MonoDevelop.Xml.Tests.Schema.Includes
 	/// generating completion data.
 	/// </summary>
 	[TestFixture]
-	[Ignore]
+	[Ignore ("Ignored in the legacy NUnit 2 suite")]
 	public class TwoElementSchemaIncludeTestFixture : TwoElementSchemaTestFixture
 	{
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void FixtureTearDown()
 		{
 			SchemaIncludeTestFixtureHelper.FixtureTearDown();

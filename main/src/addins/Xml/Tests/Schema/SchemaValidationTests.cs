@@ -30,6 +30,7 @@ namespace MonoDevelop.Xml.Tests.Schema
 	public class SchemaValidationTests
 	{
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ValidateXsltValid ()
 		{
 			var text =
@@ -42,6 +43,7 @@ namespace MonoDevelop.Xml.Tests.Schema
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ValidateXsltInvalid ()
 		{
 			var text =

@@ -26,7 +26,7 @@ namespace MonoDevelop.RegexToolkit
 			this.label11 = new global::Gtk.Label ();
 			this.label11.Name = "label11";
 			this.label11.Xalign = 0F;
-			this.label11.LabelProp = global::Mono.Unix.Catalog.GetString ("_Elements:");
+			this.label11.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Elements:");
 			this.label11.UseMarkup = true;
 			this.label11.UseUnderline = true;
 			this.vbox4.Add (this.label11);

@@ -174,10 +174,10 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [ ] T088 [US3] M5c: `MonoDevelop.SourceEditor2` on GTK3 (`MonoDevelop.SourceEditor.dll.config` deleted) → opens a C# file (smoke screenshot)
 - [ ] T089 [US3] M5c: `CSharpBinding` (GUI) on Roslyn 5.9 + Publicizer (EditorFeatures from dnceng feed only via ADR 0004 amendment) → completion test (US3-2)
 - [ ] T090 [US3] M5c: `MonoDevelop.Refactoring` → builds; refactoring tests subset pass
-- [ ] T091 [P] [US3] M5c: `Xml` add-in → Xml tests pass
+- [x] T091 [P] [US3] M5c: `Xml` add-in → Xml tests pass
 - [x] T092 [P] [US3] M5c: `DesignerSupport` (Stetic output frozen; `gui.stetic` deleted) → builds
 - [ ] T093 [P] [US3] M5c: `AssemblyBrowser` → builds
-- [ ] T094 [P] [US3] M5c: `RegexToolkit` (Thread.Abort removed) → builds
+- [x] T094 [P] [US3] M5c: `RegexToolkit` (Thread.Abort removed) → builds
 - [ ] T095 [P] [US3] M5c: `HexEditor` (Stetic frozen) → builds
 - [ ] T096 [P] [US3] M5c: `DocFood` (Stetic frozen) → builds
 - [ ] T097 [P] [US3] M5c: `ChangeLogAddIn` → builds

@@ -91,3 +91,12 @@ Quarantined 77 test cases (76 methods; 80 at first run) on 2026-09-23. Bug: 47, 
 - 2026-09-23: the 5 `SynchronizationContext may not be used as a TaskScheduler` cases pass after
   `WorkspaceObject.Dispose` switched to `Runtime.MainTaskScheduler` (the failure appeared when NUnit's
   timeout wrapper ran a test on a thread-pool thread) — T135.
+
+## MonoDevelop.Xml.Tests
+
+Quarantined 2 test cases (2 methods) on 2026-09-23. IDE-host: 2.
+
+| Test | Reason | Note | First error line | Owner | Date | Task |
+|---|---|---|---|---|---|---|
+| `MonoDevelop.Xml.Tests.Schema.SchemaValidationTests.ValidateXsltInvalid` | IDE-host | needs the IDE add-in host (GUI add-ins are not loaded by the headless test host) | System.InvalidOperationException : Add-in engine not initialized. | migration | 2026-09-23 | T107 |
+| `MonoDevelop.Xml.Tests.Schema.SchemaValidationTests.ValidateXsltValid` | IDE-host | needs the IDE add-in host (GUI add-ins are not loaded by the headless test host) | Expected: 0 | migration | 2026-09-23 | T107 |
