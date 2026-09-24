@@ -99,8 +99,8 @@ same image power local work and CI.
 ## Development Workflow
 
 - **Spec-Driven Development**: changes flow through the specification artifacts (constitution → spec →
-  plan → tasks → implementation) under `specs/`. Artifacts are reviewed by independent reviewers before
-  implementation, and the consistency analysis must report no CRITICAL issue before implementation.
+  plan → tasks → implementation) under `specs/`. Artifacts are reviewed before implementation, and the
+  consistency analysis (`docs/evidence/M1/analyze.md`) must report no CRITICAL issue before implementation.
 - **ADRs**: every architectural decision is recorded in `docs/adr/NNNN-title.md` (MADR format).
 - **Review before merge**: nothing merges into `main` without review and a green pipeline.
 - **Git identity**: commits use only `Vinicius Donatto Morgado <34577818+viniciusmorgado@users.noreply.github.com>`
@@ -114,7 +114,7 @@ same image power local work and CI.
 This constitution supersedes other practices in the repository. Amendments are made by a change that
 edits this file together with an ADR explaining the motivation and migration impact. Versioning
 follows SemVer: MAJOR for removing or redefining a principle, MINOR for adding a principle or
-materially expanding guidance, PATCH for clarifications. Every review and every the consistency analysis
-run checks compliance; deviations must be justified in the plan's Complexity Tracking table.
+materially expanding guidance, PATCH for clarifications. Every review and every consistency analysis
+checks compliance; deviations must be justified in the plan's Complexity Tracking table.
 
-**Version**: 1.3.0 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-23 (amendment log: ADR 0001)
+**Version**: 1.3.1 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-24 (amendment log: ADR 0001)

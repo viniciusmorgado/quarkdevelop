@@ -3,19 +3,13 @@
 # through ./scripts/pm (see docs/linux/setup.md).
 
 ARG DOTNET_SDK_IMAGE=mcr.microsoft.com/dotnet/sdk:10.0.401-noble@sha256:35d40304542c8689331f8cab17c65926cdf48fe711e289321d71924b230a7d29
-ARG UV_IMAGE=ghcr.io/astral-sh/uv:0.9.5@sha256:f459f6f73a8c4ef5d69f4e6fbbdb8af751d6fa40ec34b39a1ab469acd6e289b7
-
-FROM ${UV_IMAGE} AS uv
 
 FROM ${DOTNET_SDK_IMAGE}
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_NOLOGO=1 \
-    DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 \
-    UV_TOOL_BIN_DIR=/usr/local/bin \
-    UV_TOOL_DIR=/opt/uv-tools \
-    UV_PYTHON_INSTALL_DIR=/opt/uv-python
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -25,8 +19,6 @@ RUN apt-get update \
       fonts-dejavu-core dbus-x11 at-spi2-core \
       xvfb xauth x11-utils imagemagick weston \
  && rm -rf /var/lib/apt/lists/*
-
-COPY --from=uv /uv /uvx /usr/local/bin/
 
 # netcoredbg (Samsung, MIT) — debug adapter for .NET programs (ADR 0016). Pinned + checksum.
 ARG NETCOREDBG_VERSION=3.2.0-1092

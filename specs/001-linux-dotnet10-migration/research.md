@@ -1,6 +1,6 @@
 # Research: MonoDevelop on Linux with .NET 10 LTS and GTK3
 
-Phase 0 output of the plan step. Every decision lists rationale, alternatives and the evidence
+Phase 0 research for the plan. Every decision lists rationale, alternatives and the evidence
 that backs it. Evidence files live in `docs/evidence/M0/`.
 
 ## Baseline facts (static inventory)

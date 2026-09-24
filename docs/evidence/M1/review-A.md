@@ -1,4 +1,4 @@
-# Review A — the consistency analysis on revision 1 (condensed)
+# Review A — consistency analysis of revision 1 (condensed)
 
 | ID | Sev. | Finding | Resolution (revision 2) |
 |---|---|---|---|

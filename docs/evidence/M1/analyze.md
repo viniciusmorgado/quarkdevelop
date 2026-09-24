@@ -1,7 +1,7 @@
-# the consistency analysis: revision 5 (T016)
+# Consistency analysis: revision 5 (T016)
 
 - **Date**: 2026-09-23
-- **Inputs**: `docs/constitution.md` 1.2.1, `specs/001-linux-dotnet10-migration/{spec,plan,research,data-model,quickstart,tasks}.md`,
+- **Inputs**: the constitution 1.2.1 (now `docs/constitution.md`), `specs/001-linux-dotnet10-migration/{spec,plan,research,data-model,quickstart,tasks}.md`,
   `contracts/*.md`, `docs/adr/0001–0019`, `docs/BREAKING-CHANGES.md`, `docs/evidence/M0–M6`, and revision 4 of this file.
 - **Repository state**: HEAD `d61af9e5b2` ("MonoDevelop.Ide.Gtk3.Tests: tests for the M5b behaviour changes, run under Xvfb").
   Since revision 4 (`82da01c728`) there are 6 commits:
@@ -16,10 +16,8 @@
   `scripts/tools/gtk3-codemod.py`, and **revision 4 of this file, which was never committed** (see H1). That work is out of
   scope. Every file with local changes was read from HEAD (`git show HEAD:<path>`). The specs, scripts, workflows and warning
   baselines have no local changes.
-- **Method**: a read-only reviewer. Every command ran in the dev container (`./scripts/pm bash -lc '…'`), or was a read-only git
-  or grep command. `check-prerequisites.sh --json --require-spec --require-tasks --include-tasks` exited 0, with
-  FEATURE_DIR = `specs/001-linux-dotnet10-migration`. 
-  `dotnet build` and `dotnet test` were **not** run.
+- **Method**: read-only review. Every command ran in the dev container (`./scripts/pm bash -lc '…'`), or was a read-only git
+  or grep command; `dotnet build` and `dotnet test` were **not** run.
 - **Container checks for this report**:
   - `./scripts/lint.sh` exited with **0** (shellcheck on 17 scripts, including `ci.sh` and `git-commit`, plus actionlint).
   - The 6 new commits use the no-reply identity. Every one has a `Tasks:` line, and the multi-task ones have a `Coupled:` line.
@@ -162,7 +160,7 @@ T083, T126, T128 and T133. T134 and T135 map to SC-002. T136 maps to FR-006 and 
 
 ## Next Actions
 
-- **No CRITICAL issues.** M1's acceptance criterion ("the consistency analysis 0 CRITICAL") is met by this revision, but **only once
+- **No CRITICAL issues.** M1's acceptance criterion ("consistency analysis 0 CRITICAL") is met by this revision, but **only once
   this file is committed**. HEAD still holds revision 3, and `scripts/git-commit` reads this file to decide whether task
   commits are allowed.
   1. Commit this file alone: `Tasks: T016`. Then check T016 in tasks.md.

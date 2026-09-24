@@ -28,7 +28,7 @@ Submodules are only needed while legacy code is still being migrated:
 ```
 
 The container runs as your user (`--userns=keep-id`), so files it creates belong to you. Caches
-(NuGet, uv) live in the podman volume `md-home`.
+(NuGet) live in the podman volume `md-home`.
 
 ## 3. Build, test, run
 

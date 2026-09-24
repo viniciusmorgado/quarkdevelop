@@ -87,7 +87,7 @@ specs/001-linux-dotnet10-migration/
 ├── quickstart.md        # Phase 1: runnable validation scenarios
 ├── contracts/           # Phase 1: mdtool CLI, scripts/, smoke-test and packaging contracts
 ├── checklists/          # spec quality checklist
-└── tasks.md             # Phase 2 (the tasks step)
+└── tasks.md             # Phase 2 (tasks)
 docs/
 ├── adr/                 # 0001..0017 architectural decisions (MADR)
 ├── evidence/M0..M9/     # validation outputs per milestone
@@ -168,7 +168,7 @@ sharpsvn-binary.
 | M | Objective | Depends on | Tasks | Risks | Acceptance criteria | Validation (quickstart) | Evidence |
 |---|---|---|---|---|---|---|---|
 | M0 | Reproducible inventory; de-risk GTK3, Mono.Addins, Roslyn | — | T001–T011 | R5, R6 | inventory generated; every spike has a recorded outcome | § M0 | `docs/evidence/M0/` |
-| M1 | Constitution, spec, plan, tasks, ADRs reviewed | M0 | T012–T017 | — | the consistency analysis 0 CRITICAL; ≥ 18 ADRs; no `NEEDS CLARIFICATION` | § M1 | `docs/evidence/M1/` |
+| M1 | Constitution, spec, plan, tasks, ADRs reviewed | M0 | T012–T017 | — | consistency analysis 0 CRITICAL; ≥ 18 ADRs; no `NEEDS CLARIFICATION` | § M1 | `docs/evidence/M1/` |
 | M2 | Pinned .NET 10 toolchain, conventions, scripts, minimal CI | M1 | T018–T032 | R12 | fresh clone builds with podman+git only, twice (idempotent); lint + actionlint clean | § M2 | `docs/evidence/M2/` |
 | M3 | Headless walking skeleton: Core + builder + mdtool + CSharpBinding.Core | M2 | T033–T054, T058–T065 | R2, R3, R4 | quickstart § M3 block passes without Mono; audit clean; runtime tasks have tests | § M3 | `docs/evidence/M3/` |
 | M4 | Tests and coverage for the headless build | M3 | T038–T041, T055–T057 | R6 | all Linux-solution test projects run; quarantine ≤ 15% with reasons; Core ≥ 60%, total ≥ 40% | § M4 | `docs/evidence/M4/` |

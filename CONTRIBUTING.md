@@ -1,7 +1,7 @@
 # Contributing
 
 This fork migrates MonoDevelop to .NET 10 LTS and GTK3 on Linux. The rules below come from the
-project constitution (`docs/constitution.md`); read it once before contributing.
+project constitution ([`docs/constitution.md`](docs/constitution.md)); read it once before contributing.
 
 ## Environment
 
