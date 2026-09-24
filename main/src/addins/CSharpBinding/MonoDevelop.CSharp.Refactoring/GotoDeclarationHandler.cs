@@ -47,7 +47,7 @@ namespace MonoDevelop.CSharp.Refactoring
 	{
 		internal static MonoDevelop.Ide.FindInFiles.SearchResult GetJumpTypePartSearchResult (Microsoft.CodeAnalysis.ISymbol part, Microsoft.CodeAnalysis.Location location)
 		{
-			var provider = new MonoDevelop.Ide.FindInFiles.FileProvider (location.SourceTree.FilePath);
+			var provider = new MonoDevelop.Ide.FindInFiles.FileProvider (SourceGeneratedFiles.GetFilePath (location.SourceTree));
 			var doc = TextEditorFactory.CreateNewDocument ();
 			doc.Text = provider.ReadString ().ReadToEnd ();
 			int position = location.SourceSpan.Start;

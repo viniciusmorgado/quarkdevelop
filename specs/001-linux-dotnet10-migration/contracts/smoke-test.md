@@ -15,3 +15,10 @@ Command: `xvfb-run -a dotnet main/build/bin/MonoDevelop.dll --smoke-test <soluti
    that file in the editor. A C# file is also parsed with the parse options of its project in the IDE's Roslyn
    workspace; the log says `<file> parses as C# <version> with <n> syntax errors`, and syntax errors give exit
    code `2` (T138).
+   The file's project is then compiled in the workspace, source generators included; the log says
+   `<project> compiles in the workspace with <n> errors, ... (<m> source-generated documents, first compilation <s> s)`,
+   and errors give exit code `2` (T146, T147).
+8. `MD_SMOKE_GOTO=<method>` (with `MD_SMOKE_OPEN`; off by default): go to the definition of that partial method of
+   the project, which a source generator implements. The editor must open the read-only copy of the generated
+   document; the log says `go to definition of <method> opened <file> at line <n>, read-only: <bool>`, and a failure
+   gives exit code `2` (T147).

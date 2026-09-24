@@ -1,4 +1,5 @@
 using Modern.Extensions;
+using Modern.Generators;
 using Modern.Generics;
 using Modern.Interop;
 using Modern.Text;
@@ -20,6 +21,7 @@ string[] lines = [
 	$"{Samples.Json.Length} {Samples.Utf8Length} {"a b c".WordCount} {"hi".Shout ()}",
 	$"{Algorithms.Unit<Square> ().Area} {Algorithms.LengthOf (new Word ("modern"))} {Algorithms.Sum ([1, 2, 3])}",
 	$"{Pointers.CallTwice (21)} {Pointers.SizeOf<long> ()} {new Temperature { Celsius = 21 }.Celsius} {Max (2, 3)}",
+	$"{Words.Count ("modern C sharp")} {Serialization.ToJson (new Release (10, 0))}",
 ];
 foreach (var line in lines)
 	Console.WriteLine (line);

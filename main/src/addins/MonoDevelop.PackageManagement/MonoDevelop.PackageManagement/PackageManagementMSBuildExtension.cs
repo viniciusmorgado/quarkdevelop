@@ -150,11 +150,13 @@ namespace MonoDevelop.PackageManagement
 		}
 
 		/// <summary>
-		/// Project appends BeforeCompile to the CoreCompileDependsOn targets of an SDK-style project (T146): the SDK
-		/// generates the global usings and the assembly info before it. BeforeCompile must stay last, since a failing
-		/// target stops the ones after it, so the NuGet targets go before it.
+		/// Project appends these targets to the CoreCompileDependsOn targets of an SDK-style project: the analyzer
+		/// targets (T147, Project.SdkAnalyzerTargets), then BeforeCompile (T146), before which the SDK generates the
+		/// global usings and the assembly info. BeforeCompile must stay last, since a failing target stops the ones after
+		/// it, and the package analyzers must exist before the SDK resolves analyzer conflicts, so the NuGet targets go
+		/// before them.
 		/// </summary>
-		const string SdkGeneratedItemsTargets = ";BeforeCompile";
+		const string SdkGeneratedItemsTargets = ";ResolveLockFileAnalyzers;_HandlePackageFileConflicts;BeforeCompile";
 
 		static string InsertAfterCoreCompileDependsOn (string target, string targets)
 		{

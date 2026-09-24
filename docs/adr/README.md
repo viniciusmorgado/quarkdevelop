@@ -29,3 +29,4 @@ their file and link to the replacement. Context for all of them: `specs/001-linu
 | [0022](0022-flatpak.md) | Flatpak packaging with the bundled .NET 10 SDK | Accepted |
 | [0023](0023-logging-and-observability.md) | Logging and observability | Accepted |
 | [0024](0024-gtksharp-toplevel-references.md) | Toplevels and GDK windows created from C# kept alive (GtkSharp toggle-reference workaround) | Accepted |
+| [0025](0025-source-generators-in-the-workspace.md) | Source generators in the IDE workspace | Accepted |

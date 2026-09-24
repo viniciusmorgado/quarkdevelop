@@ -740,6 +740,17 @@ namespace MonoDevelop.Projects
 			}
 
 			/// <summary>
+			/// T147: the targets that give an SDK project the Analyzer items of a build, run before BeforeCompile. The source
+			/// generators of the shared framework ([GeneratedRegex], [LibraryImport], System.Text.Json) come from the
+			/// targeting pack (ResolveTargetingPackAssets), those of NuGet packages from project.assets.json
+			/// (ResolveLockFileAnalyzers; at design time ResolvePackageAssets is skipped when the project was never
+			/// restored). _HandlePackageFileConflicts runs ResolveTargetingPackAssets, then keeps the newer of two copies of
+			/// an analyzer (a package and the targeting pack), as ResolveAssemblyReferences does in a build. None of them
+			/// resolves references or writes a file.
+			/// </summary>
+			internal const string SdkAnalyzerTargets = ";ResolveLockFileAnalyzers;_HandlePackageFileConflicts";
+
+			/// <summary>
 			/// Gets the list of files that are included as Compile items from the evaluation of the CoreCompile dependecy targets
 			/// </summary>
 			public async Task<CoreCompileEvaluationResult> GetItemsFromCoreCompileDependenciesAsync (Project project, ProgressMonitor monitor, ConfigurationSelector configuration)
@@ -787,8 +798,9 @@ namespace MonoDevelop.Projects
 					// GenerateTargetFrameworkMonikerAttribute, plus GenerateMSBuildEditorConfigFile for the analyzers.
 					// Running BeforeCompile writes those files (also in a project that was never built) and returns their
 					// items. It goes last: a failing target stops the ones after it (see PackageManagementMSBuildExtension).
+					// T147: the analyzers and source generators that a build passes to the compiler, see SdkAnalyzerTargets.
 					if (project.sourceProject.EvaluatedProperties.GetValue ("UsingMicrosoftNETSdk", false))
-						dependsList += ";BeforeCompile";
+						dependsList += SdkAnalyzerTargets + ";BeforeCompile";
 					try {
 						// evaluate the Compile targets
 						var ctx = new TargetEvaluationContext ();

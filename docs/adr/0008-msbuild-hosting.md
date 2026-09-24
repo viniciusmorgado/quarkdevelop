@@ -63,8 +63,15 @@ Considered:
 last: a failing target stops the ones after it, so `PackageManagementMSBuildExtension` inserts its NuGet targets
 before it. `SdkProjectExtension` no longer adds `GeneratedAssemblyInfoFile` a second time.
 
-Still open: source generators. Their output exists only in the compiler, so the workspace would have to run them
-from its analyzer references. The generators of the shared framework (`[GeneratedRegex]`, `[LibraryImport]`,
-System.Text.Json) are `Analyzer` items added by `ResolveTargetingPackAssets`, which the design-time run does not
-execute: the workspace gets only the NetAnalyzers, and a `[GeneratedRegex]` partial method is a false CS8795 in the
-editor while `dotnet build` succeeds.
+Left open, then resolved by T147 (amendment below): source generators. Their output exists only in the compiler, so
+the workspace has to run them from its analyzer references. The generators of the shared framework
+(`[GeneratedRegex]`, `[LibraryImport]`, System.Text.Json) are `Analyzer` items added by `ResolveTargetingPackAssets`,
+which the design-time run did not execute: the workspace got only the NetAnalyzers, and a `[GeneratedRegex]` partial
+method was a false CS8795 in the editor while `dotnet build` succeeded.
+
+## Amendment (2026-09-24, T147): analyzers and source generators
+
+For SDK projects the design-time run is now `<CoreCompileDependsOn>;ResolveLockFileAnalyzers;_HandlePackageFileConflicts;BeforeCompile`:
+the two targets add the `Analyzer` items of the targeting pack and of NuGet packages, with the conflicts resolved as in
+a build, so the workspace runs the same source generators as the compiler. `BeforeCompile` stays last. The decision,
+the alternatives and how the generators are loaded are in [ADR 0025](0025-source-generators-in-the-workspace.md).

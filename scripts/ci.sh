@@ -91,18 +91,21 @@ gui_smoke_modern() {
 	# T138: build the C# 8 to 14 sample in the IDE with no errors or warnings, open Patterns.cs (MD_SMOKE_OPEN) and
 	# check that the IDE's workspace parses it as C# 14 with no syntax errors; the screenshot shows its highlighting.
 	# T146: the workspace also compiles the project with no errors (implicit usings: Console, ReadOnlySpan).
+	# T147: with the documents of the source generators ([GeneratedRegex] and System.Text.Json in Generators.cs), and go
+	# to definition of the [GeneratedRegex] method opens the generated file, read-only (the screenshot shows it).
 	local dir
 	dir="$(mktemp -d)"
 	cp -r main/tests/linux-smoke/. "$dir/"
 	local status=0
 	XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
-		MD_SMOKE_OUT="$ci_out/gui-smoke-modern" MD_SMOKE_OPEN=Modern/Patterns.cs \
+		MD_SMOKE_OUT="$ci_out/gui-smoke-modern" MD_SMOKE_OPEN=Modern/Patterns.cs MD_SMOKE_GOTO=Word \
 		xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Modern.sln" \
 		|| status=$?
 	rm -rf "$dir"
 	grep -q "build finished with 0 errors, 0 warnings" "$ci_out/gui-smoke-modern/ide.log" || return 1
 	grep -q "Patterns.cs parses as C# 14.0 with 0 syntax errors" "$ci_out/gui-smoke-modern/ide.log" || return 1
-	grep -q "Modern compiles in the workspace with 0 errors" "$ci_out/gui-smoke-modern/ide.log" || return 1
+	grep -Eq "Modern compiles in the workspace with 0 errors, .*\([1-9][0-9]* source-generated documents" "$ci_out/gui-smoke-modern/ide.log" || return 1
+	grep -Eq "go to definition of Word opened RegexGenerator.g.cs at line [0-9]+, read-only: True" "$ci_out/gui-smoke-modern/ide.log" || return 1
 	return "$status"
 }
 

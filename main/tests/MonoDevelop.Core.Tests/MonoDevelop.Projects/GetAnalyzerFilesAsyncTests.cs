@@ -135,5 +135,41 @@ namespace MonoDevelop.Projects
 				Assert.AreEqual (0, analyzerFiles.Count ());
 			}
 		}
+
+		/// <summary>
+		/// T147: the source generators of the shared framework ([GeneratedRegex], [LibraryImport], System.Text.Json)
+		/// are Analyzer items that ResolveTargetingPackAssets adds from the targeting pack. GetAnalyzerFilesAsync
+		/// includes them, once each, also for a project that was never restored or built, and does not build it.
+		/// </summary>
+		[Test]
+		public async Task SdkProjectIncludesTargetingPackSourceGenerators ()
+		{
+			string projectFile = Util.GetSampleProject ("source-generators", "SourceGenerators", "SourceGenerators.csproj");
+			using (var project = (DotNetProject)await Services.ProjectService.ReadSolutionItem (Util.GetMonitor (), projectFile)) {
+				Assert.IsFalse (Directory.Exists (project.BaseDirectory.Combine ("obj")), "the fixture was restored or built");
+
+				var analyzerFiles = await project.GetAnalyzerFilesAsync (project.Configurations ["Debug"].Selector);
+				var names = analyzerFiles.Select (f => f.FileName).ToList ();
+
+				foreach (var generator in new [] {
+					"System.Text.RegularExpressions.Generator.dll",
+					"Microsoft.Interop.LibraryImportGenerator.dll",
+					"Microsoft.Interop.SourceGeneration.dll",
+					"System.Text.Json.SourceGeneration.dll",
+				}) {
+					var paths = analyzerFiles.Where (f => f.FileName == generator).ToList ();
+					Assert.AreEqual (1, paths.Count, "{0} in {1}", generator, string.Join (", ", names));
+					Assert.IsTrue (File.Exists (paths [0]), paths [0]);
+					Assert.That (paths [0].ToString (), Does.Contain ("Microsoft.NETCore.App.Ref"), "from the targeting pack");
+				}
+				// the NetAnalyzers stay, and no analyzer is there twice
+				Assert.That (names, Does.Contain ("Microsoft.CodeAnalysis.NetAnalyzers.dll"));
+				Assert.AreEqual (analyzerFiles.Length, analyzerFiles.Distinct ().Count (), string.Join (", ", names));
+				// the design-time run builds nothing (PrepareForBuild, run for the generated sources of T146, creates bin/ empty)
+				var bin = project.BaseDirectory.Combine ("bin");
+				if (Directory.Exists (bin))
+					Assert.That (Directory.GetFiles (bin, "*", SearchOption.AllDirectories), Is.Empty, "the project was built");
+			}
+		}
 	}
 }

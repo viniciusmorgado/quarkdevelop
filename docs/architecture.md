@@ -95,7 +95,9 @@ add-in loaded in the default `AssemblyLoadContext` ([ADR 0006](adr/0006-mono-add
   ([ADR 0009](adr/0009-remove-remoting-binaryformatter.md)).
 - **C#:** `CSharpBinding.Core` registers the C# project type. `CSharpBinding` adds the editor
   features: Roslyn 5.9, with internal APIs reached through Krafs.Publicizer
-  ([ADR 0010](adr/0010-roslyn-5-publicizer.md)).
+  ([ADR 0010](adr/0010-roslyn-5-publicizer.md)). The IDE's Roslyn workspace gets the source files, analyzers and source
+  generators of a project from a design-time run in the builder, and runs the generators itself
+  ([ADR 0008](adr/0008-msbuild-hosting.md), [ADR 0025](adr/0025-source-generators-in-the-workspace.md)).
 - **NuGet:** the NuGet add-in compiles against NuGet 7.9 and uses the SDK's NuGet assemblies at run time
   ([ADR 0020](adr/0020-nuget-client-version.md)).
 - **Tests:** the UnitTesting add-in discovers and runs tests through VSTest

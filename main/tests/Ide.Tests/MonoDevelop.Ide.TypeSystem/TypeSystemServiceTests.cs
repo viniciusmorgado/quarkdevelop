@@ -436,6 +436,65 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
+		/// <summary>
+		/// T147: [GeneratedRegex], [LibraryImport] and a JsonSerializerContext are implemented by the source generators of
+		/// the shared framework. The workspace must get them as analyzer references and run them, or the editor shows
+		/// false errors (CS8795, CS0534) on code that `dotnet build` compiles.
+		/// </summary>
+		[Test]
+		public async Task SourceGeneratorsProjectHasNoErrorsAsync ()
+		{
+			FilePath solFile = Util.GetSampleProject ("source-generators", "source-generators.sln");
+
+			// the restore needs no package (the targeting pack comes with the SDK): no package source, no network
+			await File.WriteAllTextAsync (solFile.ParentDirectory.Combine ("NuGet.Config"), "<configuration><packageSources><clear /></packageSources></configuration>");
+			Util.RunMSBuild ($"/t:Restore /p:RestoreDisableParallel=true \"{solFile}\"");
+
+			using (var sol = (Solution)await Services.ProjectService.ReadWorkspaceItem (Util.GetMonitor (), solFile))
+			using (var ws = await TypeSystemServiceTestExtensions.LoadSolution (sol)) {
+				try {
+					var project = ws.CurrentSolution.Projects.Single ();
+					var analyzers = project.AnalyzerReferences.Select (r => Path.GetFileName (r.FullPath)).ToList ();
+					Assert.That (analyzers, Does.Contain ("System.Text.RegularExpressions.Generator.dll"));
+
+					var generated = (await project.GetSourceGeneratedDocumentsAsync ()).Select (d => d.HintName).ToList ();
+					var names = string.Join (", ", generated);
+					Assert.That (generated, Does.Contain ("RegexGenerator.g.cs"), names);
+					Assert.That (generated, Does.Contain ("LibraryImports.g.cs"), names);
+					Assert.That (generated, Has.Some.StartsWith ("PointContext."), names);
+
+					// Roslyn's analyzer loader puts the generators in a load context of their own (one per directory),
+					// where Microsoft.CodeAnalysis resolves to the IDE's copy in the default context (ADR 0006)
+					var loaded = AppDomain.CurrentDomain.GetAssemblies ();
+					var contexts = loaded.Where (a => a.GetName ().Name == "System.Text.RegularExpressions.Generator").Select (System.Runtime.Loader.AssemblyLoadContext.GetLoadContext).ToList ();
+					Assert.That (contexts, Is.Not.Empty.And.No.SameAs (System.Runtime.Loader.AssemblyLoadContext.Default));
+					Assert.AreEqual (1, loaded.Count (a => a.GetName ().Name == "Microsoft.CodeAnalysis"), "one Microsoft.CodeAnalysis");
+
+					var program = project.Documents.Single (d => d.Name == "Program.cs");
+					var model = await program.GetSemanticModelAsync ();
+					var errors = model.GetDiagnostics ().Where (d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList ();
+					Assert.That (errors, Is.Empty, string.Join (Environment.NewLine, errors));
+
+					var compilation = await project.GetCompilationAsync ();
+					errors = compilation.GetDiagnostics ().Where (d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList ();
+					Assert.That (errors, Is.Empty, string.Join (Environment.NewLine, errors));
+
+					// go to definition of Digits () opens its implementation, a read-only copy of the generated file
+					var digits = compilation.GetSymbolsWithName ("Digits").OfType<Microsoft.CodeAnalysis.IMethodSymbol> ().Single ();
+					var tree = digits.PartialImplementationPart.Locations.Single ().SourceTree;
+					FilePath file = SourceGeneratedFiles.GetFilePath (tree);
+					Assert.IsTrue (file.IsChildPathOf (SourceGeneratedFiles.RootDirectory), file);
+					Assert.AreEqual ("RegexGenerator.g.cs", file.FileName);
+					Assert.AreEqual ((await tree.GetTextAsync ()).ToString (), await File.ReadAllTextAsync (file));
+					Assert.AreEqual (FileAttributes.ReadOnly, File.GetAttributes (file) & FileAttributes.ReadOnly);
+					Assert.AreEqual (file, SourceGeneratedFiles.GetFilePath (ws.CurrentSolution, tree), "written again");
+					Assert.AreEqual (program.FilePath, (string)SourceGeneratedFiles.GetFilePath (await program.GetSyntaxTreeAsync ()));
+				} finally {
+					TypeSystemServiceTestExtensions.UnloadSolution (sol);
+				}
+			}
+		}
+
 		[Test]
 		public async Task CSharpFile_BuildActionNone_FileNotUsed ()
 		{

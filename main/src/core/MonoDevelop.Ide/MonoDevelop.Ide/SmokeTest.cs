@@ -40,7 +40,8 @@ namespace MonoDevelop.Ide
 	/// the IDE, open the solution, build it, write out/smoke/{ide.log,screenshot.png} and exit with
 	/// 0 (built with no errors and no unhandled exception), 1 (build errors) or 2 (start-up/load failure or timeout).
 	/// MD_SMOKE_OPEN=&lt;file&gt; (relative to the solution's directory) opens that file in the editor before the screenshot,
-	/// and fails the run if the IDE's workspace sees errors in it or in its project.
+	/// and fails the run if the IDE's workspace sees errors in it or in its project. MD_SMOKE_GOTO=&lt;method&gt; then goes
+	/// to the definition of that partial method, which a source generator implements (T147).
 	/// </summary>
 	sealed class SmokeTest
 	{
@@ -291,6 +292,9 @@ namespace MonoDevelop.Ide
 				string semanticFailure = await CheckWorkspaceErrorsAsync (project, file);
 				if (semanticFailure != null)
 					return semanticFailure;
+				string gotoFailure = await GoToGeneratedDefinitionAsync (project);
+				if (gotoFailure != null)
+					return gotoFailure;
 			}
 			// let the editor draw the document and the C# binding classify it before the screenshot
 			await Task.Delay (3000);
@@ -304,15 +308,21 @@ namespace MonoDevelop.Ide
 		async Task<string> CheckWorkspaceErrorsAsync (Project project, FilePath file)
 		{
 			var deadline = clock.Elapsed + TimeSpan.FromSeconds (30);
+			TimeSpan? firstCompilation = null;
 			while (true) {
+				var start = clock.Elapsed;
 				var roslynProject = await IdeApp.TypeSystemService.GetCodeAnalysisProjectAsync (project);
 				var document = roslynProject?.Documents.FirstOrDefault (d => (FilePath)d.FilePath == file);
 				var compilation = roslynProject != null ? await roslynProject.GetCompilationAsync () : null;
+				firstCompilation ??= clock.Elapsed - start;
 				var errors = compilation?.GetDiagnostics ().Where (d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList ();
 				if ((document != null && errors?.Count == 0) || clock.Elapsed > deadline) {
 					int count = errors?.Count ?? -1;
-					LoggingService.LogInfo ("Smoke test: {0} compiles in the workspace with {1} errors, {2} in {3}", project.Name, count,
-						errors?.Count (e => (FilePath)e.Location.SourceTree?.FilePath == file) ?? -1, file.FileName);
+					// T147: the documents of the source generators (Regex, System.Text.Json...) are part of that compilation
+					int generated = roslynProject != null ? (await roslynProject.GetSourceGeneratedDocumentsAsync ()).Count () : -1;
+					LoggingService.LogInfo ("Smoke test: {0} compiles in the workspace with {1} errors, {2} in {3} ({4} source-generated documents, first compilation {5:F1} s)",
+						project.Name, count, errors?.Count (e => (FilePath)e.Location.SourceTree?.FilePath == file) ?? -1, file.FileName,
+						generated, firstCompilation.Value.TotalSeconds);
 					foreach (var error in errors ?? Enumerable.Empty<Microsoft.CodeAnalysis.Diagnostic> ())
 						LoggingService.LogError ("Smoke test: workspace error {0}", error);
 					if (document == null)
@@ -321,6 +331,37 @@ namespace MonoDevelop.Ide
 				}
 				await Task.Delay (1000);
 			}
+		}
+
+		/// <summary>
+		/// T147: MD_SMOKE_GOTO=&lt;method&gt; goes to the definition of that partial method of <paramref name="project"/>, whose
+		/// implementation a source generator writes. The editor must open a read-only copy of the generated document.
+		/// Returns null on success (or when MD_SMOKE_GOTO is not set), or what went wrong.
+		/// </summary>
+		async Task<string> GoToGeneratedDefinitionAsync (Project project)
+		{
+			var name = Environment.GetEnvironmentVariable ("MD_SMOKE_GOTO");
+			if (string.IsNullOrEmpty (name))
+				return null;
+			var roslynProject = await IdeApp.TypeSystemService.GetCodeAnalysisProjectAsync (project);
+			var compilation = roslynProject != null ? await roslynProject.GetCompilationAsync () : null;
+			var method = compilation?.GetSymbolsWithName (name).OfType<Microsoft.CodeAnalysis.IMethodSymbol> ().FirstOrDefault ();
+			if (method?.PartialImplementationPart == null)
+				return $"MD_SMOKE_GOTO: no implemented partial method {name} in {project.Name}";
+
+			IdeApp.ProjectOperations.JumpToDeclaration (method.PartialImplementationPart, project);
+			var deadline = clock.Elapsed + TimeSpan.FromSeconds (10);
+			while (IdeApp.Workbench.ActiveDocument?.FileName.IsChildPathOf (TypeSystem.SourceGeneratedFiles.RootDirectory) != true
+				|| IdeApp.Workbench.ActiveDocument.Editor == null) {
+				if (clock.Elapsed > deadline)
+					return $"MD_SMOKE_GOTO: go to definition of {name} opened no source-generated file";
+				await Task.Delay (100);
+			}
+			var editor = IdeApp.Workbench.ActiveDocument.Editor;
+			var line = editor.GetLineByOffset (editor.CaretOffset);
+			LoggingService.LogInfo ("Smoke test: go to definition of {0} opened {1} at line {2}, read-only: {3}",
+				name, IdeApp.Workbench.ActiveDocument.FileName.FileName, line?.LineNumber ?? 0, editor.IsReadOnly);
+			return null;
 		}
 
 		void SaveScreenshot ()

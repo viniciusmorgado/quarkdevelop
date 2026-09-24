@@ -224,7 +224,7 @@ namespace MonoDevelop.Ide
 		[Obsolete]
 		static MonoDevelop.Ide.FindInFiles.SearchResult GetJumpTypePartSearchResult (Microsoft.CodeAnalysis.ISymbol part, Microsoft.CodeAnalysis.Location location)
 		{
-			var provider = new MonoDevelop.Ide.FindInFiles.FileProvider (location.SourceTree.FilePath);
+			var provider = new MonoDevelop.Ide.FindInFiles.FileProvider (SourceGeneratedFiles.GetFilePath (location.SourceTree));
 			var doc = TextEditorFactory.CreateNewDocument ();
 			doc.Text = provider.ReadString ().ReadToEnd ();
 			int position = location.SourceSpan.Start;
@@ -268,7 +268,8 @@ namespace MonoDevelop.Ide
 
 				return;
 			}
-			var filePath = location.SourceTree.FilePath;
+			// a source-generated document is opened as a read-only copy of its text (T147)
+			string filePath = SourceGeneratedFiles.GetFilePath (location.SourceTree);
 			var offset = location.SourceSpan.Start;
 			if (project is SolutionFolderItem item && item.ParentSolution != null) {
 				string projectedName;

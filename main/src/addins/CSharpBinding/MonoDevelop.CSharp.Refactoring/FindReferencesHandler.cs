@@ -73,7 +73,8 @@ namespace MonoDevelop.CSharp.Refactoring
 				foreach (var loc in symbol.Locations) {
 					if (!loc.IsInSource)
 						continue;
-					var fileName = loc.SourceTree.FilePath;
+					// a source-generated document is shown as a read-only copy of its text (T147)
+					string fileName = SourceGeneratedFiles.GetFilePath (workspace.CurrentSolution, loc.SourceTree);
 					var offset = loc.SourceSpan.Start;
 					string projectedName;
 					int projectedOffset;
@@ -98,7 +99,7 @@ namespace MonoDevelop.CSharp.Refactoring
 
 			public void OnReferenceFound (ISymbol symbol, ReferenceLocation loc)
 			{
-				var fileName = loc.Document.FilePath;
+				string fileName = loc.Document is SourceGeneratedDocument ? SourceGeneratedFiles.GetFilePath (loc.Document.Project.Solution, loc.Location.SourceTree) : loc.Document.FilePath;
 				var offset = loc.Location.SourceSpan.Start;
 				string projectedName;
 				int projectedOffset;

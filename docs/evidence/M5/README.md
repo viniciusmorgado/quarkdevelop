@@ -526,3 +526,97 @@ The Modern smoke (`gui-smoke-modern`) reports `Modern compiles in the workspace 
 Open: source generators. The generators of the shared framework (`[GeneratedRegex]`, `[LibraryImport]`,
 System.Text.Json) come from `ResolveTargetingPackAssets`, which the design-time run does not execute, so a
 `[GeneratedRegex]` partial method is still a false error (CS8795) in the editor; `dotnet build` is fine.
+
+## T147 — source generators
+
+A `[GeneratedRegex]` partial method was a false error in the editor (CS8795), and so were a `[LibraryImport]` method
+and a `JsonSerializerContext` (CS0534, CS0117), while `dotnet build` compiled them (the open point of T146).
+
+**Root cause.** The generators are `Analyzer` items, and the IDE's Roslyn project gets its analyzer references from
+`Project.GetAnalyzerFilesAsync`, the `Analyzer` items of the design-time run of T146
+(`<CoreCompileDependsOn>;BeforeCompile`). The generators of the shared framework are added by
+`ResolveTargetingPackAssets` (from `Microsoft.NETCore.App.Ref/10.0.12/analyzers/dotnet/cs`), which a build runs for
+`ResolveAssemblyReferences` and this run did not: the workspace had only the NetAnalyzers, so no generator ran. The
+IDE side was fine: given the generators as `AnalyzerFileReference`s, Roslyn 5.9 loads and runs them and adds their
+documents to the compilation.
+
+**Fix.** For SDK projects the design-time run is `<CoreCompileDependsOn>;ResolveLockFileAnalyzers;_HandlePackageFileConflicts;BeforeCompile`:
+the analyzers of the targeting pack and of NuGet packages, with the package/targeting-pack conflicts resolved as in a
+build (`Project.SdkAnalyzerTargets`; `PackageManagementMSBuildExtension` puts its NuGet targets before them). Nothing is
+built. The generators load in Roslyn's `DirectoryLoadContext`s, one per analyzer directory, where
+`Microsoft.CodeAnalysis` resolves to the IDE's 5.9 in the default context. Decision and alternatives:
+[ADR 0025](../../adr/0025-source-generators-in-the-workspace.md), amendment of [ADR 0008](../../adr/0008-msbuild-hosting.md).
+
+A source-generated document has a virtual, relative path (`<generator assembly>/<generator type>/<hint name>`), which
+the editor cannot open. Go to definition, the list of partial declarations and Find References now go through
+`SourceGeneratedFiles`, which writes its text to a read-only file under `<cache>/SourceGenerated/<project>-<hash>/`;
+the editor opens it read-only. Before, go to definition asked the editor to open the relative path.
+
+Tests (dev container, Xvfb), fixture `main/tests/test-projects/source-generators` (`dotnet new console`, plus
+`[GeneratedRegex]`, `[LibraryImport]` with `AllowUnsafeBlocks`, and a `JsonSerializerContext`; `dotnet build` gives 0
+warnings and it prints `True {"X":1,"Y":2} True`):
+
+- `MonoDevelop.Core.Tests` `GetAnalyzerFilesAsyncTests.SdkProjectIncludesTargetingPackSourceGenerators`: on the
+  never-built project, the analyzer files include the Regex, LibraryImport (and `Microsoft.Interop.SourceGeneration`)
+  and System.Text.Json generators of the targeting pack, once each, next to the NetAnalyzers; `bin/` gets no file.
+  Failed before the fix (only the two NetAnalyzers). About 1 s.
+- `MonoDevelop.Ide.Tests` `TypeSystemServiceTests.SourceGeneratorsProjectHasNoErrorsAsync`: after an offline restore,
+  the Roslyn project has the generator references, `GetSourceGeneratedDocumentsAsync` returns `RegexGenerator.g.cs`,
+  `LibraryImports.g.cs` and the `PointContext.*.g.cs` files, `Program.cs` and the whole compilation have 0 errors, the
+  Regex generator is not in the default load context and there is one `Microsoft.CodeAnalysis`. The implementation of
+  the `[GeneratedRegex]` method maps to a read-only `RegexGenerator.g.cs` under the cache directory with the generated
+  text. Failed before the fix (no generator reference). About 4 s.
+- Each new test passed 3 times in a row.
+
+**Smoke.** `main/tests/linux-smoke/Modern` has `Generators.cs` (a `[GeneratedRegex]` method and a
+`JsonSerializerContext`), used by `Program.cs`; `dotnet build`, `mdtool build` and the IDE build give 0 warnings, and it
+prints `3 {"Major":10,"Minor":0}`. `--smoke-test` logs the number of source-generated documents and the time of the
+first workspace compilation, and `MD_SMOKE_GOTO=<method>` goes to the definition of a generated partial method.
+`gui-smoke-modern` requires source-generated documents and the read-only generated file. Without the fix:
+
+```
+Smoke test: Modern compiles in the workspace with 5 errors, 0 in Patterns.cs (0 source-generated documents, first compilation 0.1 s)
+Smoke test: workspace error <tmp>/Modern/Generators.cs(12,31): error CS8795: Partial method 'Words.Word()' must have an implementation part because it has accessibility modifiers.
+Smoke test: workspace error <tmp>/Modern/Generators.cs(20,22): error CS0534: 'ReleaseContext' does not implement inherited abstract member 'JsonSerializerContext.GetTypeInfo(Type)'
+Smoke test: exit code 2 (MD_SMOKE_OPEN: 5 errors in the workspace compilation of Modern) after 41.3 s
+```
+
+With the fix:
+
+```
+Smoke test: Modern compiles in the workspace with 0 errors, 0 in Patterns.cs (6 source-generated documents, first compilation 1.1 s)
+Smoke test: go to definition of Word opened RegexGenerator.g.cs at line 20, read-only: True
+Smoke test: exit code 0 (success) after 15.1 s
+```
+
+**Load time** (same machine, Modern, three runs each without and with the fix):
+
+| | without | with |
+|---|---|---|
+| design-time run, `dotnet msbuild -clp:PerformanceSummary` (targets of the IDE's run, restored project) | 200–210 ms | 201–208 ms |
+| added targets: `ResolveTargetingPackAssets`, `ResolveFrameworkReferences`, `_HandlePackageFileConflicts` | — | 4–5, 6, 3 ms |
+| longest main-loop stall while loading (smoke) | 123, 141, 147 ms | 135, 141, 134 ms |
+| first workspace compilation of Modern (smoke, background thread) | 0.1–0.2 s | 1.1 s |
+
+The design-time run and the UI are unaffected. The first compilation takes about 1 s more, off the UI thread: loading
+and JIT-compiling the generators and running them for the first time.
+
+```bash
+MD_SMOKE_OPEN=Modern/Generators.cs MD_SMOKE_OUT=out/smoke-t147 xvfb-run -a -s "-screen 0 1600x1000x24" \
+  dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect <copy of linux-smoke>/Modern.sln
+```
+
+![Generators.cs with no squiggles](T147-source-generators.png)
+
+With `MD_SMOKE_GOTO=Word`, the read-only generated file:
+
+![Go to definition opens RegexGenerator.g.cs](T147-generated-document.png)
+
+Open:
+
+- analyzers from project references (`ProjectReference` with `OutputItemType="Analyzer"`, a generator in the same
+  solution) come from `ResolveProjectReferences` and are not collected;
+- generator reruns while typing follow Roslyn's defaults and were not measured on large projects; generator load
+  contexts are not collectible, so a generator changed on disk is used after an IDE restart;
+- the generated file opened by navigation is a snapshot with grammar highlighting only; generated documents are not
+  listed under the project's Dependencies node.
