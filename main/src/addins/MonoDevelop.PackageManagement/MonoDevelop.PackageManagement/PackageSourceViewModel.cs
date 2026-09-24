@@ -66,7 +66,8 @@ namespace MonoDevelop.PackageManagement
 					Name,
 					UserName ?? string.Empty,
 					Password ?? string.Empty,
-					storePasswordInClearText: false,
+					// NuGet can only encrypt passwords on Windows (ProtectedData); elsewhere it stores them in clear text.
+					storePasswordInClearText: !MonoDevelop.Core.Platform.IsWindows,
 					"" //FIXME
 				);
 			}

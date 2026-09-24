@@ -133,3 +133,11 @@ Quarantined 3 test cases (3 methods) on 2026-09-24. IDE-host: 3.
 | `MonoDevelop.VersionControl.Git.Tests.BaseGitUtilsTest.BlameDiffWithNotCommitedItem(True,True)` | IDE-host | needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model) | Microsoft.VisualStudio.Composition.CompositionFailedException : Expected 1 export(s) with contract name "Micro | migration | 2026-09-24 | T107 |
 | `MonoDevelop.VersionControl.Git.Tests.BaseGitUtilsTest.BlameIsCorrect` | IDE-host | needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model) | Microsoft.VisualStudio.Composition.CompositionFailedException : Expected 1 export(s) with contract name "Micro | migration | 2026-09-24 | T107 |
 | `MonoDevelop.VersionControl.Git.Tests.BaseGitUtilsTest.BlameWithWorkingChanges` | IDE-host | needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model) | Microsoft.VisualStudio.Composition.CompositionFailedException : Expected 1 export(s) with contract name "Micro | migration | 2026-09-24 | T107 |
+
+## MonoDevelop.PackageManagement.Tests
+
+Quarantined 1 test cases (1 methods) on 2026-09-24. network: 1.
+
+| Test | Reason | Note | First error line | Owner | Date | Task |
+|---|---|---|---|---|---|---|
+| `MonoDevelop.PackageManagement.Tests.NuGetSdkResolverTests.ProjectUsingMSBuildSdkFromNuGet` | network | restores an MSBuild SDK package from nuget.org (no network in tests); PackageOperationsEndToEndTests resolves one from a local feed | MonoDevelop.Core.UserException : Unable to find SDK 'Xam.Test.MSBuild.Sdk/0.1.0' | migration | 2026-09-24 | T100 |

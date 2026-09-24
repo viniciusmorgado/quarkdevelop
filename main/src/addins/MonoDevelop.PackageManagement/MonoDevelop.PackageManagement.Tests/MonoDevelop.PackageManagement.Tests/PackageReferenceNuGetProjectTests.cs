@@ -93,7 +93,7 @@ namespace MonoDevelop.PackageManagement.Tests
 			var originalFrameworks = new Dictionary<NuGetFramework, string> ();
 			originalFrameworks [framework] = framework.GetShortFolderName ();
 
-			var installationContext = new BuildIntegratedInstallationContext (
+			var installationContext = TestInstallationContext.Create (
 				frameworks,
 				Enumerable.Empty<NuGetFramework> (),
 				originalFrameworks);
@@ -372,7 +372,8 @@ namespace MonoDevelop.PackageManagement.Tests
 		public async Task GetCacheFilePathAsync_BaseIntermediatePathNotSet_BaseIntermediatePathUsedForCacheFilePath ()
 		{
 			CreateNuGetProject ("MyProject", @"d:\projects\MyProject\MyProject.csproj");
-			string expectedCacheFilePath = @"d:\projects\MyProject\obj\MyProject.csproj.nuget.cache".ToNativePath ();
+			// NuGet 6+ names the no-op restore cache obj/project.nuget.cache (as the .NET SDK does).
+			string expectedCacheFilePath = @"d:\projects\MyProject\obj\project.nuget.cache".ToNativePath ();
 
 			string cacheFilePath = await project.GetCacheFilePathAsync ();
 

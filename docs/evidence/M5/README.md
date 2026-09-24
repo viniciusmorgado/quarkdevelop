@@ -133,3 +133,38 @@ solution analyzer references give the compiler errors through `IDiagnosticAnalyz
 solution is replaced, and the code action progress tracker; 4 passed.
 
 ![Program.cs with the C# binding](T089-csharp.png)
+
+## T100 — ADR 0020 NuGet client 7.9 and the NuGet add-in (M5c)
+
+`MonoDevelop.PackageManagement` is an SDK-style net10.0 add-in on GTK 3 and the NuGet 7.9 client
+([ADR 0020](../../adr/0020-nuget-client-version.md)): the NuGet assemblies the .NET SDK carries are compile-only in every
+project (`main/msbuild/Linux/Common.targets`) and load from the SDK at run time, the same ones MSBuild's
+`NuGetSdkResolver` uses; the add-in ships `NuGet.PackageManagement`, `NuGet.Resolver` and `Microsoft.Web.XmlTransform`.
+`MonoDevelop.Refactoring`'s `PackageInstaller` services are compiled again, on Roslyn 5.9's `IPackageInstallerService` /
+`ISymbolSearchService`. Excluded sources and API changes are listed in the csproj files and the ADR; removed features in
+`docs/BREAKING-CHANGES.md`.
+
+Commands (dev container):
+
+```bash
+./scripts/pm dotnet build main/MonoDevelop.Linux.sln
+./scripts/pm ./scripts/check-assemblies.sh
+./scripts/pm bash -lc 'xvfb-run -a -s "-screen 0 1600x1000x24" dotnet test \
+  main/src/addins/MonoDevelop.PackageManagement/MonoDevelop.PackageManagement.Tests/MonoDevelop.PackageManagement.Tests.csproj'
+./scripts/pm bash -lc 'xvfb-run -a -s "-screen 0 1600x1000x24" bash -c "dotnet main/build/bin/MonoDevelop.dll -no-redirect \
+  main/tests/linux-smoke/Smoke.sln > out/ide.log 2>&1 & sleep 70; import -window root out/ide.png; kill %1"'
+```
+
+Result (2026-09-24): `main/build/bin` has no NuGet assembly and its `MonoDevelop.deps.json` no NuGet runtime asset;
+`check-assemblies.sh` finds no duplicate. The IDE loads the add-in, restores the smoke solution on opening ("Packages
+successfully restored", [T100-nuget.png](T100-nuget.png)), and `out/ide.log` no longer has the
+`The SDK resolver type "NuGetSdkResolver" failed to load … NuGet.Common, Version=7.9.0.0` warning.
+
+Tests: `MonoDevelop.PackageManagement.Tests` (NUnit 3) 704 passed, 3 skipped (legacy `[Ignore]`), 1 quarantined
+(nuget.org, [quarantine.md](../M4/quarantine.md)); 10 legacy fixtures that restore .NET Framework / Xamarin samples from
+nuget.org through `IdeTestBase` (T107) are not compiled. FR-010: `PackageOperationsEndToEndTests` adds (1.0.0), updates
+(2.0.0), restores (assets file and extracted package deleted) and removes a package in a copy of
+`tests/linux-smoke` through the add-in's package actions, with a local folder feed and global packages folder created by
+the test, and resolves an MSBuild project SDK from that feed with the in-process `NuGetSdkResolver`.
+
+![The smoke solution restored by the NuGet add-in](T100-nuget.png)

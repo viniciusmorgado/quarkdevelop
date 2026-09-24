@@ -1104,7 +1104,8 @@ namespace MonoDevelop.Projects.MSBuild
 		internal static string GetNameForProjectItem (Type type)
 		{
 			TypeExtensionNode node;
-			if (projecItemTypeNodes.TryGetValue (type.FullName, out node))
+			// Mono.Addins 1.4 gives the nodes of [ExportProjectItemType] attributes an assembly-qualified TypeName.
+			if (projecItemTypeNodes.TryGetValue (type.FullName, out node) || projecItemTypeNodes.TryGetValue (type.AssemblyQualifiedName, out node))
 				return node.Id;
 
 			var r = customProjectItemTypes.FirstOrDefault (k => k.Value == type);

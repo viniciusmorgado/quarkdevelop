@@ -2,16 +2,11 @@
 
 	<Runtime>
 		<Import assembly="MonoDevelop.PackageManagement.dll" />
+		<!-- NuGet client 7.9 (ADR 0020): the add-in ships the assemblies the .NET SDK does not have; NuGet.Common,
+		     NuGet.Protocol, ... load from the SDK directory (MSBuild locator). -->
+		<Import assembly="NuGet.PackageManagement.dll" />
+		<Import assembly="NuGet.Resolver.dll" />
 		<Import assembly="Microsoft.Web.XmlTransform.dll" />
-		<Import assembly="NuGet.Packaging.dll" />
-		<Import assembly="NuGet.Frameworks.dll" />
-		<Import assembly="NuGet.Versioning.dll" />
-		<Import assembly="NuGet.Commands.dll" />
-		<Import assembly="NuGet.LibraryModel.dll" />
-		<Import assembly="NuGet.Common.dll" />
-		<Import assembly="NuGet.Protocol.dll" />
-		<Import assembly="NuGet.Configuration.dll" />
-		<Import assembly="NuGet.ProjectModel.dll" />
 	</Runtime>
 
 	<Extension path = "/MonoDevelop/Ide/Commands">

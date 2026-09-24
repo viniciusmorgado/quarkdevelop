@@ -58,6 +58,24 @@ namespace MonoDevelop.PackageManagement
 			throw new NotImplementedException ();
 		}
 
+		// NuGet 6+: items read by the packages.config / PackageReference legacy project restore (e.g. NuGetAuditSuppress).
+		public Task<IReadOnlyList<(string id, string[] metadata)>> GetItemsAsync (string itemTypeName, params string[] metadataNames)
+		{
+			return Runtime.RunInMainThread (() => GetItems (itemTypeName, metadataNames));
+		}
+
+		IReadOnlyList<(string id, string[] metadata)> GetItems (string itemTypeName, string[] metadataNames)
+		{
+			var msbuildProject = project.MSBuildProject;
+			if (msbuildProject == null)
+				return Array.Empty<(string, string[])> ();
+
+			return msbuildProject.GetAllItems ()
+				.Where (item => item.Name == itemTypeName)
+				.Select (item => (item.Include, metadataNames.Select (name => item.Metadata.GetValue (name)).ToArray ()))
+				.ToList ();
+		}
+
 		public Task<IEnumerable<ProjectRestoreReference>> GetProjectReferencesAsync (
 			ILogger logger,
 			CancellationToken token)

@@ -62,7 +62,8 @@ namespace MonoDevelop.PackageManagement
 
 		public void UpdateProject (MSBuildProject project)
 		{
-			foreach (NuGetFramework framework in installationContext.SuccessfulFrameworks) {
+			// NuGet 6+ lists the target framework aliases as written in the project (OriginalFrameworks is gone).
+			foreach (string framework in installationContext.SuccessfulFrameworks) {
 
 				MSBuildItem packageReference = AddPackageReference (project, framework);
 
@@ -74,13 +75,8 @@ namespace MonoDevelop.PackageManagement
 			}
 		}
 
-		MSBuildItem AddPackageReference (MSBuildProject project, NuGetFramework framework)
+		MSBuildItem AddPackageReference (MSBuildProject project, string originalFramework)
 		{
-			string originalFramework;
-			if (!installationContext.OriginalFrameworks.TryGetValue (framework, out originalFramework)) {
-				originalFramework = framework.GetShortFolderName ();
-			}
-
 			MSBuildItemGroup itemGroup = GetOrAddItemGroup (project, originalFramework);
 			MSBuildItem packageReference = GetOrAddPackageReference (itemGroup);
 

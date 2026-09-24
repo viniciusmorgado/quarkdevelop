@@ -47,13 +47,13 @@ namespace MonoDevelop.PackageManagement
 			base.OnItemReady ();
 			itemReady = true;
 
-			if (IdeApp.IsInitialized)
+			if (SdkProjectReloadMonitor.IsIdeInitialized)
 				PackageManagementServices.ProjectTargetFrameworkMonitor.ProjectTargetFrameworkChanged += ProjectTargetFrameworkChanged;
 		}
 
 		public override void Dispose ()
 		{
-			if (IdeApp.IsInitialized)
+			if (SdkProjectReloadMonitor.IsIdeInitialized)
 				PackageManagementServices.ProjectTargetFrameworkMonitor.ProjectTargetFrameworkChanged -= ProjectTargetFrameworkChanged;
 
 			base.Dispose ();
@@ -101,7 +101,7 @@ namespace MonoDevelop.PackageManagement
 			if (Project.Loading)
 				return;
 
-			if (!IdeApp.IsInitialized)
+			if (!SdkProjectReloadMonitor.IsIdeInitialized)
 				return;
 
 			if (IdeApp.ProjectOperations.CurrentSelectedSolution != Project.ParentSolution)

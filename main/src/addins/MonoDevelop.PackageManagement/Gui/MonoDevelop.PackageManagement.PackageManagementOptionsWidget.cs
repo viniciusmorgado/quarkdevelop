@@ -41,7 +41,7 @@ namespace MonoDevelop.PackageManagement
 			// Container child restorePackagesLabelHBox.Gtk.Box+BoxChild
 			this.restorePackagesLabel = new global::Gtk.Label ();
 			this.restorePackagesLabel.Name = "restorePackagesLabel";
-			this.restorePackagesLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Package Restore</b>");
+			this.restorePackagesLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Package Restore</b>");
 			this.restorePackagesLabel.UseMarkup = true;
 			this.restorePackagesLabelHBox.Add (this.restorePackagesLabel);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.restorePackagesLabelHBox [this.restorePackagesLabel]));
@@ -63,7 +63,7 @@ namespace MonoDevelop.PackageManagement
 			this.automaticPackageRestoreOnOpeningSolutionCheckBox = new global::Gtk.CheckButton ();
 			this.automaticPackageRestoreOnOpeningSolutionCheckBox.CanFocus = true;
 			this.automaticPackageRestoreOnOpeningSolutionCheckBox.Name = "automaticPackageRestoreOnOpeningSolutionCheckBox";
-			this.automaticPackageRestoreOnOpeningSolutionCheckBox.Label = global::Mono.Unix.Catalog.GetString ("_Automatically restore packages when opening a solution.");
+			this.automaticPackageRestoreOnOpeningSolutionCheckBox.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Automatically restore packages when opening a solution.");
 			this.automaticPackageRestoreOnOpeningSolutionCheckBox.DrawIndicator = true;
 			this.automaticPackageRestoreOnOpeningSolutionCheckBox.UseUnderline = true;
 			this.automaticPackageRestoreOnOpeningSolutionCheckBox.BorderWidth = ((uint)(10));
@@ -79,7 +79,7 @@ namespace MonoDevelop.PackageManagement
 			// Container child packageUpdatesLabelHBox.Gtk.Box+BoxChild
 			this.packageUpdatesLabel = new global::Gtk.Label ();
 			this.packageUpdatesLabel.Name = "packageUpdatesLabel";
-			this.packageUpdatesLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Package Updates</b>");
+			this.packageUpdatesLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Package Updates</b>");
 			this.packageUpdatesLabel.UseMarkup = true;
 			this.packageUpdatesLabelHBox.Add (this.packageUpdatesLabel);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.packageUpdatesLabelHBox [this.packageUpdatesLabel]));
@@ -101,7 +101,7 @@ namespace MonoDevelop.PackageManagement
 			this.checkForPackageUpdatesOnOpeningSolutionCheckBox = new global::Gtk.CheckButton ();
 			this.checkForPackageUpdatesOnOpeningSolutionCheckBox.CanFocus = true;
 			this.checkForPackageUpdatesOnOpeningSolutionCheckBox.Name = "checkForPackageUpdatesOnOpeningSolutionCheckBox";
-			this.checkForPackageUpdatesOnOpeningSolutionCheckBox.Label = global::Mono.Unix.Catalog.GetString ("Check for package _updates when opening a solution.");
+			this.checkForPackageUpdatesOnOpeningSolutionCheckBox.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Check for package _updates when opening a solution.");
 			this.checkForPackageUpdatesOnOpeningSolutionCheckBox.DrawIndicator = true;
 			this.checkForPackageUpdatesOnOpeningSolutionCheckBox.UseUnderline = true;
 			this.checkForPackageUpdatesOnOpeningSolutionCheckBox.BorderWidth = ((uint)(10));

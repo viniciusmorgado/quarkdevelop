@@ -87,16 +87,15 @@ namespace MonoDevelop.PackageManagement
 			return new PluginManager (
 				EnvironmentVariableWrapper.Instance,
 				new Lazy<IPluginDiscoverer> (InitializeDiscoverer),
-				(TimeSpan idleTimeout) => new MonoDevelopPluginFactory (idleTimeout),
+				// NuGet's factory: MonoDevelopPluginFactory ran .NET Framework plugin .exe files with Mono (not on .NET).
+				(TimeSpan idleTimeout) => new PluginFactory (idleTimeout),
 				new Lazy<string> (() => SettingsUtility.GetPluginsCacheFolder ()));
 		}
 
 		static PluginDiscoverer InitializeDiscoverer ()
 		{
-			var verifier = EmbeddedSignatureVerifier.Create ();
-
-			string pluginPaths = EnvironmentVariableWrapper.Instance.GetEnvironmentVariable ("NUGET_PLUGIN_PATHS");
-			return new PluginDiscoverer (pluginPaths, verifier);
+			// NuGet 6+ reads NUGET_PLUGIN_PATHS (and the default plugin folders) itself.
+			return new PluginDiscoverer ();
 		}
 
 		internal static void InitializeCredentialService ()

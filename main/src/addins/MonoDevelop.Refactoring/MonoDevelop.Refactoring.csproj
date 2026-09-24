@@ -68,6 +68,9 @@
     <Compile Include="MonoDevelop.AnalysisCore/Gui/ResultTooltipProvider.FloatingQuickFixIconWidget.cs" />
     <Compile Include="MonoDevelop.AnalysisCore/Gui/ResultTooltipProvider.RectangleMarker.cs" />
     <Compile Include="MonoDevelop.Refactoring/RoslynInformationProvider.cs" />
+    <!-- Roslyn's IPackageInstallerService / ISymbolSearchService, backed by the NuGet add-in (T100). -->
+    <Compile Include="MonoDevelop.Refactoring.PackageInstaller/PackageInstallerService.cs" />
+    <Compile Include="MonoDevelop.Refactoring.PackageInstaller/SymbolSearchService.cs" />
   </ItemGroup>
 
   <!--
@@ -76,9 +79,6 @@
       Roslyn EditorFeatures types (GoToImplementationCommandArgs, IStreamingFindUsagesPresenter) used only by the
       Cocoa/WPF MonoDevelop.TextEditor command handlers (excluded, ADR 0012; EditorFeatures is not referenced, T089).
       The GTK editor runs Find References / Go to Implementation through RefactoringService and FindReferencesProvider.
-    - MonoDevelop.Refactoring.PackageInstaller/*: Roslyn's IPackageInstallerService / ISymbolSearchService, backed by
-      the NuGet add-in (MonoDevelop.PackageManagement sets PackageServices); they return with its port (T100).
-      Until then Roslyn's default services apply (no "install package" code fixes).
     - MonoDevelop.Refactoring.Options/* (except Util.cs): the code style option view models are built on the Roslyn 3
       options API (OptionSet, CodeStyleOption<T>, IOptionService, PreviewWorkspace) that Roslyn 4+ replaced with
       editorconfig-based options; code style is configured with .editorconfig (Ide EditorConfigService).

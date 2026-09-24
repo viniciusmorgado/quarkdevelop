@@ -172,7 +172,7 @@ namespace MonoDevelop.PackageManagement
 
 		void UpdateConfiguration ()
 		{
-			Configuration = IdeApp.IsInitialized ? IdeApp.Workspace?.ActiveConfiguration ?? ConfigurationSelector.Default : ConfigurationSelector.Default;
+			Configuration = SdkProjectReloadMonitor.IsIdeInitialized ? IdeApp.Workspace?.ActiveConfiguration ?? ConfigurationSelector.Default : ConfigurationSelector.Default;
 		}
 
 		public void EnsureSolutionIsLoaded ()

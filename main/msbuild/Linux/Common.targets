@@ -21,6 +21,20 @@
     </ProjectReference>
   </ItemDefinitionGroup>
 
+  <!--
+    NuGet client (ADR 0020): the NuGet assemblies the .NET SDK carries load from the SDK directory at run time (MSBuild
+    locator), like MSBuild (ADR 0008), so that the IDE process has the same NuGet as MSBuild's NuGetSdkResolver. Every
+    MonoDevelop project gets them compile-only: a direct ExcludeAssets="runtime" reference keeps them out of the output
+    and the deps.json of the hosts and test hosts, whichever package brings them in (Microsoft.TemplateEngine.Edge,
+    NuGet.PackageManagement). Projects may list them themselves with the same metadata.
+  -->
+  <ItemGroup Condition="'$(MDNuGetClientFromSdk)' != 'false' and ($([System.String]::Copy('$(MSBuildProjectDirectory)/').StartsWith('$(MonoDevelopRootDir)src/')) or $([System.String]::Copy('$(MSBuildProjectDirectory)/').StartsWith('$(MonoDevelopRootDir)tests/')))">
+    <_MDNuGetClientFromSdk Include="NuGet.Commands;NuGet.Common;NuGet.Configuration;NuGet.Credentials;NuGet.DependencyResolver.Core;NuGet.Frameworks;NuGet.LibraryModel;NuGet.Packaging;NuGet.ProjectModel;NuGet.Protocol;NuGet.Versioning" />
+    <_MDNuGetClientFromSdk Remove="@(PackageReference)" />
+    <PackageReference Include="@(_MDNuGetClientFromSdk)" ExcludeAssets="runtime" PrivateAssets="all" />
+    <_MDNuGetClientFromSdk Remove="@(_MDNuGetClientFromSdk)" />
+  </ItemGroup>
+
   <!-- Friend assemblies are signed with the MonoDevelop public key. -->
   <ItemDefinitionGroup>
     <InternalsVisibleTo>

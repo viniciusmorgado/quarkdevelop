@@ -68,7 +68,7 @@ namespace MonoDevelop.PackageManagement.Tests
 		{
 			var sources = new List<SourceRepository> ();
 			var actions = new List<NuGetProjectAction> ();
-			return new BuildIntegratedProjectAction (
+			return TestInstallationContext.CreateProjectAction (
 				nugetProject,
 				new PackageIdentity ("Test", NuGetVersion.Parse ("1.0")),
 				NuGetProjectActionType.Install,
@@ -76,7 +76,7 @@ namespace MonoDevelop.PackageManagement.Tests
 				new RestoreResultPair (null, null),
 				sources.AsReadOnly (),
 				actions.AsReadOnly (),
-				new BuildIntegratedInstallationContext (null, null, null));
+				TestInstallationContext.Create (null, null, null));
 		}
 
 		[Test]

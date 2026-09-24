@@ -57,7 +57,13 @@ namespace UnitTests
 		}
 		
 		public static string TmpDir {
-			get { return Path.Combine (TestsRootDir, "tmp"); }
+			get {
+				// Test hosts with their own folder (build/tests/<project>/) run in parallel and clear their tmp folder
+				// (TestBase): each gets its own instead of sharing build/tests/tmp.
+				if (!Directory.Exists (Path.Combine (TestsRootDir, "test-projects")))
+					return Path.Combine (System.AppContext.BaseDirectory, "tmp");
+				return Path.Combine (TestsRootDir, "tmp");
+			}
 		}
 		
 		public static ProgressMonitor GetMonitor ()
@@ -72,9 +78,21 @@ namespace UnitTests
 			return m;
 		}
 		
+		// Test hosts with their own folder (build/tests/<project>/) do not find test-projects above them: the
+		// runsettings (msbuild/Linux/Test.targets) give the sources' tests folder in MONODEVELOP_TEST_ROOT.
+		static string TestProjectsDir {
+			get {
+				string dir = Path.Combine (TestsRootDir, "test-projects");
+				string testRoot = System.Environment.GetEnvironmentVariable ("MONODEVELOP_TEST_ROOT");
+				if (!Directory.Exists (dir) && !string.IsNullOrEmpty (testRoot) && Directory.Exists (Path.Combine (testRoot, "test-projects")))
+					dir = Path.Combine (testRoot, "test-projects");
+				return dir;
+			}
+		}
+
 		public static string GetSampleProject (params string[] projectName)
 		{
-			string srcDir = Path.Combine (Path.Combine (TestsRootDir, "test-projects"), Combine (projectName));
+			string srcDir = Path.Combine (TestProjectsDir, Combine (projectName));
 			string projDir = srcDir;
 			srcDir = Path.GetDirectoryName (srcDir);
 
@@ -133,7 +151,7 @@ namespace UnitTests
 		
 		public static string GetSampleProjectPath (params string[] projectName)
 		{
-			return Path.Combine (Path.Combine (TestsRootDir, "test-projects"), Combine (projectName));
+			return Path.Combine (TestProjectsDir, Combine (projectName));
 		}
 		
 		public static string CreateTmpDir (string hint)

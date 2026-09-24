@@ -35,6 +35,7 @@ namespace MonoDevelop.PackageManagement.Tests
 	class NuGetSdkResolverTests : TestBase
 	{
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ProjectUsingMSBuildSdkFromNuGet ()
 		{
 			string projectFile = Util.GetSampleProject ("nuget-sdk-resolver", "NuGetSdk.csproj");

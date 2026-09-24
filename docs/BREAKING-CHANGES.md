@@ -48,7 +48,10 @@ Compared with MonoDevelop 8.6:
 | C# completion extras: delegate/lambda creation, event sender cast, cast, string format items, Apple protocol members (MonoDevelop's own Roslyn completion providers) | removed; Roslyn's C# completion providers remain |
 | C# format on return | removed (not in Roslyn 4+); the new line is indented by the editor |
 | C# project formatting policies as Roslyn document options (code fixes, generated code) | not applied; explicit formatting uses the policy, Roslyn features use `.editorconfig` |
-| Roslyn "install package" code fixes and package symbol search | deferred to the NuGet add-in port (`MonoDevelop.PackageManagement`) |
+| Roslyn "install package" code fixes and package symbol search | back with the NuGet add-in (T100); symbol search answers namespace queries with no result |
+| NuGet multi-source search relevance ranking (`NuGet.Indexing`, Lucene) | replaced: results of several sources are interleaved in source order, one per package id ([ADR 0020](adr/0020-nuget-client-version.md)) |
+| NuGet credential provider plug-ins that are .NET Framework `.exe` files (run with Mono) | not supported; .NET plug-ins run through NuGet's own plug-in support |
+| Encrypted package source passwords in `NuGet.Config` | Linux stores them in clear text (NuGet encrypts only on Windows); the Mono key store check is removed |
 | C# NUnit test markers in the editor and source locations of tests | deferred to the `MonoDevelop.UnitTesting` port |
 
 ## Add-in authors
@@ -70,6 +73,11 @@ Compared with MonoDevelop 8.6:
 - Roslyn 5 (ADR 0010): `MonoDevelopWorkspaceDiagnosticAnalyzerProviderService` no longer implements a Roslyn interface
   (import it by its own type); the MEF export `IStreamingFindUsagesPresenter` and the TextEditor command mappings of
   the Refactoring and C# add-ins are removed with the Cocoa/WPF editor.
+- NuGet (ADR 0020): the NuGet add-in uses the NuGet 7.9 client and the IDE loads NuGet from the .NET SDK (SDK 10.0.4xx
+  or later). Add-ins that use NuGet types compile against the `NuGet.*` 7.9 packages with `ExcludeAssets="runtime"`
+  (done for every project by `main/msbuild/Linux/Common.targets`) and must not ship NuGet assemblies. In
+  `MonoDevelop.PackageManagement`, `IPackageRestoreManager` restores without a logger are extension methods,
+  `MonoDevelopPluginFactory` is gone and `BuildIntegratedInstallationContext` lists target framework aliases.
 - `Mono.Addins.Gui` (GTK2) is replaced by `Mono.Addins.GuiGtk3`, which has the same classes in the
   `Mono.Addins.GuiGtk3` namespace.
 - The VS editor API assemblies keep their names. WPF-only members are not available: presenter

@@ -52,7 +52,12 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 		public event EventHandler<NuGet.PackageManagement.PackageRestoredEventArgs> PackageRestoredEvent;
 		public event EventHandler<PackageRestoreFailedEventArgs> PackageRestoreFailedEvent;
 		public event EventHandler<PackagesMissingStatusEventArgs> PackagesMissingStatusChanged;
+		public event AssetsFileMissingStatusChanged AssetsFileMissingStatusChanged;
 		#pragma warning restore 67
+
+		public void RaiseAssetsFileMissingEventForProjectAsync (bool isAssetsFileMissing)
+		{
+		}
 
 		public void RaisePackageRestoreFailedEvent (Exception exception, string projectName)
 		{
@@ -161,9 +166,10 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 			throw new NotImplementedException ();
 		}
 
+		// NuGet 6+: the add-in calls this overload (PackageRestoreManagerExtensions passes a logger).
 		public Task<PackageRestoreResult> RestoreMissingPackagesAsync (string solutionDirectory, IEnumerable<PackageRestoreData> packages, INuGetProjectContext nuGetProjectContext, PackageDownloadContext downloadContext, ILogger logger, CancellationToken token)
 		{
-			throw new NotImplementedException ();
+			return RestoreMissingPackagesAsync (solutionDirectory, packages, nuGetProjectContext, downloadContext, token);
 		}
 	}
 }

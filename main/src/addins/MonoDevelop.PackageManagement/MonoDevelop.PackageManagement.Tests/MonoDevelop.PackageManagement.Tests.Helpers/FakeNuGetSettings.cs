@@ -62,18 +62,8 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 			return new List<KeyValuePair<string, string>> ();
 		}
 
-#pragma warning disable CS0618
-
-		public Dictionary<string, List<SettingValue>> SettingValues = new Dictionary<string, List<SettingValue>> ();
-
-		public IList<SettingValue> GetSettingValues (string section, bool isPath = false)
-		{
-			List<SettingValue> settings = null;
-			if (SettingValues.TryGetValue (section, out settings))
-				return settings;
-			return new List<SettingValue> ();
-		}
-
+		// NuGet 6+ ISettings has no SettingValue API (GetSettingValues, SetValues, nested values): only GetValue/SetValue
+		// helpers used by the tests remain.
 		public Dictionary<string, string> Values = new Dictionary<string, string> ();
 
 		public string GetValue (string section, string key, bool isPath = false)
@@ -84,58 +74,15 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 			return null;
 		}
 
-		public void SetNestedValues (string section, string subSection, IList<KeyValuePair<string, string>> values)
-		{
-			throw new NotImplementedException ();
-		}
-
 		public void SetValue (string section, string key, string value)
 		{
 			Values [GetKey (section, key)] = value;
-		}
-
-		public void SetValues (string section, List<SettingValue> values)
-		{
-			SettingValues [section] = values;
-		}
-
-		public void SetValues (string section, IReadOnlyList<SettingValue> values)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public void UpdateSections (string section, IReadOnlyList<SettingValue> values)
-		{
-			throw new NotImplementedException ();
 		}
 
 		static string GetKey (string section, string key)
 		{
 			return $"{section}-{key}";
 		}
-
-		public IReadOnlyList<string> GetAllSubsections (string section)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public IReadOnlyList<SettingValue> GetNestedSettingValues (string section, string subSection)
-		{
-			var values = new List<SettingValue> ();
-			return values.AsReadOnly ();
-		}
-
-		public void UpdateSubsections (string section, string subsection, IReadOnlyList<SettingValue> values)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public void SetNestedSettingValues (string section, string subsection, IList<SettingValue> values)
-		{
-			throw new NotImplementedException ();
-		}
-
-#pragma warning restore CS0618
 
 		public void SaveToDisk ()
 		{

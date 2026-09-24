@@ -228,12 +228,28 @@ namespace MonoDevelop.PackageManagement
 			return removed;
 		}
 
+		public override async Task<bool> UninstallPackageAsync (
+			string packageId,
+			BuildIntegratedInstallationContext installationContext,
+			CancellationToken token)
+		{
+			bool removed = await Runtime.RunInMainThread (() => {
+				return RemovePackageReference (new PackageIdentity (packageId, null), null);
+			});
+
+			if (removed) {
+				await SaveProject ();
+			}
+
+			return removed;
+		}
+
 		bool RemovePackageReference (PackageIdentity packageIdentity, INuGetProjectContext context)
 		{
 			ProjectPackageReference packageReference = project.GetPackageReference (packageIdentity, matchVersion: false);
 
 			if (packageReference == null) {
-				context.Log (MessageLevel.Warning, GettextCatalog.GetString ("Package '{0}' does not exist in project '{1}'", packageIdentity.Id, project.Name));
+				context?.Log (MessageLevel.Warning, GettextCatalog.GetString ("Package '{0}' does not exist in project '{1}'", packageIdentity.Id, project.Name));
 				return false;
 			}
 
@@ -259,6 +275,11 @@ namespace MonoDevelop.PackageManagement
 				project.BaseIntermediateOutputPath,
 				msbuildProjectPath);
 			return Task.FromResult (cacheFilePath);
+		}
+
+		public override async Task<(IReadOnlyList<PackageSpec> dgSpecs, IReadOnlyList<IAssetsLogMessage> additionalMessages)> GetPackageSpecsAndAdditionalMessagesAsync (DependencyGraphCacheContext context)
+		{
+			return (await GetPackageSpecsAsync (context), Array.Empty<IAssetsLogMessage> ());
 		}
 
 		public override async Task<IReadOnlyList<PackageSpec>> GetPackageSpecsAsync (DependencyGraphCacheContext context)

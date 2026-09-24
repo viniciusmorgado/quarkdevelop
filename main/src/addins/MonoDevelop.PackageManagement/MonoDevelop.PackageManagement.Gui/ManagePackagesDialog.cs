@@ -119,7 +119,7 @@ namespace MonoDevelop.PackageManagement
 
 		void UpdateTabAccessibility ()
 		{
-			if (tabGroup.Surface.ToolkitEngine.Type == ToolkitType.Gtk) {
+			if (tabGroup.Surface.ToolkitEngine.Type == ToolkitType.Gtk3) {
 				if (consolidateLabel.Parent.Surface.NativeWidget is Gtk.Container a11yGroup) {
 					a11yGroup.Accessible.SetRole (AtkCocoa.Roles.AXTabGroup);
 					var children = a11yGroup.Children;
@@ -133,8 +133,8 @@ namespace MonoDevelop.PackageManagement
 						}
 						var tab = child.Accessible;
 						tab.SetRole (AtkCocoa.Roles.AXRadioButton);
-						tab.SetSubRole (AtkCocoa.SubRoles.AXTabButton);
-						tab.SetValue (false);
+						tab.SetSubRole (AtkCocoa.SubRoles.AXTabButton.ToString ());
+						tab.SetValue (false.ToString ());
 						tabs.Add (tab);
 					}
 					a11yGroup.Accessible.SetTabs (tabs.ToArray ());
@@ -210,7 +210,7 @@ namespace MonoDevelop.PackageManagement
 			packagesListView.RowActivated += PackagesListRowActivated;
 			packagesListView.VerticalScrollControl.ValueChanged += PackagesListViewScrollValueChanged;
 
-			if (Toolkit.CurrentEngine.Type == ToolkitType.Gtk) {
+			if (Toolkit.CurrentEngine.Type == ToolkitType.Gtk3) {
 				// TODO: unlike Xwt.TreeView, Xwt.ListView has no UseAlternatingRowColors property
 				var gtkTreeView = packagesListView.Surface.NativeWidget as Gtk.Widget;
 				if (gtkTreeView is Gtk.ScrolledWindow scroll)
@@ -1170,10 +1170,10 @@ namespace MonoDevelop.PackageManagement
 
 		static void UpdatePackageResultsLabelA11y (Widget label, bool active)
 		{
-			if (label.Surface.ToolkitEngine.Type == ToolkitType.Gtk) {
+			if (label.Surface.ToolkitEngine.Type == ToolkitType.Gtk3) {
 				var widget = label.Surface.NativeWidget as Gtk.Widget;
 				if (widget != null) {
-					widget.Accessible.SetValue (active);
+					widget.Accessible.SetValue (active.ToString ());
 					// FIXME: Accessible.SetValue has no effect, so set the role description instead
 					widget.Accessible.SetRole (AtkCocoa.Roles.AXRadioButton, active ? "selected tab" : "tab");
 				}

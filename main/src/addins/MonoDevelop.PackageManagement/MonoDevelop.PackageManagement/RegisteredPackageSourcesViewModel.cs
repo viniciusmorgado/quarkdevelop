@@ -190,7 +190,8 @@ namespace MonoDevelop.PackageManagement
 		public string NewPackageSourceUrl {
 			get { return newPackageSource.Source; }
 			set {
-				newPackageSource.Source = value?.Trim ();
+				// NuGet 6+ PackageSource.Source does not accept null.
+				newPackageSource.Source = value?.Trim () ?? string.Empty;
 				OnPropertyChanged(viewModel => viewModel.NewPackageSourceUrl);
 			}
 		}

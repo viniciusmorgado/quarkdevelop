@@ -109,7 +109,7 @@ namespace MonoDevelop.PackageManagement.Tests
 			var originalFrameworks = new Dictionary<NuGetFramework, string> ();
 			originalFrameworks [framework] = framework.GetShortFolderName ();
 
-			var installationContext = new BuildIntegratedInstallationContext (
+			var installationContext = TestInstallationContext.Create (
 				frameworks,
 				Enumerable.Empty<NuGetFramework> (),
 				originalFrameworks);
@@ -389,7 +389,7 @@ namespace MonoDevelop.PackageManagement.Tests
 				modifiedHint = e.Single ().Hint;
 			};
 
-			await project.PostProcessAsync (context, CancellationToken.None);
+			await Runtime.RunInMainThread (() => project.PostProcessAsync (context, CancellationToken.None));
 
 			Assert.AreEqual ("References", modifiedHint);
 		}
@@ -405,7 +405,7 @@ namespace MonoDevelop.PackageManagement.Tests
 			};
 			OnAfterExecuteActions ("NUnit", "2.6.3", NuGetProjectActionType.Install);
 
-			await project.PostProcessAsync (context, CancellationToken.None);
+			await Runtime.RunInMainThread (() => project.PostProcessAsync (context, CancellationToken.None));
 
 			Assert.IsNotNull (dotNetProject.ParentSolution);
 			Assert.AreEqual (dotNetProject.ParentSolution, project.SolutionUsedToCreateBuildIntegratedRestorer);
@@ -428,7 +428,7 @@ namespace MonoDevelop.PackageManagement.Tests
 			buildIntegratedRestorer.LockFileChanged = true;
 			OnAfterExecuteActions ("NUnit", "2.6.3", NuGetProjectActionType.Install);
 
-			await project.PostProcessAsync (context, CancellationToken.None);
+			await Runtime.RunInMainThread (() => project.PostProcessAsync (context, CancellationToken.None));
 
 			Assert.AreEqual (project, buildIntegratedRestorer.ProjectRestored);
 			Assert.IsNull (modifiedHint);
@@ -450,14 +450,14 @@ namespace MonoDevelop.PackageManagement.Tests
 			buildIntegratedRestorer.LockFileChanged = true;
 			OnAfterExecuteActions ("NUnit", "2.6.3", NuGetProjectActionType.Install);
 
-			await project.PostProcessAsync (context, CancellationToken.None);
+			await Runtime.RunInMainThread (() => project.PostProcessAsync (context, CancellationToken.None));
 
 			Assert.IsNull (fileNameChanged);
 			Assert.AreEqual (project, buildIntegratedRestorer.ProjectRestored);
 		}
 
 		[Test]
-		public void NotifyProjectReferencesChanged_References_NotifyReferencesChangedEventFired ()
+		public async Task NotifyProjectReferencesChanged_References_NotifyReferencesChangedEventFired ()
 		{
 			CreateNuGetProject ();
 			string modifiedHint = null;
@@ -465,7 +465,8 @@ namespace MonoDevelop.PackageManagement.Tests
 				modifiedHint = e.Single ().Hint;
 			};
 
-			project.NotifyProjectReferencesChanged (false);
+			// It asserts the main thread (GuiUnit ran the tests on it).
+			await Runtime.RunInMainThread (() => project.NotifyProjectReferencesChanged (false));
 
 			Assert.AreEqual ("References", modifiedHint);
 		}
@@ -493,7 +494,7 @@ namespace MonoDevelop.PackageManagement.Tests
 				modifiedHintProjectWithReference = e.Single ().Hint;
 			};
 
-			await project.PostProcessAsync (context, CancellationToken.None);
+			await Runtime.RunInMainThread (() => project.PostProcessAsync (context, CancellationToken.None));
 
 			Assert.AreEqual ("References", modifiedHintMainProject);
 			Assert.AreEqual ("References", modifiedHintProjectWithReference);
@@ -518,7 +519,7 @@ namespace MonoDevelop.PackageManagement.Tests
 			};
 			OnAfterExecuteActions ("NUnit", "2.6.3", NuGetProjectActionType.Install);
 
-			await project.PostProcessAsync (context, CancellationToken.None);
+			await Runtime.RunInMainThread (() => project.PostProcessAsync (context, CancellationToken.None));
 
 			Assert.AreEqual (project, buildIntegratedRestorer.ProjectRestored);
 			Assert.AreEqual ("References", modifiedHintMainProject);
@@ -526,7 +527,7 @@ namespace MonoDevelop.PackageManagement.Tests
 		}
 
 		[Test]
-		public void NotifyProjectReferencesChanged_IncludeTransitiveReferences_NotifyReferencesChangedEventFiredForAllProjects ()
+		public async Task NotifyProjectReferencesChanged_IncludeTransitiveReferences_NotifyReferencesChangedEventFiredForAllProjects ()
 		{
 			CreateNuGetProject ();
 			var dotNetProjectWithProjectReference = CreateDotNetCoreProject ("MyProject2", @"d:\projects\MyProject2\MyProject2.csproj");
@@ -542,14 +543,15 @@ namespace MonoDevelop.PackageManagement.Tests
 				modifiedHintProjectWithReference = e.Single ().Hint;
 			};
 
-			project.NotifyProjectReferencesChanged (true);
+			// It asserts the main thread (GuiUnit ran the tests on it).
+			await Runtime.RunInMainThread (() => project.NotifyProjectReferencesChanged (true));
 
 			Assert.AreEqual ("References", modifiedHintMainProject);
 			Assert.AreEqual ("References", modifiedHintProjectWithReference);
 		}
 
 		[Test]
-		public void NotifyProjectReferencesChanged_DoNotIncludeTransitiveReferences_NotifyReferencesChangedEventFiredForMainProjectOnly ()
+		public async Task NotifyProjectReferencesChanged_DoNotIncludeTransitiveReferences_NotifyReferencesChangedEventFiredForMainProjectOnly ()
 		{
 			CreateNuGetProject ();
 			var dotNetProjectWithProjectReference = CreateDotNetCoreProject ("MyProject2", @"d:\projects\MyProject2\MyProject2.csproj");
@@ -565,7 +567,8 @@ namespace MonoDevelop.PackageManagement.Tests
 				modifiedHintProjectWithReference = e.Single ().Hint;
 			};
 
-			project.NotifyProjectReferencesChanged (false);
+			// It asserts the main thread (GuiUnit ran the tests on it).
+			await Runtime.RunInMainThread (() => project.NotifyProjectReferencesChanged (false));
 
 			Assert.AreEqual ("References", modifiedHintMainProject);
 			Assert.IsNull (modifiedHintProjectWithReference);
@@ -575,7 +578,8 @@ namespace MonoDevelop.PackageManagement.Tests
 		public async Task GetCacheFilePathAsync_BaseIntermediatePathNotSet_BaseIntermediatePathUsedForCacheFilePath ()
 		{
 			CreateNuGetProject ("MyProject", @"d:\projects\MyProject\MyProject.csproj");
-			string expectedCacheFilePath = @"d:\projects\MyProject\obj\MyProject.csproj.nuget.cache".ToNativePath ();
+			// NuGet 6+ names the no-op restore cache obj/project.nuget.cache (as the .NET SDK does).
+			string expectedCacheFilePath = @"d:\projects\MyProject\obj\project.nuget.cache".ToNativePath ();
 
 			string cacheFilePath = await project.GetCacheFilePathAsync ();
 
@@ -615,7 +619,7 @@ namespace MonoDevelop.PackageManagement.Tests
 
 			var originalFrameworks = new Dictionary<NuGetFramework, string> ();
 
-			var installationContext = new BuildIntegratedInstallationContext (
+			var installationContext = TestInstallationContext.Create (
 				successfulFrameworks,
 				unsuccessfulFrameworks,
 				originalFrameworks);
@@ -656,7 +660,7 @@ namespace MonoDevelop.PackageManagement.Tests
 			var originalFrameworks = new Dictionary<NuGetFramework, string> ();
 			originalFrameworks [net472Framework] = ".NETFramework4.7.2";
 
-			var installationContext = new BuildIntegratedInstallationContext (
+			var installationContext = TestInstallationContext.Create (
 				successfulFrameworks,
 				unsuccessfulFrameworks,
 				originalFrameworks);
@@ -692,7 +696,7 @@ namespace MonoDevelop.PackageManagement.Tests
 
 			var originalFrameworks = new Dictionary<NuGetFramework, string> ();
 
-			var installationContext = new BuildIntegratedInstallationContext (
+			var installationContext = TestInstallationContext.Create (
 				successfulFrameworks,
 				unsuccessfulFrameworks,
 				originalFrameworks);
@@ -738,7 +742,7 @@ namespace MonoDevelop.PackageManagement.Tests
 
 			var originalFrameworks = new Dictionary<NuGetFramework, string> ();
 
-			var installationContext = new BuildIntegratedInstallationContext (
+			var installationContext = TestInstallationContext.Create (
 				successfulFrameworks,
 				unsuccessfulFrameworks,
 				originalFrameworks);
@@ -785,7 +789,7 @@ namespace MonoDevelop.PackageManagement.Tests
 
 			var originalFrameworks = new Dictionary<NuGetFramework, string> ();
 
-			var installationContext = new BuildIntegratedInstallationContext (
+			var installationContext = TestInstallationContext.Create (
 				successfulFrameworks,
 				unsuccessfulFrameworks,
 				originalFrameworks);

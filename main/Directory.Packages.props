@@ -11,6 +11,12 @@
     <RoslynVersion>5.9.0</RoslynVersion>
     <!-- Must not exceed the MSBuild shipped with the pinned SDK (18.9.x in SDK 10.0.4xx). -->
     <MSBuildPackageVersion>18.9.6</MSBuildPackageVersion>
+    <!--
+      NuGet client (ADR 0020): the version the pinned SDK ships (SDK 10.0.4xx: NuGet 7.9). The assemblies the SDK
+      carries are compile-only and load from the SDK at run time, like MSBuild (ADR 0008); only NuGet.PackageManagement,
+      NuGet.Resolver and Microsoft.Web.Xdt ship with the MonoDevelop.PackageManagement add-in.
+    -->
+    <NuGetClientVersion>7.9.0</NuGetClientVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
@@ -57,10 +63,30 @@
     <PackageVersion Include="Microsoft.TemplateEngine.Edge" Version="10.0.401" />
     <PackageVersion Include="Microsoft.TemplateEngine.Orchestrator.RunnableProjects" Version="10.0.401" />
     <PackageVersion Include="YamlDotNet" Version="18.1.0" />
-    <PackageVersion Include="NuGet.Frameworks" Version="6.13.2" />
     <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
     <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.12" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.12" />
+
+    <!--
+      NuGet client (ADR 0020). Every package of the client is pinned (Microsoft.TemplateEngine.Edge brings NuGet 6.13
+      into the Ide otherwise). The ones the .NET SDK carries are compile-only in all projects (msbuild/Linux/Common.targets).
+    -->
+    <PackageVersion Include="NuGet.Commands" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.Common" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.Configuration" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.Credentials" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.DependencyResolver.Core" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.Frameworks" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.LibraryModel" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.PackageManagement" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.Packaging" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.ProjectModel" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.Protocol" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.Resolver" Version="$(NuGetClientVersion)" />
+    <PackageVersion Include="NuGet.Versioning" Version="$(NuGetClientVersion)" />
+    <!-- NuGet.Packaging's signing dependency: the hosts ship it (it is not in the shared framework); keep it at the
+         runtime's version so the SDK's NuGet (built against 8.0 today) always binds to it. -->
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.12" />
 
     <!-- Version control (T102): nuget.org LibGit2Sharp with its native libgit2 (LibGit2Sharp.NativeBinaries) -->
     <PackageVersion Include="LibGit2Sharp" Version="0.32.0" />

@@ -49,13 +49,6 @@ namespace MonoDevelop.PackageManagement
 				solutionManager);
 		}
 
-		[Obsolete]
-		public bool IsCurrentSolutionEnabledForRestore {
-			get {
-				return restoreManager.IsCurrentSolutionEnabledForRestore;
-			}
-		}
-
 		public event EventHandler<NuGet.PackageManagement.PackageRestoredEventArgs> PackageRestoredEvent {
 			add { restoreManager.PackageRestoredEvent += value; }
 			remove { restoreManager.PackageRestoredEvent -= value; }
@@ -70,10 +63,14 @@ namespace MonoDevelop.PackageManagement
 			remove { restoreManager.PackagesMissingStatusChanged -= value; }
 		}
 
-		[Obsolete]
-		public void EnableCurrentSolutionForRestore (bool fromActivation)
+		public event AssetsFileMissingStatusChanged AssetsFileMissingStatusChanged {
+			add { restoreManager.AssetsFileMissingStatusChanged += value; }
+			remove { restoreManager.AssetsFileMissingStatusChanged -= value; }
+		}
+
+		public void RaiseAssetsFileMissingEventForProjectAsync (bool isAssetsFileMissing)
 		{
-			restoreManager.EnableCurrentSolutionForRestore (fromActivation);
+			restoreManager.RaiseAssetsFileMissingEventForProjectAsync (isAssetsFileMissing);
 		}
 
 		public Task<IEnumerable<PackageRestoreData>> GetPackagesInSolutionAsync (
@@ -88,7 +85,29 @@ namespace MonoDevelop.PackageManagement
 			return restoreManager.RaisePackagesMissingEventForSolutionAsync (solutionDirectory, token);
 		}
 
-		public Task<PackageRestoreResult> RestoreMissingPackagesAsync (
+		public IEnumerable<PackageRestoreData> GetPackagesRestoreData (
+			string solutionDirectory,
+			Dictionary<PackageReference, List<string>> packageReferencesDict)
+		{
+			return restoreManager.GetPackagesRestoreData (solutionDirectory, packageReferencesDict);
+		}
+
+		public Task<PackageRestoreResult> RestoreMissingPackagesInSolutionAsync (string solutionDirectory, INuGetProjectContext nuGetProjectContext, ILogger logger, CancellationToken token)
+		{
+			return restoreManager.RestoreMissingPackagesInSolutionAsync (solutionDirectory, nuGetProjectContext, logger, token);
+		}
+
+		public Task<PackageRestoreResult> RestoreMissingPackagesAsync (string solutionDirectory, IEnumerable<PackageRestoreData> packages, INuGetProjectContext nuGetProjectContext, PackageDownloadContext downloadContext, ILogger logger, CancellationToken token)
+		{
+			return restoreManager.RestoreMissingPackagesAsync (solutionDirectory, packages, nuGetProjectContext, downloadContext, logger, token);
+		}
+	}
+
+	internal static class PackageRestoreManagerExtensions
+	{
+		// NuGet 6+ takes a logger for the NuGetAudit messages of packages.config restores: log them to the project context.
+		public static Task<PackageRestoreResult> RestoreMissingPackagesAsync (
+			this IPackageRestoreManager restoreManager,
 			string solutionDirectory,
 			IEnumerable<PackageRestoreData> packages,
 			INuGetProjectContext nuGetProjectContext,
@@ -100,11 +119,12 @@ namespace MonoDevelop.PackageManagement
 				packages,
 				nuGetProjectContext,
 				downloadContext,
-				token
-			);
+				new LoggerAdapter (nuGetProjectContext),
+				token);
 		}
 
-		public Task<PackageRestoreResult> RestoreMissingPackagesInSolutionAsync (
+		public static Task<PackageRestoreResult> RestoreMissingPackagesInSolutionAsync (
+			this IPackageRestoreManager restoreManager,
 			string solutionDirectory,
 			INuGetProjectContext nuGetProjectContext,
 			CancellationToken token)
@@ -112,30 +132,10 @@ namespace MonoDevelop.PackageManagement
 			return restoreManager.RestoreMissingPackagesInSolutionAsync (
 				solutionDirectory,
 				nuGetProjectContext,
-				token
-			);
+				new LoggerAdapter (nuGetProjectContext),
+				token);
 		}
 
-		public IEnumerable<PackageRestoreData> GetPackagesRestoreData (
-			string solutionDirectory,
-			Dictionary<PackageReference, List<string>> packageReferencesDict)
-		{
-			return restoreManager.GetPackagesRestoreData (solutionDirectory, packageReferencesDict);
-		}
-
-		public Task<PackageRestoreResult> RestoreMissingPackagesInSolutionAsync (string solutionDirectory, INuGetProjectContext nuGetProjectContext, ILogger logger, CancellationToken token)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public Task<PackageRestoreResult> RestoreMissingPackagesAsync (string solutionDirectory, IEnumerable<PackageRestoreData> packages, INuGetProjectContext nuGetProjectContext, PackageDownloadContext downloadContext, ILogger logger, CancellationToken token)
-		{
-			throw new NotImplementedException ();
-		}
-	}
-
-	internal static class PackageRestoreManagerExtensions
-	{
 		public static async Task<PackageRestoreResult> RestoreMissingPackagesAsync (
 			this IPackageRestoreManager restoreManager,
 			string solutionDirectory,

@@ -23,6 +23,9 @@ OWNER = "migration"
 # rules marked stack=True also look at the stack trace (fixture paths). Timeouts are only read from the
 # message: with NUnit's DefaultTimeout every stack contains TimeoutCommand frames.
 RULES = [
+    (r"Xam\.Test\.MSBuild\.Sdk", False,
+     "network", "restores an MSBuild SDK package from nuget.org (no network in tests); "
+     "PackageOperationsEndToEndTests resolves one from a local feed", "T100"),
     (r"Timed out|exceeded Timeout|TimeoutException|was not recorded|FileWatcher", False,
      "Flaky", "timing-dependent (file watcher / event timing)", "T135"),
     (r"Moq\.|Mock|HttpSourceAuthenticationHandler", False,

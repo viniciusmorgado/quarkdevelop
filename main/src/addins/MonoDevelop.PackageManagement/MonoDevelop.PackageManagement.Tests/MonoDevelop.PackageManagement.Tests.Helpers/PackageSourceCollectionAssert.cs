@@ -37,7 +37,7 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 			List<string> expectedSourcesAsList = ConvertToStrings (expectedSources);
 			List<string> actualSources = ConvertToStrings (actualViewModels);
 
-			CollectionAssert.AreEqual (expectedSourcesAsList, actualSources);
+			NUnit.Framework.CollectionAssert.AreEqual (expectedSourcesAsList, actualSources);
 		}
 
 		public static void AreEqual (IEnumerable<PackageSource> expectedSources, IEnumerable<PackageSource> actualSources)
@@ -45,7 +45,7 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 			List<string> expectedSourcesAsList = ConvertToStrings (expectedSources);
 			List<string> actualSourcesAsList = ConvertToStrings (actualSources);
 
-			CollectionAssert.AreEqual (expectedSourcesAsList, actualSourcesAsList);
+			NUnit.Framework.CollectionAssert.AreEqual (expectedSourcesAsList, actualSourcesAsList);
 		}
 
 		static List<string> ConvertToStrings (IEnumerable<PackageSource> sources)

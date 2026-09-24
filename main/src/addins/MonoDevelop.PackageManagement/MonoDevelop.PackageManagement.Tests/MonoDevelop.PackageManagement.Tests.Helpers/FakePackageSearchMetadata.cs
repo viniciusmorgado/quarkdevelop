@@ -87,6 +87,14 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 		{
 			throw new NotImplementedException ();
 		}
+
+		public IReadOnlyList<string> OwnersList { get; set; }
+
+		public Uri ReadmeUrl { get; set; }
+
+		public string ReadmeFileUrl { get; set; }
+
+		public IEnumerable<PackageVulnerabilityMetadata> Vulnerabilities { get; set; }
 	}
 }
 

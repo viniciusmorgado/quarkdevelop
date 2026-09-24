@@ -57,13 +57,8 @@ namespace MonoDevelop.PackageManagement
 			// HTTP handler pipeline can be injected here, around the client handler
 			HttpMessageHandler messageHandler = new MonoDevelopServerWarningLogHandler (rootHandler);
 
+			// NuGet 6+ removed StsAuthenticationHandler (WS-Trust token service authentication): no STS handler any more.
 			var innerHandler = messageHandler;
-
-			messageHandler = new StsAuthenticationHandler (packageSource, TokenStore.Instance) {
-				InnerHandler = messageHandler
-			};
-
-			innerHandler = messageHandler;
 			var credentialsHandler = GetHttpCredentialsHandler (rootHandler);
 
 			messageHandler = new NuGetHttpSourceAuthenticationHandler (packageSource, credentialsHandler, credentialService) {

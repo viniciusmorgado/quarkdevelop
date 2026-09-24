@@ -24,3 +24,4 @@ their file and link to the replacement. Context for all of them: `specs/001-linu
 | [0017](0017-linux-exclusions.md) | Projects excluded from the Linux build | Accepted |
 | [0018](0018-warning-policy.md) | Warnings as errors with per-project legacy baselines | Accepted |
 | [0019](0019-nrefactory-removal.md) | NRefactory 5 removed from the Linux build | Accepted |
+| [0020](0020-nuget-client-version.md) | NuGet client 7.9, loaded from the .NET SDK | Accepted |

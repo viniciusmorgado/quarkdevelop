@@ -58,7 +58,7 @@ namespace MonoDevelop.PackageManagement
 			this.removeButton.CanFocus = true;
 			this.removeButton.Name = "removeButton";
 			this.removeButton.UseUnderline = true;
-			this.removeButton.Label = global::Mono.Unix.Catalog.GetString ("Remove");
+			this.removeButton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Remove");
 			this.bottomButtonBox.Add (this.removeButton);
 			global::Gtk.ButtonBox.ButtonBoxChild w4 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.bottomButtonBox [this.removeButton]));
 			w4.Expand = false;
@@ -68,7 +68,7 @@ namespace MonoDevelop.PackageManagement
 			this.addButton.CanFocus = true;
 			this.addButton.Name = "addButton";
 			this.addButton.UseUnderline = true;
-			this.addButton.Label = global::Mono.Unix.Catalog.GetString ("Add");
+			this.addButton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Add");
 			this.bottomButtonBox.Add (this.addButton);
 			global::Gtk.ButtonBox.ButtonBoxChild w5 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.bottomButtonBox [this.addButton]));
 			w5.Position = 1;

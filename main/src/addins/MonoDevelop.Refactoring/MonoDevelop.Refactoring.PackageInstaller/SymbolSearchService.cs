@@ -43,36 +43,37 @@ namespace MonoDevelop.Refactoring.PackageInstaller
 	class SymbolSearchService : ISymbolSearchService
 	{
 
-		async Task<IList<PackageWithAssemblyResult>> ISymbolSearchService.FindPackagesWithAssemblyAsync (string source, string assemblyName, CancellationToken cancellationToken)
+		async ValueTask<ImmutableArray<PackageWithAssemblyResult>> ISymbolSearchService.FindPackagesWithAssemblyAsync (string source, string assemblyName, CancellationToken cancellationToken)
 		{
 			if (PackageInstallerServiceFactory.PackageServices == null)
 				return ImmutableArray<PackageWithAssemblyResult>.Empty;
 			var result = new List<PackageWithAssemblyResult> ();
 			foreach (var tuple in await PackageInstallerServiceFactory.PackageServices.FindPackagesWithAssemblyAsync (source, assemblyName, cancellationToken)) {
-				result.Add (new PackageWithAssemblyResult (tuple.PackageName, tuple.Version, tuple.Rank));
+				result.Add (new PackageWithAssemblyResult (tuple.PackageName, tuple.Rank, tuple.Version));
 			}
 			return result.ToImmutableArray ();
 		}
 
-		async Task<IList<PackageWithTypeResult>> ISymbolSearchService.FindPackagesWithTypeAsync (string source, string name, int arity, CancellationToken cancellationToken)
+		// Roslyn 5 searches by type or by namespace (NamespaceQuery); the NuGet add-in only answers type queries.
+		async ValueTask<ImmutableArray<PackageResult>> ISymbolSearchService.FindPackagesAsync (string source, TypeQuery typeQuery, NamespaceQuery namespaceQuery, CancellationToken cancellationToken)
 		{
-			if (PackageInstallerServiceFactory.PackageServices == null)
-				return ImmutableArray<PackageWithTypeResult>.Empty;
+			if (PackageInstallerServiceFactory.PackageServices == null || typeQuery.IsDefault)
+				return ImmutableArray<PackageResult>.Empty;
 
-			var result = new List<PackageWithTypeResult> ();
-			foreach (var tuple in await PackageInstallerServiceFactory.PackageServices.FindPackagesWithTypeAsync (source, name, arity, cancellationToken)) {
-				result.Add (new PackageWithTypeResult (tuple.PackageName, tuple.TypeName, tuple.Version, tuple.Rank, tuple.ContainingNamespaceNames));
+			var result = new List<PackageResult> ();
+			foreach (var tuple in await PackageInstallerServiceFactory.PackageServices.FindPackagesWithTypeAsync (source, typeQuery.Name, typeQuery.Arity, cancellationToken)) {
+				result.Add (new PackageResult (tuple.PackageName, tuple.Rank, tuple.TypeName, tuple.Version, tuple.ContainingNamespaceNames));
 			}
 			return result.ToImmutableArray ();
 		}
 
-		async Task<IList<ReferenceAssemblyWithTypeResult>> ISymbolSearchService.FindReferenceAssembliesWithTypeAsync (string name, int arity, CancellationToken cancellationToken)
+		async ValueTask<ImmutableArray<ReferenceAssemblyResult>> ISymbolSearchService.FindReferenceAssembliesAsync (TypeQuery typeQuery, NamespaceQuery namespaceQuery, CancellationToken cancellationToken)
 		{
-			if (PackageInstallerServiceFactory.PackageServices == null)
-				return ImmutableArray<ReferenceAssemblyWithTypeResult>.Empty;
-			var result = new List<ReferenceAssemblyWithTypeResult> ();
-			foreach (var tuple in await PackageInstallerServiceFactory.PackageServices.FindReferenceAssembliesWithTypeAsync (name, arity, cancellationToken)) {
-				result.Add (new ReferenceAssemblyWithTypeResult (tuple.AssemblyName, tuple.TypeName, tuple.ContainingNamespaceNames));
+			if (PackageInstallerServiceFactory.PackageServices == null || typeQuery.IsDefault)
+				return ImmutableArray<ReferenceAssemblyResult>.Empty;
+			var result = new List<ReferenceAssemblyResult> ();
+			foreach (var tuple in await PackageInstallerServiceFactory.PackageServices.FindReferenceAssembliesWithTypeAsync (typeQuery.Name, typeQuery.Arity, cancellationToken)) {
+				result.Add (new ReferenceAssemblyResult (tuple.AssemblyName, tuple.TypeName, tuple.ContainingNamespaceNames));
 			}
 			return result.ToImmutableArray ();
 		}

@@ -39,9 +39,15 @@ namespace MonoDevelop.PackageManagement
 	{
 		static readonly SdkProjectReloadMonitor reloadMonitor = new SdkProjectReloadMonitor ();
 
+		/// <summary>
+		/// IdeApp.IsInitialized without running IdeApp's static constructor, which loads the IDE styles with GTK
+		/// widgets: headless hosts (mdtool) load this add-in's project extensions without a display (GTK 3 aborts).
+		/// </summary>
+		internal static bool IsIdeInitialized => Runtime.PeekService<RootWorkspace> () != null && IdeApp.IsInitialized;
+
 		SdkProjectReloadMonitor ()
 		{
-			if (IdeApp.IsInitialized) {
+			if (IsIdeInitialized) {
 				PackageManagementServices.ProjectService.ProjectReloaded += ProjectReloaded;
 				FileService.FileChanged += FileChanged;
 			}

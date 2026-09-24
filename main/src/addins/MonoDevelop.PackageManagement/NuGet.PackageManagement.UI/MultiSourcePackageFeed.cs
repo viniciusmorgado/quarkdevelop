@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Common;
-using NuGet.Indexing;
 using NuGet.Packaging;
 using NuGet.Protocol.Core.Types;
 
@@ -185,7 +184,7 @@ namespace NuGet.PackageManagement.UI
 			}
 		}
 
-		private async Task<SearchResult<IPackageSearchMetadata>> AggregateSearchResultsAsync(
+		private Task<SearchResult<IPackageSearchMetadata>> AggregateSearchResultsAsync(
 			string searchText,
 			IEnumerable<SearchResult<IPackageSearchMetadata>> results)
 		{
@@ -204,10 +203,9 @@ namespace NuGet.PackageManagement.UI
 			{
 				var items = nonEmptyResults.Select(r => r.Items).ToArray();
 
-				var indexer = new RelevanceSearchResultsIndexer();
-				var aggregator = new SearchResultsAggregator(indexer, new PackageSearchMetadataSplicer());
-				var aggregatedItems = await aggregator.AggregateAsync(
-					searchText, items);
+				// NuGet.Indexing (Lucene relevance ranking) is .NET Framework only in NuGet 7: interleave the
+				// sources' results in source order instead, keeping the first result for each package id.
+				var aggregatedItems = InterleaveResults(items);
 
 				result = SearchResult.FromItems(aggregatedItems.ToArray());
 				// set correct count of unmerged items
@@ -231,7 +229,25 @@ namespace NuGet.PackageManagement.UI
 				};
 			}
 
-			return result;
+			return Task.FromResult(result);
+		}
+
+		static List<IPackageSearchMetadata> InterleaveResults(IReadOnlyList<IPackageSearchMetadata>[] items)
+		{
+			var aggregated = new List<IPackageSearchMetadata>();
+			var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			int longest = items.Max(list => list.Count);
+			for (int i = 0; i < longest; i++)
+			{
+				foreach (var list in items)
+				{
+					if (i < list.Count && ids.Add(list[i].Identity.Id))
+					{
+						aggregated.Add(list[i]);
+					}
+				}
+			}
+			return aggregated;
 		}
 
 		private void LogError(Task task, object state)

@@ -84,10 +84,12 @@ namespace MonoDevelop.PackageManagement.Tests
 			return taskRunner.AddNuGetProject (dotNetProject);
 		}
 
-		Task CheckForUpdates ()
+		async Task CheckForUpdates ()
 		{
-			updatedPackagesInWorkspace.CheckForUpdates (solution);
-			return taskRunner.CheckForUpdatesTask;
+			// On the main thread, as under GuiUnit: the completion is posted there and must not run before the
+			// test's AfterCheckForUpdatesAction.
+			await MonoDevelop.Core.Runtime.RunInMainThread (() => updatedPackagesInWorkspace.CheckForUpdates (solution));
+			await taskRunner.CheckForUpdatesTask;
 		}
 
 		[Test]

@@ -102,7 +102,7 @@ namespace MonoDevelop.Refactoring.PackageInstaller
 			/// NOTE: This method is known to be called from the threadpool, while the UI thread is blocking.
 			/// Therefore, it must be thread-safe and not defer to and then block other threads.
 			/// </summary>
-			public ImmutableArray<PackageSource> GetPackageSources ()
+			public ImmutableArray<PackageSource> TryGetPackageSources ()
 			{
 				return PackageServices.GetSources (false, false).Select (kv => new PackageSource (kv.Key, kv.Value)) .ToImmutableArray ();
 			}
@@ -117,12 +117,12 @@ namespace MonoDevelop.Refactoring.PackageInstaller
 				return PackageServices.GetInstalledVersions (packageName);
 			}
 
-			public IEnumerable<Project> GetProjectsWithInstalledPackage (Solution solution, string packageName, string version)
+			public ImmutableArray<Project> GetProjectsWithInstalledPackage (Solution solution, string packageName, string version)
 			{
-				return PackageServices.GetProjectsWithInstalledPackage (IdeApp.ProjectOperations.CurrentSelectedSolution, packageName, version).Select (p => IdeApp.TypeSystemService.GetCodeAnalysisProject (p));
+				return PackageServices.GetProjectsWithInstalledPackage (IdeApp.ProjectOperations.CurrentSelectedSolution, packageName, version).Select (p => IdeApp.TypeSystemService.GetCodeAnalysisProject (p)).Where (p => p != null).ToImmutableArray ();
 			}
 
-			public bool IsInstalled (Workspace workspace, ProjectId projectId, string packageName)
+			public bool IsInstalled (ProjectId projectId, string packageName)
 			{
 				return _projectToInstalledPackageAndVersion.TryGetValue (projectId, out var installedPackages) &&
 					installedPackages.ContainsKey (packageName);
@@ -136,7 +136,12 @@ namespace MonoDevelop.Refactoring.PackageInstaller
 				PackageServices.ShowManagePackagesDialog (packageName);
 			}
 
-			public bool TryInstallPackage (Workspace workspace, DocumentId documentId, string source, string packageName, string versionOpt, bool includePrerelease, CancellationToken cancellationToken)
+			public Task<bool> TryInstallPackageAsync (Workspace workspace, DocumentId documentId, string source, string packageName, string versionOpt, bool includePrerelease, IProgress<CodeAnalysisProgress> progressTracker, CancellationToken cancellationToken)
+			{
+				return Task.FromResult (TryInstallPackage (workspace, documentId, source, packageName, versionOpt, includePrerelease));
+			}
+
+			bool TryInstallPackage (Workspace workspace, DocumentId documentId, string source, string packageName, string versionOpt, bool includePrerelease)
 			{
 				try {
 					var monoProject = ((MonoDevelopWorkspace)workspace).GetMonoProject (documentId.ProjectId);

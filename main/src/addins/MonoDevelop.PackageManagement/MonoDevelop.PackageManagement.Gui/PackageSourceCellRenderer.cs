@@ -54,9 +54,9 @@ namespace MonoDevelop.PackageManagement
 		const int textSpacing = 7;
 		const int textTopSpacing = 3;
 
-		protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+		protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 		{
-			base.Render (window, widget, background_area, cell_area, expose_area, flags);
+			base.OnRender (gtk3cr, widget, background_area, cell_area, flags);
 
 			if (PackageSourceViewModel == null)
 				return;
@@ -69,21 +69,21 @@ namespace MonoDevelop.PackageManagement
 
 				layout.SetMarkup (GetPackageSourceDescriptionMarkup (flags));
 
-				window.DrawLayout (widget.Style.TextGC (state), cell_area.X + textSpacing, cell_area.Y + textTopSpacing, layout);
+				gtk3cr.DrawLayout (widget, state, cell_area.X + textSpacing, cell_area.Y + textTopSpacing, layout);
 
 				if (!PackageSourceViewModel.IsValid) {
-					using (var ctx = Gdk.CairoHelper.Create (window)) {
+					using (var ctx = gtk3cr.CreateSharedContext ()) {
 						ctx.DrawImage (widget, warningImage, cell_area.X + textSpacing + packageSourceNameWidth + imageSpacing, cell_area.Y + textTopSpacing);
 					}
 
 					layout.SetMarkup (GetPackageSourceErrorMarkup (flags));
 					int packageSourceErrorTextX = cell_area.X + textSpacing + packageSourceNameWidth + (int)warningImage.Width + (2 * imageSpacing);
-					window.DrawLayout (widget.Style.TextGC (state), packageSourceErrorTextX, cell_area.Y + textTopSpacing, layout);
+					gtk3cr.DrawLayout (widget, state, packageSourceErrorTextX, cell_area.Y + textTopSpacing, layout);
 				}
 			}
 		}
 
-		StateType GetState (Widget widget, CellRendererState flags)
+		new StateType GetState (Widget widget, CellRendererState flags)
 		{
 			if (flags.HasFlag (CellRendererState.Selected)) {
 				if (widget.IsFocus) {
@@ -132,14 +132,43 @@ namespace MonoDevelop.PackageManagement
 				PackageSourceViewModel.ValidationFailureMessage);
 		}
 
-		public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
-			base.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+			Gtk3BaseGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 
 			using (var layout = new Pango.Layout (widget.PangoContext)) {
 				layout.SetMarkup (GetPackageSourceDescriptionMarkup ());
 				height = GetLayoutSize (layout).Height + 8 + textTopSpacing;
 			}
+		}
+
+		protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+		{
+			var area = Gdk.Rectangle.Zero;
+			OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+			minimum_size = natural_size;
+		}
+
+		protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+		{
+			OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+		}
+
+		protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+		{
+			OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+		}
+
+		void Gtk3BaseGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		{
+			x_offset = y_offset = width = height = 0;
 		}
 	}
 }

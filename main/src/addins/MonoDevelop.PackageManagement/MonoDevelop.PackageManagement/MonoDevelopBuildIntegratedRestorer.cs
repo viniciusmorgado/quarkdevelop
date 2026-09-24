@@ -38,6 +38,7 @@ using NuGet.Configuration;
 using NuGet.LibraryModel;
 using NuGet.PackageManagement;
 using NuGet.Packaging;
+using NuGet.ProjectModel;
 using NuGet.Packaging.Core;
 using NuGet.ProjectManagement;
 using NuGet.ProjectManagement.Projects;
@@ -187,24 +188,33 @@ namespace MonoDevelop.PackageManagement
 			var spec = await MonoDevelopDependencyGraphRestoreUtility.GetSolutionRestoreSpec (solutionManager, project, context, cancellationToken);
 			context.AddToCache (spec);
 
-			RestoreResult restoreResult = await DependencyGraphRestoreUtility.RestoreProjectAsync (
+			// NuGet 6+ has no public RestoreProjectAsync: restore the solution's graph with this project as the only root.
+			DependencyGraphSpec projectSpec = spec.WithoutRestores ();
+			projectSpec.AddRestore (project.MSBuildProjectPath);
+
+			IReadOnlyList<RestoreSummary> restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync (
 				solutionManager,
-				project,
+				projectSpec,
 				context,
 				new RestoreCommandProvidersCache (),
 				cacheContextModifier,
 				sourceRepositories,
 				Guid.NewGuid (),
+				forceRestore: false,
+				isRestoreOriginalAction: true,
 				context.Logger,
 				cancellationToken);
 
-			if (restoreResult.Success) {
-				if (!object.Equals (restoreResult.LockFile, restoreResult.PreviousLockFile)) {
-					return restoreResult.LockFilePath;
-				}
-			} else {
-				ReportRestoreError (restoreResult);
+			RestoreSummary restoreSummary = restoreSummaries.FirstOrDefault ();
+			if (restoreSummary == null || (restoreSummary.Success && restoreSummary.NoOpRestore)) {
+				return null;
 			}
+
+			if (restoreSummary.Success) {
+				return await project.GetAssetsFilePathAsync ();
+			}
+
+			ReportRestoreError (restoreSummary);
 			return null;
 		}
 
@@ -230,15 +240,15 @@ namespace MonoDevelop.PackageManagement
 			return new DependencyGraphCacheContext (CreateLogger (), settings);
 		}
 
-		void ReportRestoreError (RestoreResult restoreResult)
+		void ReportRestoreError (RestoreSummary restoreSummary)
 		{
 			logger.LogInformation (string.Empty);
 
-			foreach (LibraryRange libraryRange in restoreResult.GetAllUnresolved ()) {
+			foreach (IRestoreLogMessage error in restoreSummary.Errors.Where (e => !string.IsNullOrEmpty (e.LibraryId))) {
 				packageManagementEvents.OnPackageOperationMessageLogged (
 					MessageLevel.Info,
 					GettextCatalog.GetString ("Restore failed for '{0}'."),
-					libraryRange.ToString ());
+					error.LibraryId);
 			}
 			logger.LogSavedErrors ();
 			throw new ApplicationException (GettextCatalog.GetString ("Restore failed."));

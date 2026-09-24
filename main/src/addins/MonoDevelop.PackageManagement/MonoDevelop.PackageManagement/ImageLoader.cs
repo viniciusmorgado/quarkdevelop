@@ -108,9 +108,8 @@ namespace MonoDevelop.PackageManagement
 		Stream GetResponseStream (Uri uri)
 		{
 			if (uri.IsFile) {
-				var request = WebRequest.Create (uri);
-				var response = request.GetResponse ();
-				return CopyResponseStream (response.GetResponseStream ());
+				using (var fileStream = File.OpenRead (uri.LocalPath))
+					return CopyResponseStream (fileStream);
 			} else {
 				using (var httpClient = HttpClientFactory.CreateHttpClient (uri, credentialService)) {
 					var task = httpClient.GetStreamAsync (uri);

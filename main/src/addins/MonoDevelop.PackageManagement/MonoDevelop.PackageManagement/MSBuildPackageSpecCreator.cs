@@ -55,6 +55,10 @@ namespace MonoDevelop.PackageManagement
 			using (var resultsPath = new TempFile (".output.dg")) {
 				var context = new TargetEvaluationContext ();
 				context.GlobalProperties.SetValue ("RestoreGraphOutputPath", resultsPath);
+				// The IDE runs targets of multi-target projects with the active framework as a global TargetFramework.
+				// NuGet 6+ then writes a restore graph with that framework only: restore the outer project.
+				if (!string.IsNullOrEmpty (project.MSBuildProject?.EvaluatedProperties.GetValue ("TargetFrameworks")))
+					context.GlobalProperties.SetValue ("TargetFramework", string.Empty);
 
 				using (var monitor = CreateProgressMonitor ()) {
 					var result = await project.RunTarget (monitor, "GenerateRestoreGraphFile", configuration, context);
