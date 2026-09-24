@@ -54,6 +54,14 @@ mdtool_smoke() {
 	return "$status"
 }
 
+# A smoke screenshot must show something: a uniform image (e.g. a Wayland read-back that returned nothing,
+# T109) fails the step.
+screenshot_has_content() {
+	local deviation
+	deviation="$(convert "$1" -colorspace Gray -format '%[fx:standard_deviation]' info: 2>/dev/null || echo 0)"
+	awk -v d="$deviation" 'BEGIN { exit !(d > 0.02) }'
+}
+
 gui_smoke() {
 	# The IDE's --smoke-test (contracts/smoke-test.md, T103): start under Xvfb, open a copy of the smoke
 	# solution, build it; exit 0 only when it builds with no errors and no unhandled exception was logged.
@@ -67,7 +75,7 @@ gui_smoke() {
 		xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln" \
 		|| status=$?
 	rm -rf "$dir"
-	test -s "$ci_out/gui-smoke/screenshot.png" || return 1
+	screenshot_has_content "$ci_out/gui-smoke/screenshot.png" || return 1
 	return "$status"
 }
 
@@ -129,6 +137,7 @@ wayland_smoke() {
 	kill "$wpid"
 	rm -rf "$dir" "$runtime"
 	grep -q "GDK display wayland-md" "$ci_out/wayland-smoke/ide.log" || return 1
+	screenshot_has_content "$ci_out/wayland-smoke/screenshot.png" || return 1
 	return "$status"
 }
 

@@ -37,6 +37,14 @@ re-creates `Gdk.GC`, `Gtk.Rc`, expose events or GTK2 size negotiation. They are 
 must reach 0 by the end of M5c:
 `grep -rlE 'Gtk3ExposeEvent|Gtk3SizeRequest|Gtk3BaseSizeRequest|Gtk3BaseGetSize|Gtk3CompatExtensions' main/src`.
 
+**Amendment (2026-09-24, T109).**
+- GTK 2 APIs in the compiled code of the Linux solution: 0.
+- The port helpers are still used 344 times in 93 files.
+
+Rewriting those widgets in native GTK 3 form is a large change with a high risk of visual regressions and no
+user-visible benefit today. The second metric therefore no longer blocks the end of M5c: T150 tracks it to 0, and
+the helpers stay thin, stateless and tested (MonoDevelop.Ide.Gtk3.Tests).
+
 ### Consequences
 
 - Good: native GTK3 behavior (Wayland, HiDPI, CSS theming).

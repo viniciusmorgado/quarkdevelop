@@ -367,12 +367,25 @@ namespace MonoDevelop.Ide
 		void SaveScreenshot ()
 		{
 			try {
-				var window = IdeApp.Workbench.RootWindow.GdkWindow;
+				var root = IdeApp.Workbench.RootWindow;
+				var file = outputDirectory.Combine ("screenshot.png");
+				if (Gdk.Display.Default?.Name?.StartsWith ("wayland", StringComparison.Ordinal) == true) {
+					// Wayland has no read-back of window contents (gdk_pixbuf_get_from_window gives a blank
+					// image): the window draws itself into an image surface instead.
+					using (var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, root.Allocation.Width, root.Allocation.Height))
+					using (var context = new Cairo.Context (surface)) {
+						root.Draw (context);
+						surface.Flush ();
+						surface.WriteToPng (file);
+					}
+					return;
+				}
+				var window = root.GdkWindow;
 				var pixbuf = gdk_pixbuf_get_from_window (window.Handle, 0, 0, window.Width, window.Height);
 				if (pixbuf == IntPtr.Zero)
 					throw new InvalidOperationException ("gdk_pixbuf_get_from_window returned null");
 				using (var image = new Gdk.Pixbuf (pixbuf))
-					image.Save (outputDirectory.Combine ("screenshot.png"), "png");
+					image.Save (file, "png");
 			} catch (Exception e) {
 				LoggingService.LogError ("Smoke test: could not save the screenshot", e);
 			}

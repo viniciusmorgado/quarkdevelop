@@ -74,7 +74,7 @@ dark background, and the editor switches to its dark colour scheme.
 - **Smoke test (T103):** `MonoDevelop.dll --smoke-test [solution]` opens and builds a solution and exits
   0/1/2 (checked: Smoke.sln 0, Broken.csproj 1, a 2 s watchdog 2). X11: [T103-smoke-x11.png](T103-smoke-x11.png).
 - **Wayland (T104):** the same smoke on headless Weston, `GDK_BACKEND=wayland`:
-  [T104-smoke-wayland.png](T104-smoke-wayland.png). Both run in `scripts/ci.sh`.
+  [T104-smoke-wayland.png](T104-smoke-wayland.png) (retaken in T109: the first image was blank). Both run in `scripts/ci.sh`.
 - Not yet: C# editing features (T089) and the other add-ins.
 
 ## T085, T088 — the source editor on GTK 3 (M5c)
@@ -620,3 +620,50 @@ Open:
   contexts are not collectible, so a generator changed on disk is used after an IDE restart;
 - the generated file opened by navigation is a snapshot with grammar highlighting only; generated documents are not
   listed under the project's Dependencies node.
+
+## T109 — M5c evidence (2026-09-24)
+
+**Smoke tests.** The runs below come from the green `scripts/ci.sh` run of 2026-09-24 (515 s of the 900 s budget).
+Every `--smoke-test` run uses a fresh profile, so the MEF and add-in caches are cold.
+
+| Step | Display | Main window after process start | Longest main-loop stall while loading | Result |
+|---|---|---|---|---|
+| `gui-smoke` (Smoke.sln: Hello + Greeter) | X11 (Xvfb) | 2.2 s | 135 ms | build 0 errors, exit 0 |
+| `wayland-smoke` (same solution) | Wayland (headless Weston) | 1.7 s | 159 ms | build 0 errors, exit 0 |
+| `gui-smoke-errors` (Broken) | X11 | 2.4 s | 246 ms | 1 build error, navigation to Program.cs:2, exit 1 (expected) |
+| `gui-smoke-modern` (Modern, C# 14, source generators) | X11 | 2.3 s | 208 ms | build 0 errors, 0 workspace errors, exit 0 |
+
+The start-up time is far below the 10 s target (NFR-001; the M8 measurement in T129 repeats it on the reference
+machine). The stall probe of T106 now also covers C# projects: the longest main-loop pause is 246 ms while the
+workspace loads.
+
+Screenshots: X11 [T109-smoke-x11.png](T109-smoke-x11.png), Wayland [T104-smoke-wayland.png](T104-smoke-wayland.png).
+
+**Wayland screenshot fixed.** The Wayland screenshot committed with T104 was blank. `gdk_pixbuf_get_from_window`
+cannot read window contents back on Wayland: the IDE ran, but the image showed nothing. On Wayland the smoke test now
+has the main window draw itself into a Cairo image surface. `scripts/ci.sh` also rejects a uniform screenshot:
+the grey-level standard deviation must be above 0.02. The blank image scored 0, X11 scores 0.066, and the new
+Wayland image scores 0.193.
+
+**GTK 2 APIs (ADR 0011 metric 1): 0 in compiled code.** Over the 5,512 C# files compiled by the Linux solution
+(`scripts/tools/compiled-files.sh`), the ADR 0011 patterns match 18 files:
+- MonoDevelop's own files: only comments that describe what was ported.
+- The vendored Xwt: code inside `#if !XWT_GTK3` or the `#else` branch of `#if XWT_GTK3` (not compiled in
+  `Xwt.Gtk3.csproj`).
+- Xwt's own GTK 3 `OnSizeRequested (ref Gtk.Requisition)` virtuals (`Gtk3DrawingArea`, `Gtk3ViewPort`,
+  `HeaderBoxGtk3` and their overrides). Upstream Xwt defines these on top of `GetPreferredWidth/Height`; they are
+  not GTK 2 API.
+
+**Port helpers (ADR 0011 metric 2): 344 uses in 93 files, not 0.** Counts:
+
+| Helper | Uses |
+|---|---|
+| `Gtk3SizeRequest` | 150 |
+| `Gtk3ExposeEvent` | 79 |
+| `Gtk3BaseSizeRequest` | 68 |
+| `Gtk3BaseGetSize` | 31 |
+| `Gtk3CompatExtensions` | 16 |
+
+Replacing them means rewriting the size negotiation and drawing of 93 widgets in native GTK 3 form. That carries a
+high risk of visual regressions and brings no user-visible gain now. The ADR 0011 amendment of 2026-09-24 therefore
+moves this metric from the M5c exit criteria to task T150, where it is tracked until it reaches 0.
