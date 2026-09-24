@@ -64,3 +64,20 @@ add-in compatibility), and releases take their version from a SemVer tag such as
 
 Local checks: `./scripts/pm actionlint` is clean. The tag check accepts `v0.1.0-linux` and `v1.2.3`, and rejects
 `v1.2`, `v01.2.3` and `v1.2.3+x`. No tag has been pushed: that needs the maintainer's authorization (M9).
+
+## T145 — CI time: two test lanes (2026-09-24)
+
+`scripts/test.sh --parallel` (used by `scripts/ci.sh`) runs the test projects in two lanes at the same time:
+- lane a: Core, DotNetCore and PackageManagement;
+- lane b: the GUI and other suites.
+
+Each lane runs one assembly at a time and gives every project a copy of its runsettings whose MonoDevelop profile
+(`XDG_*`) is `out/test-profile/<lane>/`. The two lanes therefore never share a profile or an add-in registry cache.
+Coverage is merged and ratcheted as before. Without `--parallel`, the tests run sequentially as before.
+
+| Run | test step | CI total (budget 900 s) |
+|---|---|---|
+| sequential, 2026-09-24 | 690 s | 830 s |
+| two lanes, 2026-09-24 | 383 s | 536 s |
+
+All 12 suites passed in the two-lane run: 3,871 passed, 0 failed. Coverage: Core 66.61%, Ide 20.83%, total 28.92%.

@@ -131,7 +131,7 @@ step setup ./scripts/setup.sh
 step lint ./scripts/lint.sh
 step build ./scripts/build.sh -c Release --check
 step assemblies ./scripts/check-assemblies.sh
-step test ./scripts/test.sh --no-build
+step test ./scripts/test.sh --no-build --parallel
 step audit ./scripts/audit.sh
 step mdtool-smoke mdtool_smoke
 step gui-smoke gui_smoke
