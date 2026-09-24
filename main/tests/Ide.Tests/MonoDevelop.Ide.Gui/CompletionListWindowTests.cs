@@ -639,7 +639,7 @@ namespace MonoDevelop.Ide.Gui
 			Assert.AreEqual ("AbAb", output);
 		}
 
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test]
 		public void TestMatchPunctuationCase3 ()
 		{
@@ -654,7 +654,7 @@ namespace MonoDevelop.Ide.Gui
 			Assert.AreEqual ("Accc", output);
 		}
 
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test]
 		public void TestMatchPunctuationCommitOnSpaceAndPunctuation2 ()
 		{
@@ -662,7 +662,7 @@ namespace MonoDevelop.Ide.Gui
 			Assert.AreEqual ("/AbAb", output);
 		}
 
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test]
 		public void TestMatchPunctuationCommitOnSpaceAndPunctuation3 ()
 		{
@@ -677,7 +677,7 @@ namespace MonoDevelop.Ide.Gui
 			Assert.AreEqual ("AbAb", output);
 		}
 
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test]
 		public void TestMatchPunctuationCommitOnSpaceAndPunctuation5 ()
 		{
@@ -1146,7 +1146,7 @@ namespace MonoDevelop.Ide.Gui
 			Assert.AreEqual ("Test", completionWidget.CompletedWord);
 		}
 
-		[TestFixtureSetUp] 
+		[OneTimeSetUp] 
 		public void SetUp()
 		{
 			Gtk.Application.Init ();

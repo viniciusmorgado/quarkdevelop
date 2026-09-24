@@ -62,7 +62,7 @@ class FooBar
 ", "Bar");
 		}
 
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test]
 		public void TestNoUpcastAvailable ()
 		{

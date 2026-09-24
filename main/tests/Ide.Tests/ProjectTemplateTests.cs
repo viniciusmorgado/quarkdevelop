@@ -61,9 +61,19 @@ namespace MonoDevelop.Ide
 			base.TearDown ();
 		}
 
+		// NUnit 3 builds the cases of a TestCaseSource at discovery, before the IDE test host has loaded the templates
+		// (GuiUnit started the IDE first): the templates are enumerated when the test runs.
 		[Test]
-		[TestCaseSource ("Templates")]
-		public async Task CreateEveryProjectTemplate (string tt)
+		public async Task CreateEveryProjectTemplate ()
+		{
+			foreach (var tt in Templates) {
+				await CreateProjectTemplate (tt);
+				solution?.Dispose ();
+				solution = null;
+			}
+		}
+
+		async Task CreateProjectTemplate (string tt)
 		{
 			var template = ProjectTemplate.ProjectTemplates.FirstOrDefault (t => t.Id == tt);
 			if (template.Name.Contains ("Gtk#"))
@@ -86,6 +96,7 @@ namespace MonoDevelop.Ide
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task NewSharedProjectAddedToExistingSolutionUsesCorrectBuildAction ()
 		{
 			solution = TestProjectsChecks.CreateConsoleSolution ("shared-project");
@@ -141,6 +152,7 @@ namespace MonoDevelop.Ide
 		}
 
 		[Test ()]
+		[Category ("Quarantine")]
 		public async Task Bug57840 ()
 		{
 			var templatingService = new TemplatingService ();

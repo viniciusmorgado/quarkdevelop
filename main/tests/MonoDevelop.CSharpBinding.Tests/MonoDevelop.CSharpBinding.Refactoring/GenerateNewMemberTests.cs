@@ -43,7 +43,7 @@ using MonoDevelop.Ide;
 namespace MonoDevelop.CSharpBinding.Refactoring
 {
 	[TestFixture()]
-	[Ignore]
+	[Ignore ("Ignored in the legacy NUnit 2 suite")]
 	public class GenerateNewMemberTests : TextEditorExtensionTestBase
 	{
 		protected override EditorExtensionTestData GetContentData () => EditorExtensionTestData.CSharp;
@@ -264,7 +264,7 @@ public class EmptyClass : Base
 
 		}
 
-		[Ignore()]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test()]
 		public async Task TestBrokenInsertionPoint ()
 		{

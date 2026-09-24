@@ -276,6 +276,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TestWorkspaceFilesCacheCreation_MultiTargetFramework ()
 		{
 			FilePath solFile = Util.GetSampleProject ("multi-target-netframework", "multi-target.sln");

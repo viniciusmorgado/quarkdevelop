@@ -63,6 +63,8 @@ Listed per commit in `git log -- main/vendor/vs-editor-api`; summary:
   - the zoom limits read `DefaultTextViewOptions.MaxZoomLevelId`/`MinZoomLevelId`.
 - **`Markers.GetMarkerGeometryFromRectangles`** returns a `GeometryGroup` of the rectangles instead
   of a merged WPF `PathGeometry` outline.
+- **`FileUtilities.CreateFileStream`** counts the hard links of an existing file with `statx` on Linux
+  (upstream threw `PlatformNotSupportedException`, so saving a text document over an existing file failed; T107).
 - **`TextImageLoader`** throws `InvalidDataException` instead of `FileFormatException`, which moved
   to System.IO.Packaging on .NET.
 - **`WeakReferenceForDictionaryKey`** (TextDataUtil, StandaloneUndo): the formatter-serialization

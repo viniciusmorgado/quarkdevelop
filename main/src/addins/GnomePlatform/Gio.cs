@@ -58,6 +58,10 @@ namespace MonoDevelop.Platform {
 		[DllImport (gio, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr g_file_info_get_icon (IntPtr fileinfo);
 		[DllImport (gio, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr g_content_type_guess (IntPtr filename, IntPtr data, UIntPtr data_size, out int result_uncertain);
+		[DllImport (gio, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr g_file_get_basename (IntPtr file);
+		[DllImport (gio, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr g_file_new_for_path (IntPtr path);
 		[DllImport (gio, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr g_file_new_for_uri (IntPtr uri);
@@ -165,8 +169,10 @@ namespace MonoDevelop.Platform {
 			GLib.Marshaller.Free (native_attrs);
 			if (error != IntPtr.Zero) {
 				g_error_free (error);
+				// A file that does not exist (yet), e.g. a new document: the type its name implies, as MacPlatform does.
+				string guessed = GuessMimeTypeFromName (gfile);
 				g_object_unref (gfile);
-				return null;
+				return guessed;
 			}
 			IntPtr iconnative = g_icon_to_string (g_file_info_get_icon (info));
 			string[] iconid = GLib.Marshaller.Utf8PtrToString (iconnative).Split (' ');
@@ -201,14 +207,30 @@ namespace MonoDevelop.Platform {
 			GLib.Marshaller.Free (native_attrs);
 			if (error != IntPtr.Zero) {
 				g_error_free (error);
+				// A file that does not exist (yet), e.g. a new document: the type its name implies, as MacPlatform does.
+				string guessed = GuessMimeTypeFromName (gfile);
 				g_object_unref (gfile);
-				return null;
+				return guessed;
 			}
 			// the content type belongs to the info (it was freed here too: a double free); the MIME type string is ours
 			IntPtr content_type = g_file_info_get_content_type (info);
 			string mime_type = GLib.Marshaller.PtrToStringGFree (g_content_type_get_mime_type (content_type));
 			g_object_unref (info);
 			g_object_unref (gfile);
+			return mime_type;
+		}
+
+		static string GuessMimeTypeFromName (IntPtr gfile)
+		{
+			IntPtr basename = g_file_get_basename (gfile);
+			if (basename == IntPtr.Zero)
+				return null;
+			IntPtr content_type = g_content_type_guess (basename, IntPtr.Zero, UIntPtr.Zero, out int uncertain);
+			GLib.Marshaller.Free (basename);
+			if (content_type == IntPtr.Zero)
+				return null;
+			string mime_type = uncertain != 0 ? null : GLib.Marshaller.PtrToStringGFree (g_content_type_get_mime_type (content_type));
+			GLib.Marshaller.Free (content_type);
 			return mime_type;
 		}
 	}

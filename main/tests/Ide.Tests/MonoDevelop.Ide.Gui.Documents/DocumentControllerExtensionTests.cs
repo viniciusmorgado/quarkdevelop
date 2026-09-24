@@ -37,7 +37,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 	[RequireService (typeof(DocumentControllerService))]
 	public class DocumentControllerExtensionTests : TestBase
 	{
-		public TestCaseData [] Filters = {
+		public static TestCaseData [] Filters = {
 			new TestCaseData (new ExportDocumentControllerExtensionAttribute(), false).SetName ("Unspecified"),
 			new TestCaseData (new ExportDocumentControllerExtensionAttribute { FileExtension = "*" }, true).SetName ("FileExtension=*"),
 			new TestCaseData (new ExportDocumentControllerExtensionAttribute { FileExtension = ".foo" }, false).SetName ("FileExtension=foo"),

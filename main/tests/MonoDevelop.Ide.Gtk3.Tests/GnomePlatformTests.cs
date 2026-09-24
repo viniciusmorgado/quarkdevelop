@@ -58,7 +58,29 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 					Assert.AreEqual ("text/plain", platform.MimeTypeForUri (new Uri (file).AbsoluteUri));
 					Assert.AreEqual ("inode/directory", platform.MimeTypeForUri (new Uri (dir).AbsoluteUri));
 				}
-				Assert.IsNull (platform.MimeTypeForUri (new Uri (Path.Combine (dir, "missing.txt")).AbsoluteUri));
+				// a file that does not exist: the type of its name (T107; it was null)
+				Assert.AreEqual ("text/plain", platform.MimeTypeForUri (new Uri (Path.Combine (dir, "missing.txt")).AbsoluteUri));
+				Assert.IsNull (platform.MimeTypeForUri (new Uri (Path.Combine (dir, "missing-no-extension")).AbsoluteUri));
+			} finally {
+				Directory.Delete (dir, true);
+			}
+		}
+
+		[Test]
+		public void GioReportsMimeTypesOfFilePaths ()
+		{
+			// The IDE passes file paths, not URIs (T107: gio reported no type for them).
+			var dir = Path.Combine (Path.GetTempPath (), "md-gio-" + Guid.NewGuid ().ToString ("N"));
+			Directory.CreateDirectory (dir);
+			try {
+				var file = Path.Combine (dir, "notes.txt");
+				File.WriteAllText (file, "some text\n");
+				var platform = new TestPlatform ();
+
+				Assert.AreEqual ("text/plain", platform.MimeTypeForUri (file));
+				Assert.AreEqual ("inode/directory", platform.MimeTypeForUri (dir));
+				Assert.AreEqual ("text/plain", platform.MimeTypeForUri (Path.Combine (dir, "missing.txt")));
+				Assert.AreEqual ("application/xslt+xml", platform.MimeTypeForUri ("relative-and-missing.xslt"));
 			} finally {
 				Directory.Delete (dir, true);
 			}

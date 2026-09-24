@@ -37,3 +37,14 @@ one exception. A commit that moves legacy sources back into the build (shrinking
 `Gtk3PortPending.props`) adds coverable lines that were never tested, which can lower the total. Such
 a commit may update the baseline (`./scripts/test.sh --update-baseline`) if its message states the
 old and new values. New code never lowers the ratchet.
+
+**Amendment (2026-09-24): IDE test host (T107).** The IDE suites (`MonoDevelop.Ide.Tests`,
+`MonoDevelop.CSharpBinding.Tests`, the editor tests of Refactoring and Xml) use `IdeUnitTests.GuiTestHost`
+from a global `[SetUpFixture]`: GTK, the runtime (with the add-ins of the test's output folder), Xwt and a
+mock shell are initialized on the NUnit test thread, which becomes the runtime's main thread
+(`MDTestSingleThread`: no NUnit workers, no NUnit timeouts). NUnit 3 only keeps a message loop running
+while it waits for an async test when the thread's synchronization context is the WinForms or WPF one,
+and it finds them by type name. `IdeUnitTests/NUnitMessagePump.cs` therefore defines a
+`System.Windows.Forms.WindowsFormsSynchronizationContext` and `Application.Run/Exit` that post to and run
+the GLib main loop, as GuiUnit did. A test that does not complete fails after 2 minutes instead of
+hanging the run.

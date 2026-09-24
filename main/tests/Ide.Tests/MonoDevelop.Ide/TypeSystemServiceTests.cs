@@ -37,10 +37,14 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis.Host;
+#if ROSLYN_PERSISTENT_STORAGE
 using Microsoft.CodeAnalysis.IncrementalCaches;
+#endif
 using Microsoft.CodeAnalysis.Internal.Log;
 using Microsoft.CodeAnalysis.SolutionCrawler;
+#if ROSLYN_PERSISTENT_STORAGE
 using Microsoft.CodeAnalysis.SolutionSize;
+#endif
 using System.IO;
 using System.Collections.Immutable;
 using System.Text;
@@ -88,6 +92,7 @@ namespace MonoDevelop.Ide
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestOuptutTracking_LanguageName ()
 		{
 			IdeApp.TypeSystemService.AddOutputTrackingNode (new TypeSystemOutputTrackingNode { LanguageName = "IL" });
@@ -96,6 +101,7 @@ namespace MonoDevelop.Ide
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ProjectReferencingOutputTrackedReference()
 		{
 			string solFile = Util.GetSampleProject("csharp-app-fsharp-lib", "csappfslib.sln");
@@ -118,6 +124,9 @@ namespace MonoDevelop.Ide
 			}
 		}
 
+		// Roslyn 4+ removed its persistent storage (IPersistentStorageService, the SQLite storage, the solution size
+		// tracker and the symbol tree incremental analyzer): these tests of the Ide's use of it are not compiled.
+#if ROSLYN_PERSISTENT_STORAGE
 		[Test]
 		public async Task TestWorkspacePersistentStorageLocationService ()
 		{
@@ -339,6 +348,7 @@ namespace MonoDevelop.Ide
 					CreatedCount++;
 			}
 		}
+#endif
 
 		[Test]
 		public async Task TestWorkspaceImmediatelyAvailable ()
@@ -422,6 +432,7 @@ namespace MonoDevelop.Ide
 		/// added to its parent solution.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task ProjectModifiedWhilstBeingAddedToSolution ()
 		{
 			string solFile = Util.GetSampleProject ("console-project", "ConsoleProject.sln");

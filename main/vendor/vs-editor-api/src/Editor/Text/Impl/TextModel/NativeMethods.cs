@@ -33,5 +33,21 @@ namespace Microsoft.VisualStudio.Text.Implementation
         {
             [FieldOffset(10)] public ushort st_nlink;
         }
+
+        // MonoDevelop (Linux port): statx(2), glibc 2.28+. With AT_EMPTY_PATH and an empty path it describes the open
+        // file descriptor, like fstat.
+        internal const int AT_EMPTY_PATH = 0x1000;
+        internal const uint STATX_NLINK = 0x4;
+        internal static readonly byte[] EmptyPath = { 0 };
+
+        [DllImport("libc", EntryPoint = "statx")]
+        internal static extern int LinuxStatx(int dirfd, byte[] pathname, int flags, uint mask, out linux_statx_t buf);
+
+        [StructLayout(LayoutKind.Explicit, Size = 256)]
+        internal struct linux_statx_t
+        {
+            [FieldOffset(0)] public uint stx_mask;
+            [FieldOffset(16)] public uint stx_nlink;
+        }
     }
 }

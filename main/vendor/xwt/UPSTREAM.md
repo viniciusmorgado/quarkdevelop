@@ -29,6 +29,15 @@ Listed per commit in `git log -- main/vendor/xwt`; summary:
     (borders use the style border colour where GTK2 used `Style.Dark`).
   - `IScrollable.GetBorder` implemented (returns no border) in `GtkViewPort` and `WebView`.
   - The GTK2 container-leak workaround (needs `gtksharpglue`) is compiled only for GTK2.
+  - `WidgetBackend.GetPreferredSize` (GTK3) does not ask the frontend again while the frontend computes its
+    preferred size: a frontend `OnGetPreferredSize` that calls the base implementation (e.g. the embedded native
+    widget of `XwtThemedPopup`) recursed until the stack overflowed. The GTK2 backend has the same guard (T107).
+  - `WindowFrameBackend.Opacity` does nothing after `Dispose`: the fade-in timeout of MonoDevelop's tooltip windows
+    could run after the window was destroyed and used the freed GTK window, which corrupted GObject reference counts
+    and crashed the process later (T107).
+  - `WindowFrameBackend.Dispose` disposes the GTK window instead of calling `Widget.Destroy`: GtkSharp 3.24's
+    `Destroy` lets GTK free a toplevel whose wrapper still holds a toggle reference, which the wrapper released again
+    when disposed or finalized (GLib-GObject-CRITICAL `g_object_remove_toggle_ref`, random crashes; T107).
 - `TestApps/Samples/upstream-resources/`: images the upstream sample project linked from `Testing/`
   and `Xwt.XamMac/` (not vendored).
 

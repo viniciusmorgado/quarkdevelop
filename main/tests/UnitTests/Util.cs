@@ -39,17 +39,27 @@ namespace UnitTests
 	public static class Util
 	{
 		static string rootDir;
+		static string tmpDir;
 		static int projectId = 1;
 		
 		public static string TestsRootDir {
 			get {
 				if (rootDir == null) {
-					rootDir = Path.GetDirectoryName (typeof(Util).Assembly.Location);
+					var hostDir = Path.GetDirectoryName (typeof(Util).Assembly.Location);
+					rootDir = hostDir;
 					// If the test suite is running outside the source directory,
 					// the test-projects folder should be a direct subdirectory
 					if (!Directory.Exists (Path.Combine (rootDir, "test-projects"))) {
 						rootDir = Path.Combine (Path.Combine (rootDir, ".."), "..");
 						rootDir = Path.GetFullPath (Path.Combine (rootDir, "tests"));
+					}
+					// A test host with its own output folder (main/build/tests/<project>/, Linux layout): the fixtures are
+					// in main/tests (MONODEVELOP_TEST_ROOT, set by the runsettings of Test.targets), and the temporary
+					// files stay in the host folder, since the test hosts run in parallel and each clears its TmpDir.
+					var testRoot = System.Environment.GetEnvironmentVariable ("MONODEVELOP_TEST_ROOT");
+					if (!Directory.Exists (Path.Combine (rootDir, "test-projects")) && !string.IsNullOrEmpty (testRoot)) {
+						rootDir = Path.GetFullPath (testRoot);
+						tmpDir = Path.Combine (hostDir, "tmp");
 					}
 				}
 				return rootDir;
@@ -58,11 +68,8 @@ namespace UnitTests
 		
 		public static string TmpDir {
 			get {
-				// Test hosts with their own folder (build/tests/<project>/) run in parallel and clear their tmp folder
-				// (TestBase): each gets its own instead of sharing build/tests/tmp.
-				if (!Directory.Exists (Path.Combine (TestsRootDir, "test-projects")))
-					return Path.Combine (System.AppContext.BaseDirectory, "tmp");
-				return Path.Combine (TestsRootDir, "tmp");
+				var root = TestsRootDir; // also sets tmpDir for hosts with their own output folder
+				return tmpDir ?? Path.Combine (root, "tmp");
 			}
 		}
 		

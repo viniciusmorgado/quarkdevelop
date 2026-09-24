@@ -38,11 +38,22 @@ namespace UnitTests
 	public static class TestHost
 	{
 		static readonly object initLock = new object ();
-		static MainLoopSynchronizationContext mainContext;
+		static SynchronizationContext mainContext;
 		static Exception initializationError;
 
 		/// <summary>The synchronization context of the emulated UI thread.</summary>
 		public static SynchronizationContext MainSynchronizationContext => mainContext;
+
+		/// <summary>
+		/// Called by a host that initialized the runtime itself, on the thread it treats as the main thread
+		/// (IdeUnitTests.GuiTestHost: the GTK main loop on the NUnit test thread, as GuiUnit did):
+		/// <see cref="EnsureInitialized"/> keeps that main thread instead of starting an emulated one.
+		/// </summary>
+		public static void SetInitialized (SynchronizationContext mainSynchronizationContext)
+		{
+			lock (initLock)
+				mainContext = mainSynchronizationContext;
+		}
 
 		public static void EnsureInitialized ()
 		{

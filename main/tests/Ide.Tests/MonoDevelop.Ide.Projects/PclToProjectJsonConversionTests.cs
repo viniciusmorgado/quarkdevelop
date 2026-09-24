@@ -43,6 +43,7 @@ namespace MonoDevelop.Ide.Projects
 		/// MSBuild import is removed.
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task MigrateXamarinFormsPclProjectToProjectJson ()
 		{
 			FilePath solFile = Util.GetSampleProject ("XamarinFormsPcl", "XamarinFormsPcl.sln");

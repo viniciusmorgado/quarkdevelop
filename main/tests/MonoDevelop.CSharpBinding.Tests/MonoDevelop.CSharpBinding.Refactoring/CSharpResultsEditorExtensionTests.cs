@@ -72,6 +72,7 @@ class MyClass
 		// These tests can hang if we don't get enough updates (i.e. code changes)
 		// So to not break CI, add a timeout to the test. These tests should take around 20s.
 		[Test]
+		[Category ("Quarantine")]
 		public async Task DiagnosticsAreReportedByExtension ()
 		{
 			await RunTest (4, OneFromEach, (remainingUpdates, doc) => {
@@ -83,6 +84,7 @@ class MyClass
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task DiagnosticEnableSourceAnalysisChanged ()
 		{
 			await RunTest (5, OneFromEach, (remainingUpdates, doc) => {

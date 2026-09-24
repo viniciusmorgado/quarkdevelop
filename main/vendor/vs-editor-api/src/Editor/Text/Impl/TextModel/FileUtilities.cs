@@ -202,9 +202,19 @@ namespace Microsoft.VisualStudio.Text.Implementation
                                 numberOfHardLinks = statbuf.st_nlink;
                             }
                         }
+                        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        {
+                            // MonoDevelop (Linux port): statx has the same layout on every architecture, unlike struct stat.
+                            if (NativeMethods.LinuxStatx((int)safeHandle.DangerousGetHandle(), NativeMethods.EmptyPath, NativeMethods.AT_EMPTY_PATH, NativeMethods.STATX_NLINK, out var statxbuf) == 0
+                                && (statxbuf.stx_mask & NativeMethods.STATX_NLINK) != 0)
+                            {
+                                statWasSuccessful = true;
+                                numberOfHardLinks = statxbuf.stx_nlink;
+                            }
+                        }
                         else
                         {
-                            throw new PlatformNotSupportedException("Implement fstat support for Linux");
+                            throw new PlatformNotSupportedException("Implement fstat support for this platform");
                         }
 
                         if (!statWasSuccessful)

@@ -35,7 +35,7 @@ namespace MonoDevelop.CSharpBinding.Parser
 	{
 		static int finalized;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUp ()
 		{
 			finalized = 0;

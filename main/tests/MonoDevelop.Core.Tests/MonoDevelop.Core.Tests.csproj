@@ -112,6 +112,7 @@
     <Compile Include="MonoDevelop.Projects/FileWatcherTestBase.cs" />
     <Compile Include="MonoDevelop.Core/DedicatedThreadSchedulerTests.cs" />
     <Compile Include="MonoDevelop.Projects/IntrinsicFunctionsTests.cs" />
+    <Compile Include="MonoDevelop.Core/AssertLoggingTraceListenerTests.cs" />
   </ItemGroup>
 
   <ItemGroup>

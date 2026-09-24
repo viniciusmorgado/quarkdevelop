@@ -46,6 +46,13 @@ namespace MonoDevelop.CSharp.Project
 			yield return (GettextCatalog.GetString ("Version 7.2"), LanguageVersion.CSharp7_2);
 			yield return (GettextCatalog.GetString ("Version 7.3"), LanguageVersion.CSharp7_3);
 			yield return (GettextCatalog.GetString ("Version 8"), LanguageVersion.CSharp8);
+			// Roslyn 5.9 (.NET 10 SDK): C# 9 to 14.
+			yield return (GettextCatalog.GetString ("Version 9"), LanguageVersion.CSharp9);
+			yield return (GettextCatalog.GetString ("Version 10"), LanguageVersion.CSharp10);
+			yield return (GettextCatalog.GetString ("Version 11"), LanguageVersion.CSharp11);
+			yield return (GettextCatalog.GetString ("Version 12"), LanguageVersion.CSharp12);
+			yield return (GettextCatalog.GetString ("Version 13"), LanguageVersion.CSharp13);
+			yield return (GettextCatalog.GetString ("Version 14"), LanguageVersion.CSharp14);
 			yield return (GettextCatalog.GetString ("Latest Major"), LanguageVersion.LatestMajor);
 			yield return (GettextCatalog.GetString ("Preview"), LanguageVersion.Preview);
 			yield return (GettextCatalog.GetString ("Latest"), LanguageVersion.Latest);

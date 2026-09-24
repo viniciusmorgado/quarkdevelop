@@ -122,12 +122,19 @@ namespace Xwt.GtkBackend
 		{
 		}
 
+		bool disposed;
+
 		public virtual void Dispose ()
 		{
 			#if !XWT_GTK3
 			Window.SizeRequested -= HandleSizeRequested;
 			#endif
-			Window.Destroy ();
+			disposed = true;
+			// Dispose, not Destroy: GtkSharp's Widget.Destroy on a toplevel lets GTK drop the reference that the wrapper's
+			// toggle reference relies on, so GTK frees the window and the wrapper releases it again when it is disposed or
+			// finalized (GLib-GObject-CRITICAL g_object_remove_toggle_ref, then random crashes; T107). Dispose keeps a
+			// reference while destroying a toplevel and then releases the wrapper.
+			Window.Dispose ();
 		}
 		
 		public IWindowFrameEventSink EventSink {
@@ -228,7 +235,9 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				opacity = value;
-				if (Window.GdkWindow != null)
+				// Not after Dispose (e.g. from a late timeout): the GTK window is destroyed and freed, and using it corrupted
+				// GObject reference counts (GLib-GObject-CRITICAL, then a crash when the wrappers are finalized).
+				if (!disposed && Window.GdkWindow != null)
 					Window.GdkWindow.Opacity = value;
 			}
 		}

@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); NUnit 3 (ADR 0015, T090). -->
+  <!--
+    Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); NUnit 3 (ADR 0015, T090). The editor
+    extension tests run in the IDE test host (IdeUnitTests.GuiTestHost, RefactoringTestsSetUp.cs; T107), under Xvfb.
+  -->
   <PropertyGroup>
     <AssemblyName>MonoDevelop.Refactoring.Tests</AssemblyName>
     <RootNamespace>MonoDevelop.Refactoring.Tests</RootNamespace>
@@ -8,23 +11,35 @@
     <!-- Publicizer adds IgnoresAccessChecksToAttribute, which MonoDevelop.Ide also defines and exposes to this assembly
          (InternalsVisibleTo); the local definition is the one used. -->
     <NoWarn>$(NoWarn);CS0436</NoWarn>
+    <!-- The IDE is used from one thread, the one that initialized GTK and the runtime (Test.targets). -->
+    <MDTestSingleThread>true</MDTestSingleThread>
+    <!-- Legacy setting: the editor extension tests use deprecated Ide.Editor APIs. -->
+    <NoWarn>$(NoWarn);618;612</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="HostAnalyzerTests.cs" />
+    <Compile Include="ResultsEditorExtensionTestBase.cs" />
+    <Compile Include="CodeActionEditorExtensionTestBase.cs" />
+    <Compile Include="MonoDevelop.Refactoring/RenameRefactoringTests.cs" />
+    <Compile Include="RefactoringTestsSetUp.cs" />
   </ItemGroup>
-
-  <!--
-    Not compiled yet: ResultsEditorExtensionTestBase.cs, CodeActionEditorExtensionTestBase.cs and
-    MonoDevelop.Refactoring/RenameRefactoringTests.cs derive from TextEditorExtensionTestBase (tests/IdeUnitTests, ported
-    by T107), which opens documents through the IDE document manager. They join with it.
-  -->
 
   <ItemGroup>
     <ProjectReference Include="../../src/core/MonoDevelop.Core/MonoDevelop.Core.csproj" />
     <ProjectReference Include="../../src/core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" />
     <ProjectReference Include="../../src/addins/MonoDevelop.Refactoring/MonoDevelop.Refactoring.csproj" />
-    <!-- GuiUnit is replaced by NUnit 3 (ADR 0015); UnitTests and IdeUnitTests: see the excluded files above. -->
+    <ProjectReference Include="../../src/addins/MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" />
+    <ProjectReference Include="../../src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.csproj" />
+    <!-- The C# projects of the editor extension tests, and the add-in dependencies of Refactoring (RegexToolkit) in the
+         test registry. -->
+    <ProjectReference Include="../../src/addins/CSharpBinding/CSharpBinding.csproj" />
+    <ProjectReference Include="../../src/addins/MonoDevelop.RegexToolkit/MonoDevelop.RegexToolkit.csproj" />
+    <!-- The Linux platform service of the IDE (MIME types of the test documents). -->
+    <ProjectReference Include="../../src/addins/GnomePlatform/GnomePlatform.csproj" />
+    <!-- GuiUnit is replaced by NUnit 3 (ADR 0015) and IdeUnitTests.GuiTestHost. -->
+    <ProjectReference Include="../UnitTests/UnitTests.csproj" />
+    <ProjectReference Include="../IdeUnitTests/IdeUnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +49,7 @@
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="GtkSharp" />
     <PackageReference Include="Mono.Addins" />
+    <PackageReference Include="Mono.Addins.CecilReflector" />
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NET.StringTools" ExcludeAssets="runtime" PrivateAssets="all" />

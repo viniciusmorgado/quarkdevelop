@@ -80,7 +80,8 @@ namespace MonoDevelop.Core.Logging
 		static bool IsInfrastructureMethod (StackFrame frame)
 		{
 			var method = frame.GetMethod ();
-			if (method == null)
+			// .NET: reflection invoke stubs and other dynamic methods have no declaring type.
+			if (method == null || method.DeclaringType == null)
 				return true;
 			var asmName = method.DeclaringType.Assembly.FullName;
 			return asmName == mscorlibName || asmName == systemName;
@@ -103,7 +104,10 @@ namespace MonoDevelop.Core.Logging
 			MethodBase method = frame.GetMethod ();
 			if (method != null) {
 				// Method information available
-				sb.AppendFormat ("{0}.{1}", method.DeclaringType.FullName, method.Name);
+				if (method.DeclaringType != null)
+					sb.AppendFormat ("{0}.{1}", method.DeclaringType.FullName, method.Name);
+				else
+					sb.Append (method.Name);
 				/* Append parameter information */sb.Append ("(");
 				ParameterInfo[] p = method.GetParameters ();
 				for (int j = 0; j < p.Length; ++j) {

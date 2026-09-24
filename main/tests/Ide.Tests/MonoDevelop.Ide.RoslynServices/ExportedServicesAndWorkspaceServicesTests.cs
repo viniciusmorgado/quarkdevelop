@@ -44,7 +44,8 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 		{
 			// Initialize MEF
 			var manager = await Runtime.GetService<CompositionManager> ();
-			manager.AssertExportsContains<IOptionPersister, MonoDevelopGlobalOptionPersister> ();
+			// Roslyn 4+: the persister is created by an exported IOptionPersisterProvider.
+			manager.AssertExportsContains<IOptionPersisterProvider, MonoDevelopGlobalOptionPersisterProvider> ();
 		}
 
 		[Test]

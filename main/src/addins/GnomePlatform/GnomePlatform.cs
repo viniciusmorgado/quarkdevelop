@@ -70,6 +70,10 @@ namespace MonoDevelop.Platform
 			if (uri == null)
 				return null;
 			
+			// The IDE passes file paths (DesktopService.GetMimeTypeForUri (fileName)); gio parses a path as an invalid
+			// URI and reported no type for them.
+			if (!uri.Contains ("://", StringComparison.Ordinal))
+				uri = new Uri (Path.GetFullPath (uri)).AbsoluteUri;
 			return Gio.GetMimeTypeForUri (uri);
 		}
 

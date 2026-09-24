@@ -28,7 +28,6 @@ using System.IO;
 using NUnit.Framework;
 using UnitTests;
 using System.Threading;
-using GuiUnit;
 using System;
 using System.Threading.Tasks;
 using MonoDevelop.Ide.TextEditing;

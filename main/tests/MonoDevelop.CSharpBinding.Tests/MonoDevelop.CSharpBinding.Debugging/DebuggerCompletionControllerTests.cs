@@ -105,7 +105,7 @@ namespace console61
 			var endColumn = endOfStatement - endLine.Start.Position;
 
 			var completionResult =
-				await controller.GetExpressionCompletionDataAsync ("a", new StackFrame (0, new SourceLocation ("", "", startLine.LineNumber, startColumn, endLine.LineNumber, endColumn), "C#"), default);
+				await controller.GetExpressionCompletionDataAsync ("a", new StackFrame (0, new Mono.Debugging.Client.SourceLocation ("", "", startLine.LineNumber, startColumn, endLine.LineNumber, endColumn), "C#"), default);
 
 			var items = completionResult.Items.Select(i => i.Name);
 			Assert.That (items, Contains.Item ("args"));
@@ -178,7 +178,7 @@ namespace console61
 			var endColumn = endOfStatement - endLine.Start.Position;
 
 			// get the stack frame
-			var stackFrame = new StackFrame (0, new SourceLocation ("", "", startLine.LineNumber, startColumn, endLine.LineNumber, endColumn), "C#");
+			var stackFrame = new StackFrame (0, new Mono.Debugging.Client.SourceLocation ("", "", startLine.LineNumber, startColumn, endLine.LineNumber, endColumn), "C#");
 
 			// now, alter the source so that the stack frame's location appear after the last line in the buffer
 			var bufferAfter = PlatformCatalog.Instance.TextBufferFactoryService.CreateTextBuffer (textAfter, contentType);

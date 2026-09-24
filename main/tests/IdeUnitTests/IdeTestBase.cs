@@ -48,8 +48,8 @@ namespace MonoDevelop.Ide
 
 			await base.InternalSetup(rootDir);
 
-			Xwt.Application.Initialize(Xwt.ToolkitType.Gtk);
-			Gtk.Application.Init();
+			// GTK and Xwt (GTK 3) are initialized by the test host, on the main thread (GuiTestHost).
+			GuiTestHost.EnsureInitialized ();
 		}
 
 		[TearDown]

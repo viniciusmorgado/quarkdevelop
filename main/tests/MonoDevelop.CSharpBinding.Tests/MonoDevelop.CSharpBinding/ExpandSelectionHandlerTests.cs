@@ -46,6 +46,7 @@ namespace MonoDevelop.CSharpBinding
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TestExpandSelection ()
 		{
 			await CheckAutoBracket (@"

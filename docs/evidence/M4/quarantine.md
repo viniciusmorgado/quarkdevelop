@@ -55,7 +55,7 @@ Quarantined 78 test cases (77 methods; 80 at first run) on 2026-09-23 (+1 on 202
 | `MonoDevelop.Projects.MSBuildSearchPathTests.ProjectUsingSdk` | Bug | project model / evaluator difference on SDK 10 | <repo>/main/tests/tmp/ProjectUsing | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.MSBuildSearchPathTests.ProjectUsingSdkImport` | Bug | project model / evaluator difference on SDK 10 | Expected: 1 | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.MakefileTests.MakefileSynchronization` | Bug | project model / evaluator difference on SDK 10 | Contains Program.cs | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MultiTargetProjectTests.TargetFrameworkMonikers_DifferentShortNameFormats` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo> | migration | 2026-09-23 | T134 |
+| `MonoDevelop.Projects.MultiTargetProjectTests.TargetFrameworkMonikers_DifferentShortNameFormats` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/… | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.NetStandardProjectTests.NetStandardProjectReferenceIncludesFacades` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | Expected: True | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.PortableLibraryTests.AddingRemovingAndThenAddingReferenceToPortableLibrarySavesReferenceToFile` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.PortableLibraryTests.BuildPortableLibrary` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | Expected: null | migration | 2026-09-23 | T134 |
@@ -95,12 +95,9 @@ Quarantined 78 test cases (77 methods; 80 at first run) on 2026-09-23 (+1 on 202
 
 ## MonoDevelop.Xml.Tests
 
-Quarantined 2 test cases (2 methods) on 2026-09-23. IDE-host: 2.
-
-| Test | Reason | Note | First error line | Owner | Date | Task |
-|---|---|---|---|---|---|---|
-| `MonoDevelop.Xml.Tests.Schema.SchemaValidationTests.ValidateXsltInvalid` | IDE-host | needs the IDE add-in host (GUI add-ins are not loaded by the headless test host) | System.InvalidOperationException : Add-in engine not initialized. | migration | 2026-09-23 | T107 |
-| `MonoDevelop.Xml.Tests.Schema.SchemaValidationTests.ValidateXsltValid` | IDE-host | needs the IDE add-in host (GUI add-ins are not loaded by the headless test host) | Expected: 0 | migration | 2026-09-23 | T107 |
+No quarantined tests since 2026-09-24 (T107). The two XSLT validation tests quarantined on 2026-09-23 (IDE-host: the GUI
+add-ins were not loaded by the headless test host) pass in the IDE test host (IdeUnitTests.GuiTestHost), which also brings
+back ExpandSelectionTests and XmlCodeCompletionTests.
 
 ## MonoDevelop.TextEditor.Tests
 
@@ -127,13 +124,62 @@ Quarantined 16 test cases (16 methods) on 2026-09-24. Bug: 16.
 
 ## MonoDevelop.VersionControl.Git.Tests
 
-Quarantined 3 test cases (3 methods) on 2026-09-24. IDE-host: 3.
+No quarantined tests since 2026-09-24 (T107). The three blame tests quarantined earlier that day (IDE-host: they need the
+VS editor MEF composition) pass: the test host now has the editor platform implementation assemblies (through
+IdeUnitTests).
+
+## MonoDevelop.Ide.Tests
+
+Quarantined 30 test cases (26 methods) on 2026-09-24. Bug: 16, legacy-fixture: 5, net4x-fixture: 5, Mono-only: 3, Flaky: 1.
 
 | Test | Reason | Note | First error line | Owner | Date | Task |
 |---|---|---|---|---|---|---|
-| `MonoDevelop.VersionControl.Git.Tests.BaseGitUtilsTest.BlameDiffWithNotCommitedItem(True,True)` | IDE-host | needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model) | Microsoft.VisualStudio.Composition.CompositionFailedException : Expected 1 export(s) with contract name "Micro | migration | 2026-09-24 | T107 |
-| `MonoDevelop.VersionControl.Git.Tests.BaseGitUtilsTest.BlameIsCorrect` | IDE-host | needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model) | Microsoft.VisualStudio.Composition.CompositionFailedException : Expected 1 export(s) with contract name "Micro | migration | 2026-09-24 | T107 |
-| `MonoDevelop.VersionControl.Git.Tests.BaseGitUtilsTest.BlameWithWorkingChanges` | IDE-host | needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model) | Microsoft.VisualStudio.Composition.CompositionFailedException : Expected 1 export(s) with contract name "Micro | migration | 2026-09-24 | T107 |
+| `MonoDevelop.Ide.Composition.CompositionManagerCachingTests.TestCacheControlDataIntegrity` | net4x-fixture | expects System.Console in mscorlib (.NET Framework); on .NET it is a separate assembly | Expected: some item equal to "System.Console, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Composition.CompositionManagerCachingTests.TestCacheWithDynamicAssembly` | Mono-only | CodeDOM compilation (CSharpCodeProvider.CompileAssemblyFromSource) is not supported on .NET | System.PlatformNotSupportedException : Operation is not supported on this platform. | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Gui.GLibLoggingTests.GLibLoggingHaveFullStacktracesInLog` | Mono-only | expects Mono's mixed-mode stack trace in the legacy mdtool test host (MonoDevelopProcessHost.Main, native GLib frames) | Expected: String containing "at MonoDevelopProcessHost.Main" | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Gui.GLibLoggingTests.ValidateCrashIsSentForGLibExceptions` | Mono-only | expects Mono's mixed-mode stack trace in the legacy mdtool test host (MonoDevelopProcessHost.Main, native GLib frames) | Expected: String containing "at MonoDevelopProcessHost.Main" | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.ProjectTemplateTests.Bug57840` | legacy-fixture | project template of an add-in outside the Linux build (shared project, portable library) | System.InvalidOperationException : Sequence contains no matching element | migration | 2026-09-24 | T134 |
+| `MonoDevelop.Ide.ProjectTemplateTests.NewSharedProjectAddedToExistingSolutionUsesCorrectBuildAction` | legacy-fixture | project template of an add-in outside the Linux build (shared project, portable library) | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-24 | T134 |
+| `MonoDevelop.Ide.Projects.PclToProjectJsonConversionTests.MigrateXamarinFormsPclProjectToProjectJson` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | System.InvalidCastException : Unable to cast object of type 'MonoDevelop.Projects.UnknownSolutionItem' to type | migration | 2026-09-24 | T134 |
+| `MonoDevelop.Ide.RoslynSearchCategoryTests.TestConsoleProjectWorks` | Bug | fails on .NET 10; root cause to be analysed | Expected: 2 | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.RoslynServices.MonoDevelopFrameworkAssemblyPathResolverFactoryTests.TestSimpleCase` | Bug | fails on .NET 10; root cause to be analysed | Expected: not null | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestBatchedBehaviourWorks(False)` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestBatchedBehaviourWorks(True)` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestCachedContentsAreReleasedIfNotQueried(False)` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestCachedContentsAreReleasedIfNotQueried(True)` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestFileChangeTriggersNotification` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestToDoCommentsAreReported(False)` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestToDoCommentsAreReported(True)` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestToDoCommentsOnFileAdded` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestToDoCommentsOnWorkspaceReopen(False)` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestToDoCommentsOnWorkspaceReopen(True)` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.Tasks.CommentTasksProviderTests.TestToDoCommentsTagsChanged` | Bug | TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider) | System.TimeoutException : The test did not complete within 120000 ms (IdeUnitTests message loop) | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.TypeSystem.TypeSystemServiceTests.EditorConfigFile_ModifiedInTextEditor` | Flaky | timing-dependent (file watcher / event timing) | Timed out waiting for analyzer config file changed event | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.TypeSystem.TypeSystemServiceTests.MultiTargetFramework` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/… | migration | 2026-09-24 | T134 |
+| `MonoDevelop.Ide.TypeSystem.TypeSystemServiceTests.MultiTargetFramework_ProjectReferences` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/… | migration | 2026-09-24 | T134 |
+| `MonoDevelop.Ide.TypeSystem.TypeSystemServiceTests.MultiTargetFramework_ReloadProject_TargetFrameworksChanged` | Bug | fails on .NET 10; root cause to be analysed | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/… | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.TypeSystem.TypeSystemServiceTests.MultiTargetFramework_RemoveProject` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/… | migration | 2026-09-24 | T134 |
+| `MonoDevelop.Ide.TypeSystem.WorkspaceFilesCacheTests.TestWorkspaceFilesCacheCreation_MultiTargetFramework` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/… | migration | 2026-09-24 | T134 |
+| `MonoDevelop.Ide.TypeSystemServiceTests.ProjectModifiedWhilstBeingAddedToSolution` | Bug | fails on .NET 10; root cause to be analysed | System.Xml.Linq reference missing from type system information | migration | 2026-09-24 | T135 |
+| `MonoDevelop.Ide.TypeSystemServiceTests.ProjectReferencingOutputTrackedReference` | legacy-fixture | needs a language binding that is not in the Linux build (IL assembler, F#) | System.ArgumentNullException : Value cannot be null. (Parameter 'project') | migration | 2026-09-24 | T134 |
+| `MonoDevelop.Ide.TypeSystemServiceTests.TestOuptutTracking_LanguageName` | legacy-fixture | needs a language binding that is not in the Linux build (IL assembler, F#) | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-24 | T134 |
+| `MonoDevelop.Ide.UserPreferencesTests.LoadUserPreferences` | Bug | fails on .NET 10; root cause to be analysed | MonoDevelop.Core.UserException : Could not load workspace item: <repo>/… | migration | 2026-09-24 | T135 |
+
+## MonoDevelop.CSharpBinding.Tests
+
+Quarantined 9 test cases (9 methods) on 2026-09-24. Bug: 8, Flaky: 1.
+
+| Test | Reason | Note | First error line | Owner | Date | Task |
+|---|---|---|---|---|---|---|
+| `MonoDevelop.CSharpBinding.CSharpCompletionTextEditorTests.TestImportCompletionExtensionMethods` | Bug | fails on .NET 10; root cause to be analysed | Expected: True | migration | 2026-09-24 | T135 |
+| `MonoDevelop.CSharpBinding.CSharpCompletionTextEditorTests.TestImportCompletionTypes` | Bug | fails on .NET 10; root cause to be analysed | Expected: True | migration | 2026-09-24 | T135 |
+| `MonoDevelop.CSharpBinding.CSharpCompletionTextEditorTests.TestVSTSBug568065` | Bug | fails on .NET 10; root cause to be analysed | Expected: 1 | migration | 2026-09-24 | T135 |
+| `MonoDevelop.CSharpBinding.ExpandSelectionHandlerTests.TestExpandSelection` | Flaky | timing-dependent (selection expanded before the document is parsed); failed in 1 of 2 runs | Expected: 74 | migration | 2026-09-24 | T135 |
+| `MonoDevelop.CSharpBinding.Refactoring.CSharpCodeActionEditorExtensionTests.FixesAreReportedByExtension` | Bug | diagnostics / code fixes do not reach the editor extension in the test host (pulled diagnostics, T090) | Expected: 1 | migration | 2026-09-24 | T135 |
+| `MonoDevelop.CSharpBinding.Refactoring.CSharpCodeActionEditorExtensionTests.FixesAreReportedForCompilerErrors` | Bug | diagnostics / code fixes do not reach the editor extension in the test host (pulled diagnostics, T090) | System.Threading.Tasks.TaskCanceledException : A task was canceled. | migration | 2026-09-24 | T135 |
+| `MonoDevelop.CSharpBinding.Refactoring.CSharpResultsEditorExtensionTests.DiagnosticEnableSourceAnalysisChanged` | Bug | diagnostics / code fixes do not reach the editor extension in the test host (pulled diagnostics, T090) | System.Threading.Tasks.TaskCanceledException : A task was canceled. | migration | 2026-09-24 | T135 |
+| `MonoDevelop.CSharpBinding.Refactoring.CSharpResultsEditorExtensionTests.DiagnosticsAreReportedByExtension` | Bug | diagnostics / code fixes do not reach the editor extension in the test host (pulled diagnostics, T090) | System.Threading.Tasks.TaskCanceledException : A task was canceled. | migration | 2026-09-24 | T135 |
+| `MonoDevelop.CSharpBinding.Tests.CustomProjectRuleSetTests.CustomCodeAnalysisRuleSetFile` | Bug | fails on .NET 10; root cause to be analysed | System.Collections.Generic.KeyNotFoundException : The given key 'SA1003' was not present in the dictionary. | migration | 2026-09-24 | T135 |
 
 ## MonoDevelop.PackageManagement.Tests
 

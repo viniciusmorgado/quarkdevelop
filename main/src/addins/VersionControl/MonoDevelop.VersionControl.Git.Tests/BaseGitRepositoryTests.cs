@@ -640,7 +640,6 @@ namespace MonoDevelop.VersionControl.Git.Tests
 		[TestCase(false, false)]
 		[TestCase(true, false)]
 		[TestCase(true, true)]
-		[Category ("Quarantine")]
 		public async Task BlameDiffWithNotCommitedItem (bool toVcs, bool commit)
 		{
 			string added = LocalPath.Combine ("init");
@@ -661,7 +660,6 @@ namespace MonoDevelop.VersionControl.Git.Tests
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task BlameWithWorkingChanges ()
 		{
 			string added = LocalPath.Combine ("init");

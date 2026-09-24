@@ -41,6 +41,11 @@ namespace Xwt.GtkBackend
 			Widget.SetBackgroundColor (color);
 		}
 
+		// Set while the frontend computes the preferred size (PreferredSizeCheck): a frontend OnGetPreferredSize that
+		// calls the base implementation re-enters this method, which then returns the native size instead of asking
+		// the frontend again (endless recursion; the GTK2 backend has the same guard).
+		bool gettingPreferredSize;
+
 		public virtual Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			SetSizeConstraints (widthConstraint, heightConstraint);
@@ -82,17 +87,22 @@ namespace Xwt.GtkBackend
 				}
 			}
 
-			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) != 0) {
+			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) != 0 && !gettingPreferredSize) {
 				SizeConstraint wc = SizeConstraint.Unconstrained, hc = SizeConstraint.Unconstrained;
 				var cp = Widget.Parent as IConstraintProvider;
 				if (cp != null)
 					cp.GetConstraints (Widget, out wc, out hc);
 
-				ApplicationContext.InvokeUserCode (delegate {
-					var w = eventSink.GetPreferredSize (wc, hc);
-					min_width = (int) w.Width;
-					min_height = (int) w.Height;
-				});
+				try {
+					gettingPreferredSize = true;
+					ApplicationContext.InvokeUserCode (delegate {
+						var w = eventSink.GetPreferredSize (wc, hc);
+						min_width = (int) w.Width;
+						min_height = (int) w.Height;
+					});
+				} finally {
+					gettingPreferredSize = false;
+				}
 			}
 
 			if (Widget.WidthRequest > min_width)

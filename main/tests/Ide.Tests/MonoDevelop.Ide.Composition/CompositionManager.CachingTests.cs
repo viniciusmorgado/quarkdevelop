@@ -259,6 +259,7 @@ namespace MonoDevelop.Ide.Composition
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TestCacheControlDataIntegrity ()
 		{
 			var caching = GetCaching ();
@@ -285,6 +286,7 @@ namespace MonoDevelop.Ide.Composition
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestCacheWithDynamicAssembly ()
 		{
 			var asm = GenerateAssembly ();

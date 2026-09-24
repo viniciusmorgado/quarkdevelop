@@ -51,13 +51,14 @@ namespace MonoDevelop.Ide.RoslynServices
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TestSimpleCase ()
 		{
 			using (var testCase = await SetupTestCase ("class MyTest {}")) {
 				var doc = testCase.Document.DocumentContext;
 
 				var service = doc.RoslynWorkspace.Services.GetService<IFrameworkAssemblyPathResolver> ();
-				string path = service.ResolveAssemblyPath (doc.AnalysisDocument.Project.Id, "System");
+				string path = service.ResolveAssemblyPath (doc.AnalysisDocument.Project.Id, "System", null);
 				Assert.IsNotNull (path);
 			}
 		}

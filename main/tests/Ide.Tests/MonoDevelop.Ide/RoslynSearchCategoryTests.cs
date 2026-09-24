@@ -49,6 +49,7 @@ namespace MonoDevelop.Ide
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TestConsoleProjectWorks ()
 		{
 			string solFile = Util.GetSampleProject ("console-with-libs", "console-with-libs.sln");

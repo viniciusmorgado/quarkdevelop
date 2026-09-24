@@ -29,6 +29,9 @@
     <ProjectReference Include="../../MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" />
     <!-- UnitTests.TestHost initializes the MonoDevelop runtime (GuiUnit and mdtool run-md-tests did it before, ADR 0015). -->
     <ProjectReference Include="../../../../tests/UnitTests/UnitTests.csproj" />
+    <!-- Only for the editor platform implementation assemblies it copies: the blame tests create text buffers, which
+         come from the MEF composition of the Ide add-in (T107). -->
+    <ProjectReference Include="../../../../tests/IdeUnitTests/IdeUnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

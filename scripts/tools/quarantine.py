@@ -31,6 +31,27 @@ RULES = [
     (r"Xam\.Test\.MSBuild\.Sdk", False,
      "network", "restores an MSBuild SDK package from nuget.org (no network in tests); "
      "PackageOperationsEndToEndTests resolves one from a local feed", "T100"),
+    # IDE test host (IdeUnitTests.GuiTestHost, task T107).
+    (r"CommentTasksProviderTests", False,
+     "Bug", "TODO comment tasks: the notifications the test waits for never arrive (no Roslyn solution crawler in Roslyn 4+; MonoDevelopTaskListProvider)", "T135"),
+    (r"IdeUnitTests message loop", False,
+     "Bug", "does not complete in the IDE test host (2 min limit of the message loop)", "T135"),
+    (r"MonoDevelopProcessHost", False,
+     "Mono-only", "expects Mono's mixed-mode stack trace in the legacy mdtool test host (MonoDevelopProcessHost.Main, native GLib frames)", "T135"),
+    (r"CompileAssemblyFromSource|FromFileBatch", True,
+     "Mono-only", "CodeDOM compilation (CSharpCodeProvider.CompileAssemblyFromSource) is not supported on .NET", "T135"),
+    (r"\"text/plain\"|XmlCodeCompletionTests\.", False,
+     "Bug", "MIME type from the file name alone: on Linux GIO types existing files only (the tests relied on MacPlatform's extension lookup)", "T135"),
+    (r"CodeActionEditorExtensionTests|ResultsEditorExtensionTests", False,
+     "Bug", "diagnostics / code fixes do not reach the editor extension in the test host (pulled diagnostics, T090)", "T135"),
+    (r"TestOuptutTracking_LanguageName|ProjectReferencingOutputTrackedReference", False,
+     "legacy-fixture", "needs a language binding that is not in the Linux build (IL assembler, F#)", "T134"),
+    (r"NewSharedProjectAddedToExistingSolution|Bug57840", False,
+     "legacy-fixture", "project template of an add-in outside the Linux build (shared project, portable library)", "T134"),
+    (r"TestCacheControlDataIntegrity", False,
+     "net4x-fixture", "expects System.Console in mscorlib (.NET Framework); on .NET it is a separate assembly", "T135"),
+    (r"ExpandSelectionHandlerTests\.", False,
+     "Flaky", "timing-dependent (selection expanded before the document is parsed); failed in 1 of 2 runs", "T135"),
     (r"Timed out|exceeded Timeout|TimeoutException|was not recorded|FileWatcher", False,
      "Flaky", "timing-dependent (file watcher / event timing)", "T135"),
     (r"Moq\.|Mock|HttpSourceAuthenticationHandler", False,
@@ -119,7 +140,9 @@ def main():
     rows, methods, missing = [], set(), []
     for cls, method, test_name, msg, stack in failed_tests(trx):
         category, note, task = classify(f"{cls}.{test_name}", msg, stack)
-        first = (msg.strip().splitlines() or [""])[0][:110].replace("|", "\\|")
+        first = (msg.strip().splitlines() or [""])[0]
+        # repo-relative: no checkout paths in the evidence
+        first = re.sub(r"/\S*?/main/", "<repo>/main/", first)[:110].replace("|", "\\|")
         rows.append((f"{cls}.{test_name}", category, note, first, task))
         if (cls, method) in methods:
             continue

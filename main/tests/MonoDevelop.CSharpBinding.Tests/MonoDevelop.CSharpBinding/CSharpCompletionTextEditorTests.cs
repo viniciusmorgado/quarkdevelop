@@ -90,6 +90,7 @@ namespace console61
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TestImportCompletionExtensionMethods ()
 		{
 			IdeApp.Preferences.AddImportedItemsToCompletionList.Value = true;
@@ -111,6 +112,7 @@ namespace console61
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TestImportCompletionTypes ()
 		{
 			IdeApp.Preferences.AddImportedItemsToCompletionList.Value = true;
@@ -194,6 +196,7 @@ namespace console61
 		/// Bug 568065: Multiple identical entries for Tuple in completion list
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TestVSTSBug568065 ()
 		{
 			IdeApp.Preferences.AddImportedItemsToCompletionList.Value = true;

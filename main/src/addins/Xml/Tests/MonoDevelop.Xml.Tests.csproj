@@ -8,6 +8,9 @@
          shared headless test directory, where the Core tests' add-in scan would pick them up. -->
     <!-- Legacy setting: the tests exercise the deprecated (pre-VS-editor) Ide.Editor APIs. -->
     <NoWarn>$(NoWarn);618;612</NoWarn>
+    <!-- The editor tests run in the IDE test host (IdeUnitTests.GuiTestHost, XmlTestsSetUp.cs; T107), under Xvfb, on the
+         thread that initialized GTK and the runtime (Test.targets). -->
+    <MDTestSingleThread>true</MDTestSingleThread>
   </PropertyGroup>
 
   <ItemGroup>
@@ -70,13 +73,10 @@
     <Compile Include="Formatting/XmlFormatterTests.cs" />
     <Compile Include="Schema/SchemaValidationTests.cs" />
     <Compile Include="Utils/XsltTransformTest.cs" />
+    <Compile Include="ExpandSelectionTests.cs" />
+    <Compile Include="CodeCompletion/XmlCodeCompletionTests.cs" />
+    <Compile Include="XmlTestsSetUp.cs" />
   </ItemGroup>
-
-  <!--
-    Not compiled yet: ExpandSelectionTests.cs and CodeCompletion/XmlCodeCompletionTests.cs derive from
-    TextEditorExtensionTestBase (tests/IdeUnitTests, ported by T107) and need a text editor implementation
-    (SourceEditor2, not ported yet). They join when both are available.
-  -->
 
   <ItemGroup>
     <EmbeddedResource Include="../schemas/XMLSchema.xsd" />
@@ -87,8 +87,16 @@
     <ProjectReference Include="../../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" />
     <ProjectReference Include="../../../core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" />
     <ProjectReference Include="../MonoDevelop.Xml.csproj" />
-    <!-- GuiUnit is replaced by NUnit 3 (ADR 0015); IdeUnitTests: see the excluded files above. UnitTests (TestBase)
-         is not used by the compiled fixtures. -->
+    <!-- The text editor of the editor extension tests, and the C# projects they create. -->
+    <ProjectReference Include="../../MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" />
+    <ProjectReference Include="../../MonoDevelop.Debugger/MonoDevelop.Debugger.csproj" />
+    <ProjectReference Include="../../CSharpBinding/CSharpBinding.csproj" />
+    <ProjectReference Include="../../MonoDevelop.RegexToolkit/MonoDevelop.RegexToolkit.csproj" />
+    <!-- The Linux platform service of the IDE (MIME types of the test documents). -->
+    <ProjectReference Include="../../GnomePlatform/GnomePlatform.csproj" />
+    <!-- GuiUnit is replaced by NUnit 3 (ADR 0015) and IdeUnitTests.GuiTestHost. -->
+    <ProjectReference Include="../../../../tests/UnitTests/UnitTests.csproj" />
+    <ProjectReference Include="../../../../tests/IdeUnitTests/IdeUnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -98,6 +106,7 @@
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="GtkSharp" />
     <PackageReference Include="Mono.Addins" />
+    <PackageReference Include="Mono.Addins.CecilReflector" />
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NET.StringTools" ExcludeAssets="runtime" PrivateAssets="all" />

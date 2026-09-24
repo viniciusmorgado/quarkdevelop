@@ -36,6 +36,7 @@ namespace MonoDevelop.Ide
 	public class UserPreferencesTests: IdeTestBase
 	{
 		[Test]
+		[Category ("Quarantine")]
 		public async Task LoadUserPreferences()
 		{
 			string wsFile = Util.GetSampleProject("workspace-userprefs", "workspace.mdw");

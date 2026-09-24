@@ -1,11 +1,11 @@
 
 using System;
 
-namespace library2
+namespace library1
 {
 	public class MyClass
 	{
-		public MyClass()
+		public MyClass ()
 		{
 		}
 	}

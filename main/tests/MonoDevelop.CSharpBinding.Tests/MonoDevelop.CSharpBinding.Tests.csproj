@@ -1,160 +1,114 @@
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\MonoDevelop.props" />
-  <Import Project="$(ReferencesGtk)" />
-  <Import Project="$(ReferencesVSEditor)" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003): the C# binding tests on NUnit 3
+    (ADR 0015, T107), run under Xvfb in the IDE test host (IdeUnitTests.GuiTestHost, CSharpBindingTestsSetUp.cs).
+  -->
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{84E22F5F-0562-4B51-8B9A-FD79FF33A8B5}</ProjectGuid>
-    <TargetFrameworkVersion>$(MDFrameworkVersion)</TargetFrameworkVersion>
-    <TestRunnerCommand>..\..\build\bin\mdtool.exe</TestRunnerCommand>
-    <TestRunnerArgs>run-md-tests</TestRunnerArgs>
-    <OutputPath>..\..\build\tests</OutputPath>
-    <RARResolveFromOutputDirectory>true</RARResolveFromOutputDirectory>
-    <!--
-    This contains many tests for the deprecated old editor APIs.
-    -->
+    <AssemblyName>MonoDevelop.CSharpBinding.Tests</AssemblyName>
+    <RootNamespace>MonoDevelop.CSharpBinding.Tests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+    <!-- The IDE is used from one thread, the one that initialized GTK and the runtime (Test.targets). -->
+    <MDTestSingleThread>true</MDTestSingleThread>
+    <!-- Legacy setting: this contains many tests for the deprecated old editor APIs. -->
     <NoWarn>$(NoWarn);618;612</NoWarn>
+    <!-- Publicizer adds IgnoresAccessChecksToAttribute, which MonoDevelop.Ide also defines and exposes to this assembly
+         (InternalsVisibleTo); the local definition is the one used. -->
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
+
   <ItemGroup>
-    <Reference Include="System.Xml" />
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
+    <Compile Include="Features/ParameterHinting/ParameterHintingTests.cs" />
+    <Compile Include="Features/InspectionActionTestBase.cs" />
+    <Compile Include="Features/IndentationTests/AlignmentTests.cs" />
+    <Compile Include="Features/IndentationTests/BlockTest.cs" />
+    <Compile Include="Features/IndentationTests/CommentTests.cs" />
+    <Compile Include="Features/IndentationTests/GeneralTests.cs" />
+    <Compile Include="Features/IndentationTests/Helper.cs" />
+    <Compile Include="Features/IndentationTests/PreProcessorTests.cs" />
+    <Compile Include="Features/IndentationTests/StringTests.cs" />
+    <Compile Include="Features/IndentationTests/TextPasteIndentEngineTests.cs" />
+    <Compile Include="Features/TestBase.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/CSharpCompletionTextEditorTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/CSharpCompilerParametersTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/CSharpProjectPropertiesTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/CSharpTextEditorIndentationTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/FindMemberVisitorTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/MonodevelopWorkspaceTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/NamedArgumentCompletionTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding.Refactoring/CSharpFindReferencesProviderTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding.Refactoring/GenerateNewMemberTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/PolicyTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/ExpandSelectionHandlerTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding.Parser/CSharpParsedDocumentTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/CSharpLanguageVersionHelperTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding.Refactoring/CSharpCodeActionEditorExtensionTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding.Refactoring/CSharpResultsEditorExtensionTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding.Debugging/DebuggerCompletionControllerTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/CustomProjectRuleSetTests.cs" />
+    <Compile Include="CSharpBindingTestsSetUp.cs" />
   </ItemGroup>
+
+  <!--
+    Not compiled: tests of features removed from the C# binding on Roslyn 5.9 (docs/BREAKING-CHANGES.md, T089):
+    - Features/Completion/{Cast,EnumMember,Delegate,EventSender,FormatItem,PreProcessor}CompletionProviderTests.cs,
+      ProtocolMemberCompletionTests.cs and their base AbstractCSharpCompletionProviderTests.cs: MonoDevelop's additional
+      Roslyn completion providers ("C# completion extras"), not compiled in CSharpBinding.
+    - MonoDevelop.CSharpBinding/CSharpDocumentOptionsProviderTests.cs: the C# formatting policies as Roslyn document options
+      (IDocumentOptionsProvider, removed in Roslyn 4+).
+    - MonoDevelop.CSharpBinding/AutoFormatIntegrationTests.cs: formatting while typing (on semicolon, close brace, return)
+      with the project's formatting policies; Roslyn applies .editorconfig instead ("C# project formatting policies as
+      Roslyn document options" and "C# format on return").
+    - MonoDevelop.CSharpBinding/UnitTesteditorIntegrationTests.cs: the NUnit test markers of MonoDevelop.UnitTesting (not
+      ported; T101).
+    - MonoDevelop.CSharpBinding/AutomaticBracketInsertionTests.cs: not compiled in the legacy project either.
+  -->
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(NuGetVersionRoslyn)" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(NuGetVersionRoslyn)" />
+    <ProjectReference Include="../../src/core/MonoDevelop.Core/MonoDevelop.Core.csproj" />
+    <ProjectReference Include="../../src/core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" />
+    <ProjectReference Include="../UnitTests/UnitTests.csproj" />
+    <ProjectReference Include="../IdeUnitTests/IdeUnitTests.csproj" />
+    <ProjectReference Include="../Ide.Tests/MonoDevelop.Ide.Tests.csproj" />
+    <ProjectReference Include="../MonoDevelop.Refactoring.Tests/MonoDevelop.Refactoring.Tests.csproj" />
+    <ProjectReference Include="../../src/addins/CSharpBinding/CSharpBinding.csproj" />
+    <ProjectReference Include="../../src/addins/MonoDevelop.Refactoring/MonoDevelop.Refactoring.csproj" />
+    <ProjectReference Include="../../src/addins/MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" />
+    <ProjectReference Include="../../src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.csproj" />
+    <ProjectReference Include="../../vendor/debugger-libs/Mono.Debugging/Mono.Debugging.csproj" />
+    <!-- Only so that the add-in dependencies of CSharpBinding (Refactoring -> RegexToolkit) resolve in the test registry. -->
+    <ProjectReference Include="../../src/addins/MonoDevelop.RegexToolkit/MonoDevelop.RegexToolkit.csproj" />
+    <!-- The Linux platform service of the IDE (MIME types of the test documents). -->
+    <ProjectReference Include="../../src/addins/GnomePlatform/GnomePlatform.csproj" />
+    <!-- NRefactory 5 is removed (ADR 0019) and MonoDevelop.UnitTesting is not ported (T101): not referenced. -->
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Features\ParameterHinting\ParameterHintingTests.cs" />
-    <Compile Include="Features\InspectionActionTestBase.cs" />
-    <Compile Include="Features\IndentationTests\AlignmentTests.cs" />
-    <Compile Include="Features\IndentationTests\BlockTest.cs" />
-    <Compile Include="Features\IndentationTests\CommentTests.cs" />
-    <Compile Include="Features\IndentationTests\GeneralTests.cs" />
-    <Compile Include="Features\IndentationTests\Helper.cs" />
-    <Compile Include="Features\IndentationTests\PreProcessorTests.cs" />
-    <Compile Include="Features\IndentationTests\StringTests.cs" />
-    <Compile Include="Features\IndentationTests\TextPasteIndentEngineTests.cs" />
-    <Compile Include="Features\TestBase.cs" />
-    <Compile Include="Features\Completion\CastCompletionProviderTests.cs" />
-    <Compile Include="Features\Completion\EnumMemberCompletionProviderTests.cs" />
-    <Compile Include="Features\Completion\DelegateCompletionProviderTests.cs" />
-    <Compile Include="Features\Completion\EventSenderCompletionProviderTests.cs" />
-    <Compile Include="Features\Completion\FormatItemCompletionProviderTests.cs" />
-    <Compile Include="Features\Completion\AbstractCSharpCompletionProviderTests.cs" />
-    <Compile Include="Features\Completion\ProtocolMemberCompletionTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\CSharpCompletionTextEditorTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\CSharpCompilerParametersTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\CSharpProjectPropertiesTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\CSharpTextEditorIndentationTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\FindMemberVisitorTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\MonodevelopWorkspaceTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\NamedArgumentCompletionTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\UnitTesteditorIntegrationTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding.Refactoring\CSharpFindReferencesProviderTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding.Refactoring\GenerateNewMemberTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\PolicyTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\ExpandSelectionHandlerTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding.Parser\CSharpParsedDocumentTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\CSharpLanguageVersionHelperTests.cs" />
-    <Compile Include="Features\Completion\PreProcessorCompletionProviderTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding.Refactoring\CSharpCodeActionEditorExtensionTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding.Refactoring\CSharpResultsEditorExtensionTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\AutoFormatIntegrationTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\CSharpDocumentOptionsProviderTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding.Debugging\DebuggerCompletionControllerTests.cs" />
-    <Compile Include="MonoDevelop.CSharpBinding\CustomProjectRuleSetTests.cs" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="GtkSharp" />
+    <PackageReference Include="Mono.Addins" />
+    <PackageReference Include="Mono.Addins.CecilReflector" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="System.ComponentModel.Composition" />
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.StringTools" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Frameworks" ExcludeAssets="runtime" PrivateAssets="all" />
+    <!-- The tests use Roslyn internals, as the C# binding does (ADR 0010). -->
+    <PackageReference Include="Krafs.Publicizer" PrivateAssets="all" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\src\addins\CSharpBinding\CSharpBinding.csproj">
-      <Project>{07CC7654-27D6-421D-A64C-0FFA40456FA2}</Project>
-      <Name>CSharpBinding</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\core\MonoDevelop.Ide\MonoDevelop.Ide.csproj">
-      <Project>{27096E7F-C91C-4AC6-B289-6897A701DF21}</Project>
-      <Name>MonoDevelop.Ide</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\external\guiunit\src\framework\GuiUnit_NET_4_5.csproj">
-      <Project>{D12F0F7B-8DE3-43EC-BA49-41052D065A9B}</Project>
-      <Name>GuiUnit_NET_4_5</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\external\xwt\Xwt\Xwt.csproj">
-      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
-      <Name>Xwt</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\core\MonoDevelop.Core\MonoDevelop.Core.csproj">
-      <Project>{7525BB88-6142-4A26-93B9-A30C6983390A}</Project>
-      <Name>MonoDevelop.Core</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\addins\MonoDevelop.Debugger\MonoDevelop.Debugger.csproj">
-      <Project>{2357AABD-08C7-4808-A495-8FF2D3CDFDB0}</Project>
-      <Name>MonoDevelop.Debugger</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Ide.Tests\MonoDevelop.Ide.Tests.csproj">
-      <Project>{73D4CC8B-BAB9-4A29-841B-F25C6311F067}</Project>
-      <Name>MonoDevelop.Ide.Tests</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\UnitTests\UnitTests.csproj">
-      <Project>{1497D0A8-AFF1-4938-BC22-BE79B358BA5B}</Project>
-      <Name>UnitTests</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\external\nrefactory\ICSharpCode.NRefactory\ICSharpCode.NRefactory.csproj">
-      <Project>{3B2A5653-EC97-4001-BB9B-D90F1AF2C371}</Project>
-      <Name>ICSharpCode.NRefactory</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\external\mono-addins\Mono.Addins\Mono.Addins.csproj">
-      <Project>{91DD5A2D-9FE3-4C3C-9253-876141874DAD}</Project>
-      <Name>Mono.Addins</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\addins\MonoDevelop.UnitTesting\MonoDevelop.UnitTesting.csproj">
-      <Project>{A7A4246D-CEC4-42DF-A3C1-C31B9F51C4EC}</Project>
-      <Name>MonoDevelop.UnitTesting</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\addins\MonoDevelop.Refactoring\MonoDevelop.Refactoring.csproj">
-      <Project>{100568FC-F4E8-439B-94AD-41D11724E45B}</Project>
-      <Name>MonoDevelop.Refactoring</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\addins\MonoDevelop.SourceEditor2\MonoDevelop.SourceEditor.csproj">
-      <Project>{F8F92AA4-A376-4679-A9D4-60E7B7FBF477}</Project>
-      <Name>MonoDevelop.SourceEditor</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\MonoDevelop.Refactoring.Tests\MonoDevelop.Refactoring.Tests.csproj">
-      <Project>{BCC3A6AE-EC45-40AD-BA3E-59F6401D588C}</Project>
-      <Name>MonoDevelop.Refactoring.Tests</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\external\debugger-libs\Mono.Debugging\Mono.Debugging.csproj">
-      <Project>{90C99ADB-7D4B-4EB4-98C2-40BD1B14C7D2}</Project>
-      <Name>Mono.Debugging</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\IdeUnitTests\IdeUnitTests.csproj">
-      <Project>{F7B2B155-7CF4-42C4-B5AF-63C0667D2E4F}</Project>
-      <Name>IdeUnitTests</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <Publicize Include="Microsoft.CodeAnalysis" />
+    <Publicize Include="Microsoft.CodeAnalysis.CSharp" />
+    <Publicize Include="Microsoft.CodeAnalysis.Workspaces" />
+    <Publicize Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <Publicize Include="Microsoft.CodeAnalysis.Features" />
+    <Publicize Include="Microsoft.CodeAnalysis.CSharp.Features" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="MonoDevelop.CSharpBinding\AutomaticBracketInsertionTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MonoDevelop.CSharpBinding.Debugging\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

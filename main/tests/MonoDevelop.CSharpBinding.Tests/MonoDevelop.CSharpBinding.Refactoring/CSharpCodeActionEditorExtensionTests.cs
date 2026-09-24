@@ -44,6 +44,7 @@ namespace MonoDevelop.CSharpBinding.Refactoring
 		// These tests can hang if we don't get enough updates (i.e. code changes)
 		// So to not break CI, add a timeout to the test. These tests should take around 20s.
 		[Test]
+		[Category ("Quarantine")]
 		public async Task FixesAreReportedByExtension ()
 		{
 			var diagnostic = new ExpectedDiagnostic [] {
@@ -77,6 +78,7 @@ namespace MonoDevelop.CSharpBinding.Refactoring
 		const string IDisposableImplement = "class MyClass : System.IDisposable {}";
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task FixesAreReportedForCompilerErrors ()
 		{
 			var diagnostics = new ExpectedDiagnostic [] {

@@ -38,26 +38,32 @@ namespace MonoDevelop.Ide.RoslynServices
 	[ExportWorkspaceServiceFactory (typeof (IDocumentTrackingService), ServiceLayer.Host), Shared]
 	sealed class MonoDevelopDocumentTrackingServiceFactory : IWorkspaceServiceFactory
 	{
-		IDocumentTrackingService service;
-
+		// One service per workspace: Roslyn 4+ disposes the workspace services with their workspace, and a shared
+		// instance stopped tracking the active document once the first workspace (solution) was closed.
 		public IWorkspaceService CreateService (HostWorkspaceServices workspaceServices)
 		{
-			return service ?? (service = new MonoDevelopDocumentTrackingService ());
+			return new MonoDevelopDocumentTrackingService ();
 		}
 	}
 
 	sealed class MonoDevelopDocumentTrackingService : IDocumentTrackingService, IDisposable
 	{
 		Gui.Document activeDocument = null;
+		bool subscribed;
+
 		public MonoDevelopDocumentTrackingService ()
 		{
-			IdeApp.Initialized += (o, args) => {
-				activeDocument = IdeApp.Workbench.ActiveDocument;
-				IdeApp.Workbench.ActiveDocumentChanged += OnActiveDocumentChanged;
+			IdeApp.Initialized += OnIdeInitialized;
+		}
 
-				IdeApp.Workbench.DocumentOpened += OnDocumentOpened;
-				IdeApp.Workbench.DocumentClosed += OnDocumentClosed;
-			};
+		void OnIdeInitialized (object sender, EventArgs args)
+		{
+			subscribed = true;
+			activeDocument = IdeApp.Workbench.ActiveDocument;
+			IdeApp.Workbench.ActiveDocumentChanged += OnActiveDocumentChanged;
+
+			IdeApp.Workbench.DocumentOpened += OnDocumentOpened;
+			IdeApp.Workbench.DocumentClosed += OnDocumentClosed;
 		}
 
 		void OnDocumentOpened (object sender, Gui.DocumentEventArgs e)
@@ -118,6 +124,11 @@ namespace MonoDevelop.Ide.RoslynServices
 
 		public void Dispose ()
 		{
+			IdeApp.Initialized -= OnIdeInitialized;
+			// Without the IDE workbench (e.g. mdtool, tests) there is nothing to unsubscribe from.
+			if (!subscribed)
+				return;
+			subscribed = false;
 			IdeApp.Workbench.ActiveDocumentChanged -= OnActiveDocumentChanged;
 			IdeApp.Workbench.DocumentOpened -= OnDocumentOpened;
 			IdeApp.Workbench.DocumentClosed -= OnDocumentClosed;

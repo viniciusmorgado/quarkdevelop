@@ -123,7 +123,8 @@ namespace ICSharpCode.NRefactory6
 				ApplyDocumentTextChanged(id, text);
 			}
 
-			protected override void ApplyDocumentTextChanged (DocumentId id, SourceText text)
+			// public: Roslyn is publicized for the tests (ADR 0010), as in MonoDevelopWorkspace.
+			public override void ApplyDocumentTextChanged (DocumentId id, SourceText text)
 			{
 				base.ApplyDocumentTextChanged (id, text);
 				var document = CurrentSolution.GetDocument(id);

@@ -774,7 +774,7 @@ class Foo {
 			Assert.AreEqual("\t\t", indent.NextLineIndent);
 		}
 
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test]
 		public void TestBrackets_CustomIndent()
 		{
@@ -793,7 +793,7 @@ class Foo {
 			Assert.AreEqual("\t\t\t\t", indent.NextLineIndent);
 		}
 
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test]
 		public void TestBrackets_CustomIndent2()
 		{
@@ -811,7 +811,7 @@ class Foo {
 			Assert.AreEqual("\t\t", indent.NextLineIndent);
 		}
 
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test]
 		public void TestBrackets_CustomIndent3()
 		{
@@ -828,7 +828,7 @@ class Foo {
 			Assert.AreEqual("\t\t", indent.NextLineIndent);
 		}
 
-		[Ignore]
+		[Ignore ("Ignored in the legacy NUnit 2 suite")]
 		[Test]
 		public void TestBrackets_CustomIndent4()
 		{

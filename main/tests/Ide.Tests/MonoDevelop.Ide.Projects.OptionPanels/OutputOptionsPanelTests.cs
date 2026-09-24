@@ -55,11 +55,11 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 
 				// parses configs according to AppendTargetFrameworkToOutputPath
 				debug.OutputDirectory = debug.ParseOutDirectoryTemplate (outDirTemplate);
-				Assert.That (debug.OutputDirectory.FullPath.ToString (), Is.StringEnding (debug.TargetFrameworkShortName));
+				Assert.That (debug.OutputDirectory.FullPath.ToString (), Does.EndWith (debug.TargetFrameworkShortName));
 
 				outDirTemplate = outDirTemplate.Replace ("/$(TargetFramework)", string.Empty);
 				release.OutputDirectory = release.ResolveOutDirectoryTemplate (outDirTemplate);
-				Assert.That (release.OutputDirectory.FullPath.ToString ().TrimEnd (System.IO.Path.DirectorySeparatorChar), Is.StringEnding (release.Name));
+				Assert.That (release.OutputDirectory.FullPath.ToString ().TrimEnd (System.IO.Path.DirectorySeparatorChar), Does.EndWith (release.Name));
 				Assert.That (release.AppendTargetFrameworkToOutputPath, Is.False);
 			}
 		}

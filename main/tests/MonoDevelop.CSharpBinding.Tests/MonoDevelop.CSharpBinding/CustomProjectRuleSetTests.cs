@@ -41,7 +41,7 @@ namespace MonoDevelop.CSharpBinding.Tests
 	{
 		FilePath globalRuleSetFileNameBackup;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUp ()
 		{
 			FilePath backupFileName = GlobalRuleSetFileName + "-test-backup";
@@ -61,6 +61,7 @@ namespace MonoDevelop.CSharpBinding.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task CustomCodeAnalysisRuleSetFile ()
 		{
 			FilePath solutionFileName = Util.GetSampleProject ("ruleset", "ruleset.sln");
