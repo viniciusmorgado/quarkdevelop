@@ -56,7 +56,7 @@ namespace MonoDevelop.CodeIssues
 		void GetAllSeverities ()
 		{
 			var language = CodeRefactoringService.MimeTypeToLanguage (mimeType);
-			var options = ((MonoDevelopWorkspaceDiagnosticAnalyzerProviderService)Ide.Composition.CompositionManager.GetExportedValue<IWorkspaceDiagnosticAnalyzerProviderService> ()).GetOptionsAsync ().Result;
+			var options = Ide.Composition.CompositionManager.Instance.GetExportedValue<MonoDevelopWorkspaceDiagnosticAnalyzerProviderService> ().GetOptionsAsync ().Result;
 			foreach (var node in options.AllDiagnostics) {
 				if (!node.Languages.Contains (language))
 					continue;
@@ -174,18 +174,18 @@ namespace MonoDevelop.CodeIssues
 				set;
 			}
 
-			protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+			protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 			{
 				int w = 10;
 				var newCellArea = new Gdk.Rectangle (cell_area.X + w, cell_area.Y, cell_area.Width - w, cell_area.Height);
 				var icon = Icon;
 				if ((flags & Gtk.CellRendererState.Selected) != 0)
 					icon = icon.WithStyles ("sel");
-				using (var ctx = CairoHelper.Create (window)) {
+				using (var ctx = gtk3cr.CreateSharedContext ()) {
 					ctx.DrawImage (widget, icon, cell_area.X - 4, cell_area.Y + Math.Round ((cell_area.Height - Icon.Height) / 2));
 				}
 
-				base.Render (window, widget, background_area, newCellArea, expose_area, flags);
+				base.OnRender (gtk3cr, widget, background_area, newCellArea, flags);
 			}
 		}
 
@@ -302,7 +302,7 @@ namespace MonoDevelop.CodeIssues
 		}
 
 		// TODO: Make static.
-		void TitleColDataFunc (TreeViewColumn treeColumn, CellRenderer cell, TreeModel model, TreeIter iter)
+		void TitleColDataFunc (TreeViewColumn treeColumn, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			var provider = (Tuple<CodeDiagnosticDescriptor, DiagnosticDescriptor>)model.GetValue (iter, 1);
 			if (provider == null) {
@@ -314,7 +314,7 @@ namespace MonoDevelop.CodeIssues
 		}
 
 		// TODO: Make static.
-		void ComboDataFunc (TreeViewColumn treeColumn, CellRenderer cell, TreeModel model, TreeIter iter)
+		void ComboDataFunc (TreeViewColumn treeColumn, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			var provider = (Tuple<CodeDiagnosticDescriptor, DiagnosticDescriptor>)treeStore.GetValue (iter, 1);
 			if (provider == null) {

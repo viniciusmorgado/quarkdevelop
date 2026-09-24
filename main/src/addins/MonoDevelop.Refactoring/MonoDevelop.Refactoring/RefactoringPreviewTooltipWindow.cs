@@ -335,9 +335,10 @@ namespace MonoDevelop.Refactoring
 		const int verticalTextSpace = 7;
 		const int textBorder = 12;
 
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 
 			int y = verticalTextBorder * 2 - verticalTextSpace + (Platform.IsWindows ? 10 : 2);
 			int x = 0;
@@ -348,6 +349,24 @@ namespace MonoDevelop.Refactoring
 
 			requisition.Height = y;
 			requisition.Width = x + textBorder * 2;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		void MeasureLine (LineResult lineResult, ref int x, ref int y)
@@ -366,7 +385,7 @@ namespace MonoDevelop.Refactoring
 			}
 		}
 
-		protected override void OnDrawContent (Gdk.EventExpose evnt, Cairo.Context g)
+		protected override void OnDrawContent (Cairo.Context g)
 		{
 			var style = editor.Options.GetEditorTheme ();
 			g.Rectangle (0, 0, Allocation.Width, Allocation.Height);

@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.ChangeSignature;
 using Microsoft.CodeAnalysis.Notification;
@@ -37,9 +38,10 @@ namespace MonoDevelop.Refactoring.SignatureChange
 	[ExportWorkspaceService (typeof (IChangeSignatureOptionsService), ServiceLayer.Host), Shared]
 	class SignatureChangeOptionService : IChangeSignatureOptionsService
 	{
-		static readonly ChangeSignatureOptionsResult cancelled = new ChangeSignatureOptionsResult { IsCancelled = true };
+		// Roslyn 4+: a null result means cancelled (was ChangeSignatureOptionsResult.IsCancelled).
+		static readonly ChangeSignatureOptionsResult cancelled = null;
 
-		public ChangeSignatureOptionsResult GetChangeSignatureOptions (ISymbol symbol, ParameterConfiguration parameters, INotificationService notificationService)
+		public ChangeSignatureOptionsResult GetChangeSignatureOptions (SemanticDocument document, int positionForTypeBinding, ISymbol symbol, ParameterConfiguration parameters)
 		{
 			var dialog = new SignatureChangeDialog ();
 			try {
@@ -48,10 +50,9 @@ namespace MonoDevelop.Refactoring.SignatureChange
 				if (!performChange)
 					return cancelled;
 
-				return new ChangeSignatureOptionsResult {
-					IsCancelled = false,
-					UpdatedSignature = new Microsoft.CodeAnalysis.ChangeSignature.SignatureChange (parameters, ParameterConfiguration.Create (dialog.ParameterList, parameters.ThisParameter != null, -1))
-				};
+				return new ChangeSignatureOptionsResult (
+					new Microsoft.CodeAnalysis.ChangeSignature.SignatureChange (parameters, ParameterConfiguration.Create (dialog.ParameterList.ToImmutableArray (), parameters.ThisParameter != null, -1)),
+					previewChanges: false);
 			} catch (Exception ex) {
 				LoggingService.LogError ("Error while signature changing.", ex);
 				return cancelled;

@@ -254,25 +254,8 @@ namespace MonoDevelop.CSharp.ClassOutline
 
 			var syntaxNode = o as SyntaxNode;
 
-			// if we can do it the "new" way, let's just do that ...
-			if (providedAnalysisDocument != null) {
-				var workspace = providedAnalysisDocument.Project.Solution.Workspace;
-				var navigationService = workspace.Services.GetService<Microsoft.CodeAnalysis.Navigation.IDocumentNavigationService> ();
-
-				try {
-					navigationService.TryNavigateToSpan (workspace, providedAnalysisDocument.Id, syntaxNode?.Span ?? ((SyntaxTrivia)o).FullSpan);
-				} catch {
-					// if this happens, there's a big chance that the document was updated and we didn't update our
-					// tree with the latest analysis. What we can do is try and update the analysis document again.
-					// Specific use case for this is when the enough code is removed, and we try navigating to the
-					// last span in the document.
-					UpdateAnalysisDocument (this, null);
-				}
-
-				return;
-			}
-
-			// ... and fallback to the legacy way if not
+			// Linux: the outline always belongs to the GTK editor, so it moves the caret of its editor (the Roslyn
+			// navigation service path served the Cocoa/WPF editor, ADR 0012).
 			if (syntaxNode != null) {
 				Editor.CaretOffset = syntaxNode.SpanStart;
 			} else {
@@ -288,7 +271,7 @@ namespace MonoDevelop.CSharp.ClassOutline
 			}
 		}
 
-		static void OutlineTreeIconFunc (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+		static void OutlineTreeIconFunc (TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			var pixRenderer = (CellRendererImage)cell;
 			object o = model.GetValue (iter, 0);
@@ -299,7 +282,7 @@ namespace MonoDevelop.CSharp.ClassOutline
 			}
 		}
 
-		static void OutlineTreeTextFunc (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+		static void OutlineTreeTextFunc (TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			var astAmbience = new AstAmbience (IdeApp.TypeSystemService.Workspace.Options);
 			var txtRenderer = (CellRendererText)cell;

@@ -48,11 +48,12 @@ namespace MonoDevelop.CSharp.Completion
 			var analysisDocument = doc.AnalysisDocument;
 			if (analysisDocument == null)
 				return default (DebugDataTipInfo);
-			var debugInfoService = analysisDocument.GetLanguageService<Microsoft.CodeAnalysis.Editor.Implementation.Debugging.ILanguageDebugInfoService> ();
+			// Roslyn 5.9 Features provides the C# ILanguageDebugInfoService (was an EditorFeatures copy in this add-in).
+			var debugInfoService = analysisDocument.Project.Services.GetService<Microsoft.CodeAnalysis.Debugging.ILanguageDebugInfoService> ();
 			if (debugInfoService == null)
 				return default (DebugDataTipInfo);
 
-			var tipInfo = await debugInfoService.GetDataTipInfoAsync (analysisDocument, offset, cancellationToken).ConfigureAwait (false);
+			var tipInfo = await debugInfoService.GetDataTipInfoAsync (analysisDocument, offset, false, cancellationToken).ConfigureAwait (false);
 			var text = tipInfo.Text;
 			if (text == null && !tipInfo.IsDefault)
 				text = editor.GetTextAt (tipInfo.Span.Start, tipInfo.Span.Length);
@@ -89,7 +90,7 @@ namespace MonoDevelop.CSharp.Completion
 				return new DebugDataTipInfo (node.Span, text: textOpt);
 			}
 
-			if (expression.IsAnyLiteralExpression ()) {
+			if (expression is LiteralExpressionSyntax) {
 				// If the user hovers over a literal, give them a DataTip for the type of the
 				// literal they're hovering over.
 				// Partial semantics should always be sufficient because the (unconverted) type

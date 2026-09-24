@@ -86,8 +86,8 @@ namespace ICSharpCode.NRefactory6.CSharp
 					where doc != null
 				group c by IsFileNameForGeneratedCode(doc.FilePath);
 
-			var generatedSourceLocations = candidateLocationGroups.SingleOrDefault(g => g.Key) ?? SpecializedCollections.EmptyEnumerable<Location>();
-			var nonGeneratedSourceLocations = candidateLocationGroups.SingleOrDefault(g => !g.Key) ?? SpecializedCollections.EmptyEnumerable<Location>();
+			var generatedSourceLocations = candidateLocationGroups.SingleOrDefault(g => g.Key) ?? Enumerable.Empty<Location>();
+			var nonGeneratedSourceLocations = candidateLocationGroups.SingleOrDefault(g => !g.Key) ?? Enumerable.Empty<Location>();
 
 			return nonGeneratedSourceLocations.Any() ? nonGeneratedSourceLocations : generatedSourceLocations;
 		}

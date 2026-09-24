@@ -26,6 +26,7 @@
 
 using System;
 using System.Text;
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using MonoDevelop.Ide.Composition;
@@ -35,7 +36,7 @@ using MonoDevelop.Core;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using System.Threading;
 using MonoDevelop.Ide;
-using Microsoft.CodeAnalysis.LanguageServices;
+using Microsoft.CodeAnalysis.LanguageService;
 using MonoDevelop.Core.Text;
 using Microsoft.CodeAnalysis.CSharp.Extensions;
 

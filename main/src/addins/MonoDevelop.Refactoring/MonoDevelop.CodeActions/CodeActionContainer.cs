@@ -74,7 +74,7 @@ namespace MonoDevelop.CodeActions
 			var result = SourceEditor.SmartTagSeverity.OnlyActions;
 			foreach (var fix in CodeFixActions) {
 				foreach (var codeFix in fix.Fixes) {
-					var severity = codeFix.PrimaryDiagnostic.Severity;
+					var severity = codeFix.Diagnostics [0].Severity;
 					if (severity == DiagnosticSeverity.Error) {
 						return SourceEditor.SmartTagSeverity.ErrorFixes;
 					}

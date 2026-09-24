@@ -73,7 +73,7 @@ namespace MonoDevelop.CSharp.Project
 			} else {
 				classListStore = new ListStore (typeof(string));
 				mainClassEntry.Model = classListStore;
-				mainClassEntry.TextColumn = 0;
+				mainClassEntry.EntryTextColumn = 0;
 				((Entry)mainClassEntry.Child).Text = csproject.MainClass ?? string.Empty;
 			
 				UpdateTarget ();

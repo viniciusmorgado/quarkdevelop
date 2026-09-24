@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 
 using System;
-using ICSharpCode.NRefactory.Editor;
+
 using System.Text;
 using System.Reflection;
 using System.Linq;

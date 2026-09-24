@@ -35,11 +35,12 @@ namespace MonoDevelop.CSharp.Completion
 			SignatureHelpItems bestSignatureHelpItems = null;
 			foreach (var provider in providers) {
 				try {
-					if (triggerInfo.TriggerReason == SignatureHelpTriggerReason.TypeCharCommand && !provider.IsTriggerCharacter (triggerInfo.TriggerCharacter.Value))
+					// Roslyn 4+ providers list their trigger characters (no retrigger characters).
+					if (triggerInfo.TriggerReason == SignatureHelpTriggerReason.TypeCharCommand && !provider.TriggerCharacters.Contains (triggerInfo.TriggerCharacter.Value))
 						continue;
-					if (triggerInfo.TriggerReason == SignatureHelpTriggerReason.RetriggerCommand && !provider.IsRetriggerCharacter (triggerInfo.TriggerCharacter.Value))
+					if (triggerInfo.TriggerReason == SignatureHelpTriggerReason.RetriggerCommand && !provider.TriggerCharacters.Contains (triggerInfo.TriggerCharacter.Value))
 						continue;
-					var signatureHelpItems = await provider.GetItemsAsync (document, position, triggerInfo, token).ConfigureAwait (false);
+					var signatureHelpItems = await provider.GetItemsAsync (document, position, triggerInfo, MemberDisplayOptions.Default, token).ConfigureAwait (false);
 					if (signatureHelpItems == null)
 						continue;
 					if (bestSignatureHelpItems == null)

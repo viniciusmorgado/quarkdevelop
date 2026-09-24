@@ -66,21 +66,8 @@
 		/>
 	</Extension>
 
-	<Extension path = "/MonoDevelop/ProjectModel/MSBuildItemTypes">
-		<DotNetProjectType
-			id="MonoDevelop.CSharp.Project.CSharpProject"
-			language="C#"
-			extension="csproj"
-			guid="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-			type="MonoDevelop.CSharp.Project.CSharpProject"
-			/>
-	</Extension>
-
-	<Extension path = "/MonoDevelop/ProjectModel/ProjectModelExtensions">
-		<Condition id="MSBuildTargetIsAvailable" target="$(MSBuildExtensionsPath)\Microsoft\Portable\v4.0\Microsoft.Portable.CSharp.targets">
-			<ProjectFlavor guid="{786C830F-07A1-408B-BD7F-6EE04809D6DB}" type="MonoDevelop.CSharp.Project.PortableCSharpProjectFlavor" language="C#" alias="C#PortableLibrary"/>
-		</Condition>
-	</Extension>
+	<!-- Linux: the C# project type, the portable library flavor and the language binding are registered by the
+	     CSharpBinding.Core add-in (T053), which this add-in depends on. -->
 
 	<Extension path = "/MonoDevelop/Ide/FileTemplates">
 		<FileTemplate id = "CSharpEmptyFile" resource = "EmptyCSharpFile.xft.xml"/>
@@ -121,14 +108,6 @@
 		</Condition>
 	</Extension>
 
-	<Extension path = "/MonoDevelop/ProjectModel/LanguageBindings">
-		<LanguageBinding id = "C#"
-		                 extensions = ".cs"
-		                 singleLineCommentTag = "//"
-		                 blockCommentStartTag = "/*"
-		                 blockCommentEndTag = "*/"
-		                 codeDomType = "MonoDevelop.CSharp.CSharpEnhancedCodeProvider" />
-	</Extension>
 
 	<Extension path = "/MonoDevelop/Ide/ReferenceFinder">
 		<ReferenceFinder supportedmimetypes = "text/x-csharp"
@@ -153,7 +132,7 @@
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.Completion.CSharpCompletionTextEditorExtension" />
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.Highlighting.HighlightUsagesExtension" />
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.PathedDocumentTextEditorExtension" />
-		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.UnitTestTextEditorExtension" />
+		<!-- Linux: MonoDevelop.CSharp.UnitTestTextEditorExtension returns with the UnitTesting add-in (T101). -->
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.ClassOutline.CSharpOutlineTextEditorExtension" />
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.CSharpNavigationTextEditorExtension" />
 		<Class fileExtensions = ".json" class = "MonoDevelop.JSon.JSonTextEditorExtension" />
@@ -307,27 +286,18 @@
 		<Class class="MonoDevelop.CSharp.Refactoring.CSharpJumpToDeclarationHandler" />
 	</Extension>
 
-	<Extension path = "/MonoDevelop/UnitTesting/NUnitSourceCodeLocationFinder">
-		<Class class="MonoDevelop.CSharp.UnitTests.CSharpNUnitSourceCodeLocationFinder" />
-	</Extension>
+	<!-- Linux: the NUnit source code location finder returns with the UnitTesting add-in (T101). -->
 
 	<Extension path="/MonoDevelop/Ide/TypeService/MefHostServices">
 		<Assembly file="MonoDevelop.CSharpBinding.dll"/>
 	</Extension>
 
-	<Extension path="/MonoDevelop/Ide/TypeService/OptionProviders">
-		<Class class="MonoDevelop.CSharp.OptionProvider.EditorConfigDocumentOptionsProviderFactory"/>
-	</Extension>
+	<!-- Linux: no document options provider (Roslyn 4+ removed IDocumentOptionsProviderFactory). -->
 
 	<Extension path = "/MonoDevelop/Ide/GlobalOptionsDialog/TextEditor/Behavior">
 		<Section id="CSharpOnTheFlyFormattingPanel" insertbefore="Formatting" _label="C#" fill="true" class="MonoDevelop.SourceEditor.OptionPanels.OnTheFlyFormattingPanel" icon="md-prefs-code-formatting" />
   </Extension>
 
-	<Extension path = "/MonoDevelop/Ide/GlobalOptionsDialog/TextEditor/Analysis/C#">
-		<Panel id="CodeStylePanel" _label="Code Style" fill="true" class="MonoDevelop.CSharp.OptionProvider.CodeStylePage" grouping="Tab" icon="md-prefs-code-rules" insertbefore="CodeActions" />
-	</Extension>
-	
-	<Extension path = "/MonoDevelop/TextEditor/CommandMapping">
-		<Map id="MonoDevelop.CSharp.Refactoring.Commands.SortAndRemoveImports" argsType="@MonoDevelop.CSharp.Refactoring.CommandArgsFactories.CreateSortAndRemoveUnnecessaryImportsCommandArgs" />
-	</Extension>
+	<!-- Linux: no Code Style panel (Roslyn 3 option view models, see MonoDevelop.Refactoring) and no command mapping of
+	     the Cocoa/WPF TextEditor add-in (ADR 0012). -->
 </ExtensionModel>

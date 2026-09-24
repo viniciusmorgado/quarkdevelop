@@ -36,7 +36,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.DocumentationComments;
 using Microsoft.CodeAnalysis.ErrorReporting;
-using Microsoft.CodeAnalysis.LanguageServices;
+using Microsoft.CodeAnalysis.LanguageService;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Shared.Utilities;
 using Microsoft.VisualStudio.Text;
@@ -67,7 +67,7 @@ namespace MonoDevelop.SourceEditor
 			var model = await ctx.AnalysisDocument.GetSemanticModelAsync ();
 			var descriptionService = ctx.RoslynWorkspace.Services.GetLanguageServices (model.Language).GetService<ISymbolDisplayService> ();
 
-			var sections = await descriptionService.ToDescriptionGroupsAsync (ctx.RoslynWorkspace, model, caretOffset, new [] { symbol }.AsImmutable (), default (CancellationToken)).ConfigureAwait (false);
+			var sections = await descriptionService.ToDescriptionGroupsAsync (model, caretOffset, ImmutableArray.Create (symbol), SymbolDescriptionOptions.Default, default (CancellationToken)).ConfigureAwait (false);
 
 			ImmutableArray<TaggedText> parts;
 
@@ -94,7 +94,7 @@ namespace MonoDevelop.SourceEditor
 				TaggedTextUtil.AppendTaggedText (sb, theme, documentation);
 			}
 
-			if (sections.TryGetValue (SymbolDescriptionGroups.AnonymousTypes, out parts)) {
+			if (sections.TryGetValue (SymbolDescriptionGroups.StructuralTypes, out parts)) {
 				if (!parts.IsDefaultOrEmpty) {
 					sb.AppendLine ();
 					TaggedTextUtil.AppendTaggedText (sb, theme, parts);

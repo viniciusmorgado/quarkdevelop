@@ -46,7 +46,7 @@ namespace ICSharpCode.NRefactory6.CSharp
 			return true;
 		}
 
-		private static TextSpan GetUsingsSpan(CompilationUnitSyntax root, NamespaceDeclarationSyntax namespaceDeclaration)
+		private static TextSpan GetUsingsSpan(CompilationUnitSyntax root, BaseNamespaceDeclarationSyntax namespaceDeclaration)
 		{
 			if (namespaceDeclaration != null)
 			{
@@ -128,7 +128,7 @@ namespace ICSharpCode.NRefactory6.CSharp
 			var usings = AddUsingDirectives(root, usingDirectives);
 
 			// If the user likes to have their Usings statements unsorted, allow them to
-			if (root.Usings.IsSorted(comparer))
+			if (IsSorted(root.Usings, comparer))
 			{
 				usings.Sort(comparer);
 			}
@@ -160,7 +160,17 @@ namespace ICSharpCode.NRefactory6.CSharp
 			}
 
 			usings = usings.Select(u => u.WithAdditionalAnnotations(annotations)).ToList();
-			return root.WithUsings(usings.ToSyntaxList());
+			return root.WithUsings(SyntaxFactory.List(usings));
+		}
+
+		// Roslyn's IsSorted extension exists in two publicized assemblies (ambiguous call); a local copy.
+		static bool IsSorted(SyntaxList<UsingDirectiveSyntax> list, IComparer<UsingDirectiveSyntax> comparer)
+		{
+			for (int i = 1; i < list.Count; i++) {
+				if (comparer.Compare(list[i - 1], list[i]) > 0)
+					return false;
+			}
+			return true;
 		}
 
 		private static List<UsingDirectiveSyntax> AddUsingDirectives(CompilationUnitSyntax root, IList<UsingDirectiveSyntax> usingDirectives)

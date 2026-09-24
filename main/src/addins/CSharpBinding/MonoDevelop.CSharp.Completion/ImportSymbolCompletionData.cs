@@ -199,7 +199,7 @@ namespace MonoDevelop.CSharp.Completion
 			if (completionService == null)
 				return null;
 			var semanticModel = await doc.AnalysisDocument.GetSemanticModelAsync (cancelToken);
-			description = await CommonCompletionUtilities.CreateDescriptionAsync (doc.RoslynWorkspace, semanticModel, completionExt.Editor.CaretOffset, new [] { type }, null, cancelToken).ConfigureAwait (false);
+			description = await CommonCompletionUtilities.CreateDescriptionAsync (doc.RoslynWorkspace.Services.SolutionServices, semanticModel, completionExt.Editor.CaretOffset, System.Collections.Immutable.ImmutableArray.Create<ISymbol> (type), Microsoft.CodeAnalysis.LanguageService.SymbolDescriptionOptions.Default, null, cancelToken).ConfigureAwait (false);
 
 			var markup = StringBuilderCache.Allocate ();
 			var theme = SyntaxHighlightingService.GetIdeFittingTheme (DefaultSourceEditorOptions.Instance.GetEditorTheme ());

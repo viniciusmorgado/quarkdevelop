@@ -42,7 +42,8 @@ namespace MonoDevelop.Refactoring.SignatureChange
 		Ide.Editor.TextEditor previewEditor;
 		ISymbol symbol;
 		ParameterConfiguration parameters;
-		ListStore store = new ListStore (typeof (IParameterSymbol));
+		// Roslyn 4+: the parameter configuration holds Parameter objects (ExistingParameter wraps the symbol).
+		ListStore store = new ListStore (typeof (Parameter));
 
 		static SymbolDisplayFormat symbolDeclarationDisplayFormat = new SymbolDisplayFormat (
 			genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
@@ -57,14 +58,14 @@ namespace MonoDevelop.Refactoring.SignatureChange
 
 		ImmutableArray<SymbolDisplayPart> symbolDisplayParts;
 
-		public List<IParameterSymbol> ParameterList {
+		public List<Parameter> ParameterList {
 			get {
-				var result = new List<IParameterSymbol> ();
+				var result = new List<Parameter> ();
 				TreeIter iter;
 				if (!store.GetIterFirst (out iter))
 					return result;
 				do {
-					var param = store.GetValue (iter, 0) as IParameterSymbol;
+					var param = store.GetValue (iter, 0) as Parameter;
 					if (param != null)
 						result.Add (param);
 				} while (store.IterNext (ref iter));
@@ -77,7 +78,7 @@ namespace MonoDevelop.Refactoring.SignatureChange
 				Gtk.TreeIter iter;
 				if (!treeviewParameterList.Selection.GetSelected (out iter))
 					return false;
-				var param = store.GetValue (iter, 0) as IParameterSymbol;
+				var param = store.GetValue (iter, 0) as Parameter;
 				if (param == parameters.ThisParameter || param == parameters.ParamsParameter)
 					return false;
 				
@@ -85,8 +86,8 @@ namespace MonoDevelop.Refactoring.SignatureChange
 				if (parameters.ThisParameter != null)
 					idx--;
 				if (idx <= 0 ||
-					idx == parameters.RemainingEditableParameters.Count ||
-					idx >= parameters.RemainingEditableParameters.Count + parameters.ParametersWithoutDefaultValues.Count)
+					idx == parameters.RemainingEditableParameters.Length ||
+					idx >= parameters.RemainingEditableParameters.Length + parameters.ParametersWithoutDefaultValues.Length)
 					return false;
 				return true;
 			}
@@ -96,15 +97,15 @@ namespace MonoDevelop.Refactoring.SignatureChange
 				Gtk.TreeIter iter;
 				if (!treeviewParameterList.Selection.GetSelected (out iter))
 					return false;
-				var param = store.GetValue (iter, 0) as IParameterSymbol;
+				var param = store.GetValue (iter, 0) as Parameter;
 				if (param == parameters.ThisParameter || param == parameters.ParamsParameter)
 					return false;
 				var idx = store.GetPath (iter).Indices [0];
 				if (parameters.ThisParameter != null)
 					idx--;
 				if (idx < 0 ||
-					idx == parameters.RemainingEditableParameters.Count - 1 ||
-					idx >= parameters.RemainingEditableParameters.Count + parameters.ParametersWithoutDefaultValues.Count - 1)
+					idx == parameters.RemainingEditableParameters.Length - 1 ||
+					idx >= parameters.RemainingEditableParameters.Length + parameters.ParametersWithoutDefaultValues.Length - 1)
 					return false;
 				return true;
 			}
@@ -114,7 +115,7 @@ namespace MonoDevelop.Refactoring.SignatureChange
 			get {
 				var l1 = ParameterList;
 				var l2 = parameters.ToListOfParameters ();
-				if (l1.Count != l2.Count)
+				if (l1.Count != l2.Length)
 					return true;
 				for (int i = 0; i < l1.Count; i++) {
 					if (l1 [i] != l2 [i])
@@ -129,7 +130,7 @@ namespace MonoDevelop.Refactoring.SignatureChange
 				Gtk.TreeIter iter;
 				if (!treeviewParameterList.Selection.GetSelected (out iter))
 					return false;
-				var param = store.GetValue (iter, 0) as IParameterSymbol;
+				var param = store.GetValue (iter, 0) as Parameter;
 				if (param == parameters.ThisParameter)
 					return false;
 				return param != null;
@@ -158,7 +159,7 @@ namespace MonoDevelop.Refactoring.SignatureChange
 			var tr = new CellRendererText ();
 			var col = this.treeviewParameterList.AppendColumn (GettextCatalog.GetString ("Modifier"), tr);
 			col.SetCellDataFunc (tr, new TreeCellDataFunc ((column, cell, model, iter) => {
-				var param = model.GetValue (iter, 0) as IParameterSymbol;
+				var param = model.GetValue (iter, 0) as Parameter;
 				if (param == parameters.ThisParameter) {
 					((CellRendererText)cell).Text = "this";
 					return;
@@ -167,7 +168,7 @@ namespace MonoDevelop.Refactoring.SignatureChange
 					((CellRendererText)cell).Text = "params";
 					return;
 				}
-				switch (param.RefKind) {
+				switch ((param as ExistingParameter)?.Symbol.RefKind) {
 				case RefKind.Out:
 					((CellRendererText)cell).Text = "out";
 					break;
@@ -182,20 +183,20 @@ namespace MonoDevelop.Refactoring.SignatureChange
 
 			col = this.treeviewParameterList.AppendColumn (GettextCatalog.GetString ("Type"), tr);
 			col.SetCellDataFunc (tr, new TreeCellDataFunc ((column, cell, model, iter) => {
-				var param = model.GetValue (iter, 0) as IParameterSymbol;
-				((CellRendererText)cell).Text = param.Type.ToDisplayString ();
+				var param = (model.GetValue (iter, 0) as ExistingParameter)?.Symbol;
+				((CellRendererText)cell).Text = param?.Type.ToDisplayString () ?? "";
 			}));
 
 			col = this.treeviewParameterList.AppendColumn (GettextCatalog.GetString ("Parameter"), tr);
 			col.SetCellDataFunc (tr, new TreeCellDataFunc ((column, cell, model, iter) => {
-				var param = model.GetValue (iter, 0) as IParameterSymbol;
-				((CellRendererText)cell).Text = param.Name;
+				var param = model.GetValue (iter, 0) as Parameter;
+				((CellRendererText)cell).Text = param?.Name ?? "";
 			}));
 
 			col = this.treeviewParameterList.AppendColumn (GettextCatalog.GetString ("Standard"), tr);
 			col.SetCellDataFunc (tr, new TreeCellDataFunc ((column, cell, model, iter) => {
-				var param = model.GetValue (iter, 0) as IParameterSymbol;
-				((CellRendererText)cell).Text = param.HasExplicitDefaultValue ? param.ExplicitDefaultValue.ToString () : "";
+				var param = (model.GetValue (iter, 0) as ExistingParameter)?.Symbol;
+				((CellRendererText)cell).Text = param != null && param.HasExplicitDefaultValue ? param.ExplicitDefaultValue?.ToString () ?? "null" : "";
 			}));
 			this.treeviewParameterList.Model = store;
 			this.treeviewParameterList.Selection.Changed += delegate {
@@ -280,7 +281,7 @@ namespace MonoDevelop.Refactoring.SignatureChange
 				} else {
 					first = false;
 				}
-				sb.Append (p.ToDisplayString (parameterDisplayFormat));
+				sb.Append ((p as ExistingParameter)?.Symbol.ToDisplayString (parameterDisplayFormat) ?? p.Name);
 			}
 			sb.Append (")");
 			previewEditor.Text = sb.ToString ();

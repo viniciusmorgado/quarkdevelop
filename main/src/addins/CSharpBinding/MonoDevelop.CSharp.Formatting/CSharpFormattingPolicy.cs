@@ -596,8 +596,14 @@ namespace MonoDevelop.CSharp.Formatting
 
 		public CSharpFormattingPolicy ()
 		{
-			this.options = IdeApp.TypeSystemService.Workspace?.Options;
+			// .NET port: no blocking wait for the type system service (IdeApp.TypeSystemService). The policy service
+			// creates the default policy while add-ins load, possibly during that service's own initialization,
+			// which deadlocked. Roslyn's default options are the same in every workspace.
+			this.options = Runtime.PeekService<TypeSystemService> ()?.Workspace?.Options ?? DefaultOptions;
 		}
+
+		static OptionSet defaultOptions;
+		static OptionSet DefaultOptions => defaultOptions ?? (defaultOptions = new AdhocWorkspace ().Options);
 		
 		public static CSharpFormattingPolicy Load (FilePath selectedFile)
 		{

@@ -29,7 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.CodeAnalysis.CSharp.ExtractMethod;
+using Microsoft.CodeAnalysis.ExtractMethod;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
@@ -50,9 +50,9 @@ namespace MonoDevelop.CSharp.Refactoring
 				return false;
 			var selectionRange = doc.Editor.SelectionRange;
 			try {
-				var selection = new CSharpSelectionValidator (await SemanticDocument.CreateAsync (ad, cancellationToken).ConfigureAwait (false), new TextSpan (selectionRange.Offset, selectionRange.Length), doc.DocumentContext.GetOptionSet ());
-				var result = await selection.GetValidSelectionAsync (cancellationToken).ConfigureAwait (false);
-				return result.ContainsValidContext;
+				// Roslyn 4+: ExtractMethodService validates the selection while extracting (the selection validator is gone).
+				var result = await ExtractMethodAsync (ad, new TextSpan (selectionRange.Offset, selectionRange.Length), cancellationToken).ConfigureAwait (false);
+				return result.Succeeded;
 			} catch (Exception) {
 				return false;
 			}
@@ -74,30 +74,32 @@ namespace MonoDevelop.CSharp.Refactoring
 			try {
 				var selectionRange = doc.Editor.SelectionRange;
 				var token = default (CancellationToken);
-				var selection = new CSharpSelectionValidator (await SemanticDocument.CreateAsync (ad, token).ConfigureAwait (false), new TextSpan (selectionRange.Offset, selectionRange.Length), doc.DocumentContext.GetOptionSet ());
-				var result = await selection.GetValidSelectionAsync (token).ConfigureAwait (false);
-				if (!result.ContainsValidContext)
+				var result = await ExtractMethodAsync (ad, new TextSpan (selectionRange.Offset, selectionRange.Length), token).ConfigureAwait (false);
+				if (!result.Succeeded)
 					return;
-				var extractor = new CSharpMethodExtractor ((CSharpSelectionResult)result);
-				var extractionResult = await extractor.ExtractMethodAsync (token).ConfigureAwait (false);
-				var changes = await extractionResult.Document.GetTextChangesAsync (ad, token);
+				var (extractedDocument, invocationNameToken) = await result.GetDocumentAsync (token).ConfigureAwait (false);
+				var changes = await extractedDocument.GetTextChangesAsync (ad, token);
+				// Roslyn 4+ generates the method with the accessibility of the code style options (the "private " hack is gone).
 				using (var undo = doc.Editor.OpenUndoGroup ()) {
 					foreach (var change in changes.OrderByDescending (ts => ts.Span.Start)) {
 						doc.Editor.ReplaceText (change.Span.Start, change.Span.Length, change.NewText);
 					}
-					// hack to remove the redundant private modifier.
-					if (doc.Editor.GetTextAt (extractionResult.MethodDeclarationNode.SpanStart, "private ".Length) == "private ") {
-						doc.Editor.RemoveText (extractionResult.MethodDeclarationNode.SpanStart, "private ".Length);
-					}
 				}
 				await doc.DocumentContext.UpdateParseDocument ();
-				var info = RefactoringSymbolInfo.GetSymbolInfoAsync (doc.DocumentContext, extractionResult.InvocationNameToken.Span.Start).Result;
+				if (invocationNameToken == null)
+					return;
+				var info = RefactoringSymbolInfo.GetSymbolInfoAsync (doc.DocumentContext, invocationNameToken.Value.Span.Start).Result;
 				var sym = info.DeclaredSymbol ?? info.Symbol;
 				if (sym != null)
 					await new MonoDevelop.Refactoring.Rename.RenameRefactoring ().Rename (sym);
 			} catch (Exception e) {
 				LoggingService.LogError ("Error while extracting method", e);
 			}
+		}
+
+		static Task<ExtractMethodResult> ExtractMethodAsync (Microsoft.CodeAnalysis.Document document, TextSpan span, CancellationToken cancellationToken)
+		{
+			return ExtractMethodService.ExtractMethodAsync (document, span, false, ExtractMethodGenerationOptions.GetDefault (document.Project.Services), cancellationToken);
 		}
 
 		protected async override void Run ()

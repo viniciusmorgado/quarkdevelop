@@ -38,7 +38,7 @@ using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Extension;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Options;
-using Microsoft.CodeAnalysis.Editor.Shared.Options;
+
 
 namespace MonoDevelop.CSharp.Formatting
 {
@@ -67,14 +67,14 @@ namespace MonoDevelop.CSharp.Formatting
 				var strategy = TextPasteUtils.Strategies [(PasteStrategy)copyData [0]];
 				text = strategy.Decode (text);
 			}
-			if (CSharpSyntaxFactsService.Instance.IsVerbatimStringLiteral (token)) {
+			if (Microsoft.CodeAnalysis.CSharp.LanguageService.CSharpSyntaxFacts.Instance.IsVerbatimStringLiteral (token)) {
 				int idx = text.IndexOf ('"');
 				if (idx > 0 && !token.Text.EndsWith ("\"", System.StringComparison.Ordinal))
 					return TextPasteUtils.VerbatimStringStrategy.Encode (text.Substring (0, idx)) + text.Substring (idx);
 				return TextPasteUtils.VerbatimStringStrategy.Encode (text);
 			}
 
-			if (CSharpSyntaxFactsService.Instance.IsStringLiteral (token)) {
+			if (token.IsKind (SyntaxKind.StringLiteralToken)) {
 				int idx = text.IndexOf ('"');
 				if (idx > 0 && !token.Text.EndsWith ("\"", System.StringComparison.Ordinal))
 					return TextPasteUtils.StringLiteralStrategy.Encode (text.Substring (0, idx)) + text.Substring (idx);
@@ -91,10 +91,10 @@ namespace MonoDevelop.CSharp.Formatting
 			var syntaxRoot = indent.DocumentContext.AnalysisDocument.GetSyntaxRootAsync ().WaitAndGetResult ();
 			var token = syntaxRoot.FindToken (offset);
 
-			if (token.SpanStart + 1 < offset && CSharpSyntaxFactsService.Instance.IsVerbatimStringLiteral (token))
+			if (token.SpanStart + 1 < offset && Microsoft.CodeAnalysis.CSharp.LanguageService.CSharpSyntaxFacts.Instance.IsVerbatimStringLiteral (token))
 				return new [] { (byte)PasteStrategy.VerbatimString };
 
-			if (token.SpanStart < offset && CSharpSyntaxFactsService.Instance.IsStringLiteral (token)) 
+			if (token.SpanStart < offset && token.IsKind (SyntaxKind.StringLiteralToken)) 
 				return new [] { (byte)PasteStrategy.StringLiteral };
 
 			return null;
@@ -108,11 +108,11 @@ namespace MonoDevelop.CSharp.Formatting
 			var doc = indent.DocumentContext.AnalysisDocument;
 			if (doc == null)
 				return;
-			var options = await doc.GetOptionsAsync ();
-			if (!options.GetOption (FeatureOnOffOptions.FormatOnPaste, doc.Project.Language))
+			// Roslyn 4+ has no FeatureOnOffOptions: the IDE preference (Text Editor > Behavior > C#) decides.
+			if (!MonoDevelop.Ide.IdeApp.Preferences.Roslyn.CSharp.FormatOnPaste)
 				return;
 
-			var formattingService = doc.GetLanguageService<IEditorFormattingService> ();
+			var formattingService = MonoDevelop.CSharp.Formatting.RoslynFormattingService.Instance;
 			if (formattingService == null || !formattingService.SupportsFormatOnPaste)
 				return;
 			var text = await doc.GetTextAsync ();

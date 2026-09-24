@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using ICSharpCode.NRefactory;
+
 using Microsoft.CodeAnalysis;
 using MonoDevelop.CSharp.Formatting;
 using MonoDevelop.Ide;
@@ -1059,7 +1059,7 @@ namespace MonoDevelop.CSharp.Refactoring
 			// not used anymore
 		}
 
-		public override void AddLocalNamespaceImport (Ide.Editor.TextEditor editor, DocumentContext context, string nsName, TextLocation caretLocation)
+		public override void AddLocalNamespaceImport (Ide.Editor.TextEditor editor, DocumentContext context, string nsName, DocumentLocation caretLocation)
 		{
 			// not used anymore
 		}

@@ -34,3 +34,18 @@ replacement is cheap. EditorFeatures (not on nuget.org beyond 2.8.2) come from t
 
 - Good: C# features can be ported without a rewrite.
 - Bad: every Roslyn upgrade may break internal call sites; upgrades are deliberate, tested changes.
+
+**Amendment (2026-09-24, T089/T090): no Roslyn EditorFeatures.** The C# add-ins (CSharpBinding, Refactoring) are
+ported without `Microsoft.CodeAnalysis.EditorFeatures*`, so the dnceng `dotnet-tools` feed is not added (ADR 0004
+unchanged). EditorFeatures served the Cocoa/WPF editor (ADR 0012); what the GTK editor used from it is replaced by
+Roslyn Workspaces/Features APIs: classification by a C# `ITaggerProvider` over `Classifier.GetClassifiedSpansAsync`
+(plus the `CSharp` content type), formatting by `Formatter` and `ISyntaxFormattingService` (`RoslynFormattingService`),
+debugger data tips by Features' `ILanguageDebugInfoService`, find references by the public `IFindReferencesProgress`,
+diagnostics by pulling `IDiagnosticAnalyzerService` with the host analyzers as solution analyzer references (Roslyn 4+
+removed `IDiagnosticService` and `IWorkspaceDiagnosticAnalyzerProviderService`). Features that only existed on top of
+EditorFeatures or on removed Roslyn 3 services are excluded and listed in `docs/BREAKING-CHANGES.md`.
+Publicizer caveats met while porting: internal types that exist in two assemblies (`ArrayBuilder<T>`,
+`SpecializedCollections`, `ImmutableArrayExtensions`, `EnumerableExtensions`) make calls ambiguous and are avoided;
+`Microsoft.CodeAnalysis.ParsedDocument` clashes with MonoDevelop's (`DoNotPublicize` in Refactoring, a `using` alias in
+CSharpBinding); events whose backing field is publicized under the same name are subscribed through reflection; internal
+abstract or sealed members of Roslyn base classes (`CommonCompletionProvider`) cannot be implemented outside Roslyn.

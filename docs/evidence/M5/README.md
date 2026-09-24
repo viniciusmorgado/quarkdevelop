@@ -102,3 +102,34 @@ Tests: `MonoDevelop.TextEditor.Tests` (the legacy Mono.TextEditor suite, convert
 within the clip it is given, typing).
 
 ![Program.cs in the source editor](T088-editor.png)
+
+## T089, T090 — the C# binding and Refactoring add-ins on Roslyn 5.9 (M5c)
+
+`MonoDevelop.Refactoring` and `CSharpBinding` are SDK-style net10.0 add-ins on GTK 3 and Roslyn 5.9 (Publicizer),
+without Roslyn EditorFeatures (ADR 0010 amendment), NRefactory (ADR 0019), MonoDevelop.UnitTesting (T101) or the
+Cocoa/WPF TextEditor add-in (ADR 0012). CSharpBinding depends on the CSharpBinding.Core add-in and builds to
+`AddIns/CSharpBinding`. Excluded sources are listed with their reason in each csproj; removed features in
+`docs/BREAKING-CHANGES.md`.
+
+Commands (dev container):
+
+```bash
+./scripts/pm dotnet build main/MonoDevelop.Linux.sln
+./scripts/pm bash -lc 'xvfb-run -a -s "-screen 0 1600x1000x24" bash -c "dotnet main/build/bin/MonoDevelop.dll -no-redirect \
+  main/tests/linux-smoke/Smoke.sln main/tests/linux-smoke/Hello/Program.cs > out/ide.log 2>&1 & sleep 60; import -window root out/ide.png; kill %1"'
+./scripts/pm ./scripts/test.sh --no-build
+```
+
+Result (2026-09-24): the IDE loads the Refactoring, CSharpBinding.Core and CSharpBinding add-ins; the Solution pad
+shows the C# project icons; `Program.cs` has Roslyn semantic highlighting (class names, string literal) and the quick
+task strip reports no errors ([T089-csharp.png](T089-csharp.png)). `out/ide.log` has no ERROR/FATAL line from these
+add-ins (the only ERROR lines, also without them, are the core MSBuild evaluator failing on the SDK 10.0.401
+property `_MSBuildVersionMajorMinor`).
+
+Tests: `MonoDevelop.Ide.Gtk3.Tests` `CSharpBindingTests` — completion after `System.Console.` offers `WriteLine`
+(US3-2), formatting of a document and on `;` without EditorFeatures, the lexer that replaces NRefactory's; 48 passed.
+`MonoDevelop.Refactoring.Tests` (NUnit 3; the three legacy files wait for IdeUnitTests, T107) — host analyzers as
+solution analyzer references give the compiler errors through `IDiagnosticAnalyzerService`, are added again when the
+solution is replaced, and the code action progress tracker; 4 passed.
+
+![Program.cs with the C# binding](T089-csharp.png)

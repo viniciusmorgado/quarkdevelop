@@ -42,12 +42,14 @@ namespace MonoDevelop.CSharp
 			if (ctx == null)
 				throw new ArgumentNullException (nameof (ctx));
 			try {
-				if (ctx.AnalysisDocument != null) {
+				// Roslyn 4+: the C# policy no longer reaches the document options (IDocumentOptionsProvider is gone),
+				// so the policy of the project comes first; documents without a project use their Roslyn options.
+				var policies = ctx.Project?.Policies;
+				if (policies == null && ctx.AnalysisDocument != null) {
 					var result = await ctx.AnalysisDocument.GetOptionsAsync ().ConfigureAwait (false);
 					if (result != null)
 						return result;
 				}
-				var policies = ctx.Project?.Policies;
 				if (policies == null) {
 					var defaultPolicy = PolicyService.GetDefaultPolicy<CSharpFormattingPolicy> (CSharpFormatter.MimeType);
 					var defaultTextPolicy = PolicyService.GetDefaultPolicy<TextStylePolicy> (CSharpFormatter.MimeType);

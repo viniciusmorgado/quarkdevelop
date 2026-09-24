@@ -597,6 +597,31 @@
           "System.Configuration.ConfigurationManager": "[10.0.12, )"
         }
       },
+      "MonoDevelop.CSharpBinding": {
+        "type": "Project",
+        "dependencies": {
+          "Mono.Addins": "[1.4.1, )",
+          "Mono.Debugging": "[1.0.0, )",
+          "MonoDevelop.CSharpBinding.Core": "[1.0.0, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Debugger": "[1.0.0, )",
+          "MonoDevelop.DesignerSupport": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "MonoDevelop.Refactoring": "[1.0.0, )",
+          "MonoDevelop.SourceEditor": "[1.0.0, )",
+          "Xwt": "[1.0.0, )",
+          "Xwt.Gtk3": "[1.0.0, )"
+        }
+      },
+      "monodevelop.csharpbinding.core": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "[5.9.0, 5.9.0]",
+          "Mono.Addins": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "System.CodeDom": "[10.0.12, )"
+        }
+      },
       "monodevelop.debugger": {
         "type": "Project",
         "dependencies": {
@@ -649,6 +674,28 @@
           "Xwt": "[1.0.0, )",
           "Xwt.Gtk3": "[1.0.0, )",
           "YamlDotNet": "[18.1.0, )"
+        }
+      },
+      "monodevelop.refactoring": {
+        "type": "Project",
+        "dependencies": {
+          "Mono.Addins": "[1.4.1, )",
+          "Mono.Debugging": "[1.0.0, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Debugger": "[1.0.0, )",
+          "MonoDevelop.DesignerSupport": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "MonoDevelop.SourceEditor": "[1.0.0, )",
+          "Xwt": "[1.0.0, )",
+          "Xwt.Gtk3": "[1.0.0, )"
+        }
+      },
+      "monodevelop.regextoolkit": {
+        "type": "Project",
+        "dependencies": {
+          "Mono.Addins": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )"
         }
       },
       "monodevelop.sourceeditor": {

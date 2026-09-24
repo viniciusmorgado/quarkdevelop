@@ -24,7 +24,7 @@ namespace MonoDevelop.CSharp.ClassOutline
 			this.Modal = true;
 			this.DestroyWithParent = true;
 			// Internal child MonoDevelop.CSharp.ClassOutline.OutlineSortingPreferencesDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -49,11 +49,11 @@ namespace MonoDevelop.CSharp.ClassOutline
 			this.vbox2.Add (this.priorityList);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.priorityList]));
 			w3.Position = 1;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w4.Position = 0;
 			// Internal child MonoDevelop.CSharp.ClassOutline.OutlineSortingPreferencesDialog.ActionArea
-			global::Gtk.HButtonBox w5 = this.ActionArea;
+			global::Gtk.ButtonBox w5 = this.ActionArea;
 			w5.Name = "dialog1_ActionArea";
 			w5.Spacing = 10;
 			w5.BorderWidth = ((uint)(5));

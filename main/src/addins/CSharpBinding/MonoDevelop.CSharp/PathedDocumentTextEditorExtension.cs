@@ -45,6 +45,8 @@ using Microsoft.CodeAnalysis.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using ICSharpCode.NRefactory6.CSharp;
+// Roslyn's internal ParsedDocument is visible through Publicizer (ADR 0010).
+using ParsedDocument = MonoDevelop.Ide.TypeSystem.ParsedDocument;
 
 namespace MonoDevelop.CSharp
 {

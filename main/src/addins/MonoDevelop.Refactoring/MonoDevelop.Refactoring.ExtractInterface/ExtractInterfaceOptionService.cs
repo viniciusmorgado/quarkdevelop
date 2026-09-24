@@ -25,13 +25,13 @@
 // THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Composition;
-using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.ExtractInterface;
 using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.LanguageServices;
+using Microsoft.CodeAnalysis.LanguageService;
 using Microsoft.CodeAnalysis.Notification;
 
 namespace MonoDevelop.Refactoring.ExtractInterface
@@ -39,37 +39,32 @@ namespace MonoDevelop.Refactoring.ExtractInterface
 	[ExportWorkspaceService (typeof (IExtractInterfaceOptionsService), ServiceLayer.Default), Shared]
 	class ExtractInterfaceOptionsService : IExtractInterfaceOptionsService
 	{
-		readonly IThreadingContext threadingContext;
-
 		[ImportingConstructor]
-		public ExtractInterfaceOptionsService (IThreadingContext threadingContext)
+		public ExtractInterfaceOptionsService ()
 		{
-			this.threadingContext = threadingContext;
 		}
 
-		public async Task<ExtractInterfaceOptionsResult> GetExtractInterfaceOptionsAsync (
-			ISyntaxFactsService syntaxFactsService,
-			INotificationService notificationService,
-			List<ISymbol> extractableMembers,
+		// Roslyn 4+: synchronous, called on the UI thread by the code action (was GetExtractInterfaceOptionsAsync with
+		// IThreadingContext from EditorFeatures). The services the dialog uses come from the document.
+		public ExtractInterfaceOptionsResult GetExtractInterfaceOptions (
+			Document document,
+			ImmutableArray<ISymbol> extractableMembers,
 			string defaultInterfaceName,
-			List<string> conflictingTypeNames,
+			ImmutableArray<string> conflictingTypeNames,
 			string defaultNamespace,
-			string generatedNameTypeParameterSuffix,
-			string languageName)
+			string generatedNameTypeParameterSuffix)
 		{
-			await threadingContext.JoinableTaskFactory.SwitchToMainThreadAsync ();
-
 			using (var dialog = new ExtractInterfaceDialog ()) {
 
 				dialog.Init (
-					syntaxFactsService,
-					notificationService,
-					extractableMembers,
+					document.Project.Services.GetService<ISyntaxFactsService> (),
+					document.Project.Solution.Services.GetService<INotificationService> (),
+					extractableMembers.ToList (),
 					defaultInterfaceName,
-					conflictingTypeNames,
+					conflictingTypeNames.ToList (),
 					defaultNamespace,
 					generatedNameTypeParameterSuffix,
-					languageName);
+					document.Project.Language);
 
 				bool performChange = dialog.Run () == Xwt.Command.Ok;
 				if (!performChange)
@@ -77,7 +72,7 @@ namespace MonoDevelop.Refactoring.ExtractInterface
 
 				return new ExtractInterfaceOptionsResult (
 					false,
-					dialog.IncludedMembers.AsImmutable (),
+					dialog.IncludedMembers.ToImmutableArray (),
 					dialog.InterfaceName,
 					dialog.FileName,
 					dialog.UseSameFile

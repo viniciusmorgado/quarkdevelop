@@ -44,12 +44,12 @@ namespace Microsoft.CodeAnalysis
 
 		public static Task<SemanticModel> GetCSharpSemanticModelForNodeAsync (this Document document, SyntaxNode node, CancellationToken cancellationToken = default (CancellationToken))
 		{
-			return document.GetSemanticModelForNodeAsync (node, cancellationToken);
+			return document.ReuseExistingSpeculativeModelAsync (node, cancellationToken).AsTask ();
 		}
 
 		public static Task<SemanticModel> GetCSharpSemanticModelForSpanAsync (this Document document, TextSpan span, CancellationToken cancellationToken = default (CancellationToken))
 		{
-			return document.GetSemanticModelForSpanAsync (span, cancellationToken);
+			return document.ReuseExistingSpeculativeModelAsync (span, cancellationToken).AsTask ();
 		}
 
 		public static Task<Compilation> GetCSharpCompilationAsync (this Document document, CancellationToken cancellationToken = default (CancellationToken))
@@ -64,12 +64,12 @@ namespace Microsoft.CodeAnalysis
 			CancellationToken cancellationToken)
 		{
 			var linkedDocumentIds = document.GetLinkedDocumentIds ();
-			var itemsForCurrentContext = await getItemsWorker (document, cancellationToken).ConfigureAwait (false) ?? SpecializedCollections.EmptyEnumerable<T> ();
+			var itemsForCurrentContext = await getItemsWorker (document, cancellationToken).ConfigureAwait (false) ?? Enumerable.Empty<T> ();
 			if (!linkedDocumentIds.Any ()) {
 				return itemsForCurrentContext;
 			}
 
-			ISet<T> totalItems = itemsForCurrentContext.ToSet (comparer);
+			ISet<T> totalItems = new HashSet<T> (itemsForCurrentContext, comparer);
 			foreach (var linkedDocumentId in linkedDocumentIds) {
 				var linkedDocument = document.Project.Solution.GetDocument (linkedDocumentId);
 				var items = await getItemsWorker (linkedDocument, cancellationToken).ConfigureAwait (false);
@@ -189,15 +189,6 @@ namespace Microsoft.CodeAnalysis
 				defaultAction?.Invoke (obj);
 			}
 		}
-
-		public static ExpressionSyntax SkipParens (this ExpressionSyntax expression)
-		{
-			if (expression == null)
-				return null;
-			while (expression != null && expression.IsKind (SyntaxKind.ParenthesizedExpression)) {
-				expression = ((ParenthesizedExpressionSyntax)expression).Expression;
-			}
-			return expression;
-		}
+		// SkipParens: Roslyn's ExpressionSyntaxExtensions.SkipParens is visible through Publicizer (ADR 0010).
 	}
 }

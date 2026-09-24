@@ -44,6 +44,12 @@ Compared with MonoDevelop 8.6:
 | WS-Trust (STS) authentication for package feeds | removed (no WCF/WIF on .NET 10) |
 | Remote external-process objects (`ProcessService.CreateExternalProcessObject`) | throws `NotSupportedException` |
 | Binary instrumentation data files (mdmonitor) | removed; auto-save uses JSON |
+| C# Code Style options page (Text Editor > Source Analysis > C# > Code Style) | removed (Roslyn 4+ options API); use `.editorconfig` |
+| C# completion extras: delegate/lambda creation, event sender cast, cast, string format items, Apple protocol members (MonoDevelop's own Roslyn completion providers) | removed; Roslyn's C# completion providers remain |
+| C# format on return | removed (not in Roslyn 4+); the new line is indented by the editor |
+| C# project formatting policies as Roslyn document options (code fixes, generated code) | not applied; explicit formatting uses the policy, Roslyn features use `.editorconfig` |
+| Roslyn "install package" code fixes and package symbol search | deferred to the NuGet add-in port (`MonoDevelop.PackageManagement`) |
+| C# NUnit test markers in the editor and source locations of tests | deferred to the `MonoDevelop.UnitTesting` port |
 
 ## Add-in authors
 
@@ -59,6 +65,11 @@ Compared with MonoDevelop 8.6:
     `CreateGenerator (Document)`.
   - `FoldingUtilities.FlagIfInsideMembers` is removed (it was already marked obsolete).
   - `MemberReference.EntityOrVariable` holds Roslyn `ISymbol`s.
+  - `MonoDevelop.CSharp.CSharpEnhancedCodeProvider` (NRefactory CodeDOM) is gone: the C# CodeDOM provider is
+    System.CodeDom's `CSharpCodeProvider` (registered by CSharpBinding.Core).
+- Roslyn 5 (ADR 0010): `MonoDevelopWorkspaceDiagnosticAnalyzerProviderService` no longer implements a Roslyn interface
+  (import it by its own type); the MEF export `IStreamingFindUsagesPresenter` and the TextEditor command mappings of
+  the Refactoring and C# add-ins are removed with the Cocoa/WPF editor.
 - `Mono.Addins.Gui` (GTK2) is replaced by `Mono.Addins.GuiGtk3`, which has the same classes in the
   `Mono.Addins.GuiGtk3` namespace.
 - The VS editor API assemblies keep their names. WPF-only members are not available: presenter

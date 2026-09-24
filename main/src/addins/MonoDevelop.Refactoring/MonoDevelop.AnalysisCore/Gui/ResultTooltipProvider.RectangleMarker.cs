@@ -44,9 +44,10 @@ namespace MonoDevelop.AnalysisCore.Gui
 				WidthRequest = 16;
 			}
 
-			protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (evnt.Window)) {
+				var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+				using (Cairo.Context cr = evnt.CreateContext ()) {
 					const int triangleWidth = 8;
 					const int triangleHeight = 4;
 

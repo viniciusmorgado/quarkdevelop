@@ -37,7 +37,7 @@ namespace MonoDevelop.Refactoring.Rename
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(6));
 			// Internal child MonoDevelop.Refactoring.Rename.RenameItemDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -126,13 +126,13 @@ namespace MonoDevelop.Refactoring.Rename
 			w9.Position = 3;
 			w9.Expand = false;
 			w9.Fill = false;
-			w1.Add (this.vbox);
+			w1.PackStart (this.vbox, true, true, 0);
 			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox]));
 			w10.Position = 0;
 			w10.Expand = false;
 			w10.Fill = false;
 			// Internal child MonoDevelop.Refactoring.Rename.RenameItemDialog.ActionArea
-			global::Gtk.HButtonBox w11 = this.ActionArea;
+			global::Gtk.ButtonBox w11 = this.ActionArea;
 			w11.Name = "dialog1_ActionArea";
 			w11.Spacing = 10;
 			w11.BorderWidth = ((uint)(5));

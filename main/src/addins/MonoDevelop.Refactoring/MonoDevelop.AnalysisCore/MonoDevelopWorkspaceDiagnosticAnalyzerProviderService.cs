@@ -37,15 +37,19 @@ using MonoDevelop.Core.AddIns;
 
 namespace MonoDevelop.AnalysisCore
 {
-	[Export(typeof(IWorkspaceDiagnosticAnalyzerProviderService))]
-	partial class MonoDevelopWorkspaceDiagnosticAnalyzerProviderService : IWorkspaceDiagnosticAnalyzerProviderService
+	// Roslyn 4+ removed IWorkspaceDiagnosticAnalyzerProviderService: host analyzers are solution analyzer references.
+	// This service computes them as before and adds them to each workspace whose documents are analyzed
+	// (EnsureHostAnalyzers); callers import it by its own type.
+	[Export (typeof (MonoDevelopWorkspaceDiagnosticAnalyzerProviderService))]
+	partial class MonoDevelopWorkspaceDiagnosticAnalyzerProviderService
 	{
 		static readonly AnalyzerAssemblyLoader analyzerAssemblyLoader = new AnalyzerAssemblyLoader ();
 		readonly static string diagnosticAnalyzerAssembly = typeof (DiagnosticAnalyzerAttribute).Assembly.GetName ().Name;
 
 		private TaskCompletionSource<OptionsTable> optionsCompletionSource = new TaskCompletionSource<OptionsTable> ();
 		internal Task<OptionsTable> GetOptionsAsync () => optionsCompletionSource.Task;
-		readonly Task<ImmutableArray<HostDiagnosticAnalyzerPackage>> hostDiagnosticAnalyzerInfoTask;
+		readonly Task<ImmutableArray<AnalyzerReference>> hostDiagnosticAnalyzerInfoTask;
+		readonly HashSet<Workspace> trackedWorkspaces = new HashSet<Workspace> ();
 
 		const string extensionPath = "/MonoDevelop/Refactoring/AnalyzerAssemblies";
 		string [] RuntimeEnabledAssemblies;
@@ -56,7 +60,10 @@ namespace MonoDevelop.AnalysisCore
 
 		void LoadAnalyzerAssemblies()
 		{
-			RuntimeEnabledAssemblies = AddinManager.GetExtensionNodes<AssemblyExtensionNode> (extensionPath).Select (b => b.FileName).ToArray ();
+			// Without the add-in engine (tests) only the assemblies that reference Roslyn are host analyzers.
+			RuntimeEnabledAssemblies = AddinManager.IsInitialized
+				? AddinManager.GetExtensionNodes<AssemblyExtensionNode> (extensionPath).Select (b => b.FileName).ToArray ()
+				: Array.Empty<string> ();
 		}
 
 		public IAnalyzerAssemblyLoader GetAnalyzerAssemblyLoader ()
@@ -64,15 +71,37 @@ namespace MonoDevelop.AnalysisCore
 			return analyzerAssemblyLoader;
 		}
 
-		public IEnumerable<HostDiagnosticAnalyzerPackage> GetHostDiagnosticAnalyzerPackages ()
+		public Task<ImmutableArray<AnalyzerReference>> GetHostAnalyzerReferencesAsync () => hostDiagnosticAnalyzerInfoTask;
+
+		/// <summary>
+		/// Adds the host analyzer references to the solution of the workspace, now and whenever the workspace
+		/// replaces its solution (a solution load or reload creates it without them).
+		/// </summary>
+		public async Task EnsureHostAnalyzersAsync (Workspace workspace)
 		{
-			return hostDiagnosticAnalyzerInfoTask.Result;
+			if (workspace == null)
+				return;
+			var references = await hostDiagnosticAnalyzerInfoTask.ConfigureAwait (false);
+			lock (trackedWorkspaces) {
+				if (trackedWorkspaces.Add (workspace))
+					workspace.WorkspaceChanged += (sender, e) => {
+						if (e.Kind == WorkspaceChangeKind.SolutionAdded || e.Kind == WorkspaceChangeKind.SolutionReloaded || e.Kind == WorkspaceChangeKind.SolutionCleared)
+							AddHostAnalyzers (workspace, references);
+					};
+			}
+			AddHostAnalyzers (workspace, references);
 		}
 
-		ImmutableArray<HostDiagnosticAnalyzerPackage> CreateHostDiagnosticAnalyzerPackages ()
+		static void AddHostAnalyzers (Workspace workspace, ImmutableArray<AnalyzerReference> references)
+		{
+			workspace.SetCurrentSolution (
+				solution => solution.AnalyzerReferences.Count > 0 ? solution : solution.WithAnalyzerReferences (references),
+				WorkspaceChangeKind.SolutionChanged);
+		}
+
+		ImmutableArray<AnalyzerReference> CreateHostDiagnosticAnalyzerPackages ()
 		{
 			LoadAnalyzerAssemblies ();
-			var builder = ImmutableArray.CreateBuilder<HostDiagnosticAnalyzerPackage> ();
 			var assemblies = ImmutableArray.CreateBuilder<string> ();
 			var options = new OptionsTable ();
 			foreach (var asm in AppDomain.CurrentDomain.GetAssemblies ()) {
@@ -100,10 +129,7 @@ namespace MonoDevelop.AnalysisCore
 				}
 			}
 			optionsCompletionSource.SetResult (options);
-			builder.Add (new HostDiagnosticAnalyzerPackage ("MonoDevelop", assemblies.AsImmutable ()));
-
-			// Go through all providers
-			return builder.AsImmutable ();
+			return assemblies.Select (path => (AnalyzerReference)new AnalyzerFileReference (path, analyzerAssemblyLoader)).ToImmutableArray ();
 		}
 	}
 }

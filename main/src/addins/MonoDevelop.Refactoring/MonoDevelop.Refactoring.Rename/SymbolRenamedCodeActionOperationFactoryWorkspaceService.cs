@@ -31,7 +31,7 @@ using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeActions.WorkspaceServices;
-using Microsoft.CodeAnalysis.Editor;
+using Microsoft.CodeAnalysis.Rename;
 using Microsoft.CodeAnalysis.Host.Mef;
 using MonoDevelop.Core;
 

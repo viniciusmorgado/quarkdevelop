@@ -61,7 +61,7 @@ using Microsoft.VisualStudio.Platform;
 
 using Counters = MonoDevelop.Ide.Counters;
 using Microsoft.CodeAnalysis.CSharp.Completion.Providers;
-using MonoDevelop.CSharp.Completion.Provider;
+
 using System.Collections.Immutable;
 
 namespace MonoDevelop.CSharp.Completion
@@ -444,12 +444,14 @@ namespace MonoDevelop.CSharp.Completion
 			}
 
 			completionContext.Trace ("C#: Getting completions");
-			var customOptions = DocumentContext.RoslynWorkspace.Options
-				.WithChangedOption (CompletionOptions.TriggerOnDeletion, LanguageNames.CSharp, true)
-				.WithChangedOption (CompletionOptions.HideAdvancedMembers, LanguageNames.CSharp, IdeApp.Preferences.CompletionOptionsHideAdvancedMembers)
+			// Roslyn 4+: completion options are a CompletionOptions record (were workspace options).
+			var customOptions = CompletionOptions.Default with {
+				TriggerOnDeletion = true,
+				MemberDisplayOptions = new MemberDisplayOptions { HideAdvancedMembers = IdeApp.Preferences.CompletionOptionsHideAdvancedMembers },
 				// Roslyn's implementation of this feature doesn't work correctly in old editor
-				.WithChangedOption (CompletionOptions.ShowItemsFromUnimportedNamespaces, LanguageNames.CSharp, false);
-			var completionList = await Task.Run (() => cs.GetCompletionsAsync (analysisDocument, Editor.CaretOffset, trigger, options: customOptions, cancellationToken: token)).ConfigureAwait (false);
+				ShowItemsFromUnimportedNamespaces = false,
+			};
+			var completionList = await Task.Run (() => cs.GetCompletionsAsync (analysisDocument, Editor.CaretOffset, customOptions, null, trigger, null, token)).ConfigureAwait (false);
 			completionContext.Trace ("C#: Got completions");
 
 			if (completionList == null)
@@ -478,7 +480,7 @@ namespace MonoDevelop.CSharp.Completion
 
 			var partialDoc = analysisDocument.WithFrozenPartialSemantics (token);
 			var semanticModel = await partialDoc.GetSemanticModelAsync (token).ConfigureAwait (false);
-			var syntaxContext = CSharpSyntaxContext.CreateContext (DocumentContext.RoslynWorkspace, semanticModel, completionContext.TriggerOffset, token);
+			var syntaxContext = CSharpSyntaxContext.CreateContext (partialDoc, semanticModel, completionContext.TriggerOffset, token);
 
 			if (forceSymbolCompletion || IdeApp.Preferences.AddImportedItemsToCompletionList) {
 				completionContext.Trace ("C#: Adding import completion data");
@@ -706,9 +708,10 @@ namespace MonoDevelop.CSharp.Completion
 			ImmutableArray<ISignatureHelpProvider> providers;
 			if (!force) {
 				if (triggerInfo.TriggerReason == Ide.Editor.Extension.SignatureHelpTriggerReason.TypeCharCommand) {
-					providers = signatureProviders.Value.WhereAsArray (provider => provider.IsTriggerCharacter (triggerInfo.TriggerCharacter.Value));
+					providers = signatureProviders.Value.Where (provider => provider.TriggerCharacters.Contains (triggerInfo.TriggerCharacter.Value)).ToImmutableArray ();
 				} else if (triggerInfo.TriggerReason == Ide.Editor.Extension.SignatureHelpTriggerReason.RetriggerCommand) {
-					providers = signatureProviders.Value.WhereAsArray (provider => provider.IsRetriggerCharacter (triggerInfo.TriggerCharacter.Value));
+					// Roslyn 4+ providers only list their trigger characters (no retrigger characters).
+					providers = signatureProviders.Value.Where (provider => provider.TriggerCharacters.Contains (triggerInfo.TriggerCharacter.Value)).ToImmutableArray ();
 				} else {
 					providers = signatureProviders.Value;
 				}
@@ -806,7 +809,7 @@ namespace MonoDevelop.CSharp.Completion
 			var partialDoc = analysisDocument.WithFrozenPartialSemantics (default (CancellationToken));
 			var semanticModel = await partialDoc.GetSemanticModelAsync (default (CancellationToken));
 			
-			var syntaxContext = CSharpSyntaxContext.CreateContext (DocumentContext.RoslynWorkspace, semanticModel, Editor.CaretOffset, default (CancellationToken));
+			var syntaxContext = CSharpSyntaxContext.CreateContext (partialDoc, semanticModel, Editor.CaretOffset, default (CancellationToken));
 			if (syntaxContext.InferredTypes.Any(t => t.TypeKind == TypeKind.Delegate)) {
 				CompletionWindowManager.HideWindow ();
 				RunCompletionCommand ();

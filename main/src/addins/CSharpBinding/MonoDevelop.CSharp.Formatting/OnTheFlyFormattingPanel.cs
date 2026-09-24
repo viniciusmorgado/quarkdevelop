@@ -30,7 +30,7 @@ using MonoDevelop.Ide.Gui.Dialogs;
 using Xwt;
 using Microsoft.CodeAnalysis.Options;
 using MonoDevelop.Ide.TypeSystem;
-using Microsoft.CodeAnalysis.Editor.Shared.Options;
+
 using Microsoft.CodeAnalysis;
 using System;
 using MonoDevelop.Ide;
@@ -58,7 +58,6 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 
 		class OnTheFlyFormattingPanelWidget : VBox
 		{
-			readonly IOptionService OptionService;
 
 			readonly CheckBox formatOnTypeCheckBox;
 			readonly CheckBox formatOnSemicolonCheckBox;
@@ -73,7 +72,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			{
 				preferences = IdeApp.Preferences.Roslyn.CSharp;
 
-				OptionService = IdeApp.TypeSystemService.Workspace.Services.GetService<IOptionService> ();
+
 				formatOnTypeCheckBox = new CheckBox (GettextCatalog.GetString ("Automatically format when typing"));
 				formatOnTypeCheckBox.Active = preferences.AutoFormattingOnTyping;
 				formatOnTypeCheckBox.Toggled += FormatOnTypeCheckBox_Toggled;

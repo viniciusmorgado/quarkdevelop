@@ -27,7 +27,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using MonoDevelop.Core.Instrumentation;
-using System.Net.Configuration;
+
 
 namespace MonoDevelop.CSharp.Navigation
 {

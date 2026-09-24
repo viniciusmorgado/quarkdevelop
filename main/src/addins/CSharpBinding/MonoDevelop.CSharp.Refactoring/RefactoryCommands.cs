@@ -43,8 +43,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis.Editor.Shared;
-using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
+
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.OrganizeImports;
 using Microsoft.CodeAnalysis.RemoveUnnecessaryImports;
@@ -98,7 +97,8 @@ namespace MonoDevelop.CSharp.Refactoring
 				return false;
 			}
 
-			return workspace.Services.GetService<ITextBufferSupportsFeatureService> ().SupportsRefactorings (textBuffer);
+			// Roslyn 4+: ITextBufferSupportsFeatureService is EditorFeatures-only; MonoDevelop workspace documents support refactorings.
+			return true;
 		}
 
 		internal static async Task SortAndRemoveUnusedImports (Document originalDocument, CancellationToken cancellationToken)
@@ -113,11 +113,11 @@ namespace MonoDevelop.CSharp.Refactoring
 
 			// Remove unnecessary imports and sort them
 			var removedImportsDocument = await unnecessaryImportsService.RemoveUnnecessaryImportsAsync (originalDocument, cancellationToken);
-			var resultDocument = await organizeImportsService.OrganizeImportsAsync (removedImportsDocument, cancellationToken);
+			var resultDocument = await organizeImportsService.OrganizeImportsAsync (removedImportsDocument, OrganizeImportsOptions.Default, cancellationToken);
 
 			// Apply the document change if needed
 			if (resultDocument != originalDocument) {
-				workspace.ApplyDocumentChanges (resultDocument, cancellationToken);
+				workspace.TryApplyChanges (resultDocument.Project.Solution);
 			}
 		}
 	}

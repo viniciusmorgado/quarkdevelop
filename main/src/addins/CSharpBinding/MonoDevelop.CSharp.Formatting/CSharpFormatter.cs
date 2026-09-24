@@ -38,16 +38,12 @@ using Microsoft.CodeAnalysis.Text;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Core.Text;
-using MonoDevelop.CSharp.OptionProvider;
 using MonoDevelop.Ide.CodeFormatting;
-using MonoDevelop.Ide.Completion.Presentation;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Gui.Content;
 using MonoDevelop.Projects.Policies;
 using Roslyn.Utilities;
-using Microsoft.CodeAnalysis.Options;
-using MonoDevelop.CSharp.OptionProvider;
-using Microsoft.VisualStudio.CodingConventions;
+
 using System.Linq;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
@@ -86,20 +82,14 @@ namespace MonoDevelop.CSharp.Formatting
 			try {
 				var document = context.AnalysisDocument;
 
-				var formattingService = document.GetLanguageService<IEditorFormattingService> ();
+				var formattingService = MonoDevelop.CSharp.Formatting.RoslynFormattingService.Instance;
 				if (formattingService == null || !formattingService.SupportsFormatSelection)
 					return;
 
-				var formattingRules = new List<AbstractFormattingRule> ();
-				formattingRules.Add (ContainedDocumentPreserveFormattingRule.Instance);
-				formattingRules.AddRange (Formatter.GetDefaultFormattingRules (document));
-
-				var workspace = document.Project.Solution.Workspace;
-				var root = await document.GetSyntaxRootAsync (cancellationToken).ConfigureAwait (false);
-				var options = await document.GetOptionsAsync (cancellationToken).ConfigureAwait (false);
-				var changes = Formatter.GetFormattedTextChanges (
-					root, new TextSpan [] { new TextSpan (startSegment.Offset, endSegment.EndOffset - startSegment.Offset) },
-					workspace, options, formattingRules, cancellationToken);
+				// Linux: no contained-document (ASP.NET) rule; the default rules and the C# policy of the document.
+				var options = await context.GetOptionsAsync (cancellationToken).ConfigureAwait (false);
+				var changes = await formattingService.GetFormattingChangesAsync (
+					document, new TextSpan (startSegment.Offset, endSegment.EndOffset - startSegment.Offset), options, cancellationToken).ConfigureAwait (false);
 
 				if (changes == null)
 					return;
@@ -115,11 +105,11 @@ namespace MonoDevelop.CSharp.Formatting
 		{
 			var doc = context.AnalysisDocument;
 
-			var formattingService = doc.GetLanguageService<IEditorFormattingService> ();
+			var formattingService = MonoDevelop.CSharp.Formatting.RoslynFormattingService.Instance;
 			if (formattingService == null || !formattingService.SupportsFormatSelection)
 				return;
 
-			var changes = await formattingService.GetFormattingChangesAsync (doc, new TextSpan (startOffset, length), default (System.Threading.CancellationToken));
+			var changes = await formattingService.GetFormattingChangesAsync (doc, new TextSpan (startOffset, length), await context.GetOptionsAsync (), default (System.Threading.CancellationToken));
 			if (changes == null)
 				return;
 			editor.ApplyTextChanges (changes);
@@ -142,87 +132,12 @@ namespace MonoDevelop.CSharp.Formatting
 			var policy = policyParent.Get<CSharpFormattingPolicy> (chain);
 			var textPolicy = policyParent.Get<TextStylePolicy> (chain);
 			var optionSet = policy.CreateOptions (textPolicy);
-
-			if (input is IReadonlyTextDocument doc) {
-				try {
-					var conventions = EditorConfigService.GetEditorConfigContext (doc.FileName).WaitAndGetResult ();
-					if (conventions != null)
-						optionSet = new FormattingDocumentOptionSet (optionSet, new DocumentOptions (optionSet, conventions.CurrentConventions));
-				} catch (Exception e) {
-					LoggingService.LogError ("Error while loading coding conventions.", e);
-				}
-			}
+			// Roslyn 4+: an OptionSet can no longer be layered over document options (IDocumentOptions is gone); the
+			// policy alone formats text that is not a workspace document (.editorconfig applies to workspace documents).
 
 			return new StringTextSource (FormatText (optionSet, input.Text, startOffset, startOffset + length));
 		}
 
-		sealed class DocumentOptions : IDocumentOptions
-		{
-			readonly OptionSet optionSet;
-			readonly ICodingConventionsSnapshot codingConventionsSnapshot;
-			private static readonly ConditionalWeakTable<IReadOnlyDictionary<string, object>, IReadOnlyDictionary<string, string>> s_convertedDictionaryCache =
-				new ConditionalWeakTable<IReadOnlyDictionary<string, object>, IReadOnlyDictionary<string, string>> ();
-
-
-			public DocumentOptions (OptionSet optionSet, ICodingConventionsSnapshot codingConventionsSnapshot)
-			{
-				this.optionSet = optionSet;
-				this.codingConventionsSnapshot = codingConventionsSnapshot;
-			}
-
-			public bool TryGetDocumentOption (OptionKey option, out object value)
-			{
-				if (codingConventionsSnapshot != null) {
-					var editorConfigPersistence = option.Option.StorageLocations.OfType<IEditorConfigStorageLocation> ().SingleOrDefault ();
-					if (editorConfigPersistence != null) {
-						// Temporarly map our old Dictionary<string, object> to a Dictionary<string, string>. This can go away once we either
-						// eliminate the legacy editorconfig support, or we change IEditorConfigStorageLocation.TryGetOption to take
-						// some interface that lets us pass both the Dictionary<string, string> we get from the new system, and the
-						// Dictionary<string, object> from the old system.
-						//
-						// We cache this with a conditional weak table so we're able to maintain the assumptions in EditorConfigNamingStyleParser
-						// that the instance doesn't regularly change and thus can be used for further caching
-						var allRawConventions = s_convertedDictionaryCache.GetValue (
-							codingConventionsSnapshot.AllRawConventions,
-							d => ImmutableDictionary.CreateRange (d.Select (c => KeyValuePairUtil.Create (c.Key, c.Value.ToString ()))));
-
-						try {
-							if (editorConfigPersistence.TryGetOption (allRawConventions, option.Option.Type, out value))
-								return true;
-						} catch (Exception ex) {
-							LoggingService.LogError ("Error while getting editor config preferences.", ex);
-						}
-					}
-				}
-
-				var result = optionSet.GetOption (option);
-				value = result;
-				return true;
-			}
-		}
-
-		sealed class FormattingDocumentOptionSet : OptionSet
-		{
-			readonly OptionSet fallbackOptionSet;
-			readonly IDocumentOptions optionsProvider;
-
-			internal FormattingDocumentOptionSet (OptionSet fallbackOptionSet, IDocumentOptions optionsProvider)
-			{
-				this.fallbackOptionSet = fallbackOptionSet;
-				this.optionsProvider = optionsProvider;
-			}
-
-			public override object GetOption (OptionKey optionKey)
-			{
-				if (optionsProvider.TryGetDocumentOption (optionKey, out object value))
-					return value;
-				return fallbackOptionSet.GetOption (optionKey);
-			}
-
-			public override OptionSet WithChangedOption (OptionKey optionAndLanguage, object value) => throw new InvalidOperationException ();
-
-			internal override IEnumerable<OptionKey> GetChangedOptions (OptionSet optionSet) => throw new InvalidOperationException ();
-		}
 
 	}
 }

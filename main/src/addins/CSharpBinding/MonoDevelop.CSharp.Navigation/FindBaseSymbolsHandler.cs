@@ -50,7 +50,7 @@ namespace MonoDevelop.CSharp.Navigation
 			return Task.Run (delegate {
 				var searchMonitor = IdeApp.Workbench.ProgressMonitors.GetSearchProgressMonitor (true, true);
 				using (var monitor = searchMonitor.WithCancellationSource (cancellationTokenSource)) {
-					var foundSymbol = sym.OverriddenMember ();
+					var foundSymbol = sym.GetOverriddenMember (false);
 					while (foundSymbol != null) {
 						foreach (var loc in foundSymbol.Locations) {
 							if (monitor.CancellationToken.IsCancellationRequested)
@@ -61,7 +61,7 @@ namespace MonoDevelop.CSharp.Navigation
 							
 							searchMonitor.ReportResult (new MemberReference (foundSymbol, loc.SourceTree.FilePath, loc.SourceSpan.Start, loc.SourceSpan.Length));
 						}
-						foundSymbol = foundSymbol.OverriddenMember ();
+						foundSymbol = foundSymbol.GetOverriddenMember (false);
 					}
 				}
 			});

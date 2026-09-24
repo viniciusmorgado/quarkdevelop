@@ -126,9 +126,9 @@ namespace MonoDevelop.AnalysisCore.Gui
 				} else {
 					var codeFixService = Ide.Composition.CompositionManager.Instance.GetExportedValue<ICodeFixService> ();
 					var span = new TextSpan (offset, 0);
-					var fixes = await codeFixService.GetFixesAsync (ad, span, true, token);
+					var fixes = await codeFixService.GetFixesAsync (ad, span, token);
 					var codeRefactoringService = Ide.Composition.CompositionManager.Instance.GetExportedValue<Microsoft.CodeAnalysis.CodeRefactorings.ICodeRefactoringService> ();
-					var refactorings = await codeRefactoringService.GetRefactoringsAsync (ad, span, token);
+					var refactorings = await codeRefactoringService.GetRefactoringsAsync (ad, span, null, token);
 					tag = new CodeActions.CodeActionContainer (fixes, refactorings) {
 						Span = new TextSpan (minOffset, Math.Max (0,  maxOffset - minOffset)),
 						FloatingWidgetShown = floatingWidgetShown

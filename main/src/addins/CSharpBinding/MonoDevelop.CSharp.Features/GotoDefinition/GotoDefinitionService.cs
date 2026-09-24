@@ -107,7 +107,7 @@ namespace ICSharpCode.NRefactory6.CSharp.Features.GotoDefinition
 		private static ITypeSymbol GetContainingTypeSymbol (int caretPosition, Document document, CancellationToken cancellationToken)
 		{
 			var syntaxRoot = document.GetSyntaxRootAsync (cancellationToken).Result;
-			var containingTypeDeclaration = CSharpSyntaxFactsService.Instance.GetContainingTypeDeclaration (syntaxRoot, caretPosition);
+			var containingTypeDeclaration = Microsoft.CodeAnalysis.CSharp.LanguageService.CSharpSyntaxFacts.Instance.GetContainingTypeDeclaration (syntaxRoot, caretPosition);
 
 			if (containingTypeDeclaration != null) {
 				var semanticModel = document.GetSemanticModelAsync (cancellationToken).Result;

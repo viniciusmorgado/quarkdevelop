@@ -156,7 +156,7 @@ namespace ICSharpCode.NRefactory6.CSharp
 		public static SyntaxContext Create(Workspace workspace, Document document, SemanticModel semanticModel, int position, CancellationToken cancellationToken)
 		{
 			return new SyntaxContext(
-				CSharpSyntaxContext.CreateContext(workspace, semanticModel, position, cancellationToken),
+				CSharpSyntaxContext.CreateContext(document, semanticModel, position, cancellationToken),
 				inferenceService.InferTypes(semanticModel, position, cancellationToken).ToList()
 			);
 		}

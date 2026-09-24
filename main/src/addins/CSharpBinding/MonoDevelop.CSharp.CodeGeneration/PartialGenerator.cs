@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System.Linq;
+using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using Gtk;
 using MonoDevelop.Core;

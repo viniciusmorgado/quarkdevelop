@@ -61,7 +61,7 @@ namespace MonoDevelop.CSharp.Completion
 		public CSharpCompletionData (Microsoft.CodeAnalysis.Document document, ITextSnapshot triggerSnapshot, CompletionService completionService, CompletionItem completionItem) : base (document, triggerSnapshot, completionService, completionItem)
 		{
 			provider = new Lazy<CompletionProvider> (delegate {
-				return ((CSharpCompletionService)completionService).GetProvider (CompletionItem);
+				return completionService.GetProvider (CompletionItem, document.Project);
 			});
 		}
 

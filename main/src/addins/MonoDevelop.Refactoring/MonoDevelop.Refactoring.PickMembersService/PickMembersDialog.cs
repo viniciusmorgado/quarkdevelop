@@ -26,7 +26,7 @@
 using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Notification;
-using Microsoft.CodeAnalysis.LanguageServices;
+using Microsoft.CodeAnalysis.LanguageService;
 using System.Collections.Generic;
 using Xwt;
 using MonoDevelop.Ide;

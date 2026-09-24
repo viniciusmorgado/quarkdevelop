@@ -36,7 +36,8 @@ namespace MonoDevelop.Refactoring.PickMembersService
 	[ExportWorkspaceService(typeof(IPickMembersService)), Shared]
 	class PickMembersService : IPickMembersService
 	{
-		PickMembersResult IPickMembersService.PickMembers(string title, ImmutableArray<ISymbol> members, ImmutableArray<PickMembersOption> options)
+		// Roslyn 4+ passes selectAll (preselect every member); the dialog starts with none selected as before.
+		PickMembersResult IPickMembersService.PickMembers(string title, ImmutableArray<ISymbol> members, ImmutableArray<PickMembersOption> options, bool selectAll)
 		{
 				PickMembersResult result = null;
 				Xwt.Toolkit.NativeEngine.Invoke (delegate {
@@ -47,7 +48,7 @@ namespace MonoDevelop.Refactoring.PickMembersService
 						if (!performChange) {
 							result = PickMembersResult.Canceled;
 						} else {
-						result = new PickMembersResult (dialog.IncludedMembers.ToImmutableArray (), dialog.Options);
+						result = new PickMembersResult (dialog.IncludedMembers.ToImmutableArray (), dialog.Options, false);
 						}
 					} catch (Exception ex) {
 						LoggingService.LogError ("Error while signature changing.", ex);

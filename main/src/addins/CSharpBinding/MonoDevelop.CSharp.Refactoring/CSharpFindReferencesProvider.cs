@@ -219,11 +219,11 @@ namespace MonoDevelop.CSharp.Refactoring
 
 		public static async Task<SymbolAndProjectId []> GatherSymbols (SymbolAndProjectId symbol, Microsoft.CodeAnalysis.Solution solution, CancellationToken token)
 		{
-			var implementations = await SymbolFinder.FindImplementationsAsync (symbol, solution, null, token);
+			var implementations = (await SymbolFinder.FindImplementationsAsync (symbol.Symbol, solution, null, token)).ToArray ();
 			var result = new SymbolAndProjectId [implementations.Length + 1];
 			result [0] = symbol;
 			for (int i = 0; i < implementations.Length; i++)
-				result [i + 1] = implementations [i];
+				result [i + 1] = SymbolAndProjectId.Create (implementations [i], solution.GetOriginatingProjectId (implementations [i]) ?? symbol.ProjectId);
 			return result;
 		}
 

@@ -24,12 +24,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Microsoft.CodeAnalysis.Shared.Utilities;
+using Microsoft.CodeAnalysis;
 
 namespace MonoDevelop.CodeActions
 {
-	class RoslynProgressTracker : IProgressTracker
+	// Roslyn 4+: code actions report progress through IProgress<CodeAnalysisProgress> (was IProgressTracker).
+	class RoslynProgressTracker : IProgress<CodeAnalysisProgress>
 	{
+		public void Report (CodeAnalysisProgress value)
+		{
+			if (value.ClearValue)
+				Clear ();
+			if (value.IncompleteItemsValue is int incomplete)
+				AddItems (incomplete);
+			if (value.CompleteItemValue is int complete)
+				CompletedItems += complete;
+			if (value.DescriptionValue != null)
+				Description = value.DescriptionValue;
+		}
+
 		public int CompletedItems { get; set; }
 
 		public int TotalItems { get; set; }

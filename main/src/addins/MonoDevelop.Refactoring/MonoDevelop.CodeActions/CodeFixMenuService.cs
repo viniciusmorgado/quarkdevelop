@@ -63,7 +63,7 @@ namespace MonoDevelop.CodeActions
 				return menu;
 			}
 
-			var options = ((MonoDevelopWorkspaceDiagnosticAnalyzerProviderService)Ide.Composition.CompositionManager.Instance.GetExportedValue<IWorkspaceDiagnosticAnalyzerProviderService> ()).GetOptionsAsync ().Result;
+			var options = Ide.Composition.CompositionManager.Instance.GetExportedValue<MonoDevelopWorkspaceDiagnosticAnalyzerProviderService> ().GetOptionsAsync ().Result;
 			int mnemonic = 1;
 
 			var suppressLabel = GettextCatalog.GetString ("_Suppress");
@@ -83,7 +83,7 @@ namespace MonoDevelop.CodeActions
 				var state = scopes.Contains (FixAllScope.Document) ? cfa.FixAllState : null;
 
 				foreach (var fix in cfa.Fixes) {
-					var diag = fix.PrimaryDiagnostic;
+					var diag = fix.Diagnostics [0];
 					if (options.TryGetDiagnosticDescriptor (diag.Id, out var descriptor) && !diag.Descriptor.IsEnabledByDefault)
 						continue;
 					
@@ -180,7 +180,7 @@ namespace MonoDevelop.CodeActions
 			if (workspace == null)
 				return null;
 
-			var title = fixState.GetDefaultFixAllTitle ();
+			var title = new FixAllContext (fixState, CodeAnalysisProgress.None, token).GetDefaultFixAllTitle ();
 			var label = mnemonic < 0 ? title : CreateLabel (title, ref mnemonic);
 
 			var item = new CodeFixMenuEntry (label, async delegate {
@@ -188,7 +188,7 @@ namespace MonoDevelop.CodeActions
 				// Task.Run here so we don't end up binding the whole document on popping the menu, also there is no cancellation token support
 
 				Microsoft.CodeAnalysis.Text.TextChange[] result = await Task.Run (async () => {
-					var context = fixState.CreateFixAllContext (new RoslynProgressTracker (), token);
+					var context = new FixAllContext (fixState, new RoslynProgressTracker (), token);
 					var fix = await provider.GetFixAsync (context);
 
 					var previewOperations = await fix.GetPreviewOperationsAsync (token);
@@ -236,7 +236,7 @@ namespace MonoDevelop.CodeActions
 			menu.Add (CreateFixMenuEntry (editor, fix, ref mnemonic));
 
 			// TODO: Add support for more than doc when we have global undo.
-			fixState = fixState?.WithScopeAndEquivalenceKey (FixAllScope.Document, fix.EquivalenceKey);
+			fixState = fixState?.With (default, new Optional<FixAllScope> (FixAllScope.Document), new Optional<string> (fix.EquivalenceKey));
 			var fixAllMenuEntry = CreateFixAllMenuEntry (editor, fixState, ref mnemonic, token);
 			if (fixAllMenuEntry != null) {
 				fixAllMenu.Add (new CodeFixMenuEntry (fix.Message, null));
@@ -287,13 +287,13 @@ namespace MonoDevelop.CodeActions
 					foreach (var operation in await act.GetOperationsAsync (token)) {
 						var applyChanges = operation as ApplyChangesOperation;
 						if (applyChanges == null) {
-							operation.TryApply (documentContext.RoslynWorkspace, new RoslynProgressTracker (), token);
+							await operation.TryApplyAsync (documentContext.RoslynWorkspace, oldSolution, new RoslynProgressTracker (), token);
 							continue;
 						}
 						if (updatedSolution == oldSolution) {
 							updatedSolution = applyChanges.ChangedSolution;
 						}
-						operation.TryApply (documentContext.RoslynWorkspace, new RoslynProgressTracker (), token);
+						await operation.TryApplyAsync (documentContext.RoslynWorkspace, oldSolution, new RoslynProgressTracker (), token);
 					}
 				}
 				await TryStartRenameSession (documentContext.RoslynWorkspace, oldSolution, updatedSolution, token);

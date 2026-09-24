@@ -78,11 +78,11 @@ namespace MonoDevelop.CodeIssues
 					if (skip)
 						continue;
 
-					var options = await ((MonoDevelopWorkspaceDiagnosticAnalyzerProviderService)Ide.Composition.CompositionManager.Instance.GetExportedValue<IWorkspaceDiagnosticAnalyzerProviderService> ()).GetOptionsAsync ();
+					var options = await Ide.Composition.CompositionManager.Instance.GetExportedValue<MonoDevelopWorkspaceDiagnosticAnalyzerProviderService> ().GetOptionsAsync ();
 					if (options.TryGetDiagnosticDescriptor (data.Id, out var desc) && !data.IsEnabledByDefault)
 						continue;
 
-					var diagnostic = await data.ToDiagnosticAsync (analysisDocument, cancellationToken, desc);
+					var diagnostic = await data.ToDiagnosticAsync (input.AnalysisDocument.Project, cancellationToken).ConfigureAwait (false);
 					resultList.Add (new DiagnosticResult (diagnostic));
 				}
 				return resultList;
@@ -127,24 +127,6 @@ namespace MonoDevelop.CodeIssues
 			return !lexicalError.Contains (errorId);
 		}
 
-		static async Task<Diagnostic> ToDiagnosticAsync (this DiagnosticData data, AnalysisDocument analysisDocument, CancellationToken cancellationToken, CodeDiagnosticDescriptor desc)
-		{
-			var project = analysisDocument.DocumentContext.AnalysisDocument.Project;
-			var location = await data.DataLocation.ConvertLocationAsync (project, cancellationToken).ConfigureAwait (false);
-			var additionalLocations = await data.AdditionalLocations.ConvertLocationsAsync (project, cancellationToken).ConfigureAwait (false);
-
-			DiagnosticSeverity severity =  data.Severity;
-			
-			return Diagnostic.Create (
-				data.Id, data.Category, data.Message, severity, data.DefaultSeverity,
-				data.IsEnabledByDefault, GetWarningLevel (severity), data.IsSuppressed, data.Title, data.Description, data.HelpLink,
-				location, additionalLocations, customTags: data.CustomTags, properties: data.Properties);
-		}
-
-		static int GetWarningLevel (DiagnosticSeverity severity)
-		{
-			return severity == DiagnosticSeverity.Error ? 0 : 1;
-		}
 
 	}
 }

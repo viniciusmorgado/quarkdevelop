@@ -71,7 +71,10 @@ namespace MonoDevelop.AnalysisCore.Gui
 	public class ResultsEditorExtension : TextEditorExtension, IQuickTaskProvider
 	{
 		bool disposed;
-		IDiagnosticService diagService = Ide.Composition.CompositionManager.Instance.GetExportedValue<IDiagnosticService> ();
+		// Roslyn 4+ has no push-based IDiagnosticService: the diagnostics of the document are pulled from the
+		// workspace's IDiagnosticAnalyzerService after each parse (host analyzers added by the provider service).
+		MonoDevelopWorkspaceDiagnosticAnalyzerProviderService analyzerProvider = Ide.Composition.CompositionManager.Instance.GetExportedValue<MonoDevelopWorkspaceDiagnosticAnalyzerProviderService> ();
+		static readonly object resultsId = new object ();
 		
 		protected override void Initialize ()
 		{
@@ -101,8 +104,7 @@ namespace MonoDevelop.AnalysisCore.Gui
 			enabled = false;
 			if (Editor.Options is DefaultSourceEditorOptions options)
 				options.Changed -= Options_Changed;
-			diagService.DiagnosticsUpdated -= OnDiagnosticsUpdated;
-			diagService = null;
+			DocumentContext.DocumentParsed -= OnDocumentParsed;
 			CancelUpdateTimout ();
 			AnalysisOptions.AnalysisEnabled.Changed -= AnalysisOptionsChanged;
 			RemoveAllMarkers ();
@@ -141,7 +143,7 @@ namespace MonoDevelop.AnalysisCore.Gui
 				return;
 			enabled = true;
 
-			diagService.DiagnosticsUpdated += OnDiagnosticsUpdated;
+			DocumentContext.DocumentParsed += OnDocumentParsed;
 			if (DocumentContext.ParsedDocument != null)
 				UpdateInitialDiagnostics ();
 		}
@@ -151,7 +153,7 @@ namespace MonoDevelop.AnalysisCore.Gui
 			if (!enabled)
 				return;
 			enabled = false;
-			diagService.DiagnosticsUpdated -= OnDiagnosticsUpdated;
+			DocumentContext.DocumentParsed -= OnDocumentParsed;
 			CancelUpdateTimout ();
 			new ResultsUpdater (this, new Result[0], null, CancellationToken.None).Update ();
 		}
@@ -169,56 +171,34 @@ namespace MonoDevelop.AnalysisCore.Gui
 				return;
 
 			var ad = new AnalysisDocument (Editor, DocumentContext);
+			var ws = DocumentContext.RoslynWorkspace;
+			var token = CancelUpdateTimeout (resultsId);
 
-			Task.Run (() => {
-				var ws = DocumentContext.RoslynWorkspace;
-				var analysisDocument = DocumentContext.AnalysisDocument;
-				if (analysisDocument == null)
-					return;
-				var project = analysisDocument.Project.Id;
-				var document = analysisDocument.Id;
-
-				// Force an initial diagnostic update from the engine.
-				foreach (var updateArgs in diagService.GetDiagnosticsUpdatedEventArgs (ws, project, document, src.Token)) {
-					var diagnostics = AdjustInitialDiagnostics (analysisDocument.Project.Solution, updateArgs, src.Token);
-					if (diagnostics.Length == 0) {
-						continue;
-					}
-
-					var e = DiagnosticsUpdatedArgs.DiagnosticsCreated (
-						updateArgs.Id, updateArgs.Workspace, analysisDocument.Project.Solution, updateArgs.ProjectId, updateArgs.DocumentId, diagnostics);
-
-					OnDiagnosticsUpdated (this, e);
+			Task.Run (async () => {
+				try {
+					await analyzerProvider.EnsureHostAnalyzersAsync (ws).ConfigureAwait (false);
+					// The document of the current solution: the host analyzers are part of it.
+					var analysisDocument = ws.CurrentSolution.GetDocument (doc.Id);
+					var service = ws.Services.GetService<IDiagnosticAnalyzerService> ();
+					if (analysisDocument == null || service == null)
+						return;
+					var diagnostics = await service.GetDiagnosticsForSpanAsync (
+						analysisDocument, null, DiagnosticIdFilter.All, null, DiagnosticKind.All, token).ConfigureAwait (false);
+					await OnDiagnosticsUpdated (ad, diagnostics, token).ConfigureAwait (false);
+				} catch (OperationCanceledException) {
+				} catch (Exception e) {
+					LoggingService.LogError ("Error while computing the diagnostics of " + doc.FilePath, e);
 				}
 			});
 		}
 
-		private ImmutableArray<DiagnosticData> AdjustInitialDiagnostics (
-				Solution solution, UpdatedEventArgs args, CancellationToken cancellationToken)
+		void OnDocumentParsed (object sender, EventArgs e)
 		{
-			// we only reach here if there is the document
-			var document = solution.GetDocument (args.DocumentId);
-			// if there is no source text for this document, we don't populate the initial tags. this behavior is equivalent of existing
-			// behavior in OnDiagnosticsUpdated.
-			if (!document.TryGetText (out var text)) {
-				return ImmutableArray<DiagnosticData>.Empty;
-			}
-
-			// GetDiagnostics returns whatever cached diagnostics in the service which can be stale ones. for example, build error will be most likely stale
-			// diagnostics. so here we make sure we filter out any diagnostics that is not in the text range.
-			var builder = ArrayBuilder<DiagnosticData>.GetInstance ();
-			var fullSpan = new TextSpan (0, text.Length);
-			foreach (var diagnostic in diagService.GetDiagnostics (
-				args.Workspace, args.ProjectId, args.DocumentId, args.Id, includeSuppressedDiagnostics: false, cancellationToken: cancellationToken)) {
-				if (fullSpan.Contains (diagnostic.GetExistingOrCalculatedTextSpan (text))) {
-					builder.Add (diagnostic);
-				}
-			}
-
-			return builder.ToImmutableAndFree ();
+			if (enabled)
+				UpdateInitialDiagnostics ();
 		}
 
-		async void OnDiagnosticsUpdated (object sender, DiagnosticsUpdatedArgs e)
+		async Task OnDiagnosticsUpdated (AnalysisDocument ad, ImmutableArray<DiagnosticData> diagnostics, CancellationToken token)
 		{
 			if (!enabled)
 				return;
@@ -227,21 +207,10 @@ namespace MonoDevelop.AnalysisCore.Gui
 			if (doc == null || DocumentContext.IsAdHocProject)
 				return;
 
-			var cad = DocumentContext.AnalysisDocument;
-			if (cad == null || cad.Project == null)
-				return;
-			
-			if (e.DocumentId != cad.Id || e.ProjectId != cad.Project.Id)
-				return;
-			var token = CancelUpdateTimeout (e.Id);
-			var ad = new AnalysisDocument (Editor, DocumentContext);
-			try {
-				var result = await CodeDiagnosticRunner.Check (ad, token, e.Diagnostics).ConfigureAwait (false);
-				if (result is IReadOnlyList<Result> resultList) {
-					var updater = new ResultsUpdater (this, resultList, e.Id, token);
-					updater.Update ();
-				}
-			} catch (Exception) {
+			var result = await CodeDiagnosticRunner.Check (ad, token, diagnostics).ConfigureAwait (false);
+			if (result is IReadOnlyList<Result> resultList) {
+				var updater = new ResultsUpdater (this, resultList, resultsId, token);
+				updater.Update ();
 			}
 		}
 
@@ -516,11 +485,11 @@ namespace MonoDevelop.AnalysisCore.Gui
 					foreach (var task in tasks) {
 						capacity += task.Value.Length;
 					}
-					var builder = ArrayBuilder<QuickTask>.GetInstance (capacity);
+					var builder = ImmutableArray.CreateBuilder<QuickTask> (capacity);
 					foreach (var task in tasks) {
 						builder.AddRange (task.Value);
 					}
-					return builder.ToImmutableAndFree ();
+					return builder.ToImmutable ();
 				}
 			}
 		}

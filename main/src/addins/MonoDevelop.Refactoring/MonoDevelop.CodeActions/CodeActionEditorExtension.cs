@@ -158,10 +158,13 @@ namespace MonoDevelop.CodeActions
 					}
 
 					var lineSpan = new TextSpan (line.Offset, line.Length);
-					var fixes = await codeFixService.GetFixesAsync (ad, lineSpan, true, cancellationToken);
+					// Roslyn 4+: the host analyzers are solution analyzer references (see the provider service).
+					await Ide.Composition.CompositionManager.Instance.GetExportedValue<MonoDevelop.AnalysisCore.MonoDevelopWorkspaceDiagnosticAnalyzerProviderService> ().EnsureHostAnalyzersAsync (workspace);
+					ad = workspace.CurrentSolution.GetDocument (ad.Id) ?? ad;
+					var fixes = await codeFixService.GetFixesAsync (ad, lineSpan, cancellationToken);
 					fixes = await Runtime.RunInMainThread(() => FilterOnUIThread (fixes, workspace));
 
-					var refactorings = await codeRefactoringService.GetRefactoringsAsync (ad, span, cancellationToken);
+					var refactorings = await codeRefactoringService.GetRefactoringsAsync (ad, span, null, cancellationToken);
 					var codeActionContainer = new CodeActionContainer (fixes, refactorings);
 					Application.Invoke ((o, args) => {
 						if (cancellationToken.IsCancellationRequested)
@@ -196,7 +199,7 @@ namespace MonoDevelop.CodeActions
 			var builder = ImmutableArray.CreateBuilder<CodeFixCollection> (collections.Length);
 			var ids = new HashSet<string> ();
 			foreach (var c in collections) {
-				if (!ids.Add (c.FirstDiagnostic.Id))
+				if (!ids.Add (c.Diagnostics [0].Id))
 					continue;
 				var filtered = FilterOnUIThread (c, workspace);
 				if (filtered == null)
@@ -218,25 +221,18 @@ namespace MonoDevelop.CodeActions
 		{
 			Runtime.AssertMainThread ();
 
-			var applicableFixes = collection.Fixes.WhereAsArray (f => IsApplicable (f.Action, workspace));
+			var applicableFixes = collection.Fixes.Where (f => IsApplicable (f.Action, workspace)).ToImmutableArray ();
 			return applicableFixes.Length == 0
 				? null
 				: applicableFixes.Length == collection.Fixes.Length
 					? collection
 					: new CodeFixCollection (
 						collection.Provider, collection.TextSpan, applicableFixes,
-						collection.FixAllState, collection.SupportedScopes, collection.FirstDiagnostic);
+						collection.FixAllState, collection.SupportedScopes, collection.Diagnostics);
 		}
 
-		static bool IsApplicable (Microsoft.CodeAnalysis.CodeActions.CodeAction action, Workspace workspace)
-		{
-			if (!action.PerformFinalApplicabilityCheck) {
-				return true;
-			}
-
-			Runtime.AssertMainThread ();
-			return action.IsApplicable (workspace);
-		}
+		// Roslyn 4+ removed the final applicability check of code actions (every action is applicable).
+		static bool IsApplicable (Microsoft.CodeAnalysis.CodeActions.CodeAction action, Workspace workspace) => true;
 
 		internal async void PopupQuickFixMenu (Gdk.EventButton evt, Action<CodeFixMenu> menuAction, Xwt.Point? point = null)
 		{

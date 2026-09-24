@@ -121,7 +121,7 @@ namespace MonoDevelop.CSharp.Highlighting
 				int leadOffset = selectionRange.EndOffset;
 				var text = editor.GetTextAt (selectionRange);
 
-				var formattingService = context.AnalysisDocument.GetLanguageService<IEditorFormattingService> ();
+				var formattingService = MonoDevelop.CSharp.Formatting.RoslynFormattingService.Instance;
 
 
 				if (editor.Options.GenerateFormattingUndoStep) {

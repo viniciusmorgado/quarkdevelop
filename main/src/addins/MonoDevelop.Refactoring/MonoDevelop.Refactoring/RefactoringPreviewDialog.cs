@@ -97,7 +97,7 @@ namespace MonoDevelop.Refactoring
 			FillChanges ();
 		}
 		
-		void SetLocationTextData (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		void SetLocationTextData (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			CellRendererText cellRendererText = (CellRendererText)cell;
 			Change change = store.GetValue (iter, objColumn) as Change;
@@ -116,13 +116,13 @@ namespace MonoDevelop.Refactoring
 			if (treeviewPreview.Selection.IterIsSelected (iter)) {
 				cellRendererText.Text = text;
 			} else {
-				var color = Style.Text (StateType.Insensitive);
-				var c = string.Format ("#{0:X02}{1:X02}{2:X02}", color.Red / 256, color.Green / 256, color.Blue / 256);
+				var color = this.GetStyleTextColor (StateType.Insensitive);
+				var c = string.Format ("#{0:X02}{1:X02}{2:X02}", (int)(color.R * 255), (int)(color.G * 255), (int)(color.B * 255));
 				cellRendererText.Markup = "<span foreground=\"" + c + "\">" + text + "</span>";
 			}
 		}
 		
-		void SetDiffCellData (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		void SetDiffCellData (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			try {
 				CellRendererDiff cellRendererDiff = (CellRendererDiff)cell;
@@ -214,11 +214,12 @@ namespace MonoDevelop.Refactoring
 			}
 
 			bool isDisposed = false;
-			protected override void OnDestroyed ()
+			// GTK 3: cell renderers are not GtkObjects (no destroy signal); release the layout on dispose.
+			protected override void Dispose (bool disposing)
 			{
 				isDisposed = true;
 				DisposeLayout ();
-				base.OnDestroyed ();
+				base.Dispose (disposing);
 			}
 
 			public void Reset ()
@@ -267,14 +268,14 @@ namespace MonoDevelop.Refactoring
 				}
 			}
 
-			protected override void Render (Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+			protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
 			{
 				if (isDisposed)
 					return;
 				try {
 					if (diffMode) {
-						int w, maxy;
-						window.GetSize (out w, out maxy);
+						// GTK 3: drawn with cairo (was Gdk.GC on the GDK window).
+						int maxy = widget.AllocatedHeight;
 
 						int recty = cell_area.Y;
 						int recth = cell_area.Height - 1;
@@ -285,18 +286,14 @@ namespace MonoDevelop.Refactoring
 						if (recth > maxy + 2)
 							recth = maxy + 2;
 
-						window.DrawRectangle (widget.Style.BaseGC (Gtk.StateType.Normal), true, cell_area.X, recty, cell_area.Width - 1, recth);
+						gtk3cr.Rectangle (cell_area.X, recty, cell_area.Width - 1, recth);
+						gtk3cr.SetSourceColor (widget.GetStyleBaseColor (Gtk.StateType.Normal));
+						gtk3cr.Fill ();
 
-						Gdk.GC normalGC = widget.Style.TextGC (StateType.Normal);
-						Gdk.GC removedGC = new Gdk.GC (window);
-						removedGC.Copy (normalGC);
-						removedGC.RgbFgColor = new Color (255, 0, 0);
-						Gdk.GC addedGC = new Gdk.GC (window);
-						addedGC.Copy (normalGC);
-						addedGC.RgbFgColor = new Color (0, 0, 255);
-						Gdk.GC infoGC = new Gdk.GC (window);
-						infoGC.Copy (normalGC);
-						infoGC.RgbFgColor = new Color (0xa5, 0x2a, 0x2a);
+						var normalColor = widget.GetStyleTextColor (StateType.Normal);
+						var removedColor = new Cairo.Color (1, 0, 0);
+						var addedColor = new Cairo.Color (0, 0, 1);
+						var infoColor = new Cairo.Color (0xa5 / 255.0, 0x2a / 255.0, 0x2a / 255.0);
 
 						int y = cell_area.Y + 2;
 
@@ -309,39 +306,41 @@ namespace MonoDevelop.Refactoring
 							if (line.Length == 0)
 								continue;
 
-							Gdk.GC gc;
+							Cairo.Color color;
 							switch (line[0]) {
 							case '-':
-								gc = removedGC;
+								color = removedColor;
 								break;
 							case '+':
-								gc = addedGC;
+								color = addedColor;
 								break;
 							case '@':
-								gc = infoGC;
+								color = infoColor;
 								break;
 							default:
-								gc = normalGC;
+								color = normalColor;
 								break;
 							}
 
 							layout.SetText (line);
-							window.DrawLayout (gc, cell_area.X + 2, y, layout);
+							gtk3cr.SetSourceColor (color);
+							gtk3cr.MoveTo (cell_area.X + 2, y);
+							Pango.CairoHelper.ShowLayout (gtk3cr, layout);
 						}
-						window.DrawRectangle (widget.Style.DarkGC (Gtk.StateType.Prelight), false, cell_area.X, recty, cell_area.Width - 1, recth);
-						removedGC.Dispose ();
-						addedGC.Dispose ();
-						infoGC.Dispose ();
+						gtk3cr.Rectangle (cell_area.X + 0.5, recty + 0.5, cell_area.Width - 1, recth);
+						gtk3cr.SetSourceColor (widget.GetStyleDarkColor (Gtk.StateType.Prelight));
+						gtk3cr.LineWidth = 1;
+						gtk3cr.Stroke ();
 					} else {
 						int y = cell_area.Y + (cell_area.Height - height) / 2;
-						window.DrawLayout (widget.Style.TextGC (GetState (flags)), cell_area.X, y, layout);
+						gtk3cr.DrawLayout (widget, GetState (flags), cell_area.X, y, layout);
 					}
 				} catch (Exception e) {
 					Console.WriteLine (e);
 				}
 			}
 
-			public override void GetSize (Widget widget, ref Rectangle cell_area, out int x_offset, out int y_offset, out int c_width, out int c_height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int c_width, out int c_height)
 			{
 				x_offset = y_offset = 0;
 				c_width = width;
@@ -352,6 +351,30 @@ namespace MonoDevelop.Refactoring
 					c_width += 4;
 					c_height += 4;
 				}
+			}
+
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
 			}
 
 			StateType GetState (CellRendererState flags)

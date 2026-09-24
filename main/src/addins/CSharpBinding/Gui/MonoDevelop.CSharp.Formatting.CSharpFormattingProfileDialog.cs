@@ -14,7 +14,7 @@ namespace MonoDevelop.CSharp.Formatting
 		
 		private global::Gtk.Label label12;
 		
-		private global::Gtk.ComboBox comboboxCategories;
+		private global::Gtk.ComboBoxText comboboxCategories;
 		
 		private global::Gtk.Notebook notebookCategories;
 		
@@ -68,7 +68,7 @@ namespace MonoDevelop.CSharp.Formatting
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(6));
 			// Internal child MonoDevelop.CSharp.Formatting.CSharpFormattingProfileDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.Spacing = 6;
 			w1.BorderWidth = ((uint)(2));
@@ -100,7 +100,7 @@ namespace MonoDevelop.CSharp.Formatting
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child hbox4.Gtk.Box+BoxChild
-			this.comboboxCategories = global::Gtk.ComboBox.NewText ();
+			this.comboboxCategories = new global::Gtk.ComboBoxText ();
 			this.comboboxCategories.Name = "comboboxCategories";
 			this.hbox4.Add (this.comboboxCategories);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox4 [this.comboboxCategories]));
@@ -242,11 +242,11 @@ namespace MonoDevelop.CSharp.Formatting
 			this.vbox5.Add (this.hpaned1);
 			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.hpaned1]));
 			w21.Position = 0;
-			w1.Add (this.vbox5);
+			w1.PackStart (this.vbox5, true, true, 0);
 			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox5]));
 			w22.Position = 0;
 			// Internal child MonoDevelop.CSharp.Formatting.CSharpFormattingProfileDialog.ActionArea
-			global::Gtk.HButtonBox w23 = this.ActionArea;
+			global::Gtk.ButtonBox w23 = this.ActionArea;
 			w23.Name = "dialog1_ActionArea";
 			w23.Spacing = 10;
 			w23.BorderWidth = ((uint)(5));

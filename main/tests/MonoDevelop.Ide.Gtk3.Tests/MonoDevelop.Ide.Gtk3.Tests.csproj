@@ -17,6 +17,10 @@
     <ProjectReference Include="../../src/addins/GnomePlatform/GnomePlatform.csproj" />
     <!-- The GTK 3 source editor (T085/T088, SourceEditorTests). -->
     <ProjectReference Include="../../src/addins/MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" />
+    <!-- The GTK C# binding on Roslyn 5.9 (T089, CSharpBindingTests). -->
+    <ProjectReference Include="../../src/addins/CSharpBinding/CSharpBinding.csproj" />
+    <!-- Only so that the add-in dependencies of CSharpBinding (Refactoring -> RegexToolkit) resolve in the test registry. -->
+    <ProjectReference Include="../../src/addins/MonoDevelop.RegexToolkit/MonoDevelop.RegexToolkit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

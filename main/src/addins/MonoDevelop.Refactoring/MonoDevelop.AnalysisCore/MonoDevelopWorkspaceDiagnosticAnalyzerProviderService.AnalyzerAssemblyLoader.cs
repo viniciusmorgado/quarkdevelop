@@ -25,31 +25,28 @@
 // THE SOFTWARE.
 using System;
 using System.Reflection;
+using System.Runtime.Loader;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace MonoDevelop.AnalysisCore
 {
-	partial class MonoDevelopWorkspaceDiagnosticAnalyzerProviderService : IWorkspaceDiagnosticAnalyzerProviderService
+	partial class MonoDevelopWorkspaceDiagnosticAnalyzerProviderService
 	{
+		// The host analyzers are assemblies already loaded in the IDE: they are loaded in the default context.
 		sealed class AnalyzerAssemblyLoader : IAnalyzerAssemblyLoader
 		{
-			readonly IAnalyzerAssemblyLoader fallbackLoader = new DesktopAnalyzerAssemblyLoader ();
-
 			public void AddDependencyLocation (string fullPath)
 			{
-				fallbackLoader.AddDependencyLocation (fullPath);
 			}
 
 			public Assembly LoadFromPath (string fullPath)
 			{
 				try {
-					// We want to load the analyzer assembly assets in default context.
-					// Use Assembly.Load instead of Assembly.LoadFrom to ensure that if the assembly is ngen'ed, then the native image gets loaded.
 					return Assembly.Load (AssemblyName.GetAssemblyName (fullPath));
 				} catch (Exception) {
-					// Use the fallback loader if we fail to load the assembly in the default context.
-					return fallbackLoader.LoadFromPath (fullPath);
+					// .NET: the Desktop loader is gone; load the file into the default context.
+					return AssemblyLoadContext.Default.LoadFromAssemblyPath (fullPath);
 				}
 			}
 		}

@@ -37,7 +37,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Extensions;
-using Microsoft.CodeAnalysis.Editor.Implementation.Highlighting;
+
 using Microsoft.CodeAnalysis.FindSymbols;
 using Roslyn.Utilities;
 
@@ -104,7 +104,7 @@ namespace MonoDevelop.CSharp.Highlighting
 			if (analysisDocument == null)
 				return ImmutableArray<DocumentHighlights>.Empty;
 
-			return await highlightsService.GetDocumentHighlightsAsync (analysisDocument, Editor.CaretOffset, ImmutableHashSet<Document>.Empty.Add (analysisDocument), token);
+			return await highlightsService.GetDocumentHighlightsAsync (analysisDocument, Editor.CaretOffset, ImmutableHashSet<Document>.Empty.Add (analysisDocument), HighlightingOptions.Default, token);
 		}
 
 		protected override Task<IEnumerable<MemberReference>> GetReferencesAsync (ImmutableArray<DocumentHighlights> resolveResult, CancellationToken token)
@@ -144,7 +144,10 @@ namespace MonoDevelop.CSharp.Highlighting
 				return ReferenceUsageType.Read;
 			if (parent.IsOnlyWrittenTo ())
 				return ReferenceUsageType.Write;
-			if (parent.IsWrittenTo ())
+			// Roslyn 4+ IsWrittenTo needs a semantic model; the syntactic cases (ref/out arguments, ++/--, compound
+			// assignment) are checked here as before.
+			if (parent.IsInRefContext () || parent.IsInOutContext () || parent.IsOperandOfIncrementOrDecrementExpression () ||
+			    (parent.Parent is AssignmentExpressionSyntax assignment && assignment.Left == parent))
 				return ReferenceUsageType.ReadWrite;
 			return ReferenceUsageType.Read;
 		}

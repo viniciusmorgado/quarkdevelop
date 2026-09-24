@@ -103,7 +103,7 @@ namespace MonoDevelop.CodeGeneration
 			protected static void RemoveOverriddenMembers (HashSet<ISymbol> result, INamedTypeSymbol containingType, CancellationToken cancellationToken)
 			{
 				foreach (var member in containingType.GetMembers ()) {
-					var overriddenMember = member.OverriddenMember ();
+					var overriddenMember = member.GetOverriddenMember (false);
 					if (overriddenMember != null) {
 						result.Remove (overriddenMember);
 					}

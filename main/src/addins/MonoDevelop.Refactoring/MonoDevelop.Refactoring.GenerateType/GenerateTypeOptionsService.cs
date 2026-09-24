@@ -32,7 +32,7 @@ using Microsoft.CodeAnalysis.Host;
 using System.Composition;
 using MonoDevelop.Core;
 using Microsoft.CodeAnalysis.GenerateType;
-using Microsoft.CodeAnalysis.LanguageServices;
+using Microsoft.CodeAnalysis.LanguageService;
 using Microsoft.CodeAnalysis.ProjectManagement;
 
 namespace MonoDevelop.Refactoring.GenerateType

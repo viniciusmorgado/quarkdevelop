@@ -207,26 +207,19 @@ namespace MonoDevelop.CodeGeneration
 				BorderWidth = 3;
 			}
 			
-			protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
-				Style.PaintFlatBox (Style,
-				                    evnt.Window,
-				                    StateType.Normal,
-				                    ShadowType.Out,
-				                    evnt.Area,
-				                    this,
-				                    "tooltip",
-				                    Allocation.X + 1,
-				                    Allocation.Y + 1,
-				                    Allocation.Width - 2,
-				                    Allocation.Height - 2);
+				// GTK 3: the style context renders the tooltip-like background and frame (was Style.PaintFlatBox).
+				StyleContext.RenderBackground (gtk3cr, 1, 1, Allocation.Width - 2, Allocation.Height - 2);
+				StyleContext.RenderFrame (gtk3cr, 1, 1, Allocation.Width - 2, Allocation.Height - 2);
 				
-				return base.OnExposeEvent (evnt);
+				return base.OnDrawn (gtk3cr);
 			}
 		}
 		
-/*		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+/*		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+	var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			Console.WriteLine ("!!!!");
 			Style.PaintFlatBox (Style,
 				                    evnt.Window,
@@ -239,7 +232,7 @@ namespace MonoDevelop.CodeGeneration
 				                    Allocation.Y + 1,
 				                    Allocation.Width - 2,
 				                    Allocation.Height - 2);
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}*/
 	}
 }

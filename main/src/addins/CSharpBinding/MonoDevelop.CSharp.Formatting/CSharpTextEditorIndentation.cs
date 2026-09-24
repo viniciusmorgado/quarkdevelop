@@ -466,7 +466,7 @@ namespace MonoDevelop.CSharp.Formatting
 			if (descriptor.SpecialKey == SpecialKey.Tab && descriptor.ModifierKeys == ModifierKeys.None && !CompletionWindowManager.IsVisible) {
 				SafeUpdateIndentEngine (Editor.CaretOffset);
 				if (stateTracker.IsInsideStringLiteral && !Editor.IsSomethingSelected) {
-					var lexer = new ICSharpCode.NRefactory.CSharp.Completion.CSharpCompletionEngineBase.MiniLexer (Editor.GetTextAt (0, Editor.CaretOffset));
+					var lexer = new CSharpMiniLexer (Editor.GetTextAt (0, Editor.CaretOffset));
 					lexer.Parse ();
 					if (lexer.IsInString) {
 						Editor.InsertAtCaret ("\\t");
@@ -636,7 +636,7 @@ namespace MonoDevelop.CSharp.Formatting
 
 			var offset = curLine.Offset;
 			string lineText = data.GetTextAt (caretOffset, max - caretOffset);
-			var lexer = new ICSharpCode.NRefactory.CSharp.Completion.CSharpCompletionEngineBase.MiniLexer (lineText);
+			var lexer = new CSharpMiniLexer (lineText);
 			lexer.Parse ((ch, i) => {
 				if (lexer.IsInSingleComment || lexer.IsInMultiLineComment)
 					return true;
@@ -794,7 +794,7 @@ namespace MonoDevelop.CSharp.Formatting
 					textEditorData.CaretOffset = line.Offset + insertedText.Length;
 					return true;
 				} else if (wasInStringLiteral) {
-					var lexer = new ICSharpCode.NRefactory.CSharp.Completion.CSharpCompletionEngineBase.MiniLexer (textEditorData.GetTextAt (0, prevLine.EndOffset).TrimEnd ());
+					var lexer = new CSharpMiniLexer (textEditorData.GetTextAt (0, prevLine.EndOffset).TrimEnd ());
 					lexer.Parse ();
 					if (!lexer.IsInString)
 						return false;
@@ -828,7 +828,7 @@ namespace MonoDevelop.CSharp.Formatting
 			var line = Editor.GetLineByOffset (cursor);
 			var doc = DocumentContext.AnalysisDocument;
 
-			var formattingService = doc.GetLanguageService<IEditorFormattingService> ();
+			var formattingService = MonoDevelop.CSharp.Formatting.RoslynFormattingService.Instance;
 			if (formattingService != null && formattingService.SupportsFormatOnReturn) {
 				var changes = await formattingService.GetFormattingChangesOnReturnAsync (doc, cursor, default);
 				if (changes != null)
