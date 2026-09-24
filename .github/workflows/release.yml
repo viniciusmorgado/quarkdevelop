@@ -1,0 +1,119 @@
+name: release
+
+# Releases from a SemVer tag v<major>.<minor>.<patch>[-<pre-release>] (ADR 0021). The build job only
+# reads the repository; the publish job is the only one allowed to write (it creates the release).
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CI: "true"
+  ContinuousIntegrationBuild: "true"
+  PM_PODMAN_ARGS: -v /home/runner/.nuget/packages:/home/dev/.nuget/packages -e CI -e ContinuousIntegrationBuild
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Release version
+        id: version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="${TAG#v}"
+          semver='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$'
+          if ! [[ "$version" =~ $semver ]]; then
+            echo "::error::tag $TAG is not v<SemVer> (ADR 0021)"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [[ "$version" == *-* ]]; then echo "prerelease=true"; else echo "prerelease=false"; fi >> "$GITHUB_OUTPUT"
+
+      - name: NuGet cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', 'main/Directory.Packages.props', 'global.json') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Build dev image
+        run: |
+          mkdir -p ~/.nuget/packages
+          ./scripts/pm dotnet --info
+
+      - name: Release gate (scripts/ci.sh)
+        run: ./scripts/pm ./scripts/ci.sh
+
+      # M7 (T123): the Flatpak bundle, its sha256 and the CycloneDX SBOM
+      - name: Package
+        if: hashFiles('scripts/package-flatpak.sh') != ''
+        run: |
+          ./scripts/pm ./scripts/package-flatpak.sh
+          mkdir -p out/release
+          cp out/monodevelop.flatpak out/monodevelop.flatpak.sha256 out/monodevelop.cdx.json out/release/
+
+      - name: Release notes
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          mkdir -p out/release
+          {
+            echo "MonoDevelop for Linux on .NET 10, version $VERSION (commit ${GITHUB_SHA::12})."
+            echo
+            echo '```'
+            cat out/ci/summary.txt
+            echo '```'
+            echo
+            sed '1d' docs/BREAKING-CHANGES.md
+          } > out/release-notes.md
+          cp out/ci/summary.txt out/release/ci-summary.txt
+
+      - name: Upload release files
+        uses: actions/upload-artifact@v4
+        with:
+          name: monodevelop-${{ steps.version.outputs.version }}+${{ github.sha }}
+          path: |
+            out/release/
+            out/release-notes.md
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: monodevelop-${{ needs.build.outputs.version }}+${{ github.sha }}
+          path: dist
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ needs.build.outputs.version }}
+          PRERELEASE: ${{ needs.build.outputs.prerelease }}
+        run: |
+          flags=()
+          if [[ "$PRERELEASE" == true ]]; then flags+=(--prerelease); fi
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag \
+            --title "MonoDevelop $VERSION" --notes-file dist/release-notes.md "${flags[@]}" dist/release/*

@@ -210,8 +210,8 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 
 - [x] T115 [US6] M6: `scripts/ci.sh` (lint, build --check, test + coverage ratchet, audit, mdtool smoke, GUI smoke under Xvfb), timed → `out/ci/summary.txt`, ≤ 15 min (SC-007)
 - [x] T116 [US6] M6: `ci.yml` runs `scripts/ci.sh` in the dev image; artifacts named `<version>+<sha>`; job summary → `actionlint` clean
-- [ ] T117 [P] [US6] M6: ADR 0021 versioning (version.config + SHA) and release; `release.yml` on `v*` (least privilege, attaches Flatpak + sha256 + SBOM once M7 exists) → `actionlint` clean
-- [ ] T118 [P] [US6] M6: Dependabot (nuget, github-actions, docker) + CodeQL workflow → `actionlint` clean
+- [x] T117 [P] [US6] M6: ADR 0021 versioning (version.config + SHA) and release; `release.yml` on `v*` (least privilege, attaches Flatpak + sha256 + SBOM once M7 exists) → `actionlint` clean
+- [x] T118 [P] [US6] M6: Dependabot (nuget, github-actions, docker) + CodeQL workflow → `actionlint` clean
 - [ ] T119 [US6] M6: evidence → `docs/evidence/M6/` (local `ci.sh` run + timing; hosted run only after push authorization)
 
 ---
@@ -221,7 +221,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [ ] T120 [US5] M7: ADR 0022 Flatpak (app id `io.github.viniciusmorgado.MonoDevelop`, runtime `org.gnome.Platform`, .NET 10 SDK extension, SDK access strategy, bundled deps)
 - [ ] T121 [US5] M7: `PM_PROFILE=flatpak` in `scripts/pm` (flatpak-builder image, required podman flags) → `PM_PROFILE=flatpak ./scripts/pm flatpak --version`
 - [ ] T122 [US5] M7: `packaging/flatpak/io.github.viniciusmorgado.MonoDevelop.yml` + launcher; desktop entry, icon, AppStream, MIME from `main/monodevelop.{desktop,appdata.xml,xml}` → `appstreamcli validate` / `desktop-file-validate` pass
-- [ ] T123 [US5] M7: `scripts/package-flatpak.sh` → `out/monodevelop.flatpak` + sha256 + CycloneDX SBOM
+- [ ] T123 [US5] M7: `scripts/package-flatpak.sh` → `out/monodevelop.flatpak` + `out/monodevelop.flatpak.sha256` + CycloneDX SBOM `out/monodevelop.cdx.json` (names used by `release.yml`)
 - [ ] T124 [US5] M7: install test in a clean container: `--version`, `mdtool build Hello`, IDE under Xvfb → `docs/evidence/M7/`
 
 ---

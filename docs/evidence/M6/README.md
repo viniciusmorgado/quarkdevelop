@@ -49,3 +49,18 @@ total                    392s (budget 900s)
   workflows (`actions`). It runs on pushes and PRs to `main` and weekly, with `security-events: write` only
   on the analysis job. Code outside the Linux build (Mac/Windows platforms, externals, fixtures) is skipped.
 - `./scripts/pm actionlint`: clean. No hosted run yet (it needs a push, T119).
+
+## T117 — versioning and release workflow (2026-09-24)
+
+[ADR 0021](../../adr/0021-versioning-and-release.md): `version.config` stays the product version (profile directory,
+add-in compatibility), and releases take their version from a SemVer tag such as `v0.1.0-linux`.
+
+`.github/workflows/release.yml` runs on `v*` tags:
+- The `build` job has read-only access. It rejects tags that are not SemVer, runs `scripts/ci.sh`, packages the
+  Flatpak once `scripts/package-flatpak.sh` exists (M7), writes release notes (the CI summary and
+  `docs/BREAKING-CHANGES.md`) and uploads `monodevelop-<version>+<sha>`.
+- The `publish` job is the only one with `contents: write`. It creates the GitHub release; a pre-release tag
+  gives a GitHub pre-release.
+
+Local checks: `./scripts/pm actionlint` is clean. The tag check accepts `v0.1.0-linux` and `v1.2.3`, and rejects
+`v1.2`, `v01.2.3` and `v1.2.3+x`. No tag has been pushed: that needs the maintainer's authorization (M9).
