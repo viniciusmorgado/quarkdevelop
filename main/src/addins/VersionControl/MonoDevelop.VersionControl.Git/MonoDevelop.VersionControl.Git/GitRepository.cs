@@ -566,10 +566,12 @@ namespace MonoDevelop.VersionControl.Git
 			if (cachedSubmoduleTime != submoduleWriteTime) {
 				cachedSubmoduleTime = submoduleWriteTime;
 				lock (this) {
-					cachedSubmodules = RootRepository.Submodules.Select (s => {
-						var fp = new FilePath (Path.Combine (RootRepository.Info.WorkingDirectory, s.Path.Replace ('/', Path.DirectorySeparatorChar))).CanonicalPath;
-						return new Tuple<FilePath, LibGit2Sharp.Repository> (fp, CreateSafeRepositoryAsync (fp).Result);
-					}).ToArray ();
+					cachedSubmodules = RootRepository.Submodules
+						.Select (s => new FilePath (Path.Combine (RootRepository.Info.WorkingDirectory, s.Path.Replace ('/', Path.DirectorySeparatorChar))).CanonicalPath)
+						// A submodule that is not checked out is no repository (opening it threw and failed the status query).
+						.Where (fp => LibGit2Sharp.Repository.IsValid (fp))
+						.Select (fp => new Tuple<FilePath, LibGit2Sharp.Repository> (fp, CreateSafeRepositoryAsync (fp).Result))
+						.ToArray ();
 				}
 			}
 			return cachedSubmodules;
@@ -1191,7 +1193,14 @@ namespace MonoDevelop.VersionControl.Git
 			monitor.EndTask ();
 		}
 
-		static bool HandleAuthenticationException (AuthenticationException e)
+		// The libgit2sharp fork threw AuthenticationException for GIT_EAUTH; nuget.org LibGit2Sharp throws a plain
+		// LibGit2SharpException without the error code, so libgit2's authentication messages identify it.
+		static bool IsAuthenticationError (LibGit2SharpException e)
+		{
+			return e.GetType () == typeof (LibGit2SharpException) && e.Message.Contains ("authenticat", StringComparison.OrdinalIgnoreCase);
+		}
+
+		static bool HandleAuthenticationException (LibGit2SharpException e)
 		{
 			var ret = MessageService.AskQuestion (
 								GettextCatalog.GetString ("Remote server error: {0}", e.Message),
@@ -1210,7 +1219,7 @@ namespace MonoDevelop.VersionControl.Git
 						await func (credType).ConfigureAwait (false);
 						GitCredentials.StoreCredentials (credType);
 						retry = false;
-					} catch (AuthenticationException e) {
+					} catch (LibGit2SharpException e) when (IsAuthenticationError (e)) {
 						GitCredentials.InvalidateCredentials (credType);
 						retry = await Runtime.RunInMainThread (() => HandleAuthenticationException (e)).ConfigureAwait (false);
 						if (!retry)
@@ -1623,17 +1632,20 @@ namespace MonoDevelop.VersionControl.Git
 				bool skipSubmodules = false;
 				var innerTask = await RunOperationAsync ((token) => RetryUntilSuccessAsync (monitor, credType => {
 					var options = new CloneOptions {
-						CredentialsProvider = (url, userFromUrl, types) => {
-							transferProgress = checkoutProgress = 0;
-							return GitCredentials.TryGet (url, userFromUrl, types, credType);
+						// LibGit2Sharp 0.30+: the remote callbacks moved to CloneOptions.FetchOptions.
+						FetchOptions = {
+							CredentialsProvider = (url, userFromUrl, types) => {
+								transferProgress = checkoutProgress = 0;
+								return GitCredentials.TryGet (url, userFromUrl, types, credType);
+							},
+							RepositoryOperationStarting = ctx => {
+								Runtime.RunInMainThread (() => {
+									monitor.Log.WriteLine (GettextCatalog.GetString ("Checking out repository at '{0}'"), ctx.RepositoryPath);
+								});
+								return true;
+							},
+							OnTransferProgress = (tp) => OnTransferProgress (tp, monitor, ref transferProgress),
 						},
-						RepositoryOperationStarting = ctx => {
-							Runtime.RunInMainThread (() => {
-								monitor.Log.WriteLine (GettextCatalog.GetString ("Checking out repository at '{0}'"), ctx.RepositoryPath);
-							});
-							return true;
-						},
-						OnTransferProgress = (tp) => OnTransferProgress (tp, monitor, ref transferProgress),
 						OnCheckoutProgress = (path, completedSteps, totalSteps) => {
 							OnCheckoutProgress (completedSteps, totalSteps, monitor, ref checkoutProgress);
 							Runtime.RunInMainThread (() => {
@@ -1649,8 +1661,10 @@ namespace MonoDevelop.VersionControl.Git
 					}
 					var updateOptions = new SubmoduleUpdateOptions {
 						Init = true,
-						CredentialsProvider = options.CredentialsProvider,
-						OnTransferProgress = options.OnTransferProgress,
+						FetchOptions = {
+							CredentialsProvider = options.FetchOptions.CredentialsProvider,
+							OnTransferProgress = options.FetchOptions.OnTransferProgress,
+						},
 						OnCheckoutProgress = options.OnCheckoutProgress,
 					};
 					monitor.Step (1);
@@ -2345,8 +2359,9 @@ namespace MonoDevelop.VersionControl.Git
 				var gitPath = repository.ToGitPath (repositoryPath);
 				var status = repository.RetrieveStatus (gitPath);
 				if (status != FileStatus.NewInIndex && status != FileStatus.NewInWorkdir) {
+					// nuget.org LibGit2Sharp has no BlameOptions.FindExactRenames (a libgit2sharp fork option): blame uses libgit2's default.
 					lock (blameLock) {
-						foreach (var hunk in repository.Blame (gitPath, new BlameOptions { FindExactRenames = true, StartingAt = sinceCommit })) {
+						foreach (var hunk in repository.Blame (gitPath, new BlameOptions { StartingAt = sinceCommit })) {
 							var commit = hunk.FinalCommit;
 							var author = hunk.FinalSignature;
 							var working = new Annotation (new GitRevision (this, gitPath, commit), author.Name, author.When.LocalDateTime, String.Format ("<{0}>", author.Email));

@@ -22,10 +22,10 @@ namespace MonoDevelop.VersionControl.Git
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.VersionControl.Git.UserInfoConflictDialog
 			this.Name = "MonoDevelop.VersionControl.Git.UserInfoConflictDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("User Information Conflict");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("User Information Conflict");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.VersionControl.Git.UserInfoConflictDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -38,7 +38,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.label1.WidthRequest = 503;
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("The user name and email configured for the Git repository does not match the user information configured in MonoDevelop. Which user information do you want to use?");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("The user name and email configured for the Git repository does not match the user information configured in MonoDevelop. Which user information do you want to use?");
 			this.label1.Wrap = true;
 			this.vbox2.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.label1]));
@@ -46,13 +46,13 @@ namespace MonoDevelop.VersionControl.Git
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.radioMD = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("Use the MonoDevelop configuration:"));
+			this.radioMD = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("Use the MonoDevelop configuration:"));
 			this.radioMD.CanFocus = true;
 			this.radioMD.Name = "radioMD";
 			this.radioMD.Active = true;
 			this.radioMD.DrawIndicator = true;
 			this.radioMD.UseUnderline = true;
-			this.radioMD.Group = new global::GLib.SList (global::System.IntPtr.Zero);
+			this.radioMD.Group = new global::Gtk.RadioButton [0];
 			this.vbox2.Add (this.radioMD);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.radioMD]));
 			w3.Position = 1;
@@ -80,7 +80,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.label6 = new global::Gtk.Label ();
 			this.label6.Name = "label6";
 			this.label6.Xalign = 0F;
-			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("If you chose this option the Git configuration will be overwritten.");
+			this.label6.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("If you chose this option the Git configuration will be overwritten.");
 			this.alignment3.Add (this.label6);
 			this.vbox2.Add (this.alignment3);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.alignment3]));
@@ -88,7 +88,7 @@ namespace MonoDevelop.VersionControl.Git
 			w7.Expand = false;
 			w7.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.radiobutton2 = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("Use the Git configuration:"));
+			this.radiobutton2 = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("Use the Git configuration:"));
 			this.radiobutton2.CanFocus = true;
 			this.radiobutton2.Name = "radiobutton2";
 			this.radiobutton2.DrawIndicator = true;
@@ -113,13 +113,13 @@ namespace MonoDevelop.VersionControl.Git
 			w10.Position = 5;
 			w10.Expand = false;
 			w10.Fill = false;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w11.Position = 0;
 			w11.Expand = false;
 			w11.Fill = false;
 			// Internal child MonoDevelop.VersionControl.Git.UserInfoConflictDialog.ActionArea
-			global::Gtk.HButtonBox w12 = this.ActionArea;
+			global::Gtk.ButtonBox w12 = this.ActionArea;
 			w12.Name = "dialog1_ActionArea";
 			w12.Spacing = 10;
 			w12.BorderWidth = ((uint)(5));

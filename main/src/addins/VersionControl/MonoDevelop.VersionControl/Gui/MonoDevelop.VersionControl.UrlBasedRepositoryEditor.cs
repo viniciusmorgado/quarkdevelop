@@ -6,7 +6,7 @@ namespace MonoDevelop.VersionControl
 	{
 		private global::Gtk.Table table1;
 		private global::Gtk.HBox hbox1;
-		private global::Gtk.ComboBox comboProtocol;
+		private global::Gtk.ComboBoxText comboProtocol;
 		private global::Gtk.HBox hbox2;
 		private global::Gtk.SpinButton repositoryPortSpin;
 		private global::Gtk.HSeparator hseparator2;
@@ -39,7 +39,7 @@ namespace MonoDevelop.VersionControl
 			this.hbox1 = new global::Gtk.HBox ();
 			this.hbox1.Name = "hbox1";
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.comboProtocol = global::Gtk.ComboBox.NewText ();
+			this.comboProtocol = new global::Gtk.ComboBoxText ();
 			this.comboProtocol.Name = "comboProtocol";
 			this.hbox1.Add (this.comboProtocol);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.comboProtocol]));
@@ -93,7 +93,7 @@ namespace MonoDevelop.VersionControl
 			this.label11 = new global::Gtk.Label ();
 			this.label11.Name = "label11";
 			this.label11.Xalign = 0F;
-			this.label11.LabelProp = global::Mono.Unix.Catalog.GetString ("Server:");
+			this.label11.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Server:");
 			this.table1.Add (this.label11);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.label11]));
 			w6.TopAttach = ((uint)(4));
@@ -104,7 +104,7 @@ namespace MonoDevelop.VersionControl
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 0F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Url:");
+			this.label4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Url:");
 			this.table1.Add (this.label4);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
 			w7.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -113,7 +113,7 @@ namespace MonoDevelop.VersionControl
 			this.label5 = new global::Gtk.Label ();
 			this.label5.Name = "label5";
 			this.label5.Xalign = 0F;
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("Protocol:");
+			this.label5.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Protocol:");
 			this.table1.Add (this.label5);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.label5]));
 			w8.TopAttach = ((uint)(3));
@@ -124,7 +124,7 @@ namespace MonoDevelop.VersionControl
 			this.label6 = new global::Gtk.Label ();
 			this.label6.Name = "label6";
 			this.label6.Xalign = 0F;
-			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("Port:");
+			this.label6.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Port:");
 			this.table1.Add (this.label6);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.label6]));
 			w9.TopAttach = ((uint)(5));
@@ -135,7 +135,7 @@ namespace MonoDevelop.VersionControl
 			this.label7 = new global::Gtk.Label ();
 			this.label7.Name = "label7";
 			this.label7.Xalign = 0F;
-			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("Path:");
+			this.label7.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Path:");
 			this.table1.Add (this.label7);
 			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.label7]));
 			w10.TopAttach = ((uint)(6));
@@ -146,7 +146,7 @@ namespace MonoDevelop.VersionControl
 			this.label8 = new global::Gtk.Label ();
 			this.label8.Name = "label8";
 			this.label8.Xalign = 0F;
-			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("User:");
+			this.label8.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("User:");
 			this.table1.Add (this.label8);
 			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.label8]));
 			w11.TopAttach = ((uint)(7));

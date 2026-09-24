@@ -119,11 +119,30 @@ namespace MonoDevelop.VersionControl.Views
 			QueueResize ();
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			requisition.Width = width;
 			requisition.Height = height;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		int px, py;
@@ -160,14 +179,14 @@ namespace MonoDevelop.VersionControl.Views
 			return layout;
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose e)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			var window = e.Window;
+			var e = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			var widget = this;
 			ClearAccessibleLines ();
-			using (Cairo.Context cr = Gdk.CairoHelper.Create (e.Window)) {
-				int w, maxy;
-				window.GetSize (out w, out maxy);
+			using (Cairo.Context cr = e.CreateContext ()) {
+				// GTK2 read the height of the GdkWindow; GTK3 draws the visible (clipped) part.
+				int maxy = e.Area.Bottom;
 				var cell_area = Allocation;
 //				if (DrawLeft) {
 //					cell_area.Width += cell_area.X - leftSpace;
@@ -176,21 +195,17 @@ namespace MonoDevelop.VersionControl.Views
 
 				cell_area.Width -= RightPadding;
 
-				window.DrawRectangle (widget.Style.BaseGC (Gtk.StateType.Normal), true, cell_area.X, cell_area.Y, cell_area.Width - 1, cell_area.Height);
+				cr.Rectangle (cell_area.X, cell_area.Y, cell_area.Width - 1, cell_area.Height);
+				cr.SetSourceColor (widget.GetStyleBaseColor (Gtk.StateType.Normal));
+				cr.Fill ();
 				if (lines == null)
 					return true;
-				Gdk.GC normalGC = widget.Style.TextGC (StateType.Normal);
-				Gdk.GC removedGC = new Gdk.GC (window);
-				removedGC.Copy (normalGC);
-				removedGC.RgbFgColor = Styles.LogView.DiffRemoveBackgroundColor.AddLight (-0.3).ToGdkColor ();
-				Gdk.GC addedGC = new Gdk.GC (window);
-				addedGC.Copy (normalGC);
-				addedGC.RgbFgColor = Styles.LogView.DiffAddBackgroundColor.AddLight (-0.3).ToGdkColor ();
-				Gdk.GC infoGC = new Gdk.GC (window);
-				infoGC.Copy (normalGC);
-				infoGC.RgbFgColor = widget.Style.Text (StateType.Normal).AddLight (0.2);
+				Cairo.Color normalGC = widget.GetStyleTextColor (StateType.Normal);
+				Cairo.Color removedGC = Styles.LogView.DiffRemoveBackgroundColor.AddLight (-0.3).ToCairoColor ();
+				Cairo.Color addedGC = Styles.LogView.DiffAddBackgroundColor.AddLight (-0.3).ToCairoColor ();
+				Cairo.Color infoGC = normalGC.AddLight (0.2);
 
-				Cairo.Context ctx = CairoHelper.Create (window);
+				Cairo.Context ctx = cr;
 
 				// Rendering is done in two steps:
 				// 1) Get a list of blocks to render
@@ -210,7 +225,7 @@ namespace MonoDevelop.VersionControl.Views
 					if (block.Type == BlockType.Info) {
 						// Finished drawing the content of a code segment. Now draw the segment border and label.
 						if (lastCodeSegmentStart != null)
-							DrawCodeSegmentBorder (infoGC, ctx, cell_area.X, cell_area.Width, lastCodeSegmentStart, lastCodeSegmentEnd, lines, widget, window);
+							DrawCodeSegmentBorder (infoGC, ctx, cell_area.X, cell_area.Width, lastCodeSegmentStart, lastCodeSegmentEnd, lines, widget);
 						lastCodeSegmentStart = block;
 					}
 
@@ -279,14 +294,14 @@ namespace MonoDevelop.VersionControl.Views
 					if (block.Type != BlockType.Info) {
 						layout.SetMarkup ("");
 						layout.SetText (sb.ToString ());
-						Gdk.GC gc;
+						Cairo.Color gc;
 						switch (block.Type) {
 						case BlockType.Removed: gc = removedGC; break;
 						case BlockType.Added: gc = addedGC; break;
 						case BlockType.Info: gc = infoGC; break;
 						default: gc = normalGC; break;
 						}
-						window.DrawLayout (gc, cell_area.X + 2 + LeftPaddingBlock, block.YStart, layout);
+						ShowLayout (ctx, gc, cell_area.X + 2 + LeftPaddingBlock, block.YStart, layout);
 					}
 
 					// Finally draw the change symbol at the left margin
@@ -296,20 +311,23 @@ namespace MonoDevelop.VersionControl.Views
 
 				// Finish the drawing of the code segment
 				if (lastCodeSegmentStart != null)
-					DrawCodeSegmentBorder (infoGC, ctx, cell_area.X, cell_area.Width, lastCodeSegmentStart, lastCodeSegmentEnd, lines, widget, window);
+					DrawCodeSegmentBorder (infoGC, ctx, cell_area.X, cell_area.Width, lastCodeSegmentStart, lastCodeSegmentEnd, lines, widget);
 
 				// Draw the source line number at the current selected line. It must be done at the end because it must
 				// be drawn over the source code text and segment borders.
 				if (selectedLineRowTop != -1)
-					DrawLineBox (normalGC, ctx, Allocation.Right - 4, selectedLineRowTop, selectedLine, widget, window);
-
-				((IDisposable)ctx).Dispose ();
-				removedGC.Dispose ();
-				addedGC.Dispose ();
-				infoGC.Dispose ();
+					DrawLineBox (normalGC, ctx, Allocation.Right - 4, selectedLineRowTop, selectedLine, widget);
 			}
 			Accessible?.SetAccessibleChildren (accessibleLines.Select (l => l.Accessible).ToArray ());
 			return true;
+		}
+
+		// GTK2 drawable.DrawLayout (gc, x, y, layout) with a GC whose foreground is the color.
+		static void ShowLayout (Cairo.Context ctx, Cairo.Color color, double x, double y, Pango.Layout layout)
+		{
+			ctx.MoveTo (x, y);
+			ctx.SetSourceColor (color);
+			Pango.CairoHelper.ShowLayout (ctx, layout);
 		}
 
 		void AddAccessibleLine (int x, int y, BlockType blockType, int lineNumber, ref bool replaceFirst, string text)
@@ -431,7 +449,7 @@ namespace MonoDevelop.VersionControl.Views
 			Unchanged
 		}
 
-		void DrawCodeSegmentBorder (Gdk.GC gc, Cairo.Context ctx, double x, int width, BlockInfo firstBlock, BlockInfo lastBlock, string [] lines, Gtk.Widget widget, Gdk.Drawable window)
+		void DrawCodeSegmentBorder (Cairo.Color gc, Cairo.Context ctx, double x, int width, BlockInfo firstBlock, BlockInfo lastBlock, string [] lines, Gtk.Widget widget)
 		{
 			int shadowSize = 2;
 			int spacing = 4;
@@ -463,15 +481,15 @@ namespace MonoDevelop.VersionControl.Views
 
 			ctx.Rectangle (x + 2 + LeftPaddingBlock - 1 + 0.5, firstBlock.YStart + dy - 1 + 0.5, tw + 2, th + 2);
 			ctx.LineWidth = 1;
-			ctx.SetSourceColor (widget.Style.Base (StateType.Normal).ToCairoColor ());
+			ctx.SetSourceColor (widget.GetStyleBaseColor (StateType.Normal));
 			ctx.FillPreserve ();
 			ctx.SetSourceColor (Styles.LogView.DiffBoxBorderColor.ToCairoColor ());
 			ctx.Stroke ();
 
-			window.DrawLayout (gc, (int)(x + 2 + LeftPaddingBlock), firstBlock.YStart + dy, layout);
+			ShowLayout (ctx, gc, (int)(x + 2 + LeftPaddingBlock), firstBlock.YStart + dy, layout);
 		}
 
-		void DrawLineBox (Gdk.GC gc, Cairo.Context ctx, int right, int top, int line, Gtk.Widget widget, Gdk.Drawable window)
+		void DrawLineBox (Cairo.Color gc, Cairo.Context ctx, int right, int top, int line, Gtk.Widget widget)
 		{
 			layout.SetText ("");
 			layout.SetMarkup ("<small>" + line.ToString () + "</small>");
@@ -483,12 +501,12 @@ namespace MonoDevelop.VersionControl.Views
 
 			ctx.Rectangle (right - tw - 2 + 0.5, top + dy - 1 + 0.5, tw + 2, th + 2);
 			ctx.LineWidth = 1;
-			ctx.SetSourceColor (widget.Style.Base (Gtk.StateType.Normal).ToCairoColor ());
+			ctx.SetSourceColor (widget.GetStyleBaseColor (Gtk.StateType.Normal));
 			ctx.FillPreserve ();
 			ctx.SetSourceColor (Styles.LogView.DiffBoxBorderColor.ToCairoColor ());
 			ctx.Stroke ();
 
-			window.DrawLayout (gc, right - tw - 1, top + dy, layout);
+			ShowLayout (ctx, gc, right - tw - 1, top + dy, layout);
 		}
 
 		void DrawBlockBg (Cairo.Context ctx, double x, int width, BlockInfo block)

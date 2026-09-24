@@ -19,10 +19,10 @@ namespace MonoDevelop.VersionControl.Git
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.VersionControl.Git.CredentialsDialog
 			this.Name = "MonoDevelop.VersionControl.Git.CredentialsDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Git Credentials");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Git Credentials");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.VersionControl.Git.CredentialsDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -34,7 +34,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.labelTop = new global::Gtk.Label ();
 			this.labelTop.Name = "labelTop";
 			this.labelTop.Xalign = 0F;
-			this.labelTop.LabelProp = global::Mono.Unix.Catalog.GetString ("Credentials required for the repository:");
+			this.labelTop.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Credentials required for the repository:");
 			this.vbox.Add (this.labelTop);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox [this.labelTop]));
 			w2.Position = 0;
@@ -44,20 +44,20 @@ namespace MonoDevelop.VersionControl.Git
 			this.labelTop1 = new global::Gtk.Label();
 			this.labelTop1.Name = "labelTop1";
 			this.labelTop1.Xalign = 0F;
-			this.labelTop1.LabelProp = global::Mono.Unix.Catalog.GetString("<b>{0}</b>");
+			this.labelTop1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("<b>{0}</b>");
 			this.labelTop1.UseMarkup = true;
 			this.vbox.Add(this.labelTop1);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox[this.labelTop1]));
 			w3.Position = 1;
 			w3.Expand = false;
 			w3.Fill = false;
-			w1.Add(this.vbox);
+			w1.PackStart (this.vbox, true, true, 0);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(w1[this.vbox]));
 			w4.Position = 0;
 			w4.Expand = false;
 			w4.Fill = false;
 			// Internal child MonoDevelop.VersionControl.Git.CredentialsDialog.ActionArea
-			global::Gtk.HButtonBox w5 = this.ActionArea;
+			global::Gtk.ButtonBox w5 = this.ActionArea;
 			w5.Name = "dialog1_ActionArea";
 			w5.Spacing = 10;
 			w5.BorderWidth = ((uint)(5));

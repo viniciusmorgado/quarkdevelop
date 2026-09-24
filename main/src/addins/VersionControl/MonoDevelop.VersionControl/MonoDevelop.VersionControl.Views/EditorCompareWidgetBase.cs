@@ -168,7 +168,8 @@ namespace MonoDevelop.VersionControl.Views
 				editor.DoPopupMenu += (e) => ShowPopup (editor, e);
 				editor.Caret.PositionChanged += CaretPositionChanged;
 				editor.FocusInEvent += EditorFocusIn;
-				editor.SetScrollAdjustments (attachedHAdjustments[i], attachedVAdjustments[i]);
+				editor.Hadjustment = attachedHAdjustments[i];
+				editor.Vadjustment = attachedVAdjustments[i];
 			}
 
 			if (editors.Length == 2) {
@@ -486,12 +487,12 @@ namespace MonoDevelop.VersionControl.Views
 		protected override void OnDestroyed ()
 		{
 			if (vAdjustment != null) {
-				vAdjustment.Destroy ();
-				hAdjustment.Destroy ();
+				vAdjustment.Dispose ();
+				hAdjustment.Dispose ();
 				foreach (var adj in attachedVAdjustments)
-					adj.Destroy ();
+					adj.Dispose ();
 				foreach (var adj in attachedHAdjustments)
-					adj.Destroy ();
+					adj.Dispose ();
 				vAdjustment = null;
 			}
 
@@ -516,7 +517,7 @@ namespace MonoDevelop.VersionControl.Views
 
 			bool hScrollBarVisible = hScrollBars[0].Visible;
 
-			int hheight = hScrollBarVisible ? hScrollBars[0].Requisition.Height : 0;
+			int hheight = hScrollBarVisible ? hScrollBars[0].SizeRequest ().Height : 0;
 			int headerSize = 0;
 
 			if (headerWidgets != null)
@@ -569,10 +570,29 @@ namespace MonoDevelop.VersionControl.Views
 			return (dx != 0.0 || dy != 0.0) || base.OnScrollEvent (evnt);
 		}
 
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			children.ForEach (child => child.Child.SizeRequest ());
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		internal static Cairo.Color GetColor (Hunk hunk, bool removeSide, bool border, double alpha)

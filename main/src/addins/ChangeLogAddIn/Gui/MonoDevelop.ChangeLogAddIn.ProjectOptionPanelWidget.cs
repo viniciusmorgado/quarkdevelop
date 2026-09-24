@@ -47,12 +47,12 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.noneRadioButton.Active = true;
 			this.noneRadioButton.DrawIndicator = true;
 			this.noneRadioButton.UseUnderline = true;
-			this.noneRadioButton.Group = new global::GLib.SList (global::System.IntPtr.Zero);
+			this.noneRadioButton.Group = new global::Gtk.RadioButton [0];
 			this.noneRadioButton.Remove (this.noneRadioButton.Child);
 			// Container child noneRadioButton.Gtk.Container+ContainerChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Disable ChangeLog support</b>\nNo ChangeLog entries will be generated for this project.");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Disable ChangeLog support</b>\nNo ChangeLog entries will be generated for this project.");
 			this.label3.UseMarkup = true;
 			this.noneRadioButton.Add (this.label3);
 			this.vbox2.Add (this.noneRadioButton);
@@ -61,7 +61,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.nearestRadioButton = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("Custom policy"));
+			this.nearestRadioButton = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("Custom policy"));
 			this.nearestRadioButton.CanFocus = true;
 			this.nearestRadioButton.Name = "nearestRadioButton";
 			this.nearestRadioButton.DrawIndicator = true;
@@ -72,7 +72,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.label5 = new global::Gtk.Label ();
 			this.label5.WidthRequest = 500;
 			this.label5.Name = "label5";
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Update nearest ChangeLog</b>\nThe nearest ChangeLog file in the directory hierarchy will be updated (below the commit directory). If none is found, a warning message will be shown. ChangeLog files will never be automatically created.");
+			this.label5.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Update nearest ChangeLog</b>\nThe nearest ChangeLog file in the directory hierarchy will be updated (below the commit directory). If none is found, a warning message will be shown. ChangeLog files will never be automatically created.");
 			this.label5.UseMarkup = true;
 			this.label5.Wrap = true;
 			this.nearestRadioButton.Add (this.label5);
@@ -82,7 +82,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			w4.Expand = false;
 			w4.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.oneChangeLogInProjectRootDirectoryRadioButton = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("One ChangeLog in the project root directory"));
+			this.oneChangeLogInProjectRootDirectoryRadioButton = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("One ChangeLog in the project root directory"));
 			this.oneChangeLogInProjectRootDirectoryRadioButton.CanFocus = true;
 			this.oneChangeLogInProjectRootDirectoryRadioButton.Name = "oneChangeLogInProjectRootDirectoryRadioButton";
 			this.oneChangeLogInProjectRootDirectoryRadioButton.DrawIndicator = true;
@@ -93,7 +93,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.label6 = new global::Gtk.Label ();
 			this.label6.WidthRequest = 500;
 			this.label6.Name = "label6";
-			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Single project ChangeLog</b>\nAll changes made in the project files will be logged in a single ChangeLog file, located at the project root directory. The ChangeLog file will be created if it doesn't exist.");
+			this.label6.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Single project ChangeLog</b>\nAll changes made in the project files will be logged in a single ChangeLog file, located at the project root directory. The ChangeLog file will be created if it doesn't exist.");
 			this.label6.UseMarkup = true;
 			this.label6.Wrap = true;
 			this.oneChangeLogInProjectRootDirectoryRadioButton.Add (this.label6);
@@ -103,7 +103,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			w6.Expand = false;
 			w6.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.oneChangeLogInEachDirectoryRadioButton = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("One ChangeLog in each directory"));
+			this.oneChangeLogInEachDirectoryRadioButton = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("One ChangeLog in each directory"));
 			this.oneChangeLogInEachDirectoryRadioButton.CanFocus = true;
 			this.oneChangeLogInEachDirectoryRadioButton.Name = "oneChangeLogInEachDirectoryRadioButton";
 			this.oneChangeLogInEachDirectoryRadioButton.DrawIndicator = true;
@@ -114,7 +114,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.label7 = new global::Gtk.Label ();
 			this.label7.WidthRequest = 500;
 			this.label7.Name = "label7";
-			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>One ChangeLog in each directory</b>\nFile changes will be logged in a ChangeLog located at the file's directory. The ChangeLog file will be created if it doesn't exist.");
+			this.label7.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>One ChangeLog in each directory</b>\nFile changes will be logged in a ChangeLog located at the file's directory. The ChangeLog file will be created if it doesn't exist.");
 			this.label7.UseMarkup = true;
 			this.label7.Wrap = true;
 			this.oneChangeLogInEachDirectoryRadioButton.Add (this.label7);
@@ -134,7 +134,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.checkVersionControl = new global::Gtk.CheckButton ();
 			this.checkVersionControl.CanFocus = true;
 			this.checkVersionControl.Name = "checkVersionControl";
-			this.checkVersionControl.Label = global::Mono.Unix.Catalog.GetString ("Integrate with _version control");
+			this.checkVersionControl.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Integrate with _version control");
 			this.checkVersionControl.DrawIndicator = true;
 			this.checkVersionControl.UseUnderline = true;
 			this.alignment2.Add (this.checkVersionControl);
@@ -152,7 +152,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.checkRequireOnCommit = new global::Gtk.CheckButton ();
 			this.checkRequireOnCommit.CanFocus = true;
 			this.checkRequireOnCommit.Name = "checkRequireOnCommit";
-			this.checkRequireOnCommit.Label = global::Mono.Unix.Catalog.GetString ("_Require ChangeLog entries for all files when committing");
+			this.checkRequireOnCommit.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Require ChangeLog entries for all files when committing");
 			this.checkRequireOnCommit.DrawIndicator = true;
 			this.checkRequireOnCommit.UseUnderline = true;
 			this.alignment3.Add (this.checkRequireOnCommit);
@@ -166,7 +166,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			// Notebook tab
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("ChangeLog Generation");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("ChangeLog Generation");
 			this.notebook1.SetTabLabel (this.vbox2, this.label1);
 			this.label1.ShowAll ();
 			// Container child notebook1.Gtk.Notebook+NotebookChild
@@ -187,7 +187,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			// Notebook tab
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Message Style");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Message Style");
 			this.notebook1.SetTabLabel (this.vbox1, this.label2);
 			this.label2.ShowAll ();
 			this.Add (this.notebook1);

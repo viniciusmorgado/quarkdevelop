@@ -26,7 +26,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.checkStashBranch = new global::Gtk.CheckButton ();
 			this.checkStashBranch.CanFocus = true;
 			this.checkStashBranch.Name = "checkStashBranch";
-			this.checkStashBranch.Label = global::Mono.Unix.Catalog.GetString ("Automatically stash/unstash changes when switching branches");
+			this.checkStashBranch.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Automatically stash/unstash changes when switching branches");
 			this.checkStashBranch.DrawIndicator = true;
 			this.checkStashBranch.UseUnderline = true;
 			this.vbox2.Add (this.checkStashBranch);
@@ -38,7 +38,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Behavior of the Update command:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Behavior of the Update command:");
 			this.vbox2.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.label1]));
 			w2.Position = 1;
@@ -56,7 +56,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.checkRebase = new global::Gtk.CheckButton ();
 			this.checkRebase.CanFocus = true;
 			this.checkRebase.Name = "checkRebase";
-			this.checkRebase.Label = global::Mono.Unix.Catalog.GetString ("Use the Rebase option for merging");
+			this.checkRebase.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Use the Rebase option for merging");
 			this.checkRebase.DrawIndicator = true;
 			this.checkRebase.UseUnderline = true;
 			this.vbox3.Add (this.checkRebase);
@@ -68,7 +68,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.checkStashUpdate = new global::Gtk.CheckButton ();
 			this.checkStashUpdate.CanFocus = true;
 			this.checkStashUpdate.Name = "checkStashUpdate";
-			this.checkStashUpdate.Label = global::Mono.Unix.Catalog.GetString ("Automatically stash/unstash local changes");
+			this.checkStashUpdate.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Automatically stash/unstash local changes");
 			this.checkStashUpdate.DrawIndicator = true;
 			this.checkStashUpdate.UseUnderline = true;
 			this.vbox3.Add (this.checkStashUpdate);

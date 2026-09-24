@@ -180,12 +180,12 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T094 [P] [US3] M5c: `RegexToolkit` (Thread.Abort removed) → builds
 - [ ] T095 [P] [US3] M5c: `HexEditor` (Stetic frozen) → builds
 - [ ] T096 [P] [US3] M5c: `DocFood` (Stetic frozen) → builds
-- [ ] T097 [P] [US3] M5c: `ChangeLogAddIn` → builds
+- [x] T097 [P] [US3] M5c: `ChangeLogAddIn` → builds
 - [ ] T098 [P] [US3] M5c: `MonoDevelop.Gettext` add-in → builds
 - [ ] T099 [US3] M5c: `MonoDevelop.DotNetCore` (GUI) → DotNetCore tests subset pass
 - [ ] T100 [US3] M5c: ADR 0020 NuGet client version + `MonoDevelop.PackageManagement` on NuGet 6.x/7.x → test add/update/remove/restore a package on an SDK project (FR-010)
 - [ ] T101 [US3] M5c: `MonoDevelop.UnitTesting` + VSTest → test discovers/runs NUnit + xUnit + MSTest samples (FR-011)
-- [ ] T102 [US3] M5c: `VersionControl` + `VersionControl.Git` on LibGit2Sharp 0.32 (reference DotDevelop `216f01c79f`, `2356bb926d`); libgit2/libgit-binary/libgit2sharp submodules removed → Git tests (status/diff/log on temp repo) pass (FR-009)
+- [x] T102 [US3] M5c: `VersionControl` + `VersionControl.Git` on LibGit2Sharp 0.32 (reference DotDevelop `216f01c79f`, `2356bb926d`); libgit2/libgit-binary/libgit2sharp submodules removed → Git tests (status/diff/log on temp repo) pass (FR-009)
 - [x] T103 [US3] M5c: `--smoke-test` in `IdeStartup.cs` per `contracts/smoke-test.md` → exit 0 under `xvfb-run`
 - [x] T104 [US3] M5c: Wayland smoke (weston headless backend in the container, `XDG_RUNTIME_DIR` set, `GDK_BACKEND=wayland`) → exit 0 (FR-006)
 - [ ] T105 [US3] M5c: error-list navigation test (build Broken; activate error; editor at line) (US3-3) → test passes

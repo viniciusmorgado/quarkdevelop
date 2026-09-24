@@ -23,11 +23,11 @@ namespace MonoDevelop.VersionControl.Dialogs
 			// Widget MonoDevelop.VersionControl.Dialogs.CommitDialog
 			this.Events = ((global::Gdk.EventMask)(256));
 			this.Name = "MonoDevelop.VersionControl.Dialogs.CommitDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Commit Files");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Commit Files");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(6));
 			// Internal child MonoDevelop.VersionControl.Dialogs.CommitDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Events = ((global::Gdk.EventMask)(256));
 			w1.Name = "dialog_VBox";
 			w1.Spacing = 6;
@@ -41,7 +41,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("The following files will be committed:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("The following files will be committed:");
 			this.mainBox.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.mainBox [this.label1]));
 			w2.Position = 0;
@@ -69,7 +69,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Commit _message:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Commit _message:");
 			this.label2.UseUnderline = true;
 			this.hbox1.Add (this.label2);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.label2]));
@@ -79,7 +79,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("1/1");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("1/1");
 			this.hbox1.Add (this.label3);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.label3]));
 			w6.PackType = ((global::Gtk.PackType)(1));
@@ -115,11 +115,11 @@ namespace MonoDevelop.VersionControl.Dialogs
 			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.mainBox [this.scrolledwindow2]));
 			w10.PackType = ((global::Gtk.PackType)(1));
 			w10.Position = 4;
-			w1.Add (this.mainBox);
+			w1.PackStart (this.mainBox, true, true, 0);
 			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(w1 [this.mainBox]));
 			w11.Position = 0;
 			// Internal child MonoDevelop.VersionControl.Dialogs.CommitDialog.ActionArea
-			global::Gtk.HButtonBox w12 = this.ActionArea;
+			global::Gtk.ButtonBox w12 = this.ActionArea;
 			w12.Events = ((global::Gdk.EventMask)(256));
 			w12.Name = "VersionControlAddIn.CommitDialog_ActionArea";
 			w12.Spacing = 6;
@@ -143,7 +143,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.buttonCommit.CanFocus = true;
 			this.buttonCommit.Name = "buttonCommit";
 			this.buttonCommit.UseUnderline = true;
-			this.buttonCommit.Label = global::Mono.Unix.Catalog.GetString ("C_ommit");
+			this.buttonCommit.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("C_ommit");
 			this.AddActionWidget (this.buttonCommit, -5);
 			global::Gtk.ButtonBox.ButtonBoxChild w14 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w12 [this.buttonCommit]));
 			w14.Position = 1;

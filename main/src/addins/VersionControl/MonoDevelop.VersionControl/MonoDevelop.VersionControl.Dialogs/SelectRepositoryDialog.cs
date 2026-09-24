@@ -26,7 +26,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 		List<Repository> loadingRepos = new List<Repository> ();
 		IRepositoryEditor currentEditor;
 		string defaultPath;
-		public readonly ConfigurationProperty<string> VersionControlDefaultPath = ConfigurationProperty.Create ("MonoDevelop.VersionControl.Dialogs.SelectRepositoryDialog.DefaultPath", System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.Personal), "Projects"));
+		public readonly ConfigurationProperty<string> VersionControlDefaultPath = ConfigurationProperty.Create ("MonoDevelop.VersionControl.Dialogs.SelectRepositoryDialog.DefaultPath", System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.UserProfile), "Projects"));
 
 		const int RepositoryCol = 0;
 		const int RepoNameCol = 1;
@@ -78,7 +78,8 @@ namespace MonoDevelop.VersionControl.Dialogs
 				boxFolder.Visible = false;
 			}
 
-			repoContainer.SetFlag (WidgetFlags.NoWindow);
+			// GTK2 NoWindow flag: GTK3 event boxes draw no window background when VisibleWindow is off.
+			repoContainer.VisibleWindow = false;
 			SetupAccessibility ();
 		}
 
@@ -210,7 +211,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 		protected virtual void OnButtonRemoveClicked(object sender, System.EventArgs e)
 		{
 			TreeIter iter;
-			TreeModel model;
+			ITreeModel model;
 			if (repoTree.Selection.GetSelected (out model, out iter)) {
 				VersionControlService.RemoveRepository (
 					(Repository) store.GetValue (iter, RepositoryCol));
@@ -236,7 +237,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 					VersionControlService.SaveConfiguration ();
 
 					TreeIter iter;
-					TreeModel model;
+					ITreeModel model;
 					if (repoTree.Selection.GetSelected (out model, out iter)) {
 						// Update values
 						store.SetValue (iter, RepoNameCol, rep.Name);
@@ -261,7 +262,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 		Repository GetSelectedRepository ()
 		{
 			TreeIter iter;
-			TreeModel model;
+			ITreeModel model;
 			if (repoTree.Selection.GetSelected (out model, out iter))
 				return (Repository) store.GetValue (iter, RepositoryCol);
 			return null;
@@ -336,7 +337,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 		void UpdateControls ()
 		{
 			TreeIter iter;
-			TreeModel model;
+			ITreeModel model;
 			if (repoTree.Selection.GetSelected (out model, out iter)) {
 				TreeIter piter;
 				if (!store.IterParent (out piter, iter)) {

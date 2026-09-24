@@ -70,7 +70,7 @@ namespace MonoDevelop.VersionControl.Views
 			// Container child GtkViewport1.Gtk.Container+ContainerChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Loading...");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Loading...");
 			w3.Add (this.label3);
 			this.scrolledLoading.Add (w3);
 			this.vbox4.Add (this.scrolledLoading);
@@ -123,7 +123,7 @@ namespace MonoDevelop.VersionControl.Views
 			this.labelAuthor = new global::Gtk.Label ();
 			this.labelAuthor.Name = "labelAuthor";
 			this.labelAuthor.Xalign = 0F;
-			this.labelAuthor.LabelProp = global::Mono.Unix.Catalog.GetString ("Author");
+			this.labelAuthor.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Author");
 			this.labelAuthor.Selectable = true;
 			this.hbox2.Add (this.labelAuthor);
 			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.labelAuthor]));
@@ -134,7 +134,7 @@ namespace MonoDevelop.VersionControl.Views
 			this.labelRevision = new global::Gtk.Label ();
 			this.labelRevision.Name = "labelRevision";
 			this.labelRevision.Xalign = 1F;
-			this.labelRevision.LabelProp = global::Mono.Unix.Catalog.GetString ("Revision");
+			this.labelRevision.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Revision");
 			this.labelRevision.Selectable = true;
 			this.hbox2.Add (this.labelRevision);
 			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.labelRevision]));
@@ -148,7 +148,7 @@ namespace MonoDevelop.VersionControl.Views
 			this.labelDate = new global::Gtk.Label ();
 			this.labelDate.Name = "labelDate";
 			this.labelDate.Xalign = 0F;
-			this.labelDate.LabelProp = global::Mono.Unix.Catalog.GetString ("Date");
+			this.labelDate.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Date");
 			this.labelDate.Selectable = true;
 			this.vbox5.Add (this.labelDate);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.labelDate]));

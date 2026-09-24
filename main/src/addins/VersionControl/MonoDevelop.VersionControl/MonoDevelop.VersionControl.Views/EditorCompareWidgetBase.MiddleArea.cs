@@ -160,7 +160,9 @@ namespace MonoDevelop.VersionControl.Views
 						if (nearestButton != null) {
 							nearestButton.Accessible.Focused = true;
 						} else {
+#if MAC
 							Accessible.SetCurrentFocus ();
+#endif
 						}
 					}
 				} catch (Exception e) {
@@ -251,11 +253,12 @@ namespace MonoDevelop.VersionControl.Views
 				cr.LineTo (x - 2, y + 3);
 			}
 
-			protected override bool OnExposeEvent (EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
+				var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 				bool hideButton = widget.MainEditor.Document.IsReadOnly;
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (evnt.Window)) {
-					cr.Rectangle (evnt.Region.Clipbox.X, evnt.Region.Clipbox.Y, evnt.Region.Clipbox.Width, evnt.Region.Clipbox.Height);
+				using (Cairo.Context cr = evnt.CreateContext ()) {
+					cr.Rectangle (evnt.Area.X, evnt.Area.Y, evnt.Area.Width, evnt.Area.Height);
 					cr.Clip ();
 					int delta = widget.MainEditor.Allocation.Y - Allocation.Y;
 					if (Diff != null) {
@@ -336,7 +339,7 @@ namespace MonoDevelop.VersionControl.Views
 									//	mx -= (int)x;
 									//	my -= (int)y;
 									using (var gradient = new Cairo.RadialGradient (mx, my, h, mx, my, 2)) {
-										var color = (MonoDevelop.Components.HslColor)Style.Mid (StateType.Normal);
+										var color = (MonoDevelop.Components.HslColor)this.GetStyleMidColor (StateType.Normal);
 										color.L *= 1.05;
 										gradient.AddColorStop (0, color);
 										color.L *= 1.07;
@@ -344,11 +347,11 @@ namespace MonoDevelop.VersionControl.Views
 										cr.SetSource (gradient);
 									}
 								} else {
-									cr.SetSourceColor ((MonoDevelop.Components.HslColor)Style.Mid (StateType.Normal));
+									cr.SetSourceColor (this.GetStyleMidColor (StateType.Normal));
 								}
 								cr.FillPreserve ();
 
-								cr.SetSourceColor ((MonoDevelop.Components.HslColor)Style.Dark (StateType.Normal));
+								cr.SetSourceColor (this.GetStyleDarkColor (StateType.Normal));
 								cr.Stroke ();
 								cr.LineWidth = 1;
 								cr.SetSourceColor (MonoDevelop.Ide.Gui.Styles.BaseForegroundColor.ToCairoColor ());

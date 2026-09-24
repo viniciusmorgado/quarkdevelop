@@ -123,3 +123,13 @@ Quarantined 16 test cases (16 methods) on 2026-09-24. Bug: 16.
 | `Mono.TextEditor.Tests.SyntaxHighlightingTests.TestSpans` | Bug | test main loop: runs off the thread the runtime treats as main (GuiUnit ran the suite on the GTK loop) | System.AggregateException : One or more errors occurred. (Operation not supported in background thread) | migration | 2026-09-24 | T135 |
 | `Mono.TextEditor.Tests.SyntaxHighlightingTests.TestStringEscapes` | Bug | test main loop: runs off the thread the runtime treats as main (GuiUnit ran the suite on the GTK loop) | System.AggregateException : One or more errors occurred. (Operation not supported in background thread) | migration | 2026-09-24 | T135 |
 | `Mono.TextEditor.Tests.SyntaxHighlightingTests.TestVerbatimStringEscapes` | Bug | test main loop: runs off the thread the runtime treats as main (GuiUnit ran the suite on the GTK loop) | System.AggregateException : One or more errors occurred. (Operation not supported in background thread) | migration | 2026-09-24 | T135 |
+
+## MonoDevelop.VersionControl.Git.Tests
+
+Quarantined 3 test cases (3 methods) on 2026-09-24. IDE-host: 3.
+
+| Test | Reason | Note | First error line | Owner | Date | Task |
+|---|---|---|---|---|---|---|
+| `MonoDevelop.VersionControl.Git.Tests.BaseGitUtilsTest.BlameDiffWithNotCommitedItem(True,True)` | IDE-host | needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model) | Microsoft.VisualStudio.Composition.CompositionFailedException : Expected 1 export(s) with contract name "Micro | migration | 2026-09-24 | T107 |
+| `MonoDevelop.VersionControl.Git.Tests.BaseGitUtilsTest.BlameIsCorrect` | IDE-host | needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model) | Microsoft.VisualStudio.Composition.CompositionFailedException : Expected 1 export(s) with contract name "Micro | migration | 2026-09-24 | T107 |
+| `MonoDevelop.VersionControl.Git.Tests.BaseGitUtilsTest.BlameWithWorkingChanges` | IDE-host | needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model) | Microsoft.VisualStudio.Composition.CompositionFailedException : Expected 1 export(s) with contract name "Micro | migration | 2026-09-24 | T107 |

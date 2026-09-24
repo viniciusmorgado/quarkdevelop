@@ -40,6 +40,7 @@ using Humanizer;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using MonoDevelop.Ide.Gui.Documents;
+using SearchEntry = MonoDevelop.Components.SearchEntry;
 
 namespace MonoDevelop.VersionControl.Views
 {
@@ -87,16 +88,40 @@ namespace MonoDevelop.VersionControl.Views
 				set;
 			}
 
-			public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 			{
 				x_offset = y_offset = 0;
 				width = 16;
 				height = cell_area.Height;
 			}
 
-			protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
+			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
 			{
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (window)) {
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
+			{
+				var area = Gdk.Rectangle.Zero;
+				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
+				minimum_size = natural_size;
+			}
+
+			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
+			{
+				OnGetPreferredHeight (widget, out minimum_height, out natural_height);
+			}
+
+			protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)
+			{
+				OnGetPreferredWidth (widget, out minimum_width, out natural_width);
+			}
+
+			protected override void OnRender (Cairo.Context gtk3cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags)
+			{
+				using (Cairo.Context cr = gtk3cr.CreateSharedContext ()) {
 					cr.LineWidth = 2.0;
 					double center_x = cell_area.X + Math.Round ((double) (cell_area.Width / 2d));
 					double center_y = cell_area.Y + Math.Round ((double) (cell_area.Height / 2d));
@@ -115,7 +140,7 @@ namespace MonoDevelop.VersionControl.Views
 					else if (widget.State == StateType.Insensitive)
 						state = StateType.Insensitive;
 
-					cr.SetSourceColor (widget.Style.Text (state).ToCairoColor ());
+					cr.SetSourceColor (widget.GetStyleTextColor (state));
 					cr.Stroke ();
 					if (!FirstNode) {
 						cr.MoveTo (center_x, cell_area.Y - 2);
@@ -289,7 +314,7 @@ namespace MonoDevelop.VersionControl.Views
 			Ide.Gui.Styles.Changed += HandleStylesChanged;
 		}
 
-		static void HandleNodeCellDataFunc (TreeViewColumn tree_column, CellRenderer cell, TreeModel tree_model, TreeIter iter)
+		static void HandleNodeCellDataFunc (TreeViewColumn tree_column, CellRenderer cell, ITreeModel tree_model, TreeIter iter)
 		{
 			var cri = (CellRendererImage)cell;
 			var image = tree_model.GetValue (iter, 2) as Xwt.Drawing.Image;
@@ -368,13 +393,13 @@ namespace MonoDevelop.VersionControl.Views
 
 		void UpdateStyle ()
 		{
-			var c = Style.Base (StateType.Normal).ToXwtColor ();
+			var c = this.GetStyleBaseColor (StateType.Normal).ToXwtColor ();
 			c.Light *= 0.8;
-			commitBox.ModifyBg (StateType.Normal, c.ToGdkColor ());
+			// GTK3: widget backgrounds come from CSS (ModifyBg/ModifyBase are gone).
+			GtkCss.SetStyle (commitBox, "MonoDevelop.VersionControl.LogWidget.CommitBox", "eventbox { background-color: " + c.ToHexString (false) + "; }");
 
-			var tcol = Styles.LogView.CommitDescBackgroundColor.ToGdkColor ();
-			textviewDetails.ModifyBase (StateType.Normal, tcol);
-			scrolledwindow1.ModifyBase (StateType.Normal, tcol);
+			var tcol = Styles.LogView.CommitDescBackgroundColor.ToHexString (false);
+			GtkCss.SetStyle (textviewDetails, "MonoDevelop.VersionControl.LogWidget.Details", "textview text { background-color: " + tcol + "; }");
 		}
 
 		internal void SetToolbar (DocumentToolbar toolbar)
@@ -482,7 +507,7 @@ namespace MonoDevelop.VersionControl.Views
 			}
 			this.diffRenderer.Lines = new string [] { GettextCatalog.GetString ("Loading data…") };
 			FilePath path = (string)changedpathstore.GetValue (iter, colPath);
-			FilePath personal = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
+			FilePath personal = Environment.GetFolderPath (Environment.SpecialFolder.UserProfile);
 
 			labelFilePathName.Text = path.IsChildPathOf (personal) ? "~/" + path.ToRelative (personal) : path.ToString ();
 			var rev = SelectedRevision;
@@ -613,7 +638,7 @@ namespace MonoDevelop.VersionControl.Views
 
 		bool IsDestroyed { get; set; }
 
-		static void DateFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		static void DateFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			var renderer = (CellRendererText)cell;
 			var revision = (Revision)model.GetValue (iter, 0);
@@ -626,7 +651,7 @@ namespace MonoDevelop.VersionControl.Views
 				revision.Time.Humanize (utcDate: false, dateToCompareAgainst: now);
 		}
 
-		static void GraphFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		static void GraphFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			var renderer = (RevisionGraphCellRenderer)cell;
 			Gtk.TreeIter node;
@@ -637,7 +662,7 @@ namespace MonoDevelop.VersionControl.Views
 			renderer.LastNode =  node.Equals (iter);
 		}
 
-		static string GetCurrentFilter (Gtk.TreeModel model)
+		static string GetCurrentFilter (Gtk.ITreeModel model)
 		{
 			TreeIter filterIter;
 			string filter = string.Empty;
@@ -647,7 +672,7 @@ namespace MonoDevelop.VersionControl.Views
 			return filter;
 		}
 
-		static void MessageFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		static void MessageFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			string filter = GetCurrentFilter (model);
 
@@ -667,7 +692,7 @@ namespace MonoDevelop.VersionControl.Views
 			}
 		}
 
-		static void AuthorFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		static void AuthorFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			string filter = GetCurrentFilter (model);
 
@@ -685,7 +710,7 @@ namespace MonoDevelop.VersionControl.Views
 				renderer.Markup = EscapeWithFilterMarker (author, filter);
 		}
 
-		static void AuthorIconFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		static void AuthorIconFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			CellRendererImage renderer = (CellRendererImage)cell;
 			var rev = (Revision)model.GetValue (iter, 0);
@@ -703,7 +728,7 @@ namespace MonoDevelop.VersionControl.Views
 			}
 		}
 
-		static void RevisionFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		static void RevisionFunc (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			string filter = GetCurrentFilter (model);
 
@@ -715,7 +740,7 @@ namespace MonoDevelop.VersionControl.Views
 				renderer.Markup = EscapeWithFilterMarker (rev, filter);
 		}
 
-		static void SetDiffCellData (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		static void SetDiffCellData (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			var rc = (CellRendererDiff)cell;
 			var diffMode = (bool)model.GetValue (iter, 0);

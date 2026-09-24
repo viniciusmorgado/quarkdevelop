@@ -35,7 +35,7 @@ namespace MonoDevelop.VersionControl.Git
 		public ConflictResolutionDialog ()
 		{
 			this.Build ();
-			HasSeparator = false;
+			// GTK3: Dialog.HasSeparator was removed (dialogs have no separator)
 
 			this.UseNativeContextMenus ();
 		}

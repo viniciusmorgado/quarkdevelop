@@ -54,11 +54,11 @@ namespace MonoDevelop.ChangeLogAddIn
 			// Widget MonoDevelop.ChangeLogAddIn.AddLogEntryDialog
 			this.Events = ((global::Gdk.EventMask)(256));
 			this.Name = "MonoDevelop.ChangeLogAddIn.AddLogEntryDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("ChangeLog");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("ChangeLog");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(6));
 			// Internal child MonoDevelop.ChangeLogAddIn.AddLogEntryDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Events = ((global::Gdk.EventMask)(256));
 			w1.Name = "dialog_VBox";
 			w1.Spacing = 6;
@@ -81,7 +81,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Modified ChangeLog files:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Modified ChangeLog files:");
 			this.vbox2.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.label1]));
 			w2.Position = 0;
@@ -112,7 +112,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("ChangeLog entry:");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("ChangeLog entry:");
 			this.vbox3.Add (this.label3);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.label3]));
 			w6.Position = 0;
@@ -154,7 +154,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.label7.WidthRequest = 500;
 			this.label7.Name = "label7";
 			this.label7.Xalign = 0F;
-			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("This ChangeLog file does not exist and will be created.");
+			this.label7.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("This ChangeLog file does not exist and will be created.");
 			this.label7.Wrap = true;
 			this.boxNewFile.Add (this.label7);
 			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.boxNewFile [this.label7]));
@@ -185,7 +185,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.label8.WidthRequest = 500;
 			this.label8.Name = "label8";
 			this.label8.Xalign = 0F;
-			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("This ChangeLog file does not exist and will <b>not</b> be created.");
+			this.label8.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("This ChangeLog file does not exist and will <b>not</b> be created.");
 			this.label8.UseMarkup = true;
 			this.label8.Wrap = true;
 			this.boxNoFile.Add (this.label8);
@@ -226,7 +226,7 @@ namespace MonoDevelop.ChangeLogAddIn
 			this.label9.WidthRequest = 500;
 			this.label9.Name = "label9";
 			this.label9.Xalign = 0F;
-			this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("To change the ChangeLog creation and update policies, open the options dialog of the project or solution and click on the 'ChangeLog Integration\" section.");
+			this.label9.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("To change the ChangeLog creation and update policies, open the options dialog of the project or solution and click on the 'ChangeLog Integration\" section.");
 			this.label9.UseMarkup = true;
 			this.label9.Wrap = true;
 			this.hbox3.Add (this.label9);
@@ -239,11 +239,11 @@ namespace MonoDevelop.ChangeLogAddIn
 			w20.Position = 3;
 			w20.Expand = false;
 			w20.Fill = false;
-			w1.Add (this.vbox1);
+			w1.PackStart (this.vbox1, true, true, 0);
 			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox1]));
 			w21.Position = 0;
 			// Internal child MonoDevelop.ChangeLogAddIn.AddLogEntryDialog.ActionArea
-			global::Gtk.HButtonBox w22 = this.ActionArea;
+			global::Gtk.ButtonBox w22 = this.ActionArea;
 			w22.Events = ((global::Gdk.EventMask)(256));
 			w22.Name = "ChangeLogAddIn.AddLogEntryDialog_ActionArea";
 			w22.Spacing = 6;

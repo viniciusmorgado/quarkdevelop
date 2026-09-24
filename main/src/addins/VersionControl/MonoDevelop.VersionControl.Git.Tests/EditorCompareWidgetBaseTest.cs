@@ -34,6 +34,10 @@ namespace MonoDevelop.VersionControl.Views
 	{
 		private delegate void ColorAssertion (Color color);
 
+		// The diff colors come from the IDE styles, which need GTK (GuiUnit initialized it; NUnit 3 does not).
+		[SetUp]
+		public void RequireGtk () => GitTestSetUp.RequireGtk ();
+
 		[Test()]
 		public void TestRemovalLineColorIsRed ()
 		{

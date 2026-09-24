@@ -51,7 +51,7 @@ namespace MonoDevelop.VersionControl
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 0F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Message Header:");
+			this.label4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Message Header:");
 			this.table2.Add (this.label4);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table2 [this.label4]));
 			w2.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -70,7 +70,7 @@ namespace MonoDevelop.VersionControl
 			this.checkIncludeDirs = new global::Gtk.CheckButton ();
 			this.checkIncludeDirs.CanFocus = true;
 			this.checkIncludeDirs.Name = "checkIncludeDirs";
-			this.checkIncludeDirs.Label = global::Mono.Unix.Catalog.GetString ("Include file directories");
+			this.checkIncludeDirs.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Include file directories");
 			this.checkIncludeDirs.DrawIndicator = true;
 			this.checkIncludeDirs.UseUnderline = true;
 			this.tableFlags.Add (this.checkIncludeDirs);
@@ -82,7 +82,7 @@ namespace MonoDevelop.VersionControl
 			this.checkIndent = new global::Gtk.CheckButton ();
 			this.checkIndent.CanFocus = true;
 			this.checkIndent.Name = "checkIndent";
-			this.checkIndent.Label = global::Mono.Unix.Catalog.GetString ("Align message text");
+			this.checkIndent.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Align message text");
 			this.checkIndent.DrawIndicator = true;
 			this.checkIndent.UseUnderline = true;
 			this.tableFlags.Add (this.checkIndent);
@@ -94,7 +94,7 @@ namespace MonoDevelop.VersionControl
 			this.checkIndentEntries = new global::Gtk.CheckButton ();
 			this.checkIndentEntries.CanFocus = true;
 			this.checkIndentEntries.Name = "checkIndentEntries";
-			this.checkIndentEntries.Label = global::Mono.Unix.Catalog.GetString ("Indent entries");
+			this.checkIndentEntries.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Indent entries");
 			this.checkIndentEntries.DrawIndicator = true;
 			this.checkIndentEntries.UseUnderline = true;
 			this.tableFlags.Add (this.checkIndentEntries);
@@ -106,7 +106,7 @@ namespace MonoDevelop.VersionControl
 			this.checkLineSep = new global::Gtk.CheckButton ();
 			this.checkLineSep.CanFocus = true;
 			this.checkLineSep.Name = "checkLineSep";
-			this.checkLineSep.Label = global::Mono.Unix.Catalog.GetString ("Add a blank line between messages");
+			this.checkLineSep.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Add a blank line between messages");
 			this.checkLineSep.DrawIndicator = true;
 			this.checkLineSep.UseUnderline = true;
 			this.tableFlags.Add (this.checkLineSep);
@@ -120,7 +120,7 @@ namespace MonoDevelop.VersionControl
 			this.checkMsgInNewLine = new global::Gtk.CheckButton ();
 			this.checkMsgInNewLine.CanFocus = true;
 			this.checkMsgInNewLine.Name = "checkMsgInNewLine";
-			this.checkMsgInNewLine.Label = global::Mono.Unix.Catalog.GetString ("File list and message in separate lines");
+			this.checkMsgInNewLine.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("File list and message in separate lines");
 			this.checkMsgInNewLine.DrawIndicator = true;
 			this.checkMsgInNewLine.UseUnderline = true;
 			this.tableFlags.Add (this.checkMsgInNewLine);
@@ -134,7 +134,7 @@ namespace MonoDevelop.VersionControl
 			this.checkOneLinePerFile = new global::Gtk.CheckButton ();
 			this.checkOneLinePerFile.CanFocus = true;
 			this.checkOneLinePerFile.Name = "checkOneLinePerFile";
-			this.checkOneLinePerFile.Label = global::Mono.Unix.Catalog.GetString ("One line per file");
+			this.checkOneLinePerFile.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("One line per file");
 			this.checkOneLinePerFile.DrawIndicator = true;
 			this.checkOneLinePerFile.UseUnderline = true;
 			this.tableFlags.Add (this.checkOneLinePerFile);
@@ -146,7 +146,7 @@ namespace MonoDevelop.VersionControl
 			this.checkUseBullets = new global::Gtk.CheckButton ();
 			this.checkUseBullets.CanFocus = true;
 			this.checkUseBullets.Name = "checkUseBullets";
-			this.checkUseBullets.Label = global::Mono.Unix.Catalog.GetString ("Use bullets");
+			this.checkUseBullets.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Use bullets");
 			this.checkUseBullets.DrawIndicator = true;
 			this.checkUseBullets.UseUnderline = true;
 			this.tableFlags.Add (this.checkUseBullets);
@@ -156,7 +156,7 @@ namespace MonoDevelop.VersionControl
 			this.checkWrap = new global::Gtk.CheckButton ();
 			this.checkWrap.CanFocus = true;
 			this.checkWrap.Name = "checkWrap";
-			this.checkWrap.Label = global::Mono.Unix.Catalog.GetString ("Wrap");
+			this.checkWrap.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Wrap");
 			this.checkWrap.DrawIndicator = true;
 			this.checkWrap.UseUnderline = true;
 			this.tableFlags.Add (this.checkWrap);
@@ -175,7 +175,7 @@ namespace MonoDevelop.VersionControl
 			this.label9 = new global::Gtk.Label ();
 			this.label9.Name = "label9";
 			this.label9.Xalign = 0F;
-			this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("Preview:");
+			this.label9.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Preview:");
 			this.vbox1.Add (this.label9);
 			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.label9]));
 			w13.Position = 2;

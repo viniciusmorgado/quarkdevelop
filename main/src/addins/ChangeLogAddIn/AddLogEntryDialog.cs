@@ -53,7 +53,9 @@ namespace MonoDevelop.ChangeLogAddIn
 			Pango.TabArray tabs = new Pango.TabArray (1, true);
 			tabs.SetTab (0, Pango.TabAlign.Left, GetStringWidth (" ") * 4);
 			textview.Tabs = tabs;
-			textview.SizeRequested += delegate {
+			// GTK3 has no size-request signal: size the view for 80 columns now and whenever its style changes.
+			textview.WidthRequest = GetStringWidth (String.Empty.PadRight (80));
+			textview.StyleUpdated += delegate {
 				textview.WidthRequest = GetStringWidth (String.Empty.PadRight (80));
 			};
 			

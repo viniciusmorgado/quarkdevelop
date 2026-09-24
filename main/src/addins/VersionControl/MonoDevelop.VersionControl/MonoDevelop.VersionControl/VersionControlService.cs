@@ -6,7 +6,7 @@ using System.Xml;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 
 using MonoDevelop.Ide.Gui;
 using MonoDevelop.Core;
@@ -321,29 +321,25 @@ namespace MonoDevelop.VersionControl
 		
 		static string CommitMessagesFile {
 			get {
-				return UserProfile.Current.CacheDir.Combine ("version-control-commit-msg");
+				// JSON replaces BinaryFormatter (removed from .NET); the old binary file is left unread.
+				return UserProfile.Current.CacheDir.Combine ("version-control-commit-msg.json");
 				
 			}
 		}
+
+		static readonly JsonSerializerOptions CommitCommentsJsonOptions = new JsonSerializerOptions { IncludeFields = true };
 		
 		static Hashtable GetCommitComments ()
 		{
 			if (comments != null)
 				return comments;
 
-			ResolveEventHandler localResolve = (s, args) =>
-				AppDomain.CurrentDomain.GetAssemblies ()
-					.FirstOrDefault (asm => asm.GetName ().FullName == args.Name);
-
 			string file = CommitMessagesFile;
 			if (File.Exists (file)) {
 				FileStream stream = null;
 				try {
-					AppDomain.CurrentDomain.AssemblyResolve += localResolve;
-
 					stream = File.OpenRead (file);
-					BinaryFormatter formatter = new BinaryFormatter ();
-					comments = (Hashtable) formatter.Deserialize (stream);
+					comments = new Hashtable (JsonSerializer.Deserialize<Dictionary<string, CommitComment>> (stream, CommitCommentsJsonOptions));
 				
 					// Remove comments for files that don't exists
 					// Remove comments more than 60 days old
@@ -363,7 +359,6 @@ namespace MonoDevelop.VersionControl
 					LoggingService.LogError (ex.ToString ());
 					comments = new Hashtable ();
 				} finally {
-					AppDomain.CurrentDomain.AssemblyResolve -= localResolve;
 					if (stream != null)
 						stream.Close ();
 				}
@@ -409,8 +404,8 @@ namespace MonoDevelop.VersionControl
 				
 					Directory.CreateDirectory (file.ParentDirectory);
 					stream = new FileStream (file, FileMode.Create, FileAccess.Write);
-					BinaryFormatter formatter = new BinaryFormatter ();
-					formatter.Serialize (stream, comments);
+					var entries = comments.Cast<DictionaryEntry> ().ToDictionary (e => (string)e.Key, e => (CommitComment)e.Value);
+					JsonSerializer.Serialize (stream, entries, CommitCommentsJsonOptions);
 				} catch (Exception ex) {
 					// If there is an error, just discard the file
 					LoggingService.LogError (ex.ToString ());
@@ -834,7 +829,6 @@ namespace MonoDevelop.VersionControl
 		}
 	}
 	
-	[Serializable]
 	class CommitComment
 	{
 		public string Comment;

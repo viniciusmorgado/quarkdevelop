@@ -16,10 +16,10 @@ namespace MonoDevelop.VersionControl.Git
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.VersionControl.Git.ConflictResolutionDialog
 			this.Name = "MonoDevelop.VersionControl.Git.ConflictResolutionDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Merge Conflict Resolution");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Merge Conflict Resolution");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.VersionControl.Git.ConflictResolutionDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -31,7 +31,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.labelTop = new global::Gtk.Label ();
 			this.labelTop.Name = "labelTop";
 			this.labelTop.Xalign = 0F;
-			this.labelTop.LabelProp = global::Mono.Unix.Catalog.GetString ("A merge conflict has been detected in file <b>SomeFile.txt</b>");
+			this.labelTop.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("A merge conflict has been detected in file <b>SomeFile.txt</b>");
 			this.labelTop.UseMarkup = true;
 			this.vbox2.Add (this.labelTop);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.labelTop]));
@@ -45,11 +45,11 @@ namespace MonoDevelop.VersionControl.Git
 			this.vbox2.Add (this.mergeWidget);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.mergeWidget]));
 			w3.Position = 1;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w4.Position = 0;
 			// Internal child MonoDevelop.VersionControl.Git.ConflictResolutionDialog.ActionArea
-			global::Gtk.HButtonBox w5 = this.ActionArea;
+			global::Gtk.ButtonBox w5 = this.ActionArea;
 			w5.Name = "dialog1_ActionArea";
 			w5.Spacing = 10;
 			w5.BorderWidth = ((uint)(5));
@@ -60,7 +60,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonCancel.CanFocus = true;
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseUnderline = true;
-			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString ("Abort Update");
+			this.buttonCancel.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Abort Update");
 			this.AddActionWidget (this.buttonCancel, -6);
 			global::Gtk.ButtonBox.ButtonBoxChild w6 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w5 [this.buttonCancel]));
 			w6.Expand = false;
@@ -71,7 +71,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
-			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("Skip Patch");
+			this.buttonOk.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Skip Patch");
 			this.AddActionWidget (this.buttonOk, -7);
 			global::Gtk.ButtonBox.ButtonBoxChild w7 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w5 [this.buttonOk]));
 			w7.Position = 1;
@@ -82,7 +82,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.button24.CanFocus = true;
 			this.button24.Name = "button24";
 			this.button24.UseUnderline = true;
-			this.button24.Label = global::Mono.Unix.Catalog.GetString ("Accept Merge");
+			this.button24.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Accept Merge");
 			this.AddActionWidget (this.button24, -5);
 			global::Gtk.ButtonBox.ButtonBoxChild w8 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w5 [this.button24]));
 			w8.Position = 2;

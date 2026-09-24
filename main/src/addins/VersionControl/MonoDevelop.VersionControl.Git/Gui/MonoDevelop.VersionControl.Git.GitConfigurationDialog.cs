@@ -43,10 +43,10 @@ namespace MonoDevelop.VersionControl.Git
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.VersionControl.Git.GitConfigurationDialog
 			this.Name = "MonoDevelop.VersionControl.Git.GitConfigurationDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Git Repository Configuration");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Git Repository Configuration");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.VersionControl.Git.GitConfigurationDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -121,7 +121,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonSetDefaultBranch.CanFocus = true;
 			this.buttonSetDefaultBranch.Name = "buttonSetDefaultBranch";
 			this.buttonSetDefaultBranch.UseUnderline = true;
-			this.buttonSetDefaultBranch.Label = global::Mono.Unix.Catalog.GetString ("Switch to Branch");
+			this.buttonSetDefaultBranch.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Switch to Branch");
 			this.vbox3.Add (this.buttonSetDefaultBranch);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.buttonSetDefaultBranch]));
 			w7.Position = 3;
@@ -139,7 +139,7 @@ namespace MonoDevelop.VersionControl.Git
 			// Notebook tab
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Branches");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Branches");
 			this.notebook1.SetTabLabel (this.vbox2, this.label1);
 			this.label1.ShowAll ();
 			// Container child notebook1.Gtk.Notebook+NotebookChild
@@ -184,7 +184,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonPushTag.CanFocus = true;
 			this.buttonPushTag.Name = "buttonPushTag";
 			this.buttonPushTag.UseUnderline = true;
-			this.buttonPushTag.Label = global::Mono.Unix.Catalog.GetString ("_Push");
+			this.buttonPushTag.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Push");
 			this.vbox7.Add (this.buttonPushTag);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox7 [this.buttonPushTag]));
 			w14.Position = 1;
@@ -216,7 +216,7 @@ namespace MonoDevelop.VersionControl.Git
 			// Notebook tab
 			this.label5 = new global::Gtk.Label ();
 			this.label5.Name = "label5";
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("Tags");
+			this.label5.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Tags");
 			this.notebook1.SetTabLabel (this.vbox6, this.label5);
 			this.label5.ShowAll ();
 			// Container child notebook1.Gtk.Notebook+NotebookChild
@@ -293,7 +293,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonTrackRemote.CanFocus = true;
 			this.buttonTrackRemote.Name = "buttonTrackRemote";
 			this.buttonTrackRemote.UseUnderline = true;
-			this.buttonTrackRemote.Label = global::Mono.Unix.Catalog.GetString ("Track in Local Branch");
+			this.buttonTrackRemote.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Track in Local Branch");
 			this.vbox5.Add (this.buttonTrackRemote);
 			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.buttonTrackRemote]));
 			w25.Position = 4;
@@ -304,7 +304,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonFetch.CanFocus = true;
 			this.buttonFetch.Name = "buttonFetch";
 			this.buttonFetch.UseUnderline = true;
-			this.buttonFetch.Label = global::Mono.Unix.Catalog.GetString ("Fetch");
+			this.buttonFetch.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Fetch");
 			this.vbox5.Add (this.buttonFetch);
 			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.buttonFetch]));
 			w26.Position = 5;
@@ -324,14 +324,14 @@ namespace MonoDevelop.VersionControl.Git
 			// Notebook tab
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Remote Sources");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Remote Sources");
 			this.notebook1.SetTabLabel (this.vbox4, this.label2);
 			this.label2.ShowAll ();
-			w1.Add (this.notebook1);
+			w1.PackStart (this.notebook1, true, true, 0);
 			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(w1 [this.notebook1]));
 			w30.Position = 0;
 			// Internal child MonoDevelop.VersionControl.Git.GitConfigurationDialog.ActionArea
-			global::Gtk.HButtonBox w31 = this.ActionArea;
+			global::Gtk.ButtonBox w31 = this.ActionArea;
 			w31.Name = "dialog1_ActionArea";
 			w31.Spacing = 10;
 			w31.BorderWidth = ((uint)(5));

@@ -28,7 +28,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.checkPush = new global::Gtk.CheckButton ();
 			this.checkPush.CanFocus = true;
 			this.checkPush.Name = "checkPush";
-			this.checkPush.Label = global::Mono.Unix.Catalog.GetString ("Push changes to remote repository after commit");
+			this.checkPush.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Push changes to remote repository after commit");
 			this.checkPush.DrawIndicator = true;
 			this.checkPush.UseUnderline = true;
 			this.vbox1.Add (this.checkPush);
@@ -40,7 +40,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.checkAuthor = new global::Gtk.CheckButton ();
 			this.checkAuthor.CanFocus = true;
 			this.checkAuthor.Name = "checkAuthor";
-			this.checkAuthor.Label = global::Mono.Unix.Catalog.GetString ("Override the commit author");
+			this.checkAuthor.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Override the commit author");
 			this.checkAuthor.DrawIndicator = true;
 			this.checkAuthor.UseUnderline = true;
 			this.vbox1.Add (this.checkAuthor);
@@ -85,7 +85,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.labelMail = new global::Gtk.Label ();
 			this.labelMail.Name = "labelMail";
 			this.labelMail.Xalign = 0F;
-			this.labelMail.LabelProp = global::Mono.Unix.Catalog.GetString ("Author e-mail:");
+			this.labelMail.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Author e-mail:");
 			this.table1.Add (this.labelMail);
 			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelMail]));
 			w5.TopAttach = ((uint)(1));
@@ -96,7 +96,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.labelName = new global::Gtk.Label ();
 			this.labelName.Name = "labelName";
 			this.labelName.Xalign = 0F;
-			this.labelName.LabelProp = global::Mono.Unix.Catalog.GetString ("Author name:");
+			this.labelName.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Author name:");
 			this.table1.Add (this.labelName);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelName]));
 			w6.XOptions = ((global::Gtk.AttachOptions)(4));

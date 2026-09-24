@@ -15,10 +15,10 @@ namespace MonoDevelop.VersionControl.Git
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.VersionControl.Git.NewStashDialog
 			this.Name = "MonoDevelop.VersionControl.Git.NewStashDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Stash");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Stash");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.VersionControl.Git.NewStashDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -29,7 +29,7 @@ namespace MonoDevelop.VersionControl.Git
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Comment:");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Comment:");
 			this.hbox3.Add (this.label3);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.label3]));
 			w2.Position = 0;
@@ -44,13 +44,13 @@ namespace MonoDevelop.VersionControl.Git
 			this.hbox3.Add (this.entryComment);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.entryComment]));
 			w3.Position = 1;
-			w1.Add (this.hbox3);
+			w1.PackStart (this.hbox3, true, true, 0);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(w1 [this.hbox3]));
 			w4.Position = 0;
 			w4.Expand = false;
 			w4.Fill = false;
 			// Internal child MonoDevelop.VersionControl.Git.NewStashDialog.ActionArea
-			global::Gtk.HButtonBox w5 = this.ActionArea;
+			global::Gtk.ButtonBox w5 = this.ActionArea;
 			w5.Name = "dialog1_ActionArea";
 			w5.Spacing = 10;
 			w5.BorderWidth = ((uint)(5));

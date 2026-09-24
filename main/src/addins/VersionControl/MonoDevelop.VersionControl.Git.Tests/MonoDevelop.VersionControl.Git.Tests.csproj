@@ -1,85 +1,49 @@
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\..\MonoDevelop.props" />
-  <Import Project="$(ReferencesGtk)" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); NUnit 3 (ADR 0015, T102). -->
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F3AC14B0-3D1F-4B9B-95E8-384056060F33}</ProjectGuid>
-    <TestRunnerCommand>..\..\..\..\build\bin\mdtool.exe</TestRunnerCommand>
-    <TestRunnerArgs>run-md-tests</TestRunnerArgs>
-    <TargetFrameworkVersion>$(MDFrameworkVersion)</TargetFrameworkVersion>
-    <OutputPath>..\..\..\..\build\tests</OutputPath>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>MonoDevelop.VersionControl.Git.Tests</AssemblyName>
+    <RootNamespace>MonoDevelop.VersionControl.Git.Tests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+    <!-- The legacy project had no AssemblyInfo.cs. -->
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+    <!-- Own output folder (build/tests/MonoDevelop.VersionControl.Git.Tests/): the Ide and the version control add-ins
+         must not land in the shared headless test directory, where the Core tests' add-in scan would pick them up. -->
+    <!-- Legacy setting: the tests exercise the deprecated (pre-VS-editor) Ide.Editor APIs. -->
+    <NoWarn>$(NoWarn);618;612</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugMac|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugWin32|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugGnome|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseWin32|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseMac|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseGnome|AnyCPU' " />
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
+
   <ItemGroup>
     <Compile Include="BaseGitRepositoryTests.cs" />
     <Compile Include="BaseRepositoryTests.cs" />
     <Compile Include="GitIntegrityTests.cs" />
     <Compile Include="EditorCompareWidgetBaseTest.cs" />
+    <Compile Include="GitTestSetUp.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\MonoDevelop.Core\MonoDevelop.Core.csproj">
-      <Project>{7525BB88-6142-4A26-93B9-A30C6983390A}</Project>
-      <Name>MonoDevelop.Core</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\MonoDevelop.VersionControl.Git\MonoDevelop.VersionControl.Git.csproj">
-      <Project>{0413DB7D-8B35-423F-9752-D75C9225E7DE}</Project>
-      <Name>MonoDevelop.VersionControl.Git</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\MonoDevelop.VersionControl\MonoDevelop.VersionControl.csproj">
-      <Project>{19DE0F35-D204-4FD8-A553-A19ECE05E24D}</Project>
-      <Name>MonoDevelop.VersionControl</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\external\guiunit\src\framework\GuiUnit_NET_4_5.csproj">
-      <Project>{D12F0F7B-8DE3-43EC-BA49-41052D065A9B}</Project>
-      <Name>GuiUnit_NET_4_5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\external\libgit2sharp\LibGit2Sharp\LibGit2Sharp.csproj">
-      <Project>{EE6ED99F-CB12-4683-B055-D28FC7357A34}</Project>
-      <Name>LibGit2Sharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\MonoDevelop.SourceEditor2\MonoDevelop.SourceEditor.csproj">
-      <Project>{F8F92AA4-A376-4679-A9D4-60E7B7FBF477}</Project>
-      <Name>MonoDevelop.SourceEditor</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <ProjectReference Include="../../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" />
+    <ProjectReference Include="../../../core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" />
+    <ProjectReference Include="../MonoDevelop.VersionControl/MonoDevelop.VersionControl.csproj" />
+    <!-- Brings LibGit2Sharp and its native libgit2 (runtimes/<rid>/native) into the test's deps.json. -->
+    <ProjectReference Include="../MonoDevelop.VersionControl.Git/MonoDevelop.VersionControl.Git.csproj" />
+    <ProjectReference Include="../../MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" />
+    <!-- UnitTests.TestHost initializes the MonoDevelop runtime (GuiUnit and mdtool run-md-tests did it before, ADR 0015). -->
+    <ProjectReference Include="../../../../tests/UnitTests/UnitTests.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <IncludeCopyLocal Include="LibGit2Sharp.dll" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="GtkSharp" />
+    <PackageReference Include="Mono.Addins" />
+    <!-- Mono.Addins scans the add-ins of the test folder with Cecil on .NET (GitTestSetUp). -->
+    <PackageReference Include="Mono.Addins.CecilReflector" />
+    <PackageReference Include="LibGit2Sharp" />
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.StringTools" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Frameworks" ExcludeAssets="runtime" PrivateAssets="all" />
   </ItemGroup>
-  <Choose>
-    <When Condition=" '$(Configuration)' == 'DebugMac' OR '$(Configuration)' == 'ReleaseMac' ">
-      <ItemGroup>
-        <NativeBinaries Include="..\..\..\..\external\libgit-binary\mac\*.dylib" />
-      </ItemGroup>
-    </When>
-    <When Condition=" '$(Configuration)' == 'DebugWin32' OR '$(Configuration)' == 'ReleaseWin32' ">
-      <ItemGroup>
-        <NativeBinaries Include="..\..\..\..\external\libgit-binary\windows\*.*" />
-      </ItemGroup>
-    </When>
-    <When Condition=" '$(Configuration)' == 'DebugGnome' OR '$(Configuration)' == 'ReleaseGnome' ">
-      <ItemGroup>
-        <NativeBinaries Include="..\..\..\..\external\libgit2\build\*.so*" />
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="@(NativeBinaries)" DestinationFolder="$(OutputPath)\" SkipUnchangedFiles="true" />
-  </Target>
 </Project>

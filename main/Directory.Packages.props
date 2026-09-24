@@ -62,6 +62,9 @@
     <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.12" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.12" />
 
+    <!-- Version control (T102): nuget.org LibGit2Sharp with its native libgit2 (LibGit2Sharp.NativeBinaries) -->
+    <PackageVersion Include="LibGit2Sharp" Version="0.32.0" />
+
     <!-- Debugger: Debug Adapter Protocol client (ADR 0016); netstandard2.0, latest stable on nuget.org -->
     <PackageVersion Include="Microsoft.VisualStudio.Shared.VsCodeDebugProtocol" Version="18.0.10427.1" />
 

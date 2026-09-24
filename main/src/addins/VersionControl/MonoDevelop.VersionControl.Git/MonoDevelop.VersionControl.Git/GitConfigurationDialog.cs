@@ -47,7 +47,7 @@ namespace MonoDevelop.VersionControl.Git
 		{
 			this.Build ();
 			this.repo = new GitRepository (vcs, repoPath, repoUrl, false);
-			this.HasSeparator = false;
+			// GTK3: Dialog.HasSeparator was removed (dialogs have no separator)
 
 			this.UseNativeContextMenus ();
 

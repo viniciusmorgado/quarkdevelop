@@ -357,7 +357,7 @@ namespace MonoDevelop.VersionControl.Views
 			toolbar.ShowAll ();
 		}
 
-		int CompareNodes (Gtk.TreeModel model, Gtk.TreeIter a, Gtk.TreeIter b)
+		int CompareNodes (Gtk.ITreeModel model, Gtk.TreeIter a, Gtk.TreeIter b)
 		{
 			int col, val=0;
 			SortType type;
@@ -388,15 +388,15 @@ namespace MonoDevelop.VersionControl.Views
 		{
 			disposed = true;
 			if (colCommit != null) {
-				colCommit.Destroy ();
+				colCommit.Dispose ();
 				colCommit = null;
 			}
 			if (colRemote != null) {
-				colRemote.Destroy ();
+				colRemote.Dispose ();
 				colRemote = null;
 			}
 			if (colFile != null) {
-				colFile.Destroy ();
+				colFile.Dispose ();
 				colFile = null;
 			}
 			if (filelist != null) {
@@ -411,11 +411,11 @@ namespace MonoDevelop.VersionControl.Views
 			}
 			if (cellToggle != null) {
 				cellToggle.Toggled -= OnCommitCellToggled;
-				cellToggle.Destroy ();
+				cellToggle.Dispose ();
 				cellToggle = null;
 			}
 			if (this.diffRenderer != null) {
-				this.diffRenderer.Destroy ();
+				this.diffRenderer.Dispose ();
 				this.diffRenderer = null;
 			}
 			VersionControlService.FileStatusChanged -= OnFileStatusChanged;
@@ -1171,7 +1171,7 @@ namespace MonoDevelop.VersionControl.Views
 			while (filestore.IterNext (ref it));
 		}
 
-		void SetDiffCellData (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		void SetDiffCellData (Gtk.TreeViewColumn tree_column, Gtk.CellRenderer cell, Gtk.ITreeModel model, Gtk.TreeIter iter)
 		{
 			if (disposed)
 				return;

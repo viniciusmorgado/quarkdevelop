@@ -36,7 +36,7 @@ namespace MonoDevelop.VersionControl.Views
 			// Notebook tab
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("page2");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("page2");
 			this.notebook1.SetTabLabel (this.vboxComparisonView, this.label1);
 			this.label1.ShowAll ();
 			// Container child notebook1.Gtk.Notebook+NotebookChild
@@ -50,7 +50,7 @@ namespace MonoDevelop.VersionControl.Views
 			// Notebook tab
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("page2");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("page2");
 			this.notebook1.SetTabLabel (this.scrolledwindow1, this.label3);
 			this.label3.ShowAll ();
 			this.vbox2.Add (this.notebook1);

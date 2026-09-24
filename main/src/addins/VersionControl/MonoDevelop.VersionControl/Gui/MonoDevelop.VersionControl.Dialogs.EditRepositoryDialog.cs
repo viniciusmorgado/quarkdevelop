@@ -9,7 +9,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 		private global::Gtk.Entry entryName;
 		private global::Gtk.Label label11;
 		private global::Gtk.Label label8;
-		private global::Gtk.ComboBox versionControlType;
+		private global::Gtk.ComboBoxText versionControlType;
 		private global::Gtk.HSeparator hseparator2;
 		private global::Gtk.EventBox repoEditorContainer;
 		private global::Gtk.Button button10;
@@ -20,12 +20,12 @@ namespace MonoDevelop.VersionControl.Dialogs
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.VersionControl.Dialogs.EditRepositoryDialog
 			this.Name = "MonoDevelop.VersionControl.Dialogs.EditRepositoryDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Repository Configuration");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Repository Configuration");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(6));
 			this.DefaultWidth = 500;
 			// Internal child MonoDevelop.VersionControl.Dialogs.EditRepositoryDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Events = ((global::Gdk.EventMask)(256));
 			w1.Name = "dialog-vbox3";
 			w1.Spacing = 6;
@@ -56,7 +56,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.label11 = new global::Gtk.Label ();
 			this.label11.Name = "label11";
 			this.label11.Xalign = 0F;
-			this.label11.LabelProp = global::Mono.Unix.Catalog.GetString ("Type:");
+			this.label11.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Type:");
 			this.table1.Add (this.label11);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1 [this.label11]));
 			w3.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -65,7 +65,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.label8 = new global::Gtk.Label ();
 			this.label8.Name = "label8";
 			this.label8.Xalign = 0F;
-			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("Name:");
+			this.label8.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Name:");
 			this.table1.Add (this.label8);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.label8]));
 			w4.TopAttach = ((uint)(1));
@@ -73,7 +73,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			w4.XOptions = ((global::Gtk.AttachOptions)(4));
 			w4.YOptions = ((global::Gtk.AttachOptions)(0));
 			// Container child table1.Gtk.Table+TableChild
-			this.versionControlType = global::Gtk.ComboBox.NewText ();
+			this.versionControlType = new global::Gtk.ComboBoxText ();
 			this.versionControlType.Name = "versionControlType";
 			this.table1.Add (this.versionControlType);
 			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.versionControlType]));
@@ -100,11 +100,11 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.vbox1.Add (this.repoEditorContainer);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.repoEditorContainer]));
 			w8.Position = 2;
-			w1.Add (this.vbox1);
+			w1.PackStart (this.vbox1, true, true, 0);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox1]));
 			w9.Position = 0;
 			// Internal child MonoDevelop.VersionControl.Dialogs.EditRepositoryDialog.ActionArea
-			global::Gtk.HButtonBox w10 = this.ActionArea;
+			global::Gtk.ButtonBox w10 = this.ActionArea;
 			w10.Events = ((global::Gdk.EventMask)(256));
 			w10.Name = "GtkDialog_ActionArea";
 			w10.Spacing = 10;

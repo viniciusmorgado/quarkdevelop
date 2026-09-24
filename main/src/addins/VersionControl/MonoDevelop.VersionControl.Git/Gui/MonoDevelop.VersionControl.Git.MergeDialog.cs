@@ -27,7 +27,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.Name = "MonoDevelop.VersionControl.Git.MergeDialog";
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.VersionControl.Git.MergeDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -39,7 +39,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.labelHeader = new global::Gtk.Label ();
 			this.labelHeader.Name = "labelHeader";
 			this.labelHeader.Xalign = 0F;
-			this.labelHeader.LabelProp = global::Mono.Unix.Catalog.GetString ("Select the branch to be merged with the current branch:");
+			this.labelHeader.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Select the branch to be merged with the current branch:");
 			this.vbox2.Add (this.labelHeader);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.labelHeader]));
 			w2.Position = 0;
@@ -74,7 +74,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.checkStage = new global::Gtk.CheckButton ();
 			this.checkStage.CanFocus = true;
 			this.checkStage.Name = "checkStage";
-			this.checkStage.Label = global::Mono.Unix.Catalog.GetString ("Stash/unstash local changes before/after the merge");
+			this.checkStage.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Stash/unstash local changes before/after the merge");
 			this.checkStage.DrawIndicator = true;
 			this.checkStage.UseUnderline = true;
 			this.vbox2.Add (this.checkStage);
@@ -82,11 +82,11 @@ namespace MonoDevelop.VersionControl.Git
 			w6.Position = 3;
 			w6.Expand = false;
 			w6.Fill = false;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w7.Position = 0;
 			// Internal child MonoDevelop.VersionControl.Git.MergeDialog.ActionArea
-			global::Gtk.HButtonBox w8 = this.ActionArea;
+			global::Gtk.ButtonBox w8 = this.ActionArea;
 			w8.Name = "dialog1_ActionArea";
 			w8.Spacing = 10;
 			w8.BorderWidth = ((uint)(5));
@@ -109,7 +109,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
-			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("Merge");
+			this.buttonOk.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Merge");
 			this.AddActionWidget (this.buttonOk, -5);
 			global::Gtk.ButtonBox.ButtonBoxChild w10 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w8 [this.buttonOk]));
 			w10.Position = 1;

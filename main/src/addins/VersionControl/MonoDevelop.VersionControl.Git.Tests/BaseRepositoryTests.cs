@@ -609,6 +609,7 @@ namespace MonoDevelop.VersionControl.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		// Tests Repository.GetAnnotations.
 		public async Task BlameIsCorrect ()
 		{

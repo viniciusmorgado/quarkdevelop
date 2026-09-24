@@ -104,15 +104,16 @@ namespace MonoDevelop.VersionControl.Views
 				return base.OnButtonReleaseEvent (evnt);
 			}
 
-			protected override bool OnExposeEvent (Gdk.EventExpose e)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
+				var e = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 				if (widget.LeftDiff == null)
 					return true;
 				var adj = widget.vAdjustment;
 
 				var diff = useLeftDiff ? widget.LeftDiff : widget.RightDiff;
 
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (e.Window)) {
+				using (Cairo.Context cr = e.CreateContext ()) {
 					cr.LineWidth = 1;
 					double curY = 0;
 
@@ -147,7 +148,7 @@ namespace MonoDevelop.VersionControl.Views
 					DrawBar (cr, barY, barH);
 
 					cr.Rectangle (0.5, 0.5, Allocation.Width - 1, Allocation.Height - 1);
-					cr.SetSourceColor ((HslColor)Style.Dark (StateType.Normal));
+					cr.SetSourceColor (this.GetStyleDarkColor (StateType.Normal));
 					cr.Stroke ();
 				}
 				return true;
@@ -159,10 +160,10 @@ namespace MonoDevelop.VersionControl.Views
 
 				// FIXME: VV: Remove gradient features
 				using (var grad = new Cairo.LinearGradient (0, y, Allocation.Width, y)) {
-					var col = (HslColor)Style.Base (StateType.Normal);
+					var col = (HslColor)this.GetStyleBaseColor (StateType.Normal);
 					col.L *= 0.95;
 					grad.AddColorStop (0, col);
-					grad.AddColorStop (0.7, (HslColor)Style.Base (StateType.Normal));
+					grad.AddColorStop (0.7, this.GetStyleBaseColor (StateType.Normal));
 					grad.AddColorStop (1, col);
 					cr.SetSource (grad);
 					cr.Fill ();

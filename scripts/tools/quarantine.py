@@ -41,6 +41,8 @@ RULES = [
      "Bug", "project model / evaluator difference on SDK 10", "T135"),
     (r"Add-in engine not initialized|SchemaValidationTests\.", False,
      "IDE-host", "needs the IDE add-in host (GUI add-ins are not loaded by the headless test host)", "T107"),
+    (r"PlatformCatalog", False,
+     "IDE-host", "needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model)", "T107"),
 ]
 DEFAULT = ("Bug", "fails on .NET 10; root cause to be analysed", "T135")
 

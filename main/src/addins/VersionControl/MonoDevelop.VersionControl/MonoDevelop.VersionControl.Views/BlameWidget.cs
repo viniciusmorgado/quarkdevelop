@@ -150,7 +150,8 @@ namespace MonoDevelop.VersionControl.Views
 			editor = new MonoTextEditor (doc, new SourceEditor.StyledSourceEditorOptions (options));
 
 			AddChild (editor);
-			editor.SetScrollAdjustments (hAdjustment, vAdjustment);
+			editor.Hadjustment = hAdjustment;
+			editor.Vadjustment = vAdjustment;
 
 			overview = new BlameRenderer (this);
 			AddChild (overview);
@@ -228,8 +229,11 @@ namespace MonoDevelop.VersionControl.Views
 		protected override void OnAdded (Widget widget)
 		{
 			base.OnAdded (widget);
-			if (widget == Child)
-				widget.SetScrollAdjustments (hAdjustment, vAdjustment);
+			// GTK3: scrollable widgets take their adjustments through the GtkScrollable properties.
+			if (widget == Child && widget is Gtk.IScrollable scrollable) {
+				scrollable.Hadjustment = hAdjustment;
+				scrollable.Vadjustment = vAdjustment;
+			}
 		}
 
 		protected override void OnRemoved (Widget widget)
@@ -248,10 +252,10 @@ namespace MonoDevelop.VersionControl.Views
 			base.OnDestroyed ();
 
 			hScrollBar.Destroy ();
-			hAdjustment.Destroy ();
+			hAdjustment.Dispose ();
 
 			vScrollBar.Destroy ();
-			vAdjustment.Destroy ();
+			vAdjustment.Dispose ();
 
 			editor.Destroy ();
 			overview.Destroy ();
@@ -260,14 +264,14 @@ namespace MonoDevelop.VersionControl.Views
 		protected override void OnSizeAllocated (Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
-			int vwidth = vScrollBar.Visible ? vScrollBar.Requisition.Width : 0;
-			int hheight = hScrollBar.Visible ? hScrollBar.Requisition.Height : 0;
+			int vwidth = vScrollBar.Visible ? vScrollBar.SizeRequest ().Width : 0;
+			int hheight = hScrollBar.Visible ? hScrollBar.SizeRequest ().Height : 0;
 			Rectangle childRectangle = new Rectangle (allocation.X + 1, allocation.Y + 1, allocation.Width - vwidth - 1, allocation.Height - hheight - 1);
 
 			if (vScrollBar.Visible) {
 				int right = childRectangle.Right;
 				int vChildTopHeight = -1;
-				int v = hScrollBar.Visible ? hScrollBar.Requisition.Height : 0;
+				int v = hScrollBar.Visible ? hScrollBar.SizeRequest ().Height : 0;
 				vScrollBar.SizeAllocate (new Rectangle (right, childRectangle.Y + vChildTopHeight, vwidth, Allocation.Height - v - vChildTopHeight - 1));
 				vScrollBar.Value = System.Math.Max (System.Math.Min (vAdjustment.Upper - vAdjustment.PageSize, vScrollBar.Value), vAdjustment.Lower);
 			}
@@ -296,10 +300,29 @@ namespace MonoDevelop.VersionControl.Views
 			return (dx != 0.0 || dy != 0.0) || base.OnScrollEvent (evnt);
 		}
 
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			children.ForEach (child => child.Child.SizeRequest ());
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		void HandleEditorExposeEvent (object o, PaintEventArgs args)
@@ -338,17 +361,21 @@ namespace MonoDevelop.VersionControl.Views
 			}
 		}
 
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			Gdk.GC gc = Style.DarkGC (State);
-			evnt.Window.DrawLine (gc, Allocation.X, Allocation.Top, Allocation.X, Allocation.Bottom);
-			evnt.Window.DrawLine (gc, Allocation.Right, Allocation.Top, Allocation.Right, Allocation.Bottom);
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var cr = evnt.CreateContext ()) {
+				var gc = this.GetStyleDarkColor (State);
+				cr.LineWidth = 1;
+				MonoDevelop.Components.HelperMethods.DrawLine (cr, gc, Allocation.X + 0.5, Allocation.Top, Allocation.X + 0.5, Allocation.Bottom);
+				MonoDevelop.Components.HelperMethods.DrawLine (cr, gc, Allocation.Right + 0.5, Allocation.Top, Allocation.Right + 0.5, Allocation.Bottom);
 
-			evnt.Window.DrawLine (gc, Allocation.Left, Allocation.Y, Allocation.Right, Allocation.Y);
-			evnt.Window.DrawLine (gc, Allocation.Left, Allocation.Bottom, Allocation.Right, Allocation.Bottom);
+				MonoDevelop.Components.HelperMethods.DrawLine (cr, gc, Allocation.Left, Allocation.Y + 0.5, Allocation.Right, Allocation.Y + 0.5);
+				MonoDevelop.Components.HelperMethods.DrawLine (cr, gc, Allocation.Left, Allocation.Bottom + 0.5, Allocation.Right, Allocation.Bottom + 0.5);
+			}
 
 
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		void JumpOverFoldings (ref int line)
@@ -700,9 +727,10 @@ namespace MonoDevelop.VersionControl.Views
 			const int margin = 4;
 
 
-			protected override bool OnExposeEvent (Gdk.EventExpose e)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (e.Window)) {
+				var e = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+				using (Cairo.Context cr = e.CreateContext ()) {
 					cr.LineWidth = Math.Max (1.0, widget.Editor.Options.Zoom);
 
 					cr.Rectangle (leftSpacer, 0, Allocation.Width, Allocation.Height);
@@ -743,9 +771,9 @@ namespace MonoDevelop.VersionControl.Views
 
 							const int dateRevisionSpacing = 16;
 
-							using (var gc = new Gdk.GC (e.Window)) {
-								gc.RgbFgColor = Styles.BlameView.AnnotationTextColor.ToGdkColor ();
-								e.Window.DrawLayout (gc, Allocation.Width - revisionWidth - margin, (int)(curY + (widget.Editor.LineHeight - h) / 2), layout);
+							{
+								var gc = Styles.BlameView.AnnotationTextColor.ToCairoColor ();
+								DrawLayout (cr, gc, Allocation.Width - revisionWidth - margin, (int)(curY + (widget.Editor.LineHeight - h) / 2), layout);
 
 								if (ann.HasDate) {
 									string dateTime = ann.Date.ToShortDateString ();
@@ -754,7 +782,7 @@ namespace MonoDevelop.VersionControl.Views
 									layout.GetPixelSize (out dateWidth, out h);
 									layout.SetText (dateTime);
 
-									e.Window.DrawLayout (gc, Allocation.Width - revisionWidth - margin - revisionWidth - dateRevisionSpacing, (int)(curY + (widget.Editor.LineHeight - h) / 2), layout);
+									DrawLayout (cr, gc, Allocation.Width - revisionWidth - margin - revisionWidth - dateRevisionSpacing, (int)(curY + (widget.Editor.LineHeight - h) / 2), layout);
 								}
 							}
 
@@ -795,11 +823,11 @@ namespace MonoDevelop.VersionControl.Views
 
 								layout.SetText (msg);
 								layout.Width = (int)(Allocation.Width * Pango.Scale.PangoScale);
-								using (var gc = new Gdk.GC (e.Window)) {
-									gc.RgbFgColor = Styles.BlameView.AnnotationSummaryTextColor.ToGdkColor ();
-									gc.ClipRectangle = new Rectangle (0, (int)curStart, Allocation.Width, (int)(curY - curStart));
-									e.Window.DrawLayout (gc, (int)(leftSpacer + margin), (int)(curStart + h), layout);
-								}
+								cr.Save ();
+								cr.Rectangle (0, (int)curStart, Allocation.Width, (int)(curY - curStart));
+								cr.Clip ();
+								DrawLayout (cr, Styles.BlameView.AnnotationSummaryTextColor.ToCairoColor (), (int)(leftSpacer + margin), (int)(curStart + h), layout);
+								cr.Restore ();
 							}
 						}
 
@@ -831,6 +859,14 @@ namespace MonoDevelop.VersionControl.Views
 					}
 				}
 				return true;
+			}
+
+			// GTK2 drawable.DrawLayout (gc, x, y, layout) with a GC whose foreground is the color.
+			static void DrawLayout (Cairo.Context cr, Cairo.Color color, double x, double y, Pango.Layout layout)
+			{
+				cr.MoveTo (x, y);
+				cr.SetSourceColor (color);
+				Pango.CairoHelper.ShowLayout (cr, layout);
 			}
 
 			void UpdateAccessiblity ()

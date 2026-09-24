@@ -31,10 +31,10 @@ namespace MonoDevelop.VersionControl.Git
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.VersionControl.Git.EditRemoteDialog
 			this.Name = "MonoDevelop.VersionControl.Git.EditRemoteDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Remote Source");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Remote Source");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.VersionControl.Git.EditRemoteDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -88,7 +88,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.label7 = new global::Gtk.Label ();
 			this.label7.Name = "label7";
 			this.label7.Xalign = 0F;
-			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("Name:");
+			this.label7.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Name:");
 			this.table3.Add (this.label7);
 			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table3 [this.label7]));
 			w5.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -97,7 +97,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.label8 = new global::Gtk.Label ();
 			this.label8.Name = "label8";
 			this.label8.Xalign = 0F;
-			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("Url:");
+			this.label8.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Url:");
 			this.table3.Add (this.label8);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table3 [this.label8]));
 			w6.TopAttach = ((uint)(1));
@@ -107,7 +107,7 @@ namespace MonoDevelop.VersionControl.Git
 			// Container child table3.Gtk.Table+TableChild
 			this.label9 = new global::Gtk.Label ();
 			this.label9.Name = "label9";
-			this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("Push Url:");
+			this.label9.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Push Url:");
 			this.table3.Add (this.label9);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table3 [this.label9]));
 			w7.TopAttach = ((uint)(2));
@@ -123,7 +123,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.checkImportTags = new global::Gtk.CheckButton ();
 			this.checkImportTags.CanFocus = true;
 			this.checkImportTags.Name = "checkImportTags";
-			this.checkImportTags.Label = global::Mono.Unix.Catalog.GetString ("Import tags");
+			this.checkImportTags.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Import tags");
 			this.checkImportTags.Active = true;
 			this.checkImportTags.DrawIndicator = true;
 			this.checkImportTags.UseUnderline = true;
@@ -132,13 +132,13 @@ namespace MonoDevelop.VersionControl.Git
 			w9.Position = 1;
 			w9.Expand = false;
 			w9.Fill = false;
-			w1.Add (this.vbox7);
+			w1.PackStart (this.vbox7, true, true, 0);
 			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox7]));
 			w10.Position = 0;
 			w10.Expand = false;
 			w10.Fill = false;
 			// Internal child MonoDevelop.VersionControl.Git.EditRemoteDialog.ActionArea
-			global::Gtk.HButtonBox w11 = this.ActionArea;
+			global::Gtk.ButtonBox w11 = this.ActionArea;
 			w11.Name = "dialog1_ActionArea";
 			w11.Spacing = 10;
 			w11.BorderWidth = ((uint)(5));

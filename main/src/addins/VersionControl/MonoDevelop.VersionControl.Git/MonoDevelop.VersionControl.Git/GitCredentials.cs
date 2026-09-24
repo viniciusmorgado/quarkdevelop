@@ -62,52 +62,7 @@ namespace MonoDevelop.VersionControl.Git
 	{
 		internal static readonly string UserCancelledExceptionMessage = GettextCatalog.GetString("Operation cancelled");
 
-		// Gather keys on initialize.
-		static readonly List<string> Keys = new List<string> ();
-		static readonly List<string> PublicKeys = new List<string> ();
-
 		static Dictionary<GitCredentialsType, GitCredentialsState> credState = new Dictionary<GitCredentialsType, GitCredentialsState> ();
-
-		static GitCredentials ()
-		{
-			string keyStorage = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.Personal), ".ssh");
-			if (!Directory.Exists (keyStorage)) {
-				keyStorage = Path.Combine (Environment.ExpandEnvironmentVariables ("%HOME%"), ".ssh");
-				if (!Directory.Exists (keyStorage))
-					return;
-			}
-
-			var defaultKey = FilePath.Null;
-
-			foreach (FilePath privateKey in Directory.EnumerateFiles (keyStorage)) {
-				if (privateKey.Extension == ".pub")
-					continue;
-				string publicKey = privateKey + ".pub";
-				if (File.Exists (publicKey)) {
-					if (privateKey.FileName == "id_rsa")
-						defaultKey = privateKey;
-					else if (!KeyHasPassphrase (privateKey)) {
-						Keys.Add (privateKey);
-						PublicKeys.Add (publicKey);
-					}
-				}
-			}
-
-			if (defaultKey.IsNotNull) {
-				var publicKey = defaultKey + ".pub";
-				// if the default key has no passphrase, make it the first key to try when authenticating,
-				// or the last one otherwise, to make sure that we try the unprotected keys first, before prompting
-				// for the passphrase.
-				if (KeyHasPassphrase (defaultKey)) {
-					Keys.Add (defaultKey);
-					PublicKeys.Add (publicKey);
-				} else {
-					Keys.Insert (0, defaultKey);
-					PublicKeys.Insert (0, publicKey);
-				}
-
-			}
-		}
 
 		public static Credentials TryGet (string url, string userFromUrl, SupportedCredentialTypes types, GitCredentialsType type)
 		{
@@ -119,72 +74,8 @@ namespace MonoDevelop.VersionControl.Git
 			state.UrlUsed = url;
 			Credentials cred = null;
 
-			if ((types & SupportedCredentialTypes.Ssh) != 0) {
-				// Try ssh-agent on Linux.
-				if (!Platform.IsWindows && !state.AgentUsed) {
-					bool agentUsable;
-					if (!state.AgentForUrl.TryGetValue (url, out agentUsable))
-						state.AgentForUrl [url] = agentUsable = true;
-
-					if (agentUsable) {
-						state.AgentUsed = true;
-						return new SshAgentCredentials {
-							Username = userFromUrl,
-						};
-					}
-				}
-
-				int keyIndex;
-				if (state.KeyForUrl.TryGetValue (url, out keyIndex))
-					state.KeyUsed = keyIndex;
-				else {
-					if (state.KeyUsed + 1 < Keys.Count)
-						state.KeyUsed++;
-					else {
-						var sshCred = new SshUserKeyCredentials {
-							Username = userFromUrl,
-							Passphrase = string.Empty
-						};
-						cred = sshCred;
-
-						if (XwtCredentialsDialog.Run (url, SupportedCredentialTypes.Ssh, cred).Result) {
-							keyIndex = Keys.IndexOf (sshCred.PrivateKey);
-							if (keyIndex < 0) {
-								Keys.Add (sshCred.PrivateKey);
-								PublicKeys.Add (sshCred.PublicKey);
-								state.KeyUsed++;
-							} else
-								state.KeyUsed = keyIndex;
-							return cred;
-						}
-						throw new UserCancelledException (UserCancelledExceptionMessage);
-					}
-				}
-
-				var key = Keys [state.KeyUsed];
-				cred = new SshUserKeyCredentials {
-					Username = userFromUrl,
-					Passphrase = string.Empty,
-					PrivateKey = key,
-					PublicKey = PublicKeys [state.KeyUsed]
-				};
-
-				if (KeyHasPassphrase (key)) {
-					if (XwtCredentialsDialog.Run (url, SupportedCredentialTypes.Ssh, cred).Result) {
-						var sshCred = (SshUserKeyCredentials)cred;
-						keyIndex = Keys.IndexOf (sshCred.PrivateKey);
-						if (keyIndex < 0) {
-							Keys.Add (sshCred.PrivateKey);
-							PublicKeys.Add (sshCred.PublicKey);
-							state.KeyUsed++;
-						} else
-							state.KeyUsed = keyIndex;
-					} else
-						throw new UserCancelledException (UserCancelledExceptionMessage);
-				}
-
-				return cred;
-			}
+			// nuget.org LibGit2Sharp has no SSH credential types (SshUserKeyCredentials, SshAgentCredentials): libgit2 runs
+			// the system OpenSSH client for SSH remotes, which authenticates with ssh-agent and ~/.ssh on its own.
 
 			// We always need to run the TryGet* methods as we need the passphraseItem/passwordItem populated even
 			// if the password store contains an invalid password/no password
@@ -251,11 +142,6 @@ namespace MonoDevelop.VersionControl.Git
 		static bool GetCredentials (string uri, SupportedCredentialTypes type, Credentials cred)
 		{
 			return XwtCredentialsDialog.Run (uri, type, cred).Result;
-		}
-
-		internal static bool KeyHasPassphrase (string key)
-		{
-			return File.ReadAllText (key).Contains ("Proc-Type: 4,ENCRYPTED");
 		}
 
 		static bool TryGetPassphrase (Uri uri, out string passphrase)

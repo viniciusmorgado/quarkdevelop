@@ -20,10 +20,10 @@ namespace MonoDevelop.VersionControl.Git
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.VersionControl.Git.StashManagerDialog
 			this.Name = "MonoDevelop.VersionControl.Git.StashManagerDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Stash Manager");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Stash Manager");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.VersionControl.Git.StashManagerDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -52,7 +52,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonApplyRemove.CanFocus = true;
 			this.buttonApplyRemove.Name = "buttonApplyRemove";
 			this.buttonApplyRemove.UseUnderline = true;
-			this.buttonApplyRemove.Label = global::Mono.Unix.Catalog.GetString ("Apply and Remove");
+			this.buttonApplyRemove.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Apply and Remove");
 			this.vboxButtons.Add (this.buttonApplyRemove);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vboxButtons [this.buttonApplyRemove]));
 			w4.Position = 0;
@@ -63,7 +63,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonApply.CanFocus = true;
 			this.buttonApply.Name = "buttonApply";
 			this.buttonApply.UseUnderline = true;
-			this.buttonApply.Label = global::Mono.Unix.Catalog.GetString ("Apply");
+			this.buttonApply.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Apply");
 			this.vboxButtons.Add (this.buttonApply);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vboxButtons [this.buttonApply]));
 			w5.Position = 1;
@@ -74,7 +74,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.buttonBranch.CanFocus = true;
 			this.buttonBranch.Name = "buttonBranch";
 			this.buttonBranch.UseUnderline = true;
-			this.buttonBranch.Label = global::Mono.Unix.Catalog.GetString ("Convert to Branch");
+			this.buttonBranch.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Convert to Branch");
 			this.vboxButtons.Add (this.buttonBranch);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vboxButtons [this.buttonBranch]));
 			w6.Position = 2;
@@ -105,11 +105,11 @@ namespace MonoDevelop.VersionControl.Git
 			w9.Position = 1;
 			w9.Expand = false;
 			w9.Fill = false;
-			w1.Add (this.hbox2);
+			w1.PackStart (this.hbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(w1 [this.hbox2]));
 			w10.Position = 0;
 			// Internal child MonoDevelop.VersionControl.Git.StashManagerDialog.ActionArea
-			global::Gtk.HButtonBox w11 = this.ActionArea;
+			global::Gtk.ButtonBox w11 = this.ActionArea;
 			w11.Name = "dialog1_ActionArea";
 			w11.Spacing = 10;
 			w11.BorderWidth = ((uint)(5));

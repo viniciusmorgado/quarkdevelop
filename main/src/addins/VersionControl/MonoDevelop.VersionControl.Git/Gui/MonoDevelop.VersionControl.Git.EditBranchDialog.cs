@@ -29,10 +29,10 @@ namespace MonoDevelop.VersionControl.Git
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.VersionControl.Git.EditBranchDialog
 			this.Name = "MonoDevelop.VersionControl.Git.EditBranchDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Branch Properties");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Branch Properties");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child MonoDevelop.VersionControl.Git.EditBranchDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -59,7 +59,7 @@ namespace MonoDevelop.VersionControl.Git
 			// Container child table4.Gtk.Table+TableChild
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Name:");
+			this.label4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Name:");
 			this.table4.Add (this.label4);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table4 [this.label4]));
 			w3.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -68,7 +68,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.labelError = new global::Gtk.Label ();
 			this.labelError.Name = "labelError";
 			this.labelError.Xalign = 0F;
-			this.labelError.LabelProp = global::Mono.Unix.Catalog.GetString ("Error");
+			this.labelError.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Error");
 			this.table4.Add (this.labelError);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table4 [this.labelError]));
 			w4.TopAttach = ((uint)(1));
@@ -85,7 +85,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.checkTrack = new global::Gtk.CheckButton ();
 			this.checkTrack.CanFocus = true;
 			this.checkTrack.Name = "checkTrack";
-			this.checkTrack.Label = global::Mono.Unix.Catalog.GetString ("Track a branch:");
+			this.checkTrack.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Track a branch:");
 			this.checkTrack.DrawIndicator = true;
 			this.checkTrack.UseUnderline = true;
 			this.vbox5.Add (this.checkTrack);
@@ -106,13 +106,13 @@ namespace MonoDevelop.VersionControl.Git
 			w8.Position = 2;
 			w8.Expand = false;
 			w8.Fill = false;
-			w1.Add (this.vbox5);
+			w1.PackStart (this.vbox5, true, true, 0);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox5]));
 			w9.Position = 0;
 			w9.Expand = false;
 			w9.Fill = false;
 			// Internal child MonoDevelop.VersionControl.Git.EditBranchDialog.ActionArea
-			global::Gtk.HButtonBox w10 = this.ActionArea;
+			global::Gtk.ButtonBox w10 = this.ActionArea;
 			w10.Name = "dialog1_ActionArea";
 			w10.Spacing = 10;
 			w10.BorderWidth = ((uint)(5));

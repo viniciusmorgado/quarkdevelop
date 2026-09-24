@@ -14,7 +14,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 		
 		private global::Gtk.Label label3;
 		
-		private global::Gtk.ComboBox repCombo;
+		private global::Gtk.ComboBoxText repCombo;
 		
 		private global::Gtk.HSeparator hseparator1;
 		
@@ -72,11 +72,11 @@ namespace MonoDevelop.VersionControl.Dialogs
 			// Widget MonoDevelop.VersionControl.Dialogs.SelectRepositoryDialog
 			this.Events = ((global::Gdk.EventMask)(256));
 			this.Name = "MonoDevelop.VersionControl.Dialogs.SelectRepositoryDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Select Repository");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Select Repository");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(6));
 			// Internal child MonoDevelop.VersionControl.Dialogs.SelectRepositoryDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Events = ((global::Gdk.EventMask)(256));
 			w1.Name = "dialog_VBox";
 			w1.Spacing = 6;
@@ -102,14 +102,14 @@ namespace MonoDevelop.VersionControl.Dialogs
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Type:");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Type:");
 			this.hbox1.Add (this.label3);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.label3]));
 			w2.Position = 0;
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.repCombo = global::Gtk.ComboBox.NewText ();
+			this.repCombo = new global::Gtk.ComboBoxText ();
 			this.repCombo.Name = "repCombo";
 			this.hbox1.Add (this.repCombo);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.repCombo]));
@@ -137,7 +137,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			// Notebook tab
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Connect to Repository");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Connect to Repository");
 			this.notebook.SetTabLabel (this.vbox2, this.label1);
 			this.label1.ShowAll ();
 			// Container child notebook.Gtk.Notebook+NotebookChild
@@ -209,7 +209,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			// Notebook tab
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Registered Repositories");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Registered Repositories");
 			this.notebook.SetTabLabel (this.hbox2, this.label2);
 			this.label2.ShowAll ();
 			this.vbox1.Add (this.notebook);
@@ -237,7 +237,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.buttonBrowse = new global::Gtk.Button ();
 			this.buttonBrowse.CanFocus = true;
 			this.buttonBrowse.Name = "buttonBrowse";
-			this.buttonBrowse.Label = global::Mono.Unix.Catalog.GetString ("Browse...");
+			this.buttonBrowse.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Browse...");
 			this.boxFolder.Add (this.buttonBrowse);
 			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.boxFolder [this.buttonBrowse]));
 			w17.Position = 1;
@@ -290,7 +290,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.label5 = new global::Gtk.Label ();
 			this.label5.Name = "label5";
 			this.label5.Xalign = 0F;
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("Repository:");
+			this.label5.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Repository:");
 			this.table1.Add (this.label5);
 			global::Gtk.Table.TableChild w22 = ((global::Gtk.Table.TableChild)(this.table1 [this.label5]));
 			w22.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -299,7 +299,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.labelMessage = new global::Gtk.Label ();
 			this.labelMessage.Name = "labelMessage";
 			this.labelMessage.Xalign = 0F;
-			this.labelMessage.LabelProp = global::Mono.Unix.Catalog.GetString ("Message:");
+			this.labelMessage.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Message:");
 			this.table1.Add (this.labelMessage);
 			global::Gtk.Table.TableChild w23 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelMessage]));
 			w23.TopAttach = ((uint)(3));
@@ -310,7 +310,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.labelName = new global::Gtk.Label ();
 			this.labelName.Name = "labelName";
 			this.labelName.Xalign = 0F;
-			this.labelName.LabelProp = global::Mono.Unix.Catalog.GetString ("Module name:");
+			this.labelName.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Module name:");
 			this.table1.Add (this.labelName);
 			global::Gtk.Table.TableChild w24 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelName]));
 			w24.TopAttach = ((uint)(2));
@@ -330,7 +330,7 @@ namespace MonoDevelop.VersionControl.Dialogs
 			this.labelTargetDir = new global::Gtk.Label ();
 			this.labelTargetDir.Name = "labelTargetDir";
 			this.labelTargetDir.Xalign = 0F;
-			this.labelTargetDir.LabelProp = global::Mono.Unix.Catalog.GetString ("Target directory:");
+			this.labelTargetDir.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Target directory:");
 			this.table1.Add (this.labelTargetDir);
 			global::Gtk.Table.TableChild w26 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelTargetDir]));
 			w26.TopAttach = ((uint)(1));
@@ -342,11 +342,11 @@ namespace MonoDevelop.VersionControl.Dialogs
 			w27.Position = 1;
 			w27.Expand = false;
 			w27.Fill = false;
-			w1.Add (this.vbox1);
+			w1.PackStart (this.vbox1, true, true, 0);
 			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox1]));
 			w28.Position = 0;
 			// Internal child MonoDevelop.VersionControl.Dialogs.SelectRepositoryDialog.ActionArea
-			global::Gtk.HButtonBox w29 = this.ActionArea;
+			global::Gtk.ButtonBox w29 = this.ActionArea;
 			w29.Events = ((global::Gdk.EventMask)(256));
 			w29.Name = "VersionControlAddIn.SelectRepositoryDialog_ActionArea";
 			w29.Spacing = 10;

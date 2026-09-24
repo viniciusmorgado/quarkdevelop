@@ -255,7 +255,7 @@ namespace MonoDevelop.VersionControl.Git.Tests
 		}
 
 		[TestCase (false)]
-		[TestCase (true, Ignore = true, IgnoreReason = "Needs to be fixed")]
+		[TestCase (true, Ignore = "Needs to be fixed")]
 		public async Task TestGitStagedNewFileStatus (bool testUnstagedRemove)
 		{
 			var repo2 = (GitRepository)Repo;
@@ -302,7 +302,7 @@ namespace MonoDevelop.VersionControl.Git.Tests
 		}
 
 		[TestCase (false)]
-		[TestCase (true, Ignore = true, IgnoreReason = "We stash now only if there are conflicts, this needs to be updated")]
+		[TestCase (true, Ignore = "We stash now only if there are conflicts, this needs to be updated")]
 		public async Task TestGitBranchCreation (bool automaticStashCreation)
 		{
 			var autoStashDefault = GitService.StashUnstashWhenSwitchingBranches.Value;
@@ -606,7 +606,7 @@ namespace MonoDevelop.VersionControl.Git.Tests
 				try {
 					await repo2.CreateBranchAsync ("testBranch2", trackSource, trackRef);
 				} catch (Exception ex) {
-					Assert.IsInstanceOfType (exceptionType, ex);
+					Assert.IsInstanceOf (exceptionType, ex);
 				}
 			} else {
 				await repo2.CreateBranchAsync ("testBranch2", trackSource, trackRef);
@@ -640,6 +640,7 @@ namespace MonoDevelop.VersionControl.Git.Tests
 		[TestCase(false, false)]
 		[TestCase(true, false)]
 		[TestCase(true, true)]
+		[Category ("Quarantine")]
 		public async Task BlameDiffWithNotCommitedItem (bool toVcs, bool commit)
 		{
 			string added = LocalPath.Combine ("init");
@@ -660,6 +661,7 @@ namespace MonoDevelop.VersionControl.Git.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task BlameWithWorkingChanges ()
 		{
 			string added = LocalPath.Combine ("init");
