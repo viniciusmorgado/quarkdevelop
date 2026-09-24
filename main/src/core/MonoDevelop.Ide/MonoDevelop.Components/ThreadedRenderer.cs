@@ -89,10 +89,14 @@ namespace MonoDevelop.Ide
 			UpdateScale ();
 
 			if (surface == null || surface.Height != TargetHeight || surface.Width != TargetWidth) {
-				using (var similar = Gdk.CairoHelper.Create (owner.GdkWindow)) {
-					if (surface != null)
-						surface.Dispose ();
-					surface = new SurfaceWrapper (similar, TargetWidth, TargetHeight);
+				if (surface != null)
+					surface.Dispose ();
+				// GTK3: SurfaceWrapper uses the context only on Windows, so no gdk_cairo_create of the owner's window elsewhere.
+				if (MonoDevelop.Core.Platform.IsWindows) {
+					using (var similar = Gdk.CairoHelper.Create (owner.GdkWindow))
+						surface = new SurfaceWrapper (similar, TargetWidth, TargetHeight);
+				} else {
+					surface = new SurfaceWrapper ((Cairo.Context)null, TargetWidth, TargetHeight);
 				}
 			}
 			runningSignal.Reset ();

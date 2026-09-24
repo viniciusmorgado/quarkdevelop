@@ -140,7 +140,14 @@ namespace MonoDevelop.Components
 
 		public static Xwt.Drawing.Context CreateXwtContext (this Gtk.Widget w)
 		{
-			var c = Gdk.CairoHelper.Create (w.GdkWindow);
+			Cairo.Context c;
+			if (Platform.IsLinux) {
+				// GTK3 draws on a window only in its draw handler: an image surface of the widget's size (for measuring) instead of gdk_cairo_create.
+				using (var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, Math.Max (1, w.Allocation.Width), Math.Max (1, w.Allocation.Height)))
+					c = new Cairo.Context (surface);
+			} else {
+				c = Gdk.CairoHelper.Create (w.GdkWindow);
+			}
 			return GtkToolkit.WrapContext (w, c);
 		}
 
