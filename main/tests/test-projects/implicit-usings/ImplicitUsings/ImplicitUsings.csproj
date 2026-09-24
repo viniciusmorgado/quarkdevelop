@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- On top of the implicit usings of Microsoft.NET.Sdk: a namespace, a static using and an alias. -->
+    <Using Include="System.Text" />
+    <Using Include="System.Math" Static="true" />
+    <Using Include="System.Collections.Generic.Dictionary&lt;string, int&gt;" Alias="Counts" />
+  </ItemGroup>
+
+</Project>

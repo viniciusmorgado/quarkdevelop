@@ -33,3 +33,38 @@ MSBuild bin directory and patching `exe.config`.
 
 - Good: builds use the same MSBuild as `dotnet build`; no Mono.
 - Bad: the custom evaluator may diverge from SDK 10 semantics until replaced.
+
+## Amendment (2026-09-24, T146): generated source files of SDK projects
+
+The type system gets a project's source files from `Project.GetSourceFilesAsync`: the evaluated `Compile` items
+plus the items returned by a design-time run of the `CoreCompileDependsOn` targets in the builder. On SDK 10 that
+property is only `_ComputeNonExistentFileProperty;ResolveCodeAnalysisRuleSet`. The SDK generates its source files in
+targets that run before `BeforeCompile` (`BeforeTargets="BeforeCompile;CoreCompile"`): `GenerateGlobalUsings`
+(`obj/<cfg>/<tfm>/<Project>.GlobalUsings.g.cs` from the `Using` items, which `ImplicitUsings` fills),
+`GenerateAssemblyInfo`, `GenerateTargetFrameworkMonikerAttribute`, and `GenerateMSBuildEditorConfigFile` for the
+analyzers. None of them ran, so a `dotnet new console` project showed false errors (`Console`, `ReadOnlySpan`).
+
+Considered:
+
+1. *Synthesize the global usings in the IDE from the evaluated `Using` items.* Works without the builder, but it
+   copies the SDK's rules (`Static`, `Alias`, `Remove`, ordering, C# and VB syntax) into the IDE, reads the items
+   from the custom evaluator (which may diverge, see above), and fixes only this one file.
+2. *Run `BeforeCompile` in the same design-time run, for SDK projects* (chosen). The SDK's own targets write the files
+   and add the `Compile` and `EditorConfigFiles` items, exactly as `dotnet build` does, so whatever the SDK or a
+   NuGet package generates before `BeforeCompile` is covered. A project that was never built works (the targets
+   create `obj/`), and a changed `Using` item rewrites the file on the next evaluation (the cached items are dropped
+   when the project is saved or reloaded). Visual Studio does the same by running `CoreCompile` with
+   `SkipCompilerExecution=true`; running only `BeforeCompile` avoids `ResolveReferences`, which the IDE runs
+   separately.
+3. *Run `Compile` with `SkipCompilerExecution=true`* as Visual Studio does: also covers targets hooked only on
+   `CoreCompile`, but resolves the references a second time on every evaluation.
+
+`BeforeCompile` is appended only when `UsingMicrosoftNETSdk` is true (legacy projects keep the old target list), and
+last: a failing target stops the ones after it, so `PackageManagementMSBuildExtension` inserts its NuGet targets
+before it. `SdkProjectExtension` no longer adds `GeneratedAssemblyInfoFile` a second time.
+
+Still open: source generators. Their output exists only in the compiler, so the workspace would have to run them
+from its analyzer references. The generators of the shared framework (`[GeneratedRegex]`, `[LibraryImport]`,
+System.Text.Json) are `Analyzer` items added by `ResolveTargetingPackAssets`, which the design-time run does not
+execute: the workspace gets only the NetAnalyzers, and a `[GeneratedRegex]` partial method is a false CS8795 in the
+editor while `dotnet build` succeeds.

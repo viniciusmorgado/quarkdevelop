@@ -782,6 +782,13 @@ namespace MonoDevelop.Projects
 
 					var result = CoreCompileEvaluationResult.Empty;
 					var dependsList = string.Join (";", coreCompileDependsOn.Split (new [] { ";" }, StringSplitOptions.RemoveEmptyEntries).Select (s => s.Trim ()).Where (s => s.Length > 0));
+					// T146: the .NET SDK generates Compile items in obj/ in targets that run before BeforeCompile, not in
+					// CoreCompileDependsOn: GenerateGlobalUsings (ImplicitUsings and Using items), GenerateAssemblyInfo,
+					// GenerateTargetFrameworkMonikerAttribute, plus GenerateMSBuildEditorConfigFile for the analyzers.
+					// Running BeforeCompile writes those files (also in a project that was never built) and returns their
+					// items. It goes last: a failing target stops the ones after it (see PackageManagementMSBuildExtension).
+					if (project.sourceProject.EvaluatedProperties.GetValue ("UsingMicrosoftNETSdk", false))
+						dependsList += ";BeforeCompile";
 					try {
 						// evaluate the Compile targets
 						var ctx = new TargetEvaluationContext ();

@@ -90,6 +90,7 @@ gui_smoke_errors() {
 gui_smoke_modern() {
 	# T138: build the C# 8 to 14 sample in the IDE with no errors or warnings, open Patterns.cs (MD_SMOKE_OPEN) and
 	# check that the IDE's workspace parses it as C# 14 with no syntax errors; the screenshot shows its highlighting.
+	# T146: the workspace also compiles the project with no errors (implicit usings: Console, ReadOnlySpan).
 	local dir
 	dir="$(mktemp -d)"
 	cp -r main/tests/linux-smoke/. "$dir/"
@@ -101,6 +102,7 @@ gui_smoke_modern() {
 	rm -rf "$dir"
 	grep -q "build finished with 0 errors, 0 warnings" "$ci_out/gui-smoke-modern/ide.log" || return 1
 	grep -q "Patterns.cs parses as C# 14.0 with 0 syntax errors" "$ci_out/gui-smoke-modern/ide.log" || return 1
+	grep -q "Modern compiles in the workspace with 0 errors" "$ci_out/gui-smoke-modern/ide.log" || return 1
 	return "$status"
 }
 

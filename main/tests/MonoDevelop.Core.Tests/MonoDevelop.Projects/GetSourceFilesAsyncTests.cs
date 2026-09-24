@@ -264,5 +264,46 @@ namespace MonoDevelop.Projects
 				Assert.IsFalse (sourceFiles.Any (f => f.FilePath.FileName == "Program.cs"));
 			}
 		}
+
+		/// <summary>
+		/// T146: an SDK project gets Compile items that the SDK generates in obj/ before BeforeCompile (GenerateGlobalUsings,
+		/// GenerateAssemblyInfo, GenerateTargetFrameworkMonikerAttribute), not in CoreCompileDependsOn. GetSourceFilesAsync
+		/// includes them, once each, also for a project that was never restored or built, and a changed Using item
+		/// updates the global usings.
+		/// </summary>
+		[Test]
+		public async Task SdkProjectIncludesGeneratedGlobalUsingsAndAssemblyInfo ()
+		{
+			string projectFile = Util.GetSampleProject ("implicit-usings", "ImplicitUsings", "ImplicitUsings.csproj");
+			using (var project = (DotNetProject)await Services.ProjectService.ReadSolutionItem (Util.GetMonitor (), projectFile)) {
+				Assert.IsFalse (Directory.Exists (project.BaseDirectory.Combine ("obj", "Debug")), "the fixture was built");
+
+				var config = project.Configurations ["Debug"].Selector;
+				var sourceFiles = await project.GetSourceFilesAsync (config);
+
+				var globalUsings = sourceFiles.Where (f => f.FilePath.FileName == "ImplicitUsings.GlobalUsings.g.cs").ToList ();
+				Assert.AreEqual (1, globalUsings.Count, "generated global usings");
+				Assert.AreEqual (BuildAction.Compile, globalUsings [0].BuildAction);
+				var text = File.ReadAllText (globalUsings [0].FilePath);
+				// ImplicitUsings (Microsoft.NET.Sdk), then the project's own Using items: plain, alias and static
+				Assert.That (text, Does.Contain ("global using System;"));
+				Assert.That (text, Does.Contain ("global using System.Net.Http;"));
+				Assert.That (text, Does.Contain ("global using System.Text;"));
+				Assert.That (text, Does.Contain ("global using Counts = System.Collections.Generic.Dictionary<string, int>;"));
+				Assert.That (text, Does.Contain ("global using static System.Math;"));
+				Assert.That (text, Does.Not.Contain ("System.Text.Json"));
+
+				Assert.AreEqual (1, sourceFiles.Count (f => f.FilePath.FileName == "ImplicitUsings.AssemblyInfo.cs"), "generated assembly info");
+				Assert.AreEqual (1, sourceFiles.Count (f => f.FilePath.FileName.EndsWith (".AssemblyAttributes.cs", StringComparison.Ordinal)), "target framework attribute");
+				Assert.AreEqual (1, sourceFiles.Count (f => f.FilePath.FileName == "Program.cs"));
+
+				// a new Using item, saved as an edit of the project file would be
+				project.MSBuildProject.AddNewItem ("Using", "System.Text.Json");
+				await project.SaveAsync (Util.GetMonitor ());
+				sourceFiles = await project.GetSourceFilesAsync (config);
+				text = File.ReadAllText (sourceFiles.Single (f => f.FilePath.FileName == "ImplicitUsings.GlobalUsings.g.cs").FilePath);
+				Assert.That (text, Does.Contain ("global using System.Text.Json;"));
+			}
+		}
 	}
 }

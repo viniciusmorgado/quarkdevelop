@@ -402,6 +402,40 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
+		/// <summary>
+		/// T146: a project created with `dotnet new console` has ImplicitUsings: Program.cs uses System types with no using
+		/// directive. The workspace must get the global usings that the SDK generates in obj/ (and the Using items of the
+		/// project: a namespace, a static using and an alias), or the editor shows false errors.
+		/// </summary>
+		[Test]
+		public async Task ImplicitUsingsProjectHasNoErrorsAsync ()
+		{
+			FilePath solFile = Util.GetSampleProject ("implicit-usings", "implicit-usings.sln");
+
+			// the restore needs no package (the targeting pack comes with the SDK): no package source, no network
+			await File.WriteAllTextAsync (solFile.ParentDirectory.Combine ("NuGet.Config"), "<configuration><packageSources><clear /></packageSources></configuration>");
+			Util.RunMSBuild ($"/t:Restore /p:RestoreDisableParallel=true \"{solFile}\"");
+
+			using (var sol = (Solution)await Services.ProjectService.ReadWorkspaceItem (Util.GetMonitor (), solFile))
+			using (var ws = await TypeSystemServiceTestExtensions.LoadSolution (sol)) {
+				try {
+					var project = ws.CurrentSolution.Projects.Single ();
+					Assert.IsTrue (project.Documents.Any (d => d.Name == "ImplicitUsings.GlobalUsings.g.cs"), "generated global usings");
+
+					var program = project.Documents.Single (d => d.Name == "Program.cs");
+					var model = await program.GetSemanticModelAsync ();
+					var errors = model.GetDiagnostics ().Where (d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList ();
+					Assert.That (errors, Is.Empty, string.Join (Environment.NewLine, errors));
+
+					var compilation = await project.GetCompilationAsync ();
+					errors = compilation.GetDiagnostics ().Where (d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList ();
+					Assert.That (errors, Is.Empty, string.Join (Environment.NewLine, errors));
+				} finally {
+					TypeSystemServiceTestExtensions.UnloadSolution (sol);
+				}
+			}
+		}
+
 		[Test]
 		public async Task CSharpFile_BuildActionNone_FileNotUsed ()
 		{

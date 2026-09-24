@@ -460,3 +460,69 @@ MD_SMOKE_OPEN=Modern/Patterns.cs MD_SMOKE_OUT=out/smoke-modern xvfb-run -a -s "-
 Open: the `ReadOnlySpan` squiggle in `Strings.cs` (and `StringSplitOptions` in `Extensions.cs`) is not a language
 version problem. The IDE workspace does not get the SDK's implicit usings (`obj/.../Modern.GlobalUsings.g.cs`, target
 `GenerateGlobalUsings`), so types of `System` are unresolved in projects with `<ImplicitUsings>enable</ImplicitUsings>`.
+
+## T146 — implicit usings
+
+A `dotnet new console` project has `<ImplicitUsings>enable</ImplicitUsings>`, and its `Program.cs` uses `Console`
+with no `using`. The editor marked it as an error (and `ReadOnlySpan`, `StringSplitOptions` in Modern, the open point
+of T138).
+
+**Root cause.** The type system gets the generated source files of a project from a design-time run of the
+`CoreCompileDependsOn` targets in the builder. On SDK 10 that is only `_ComputeNonExistentFileProperty` and
+`ResolveCodeAnalysisRuleSet`. The SDK writes `obj/<cfg>/<tfm>/<Project>.GlobalUsings.g.cs` in `GenerateGlobalUsings`,
+which is hooked with `BeforeTargets="BeforeCompile;CoreCompile"`, like `GenerateAssemblyInfo` and
+`GenerateTargetFrameworkMonikerAttribute`. None of them ran, so the workspace had no global usings.
+
+**Fix.** For SDK projects (`UsingMicrosoftNETSdk`), `Project` appends `BeforeCompile` to that design-time run: the
+SDK's targets write the files, also in a project that was never built, and return their `Compile` (and
+`EditorConfigFiles`) items. `PackageManagementMSBuildExtension` puts its NuGet targets before `BeforeCompile`, and
+`SdkProjectExtension` no longer adds the assembly info file a second time. The options and the reasons for this one
+are in the amendment of [ADR 0008](../../adr/0008-msbuild-hosting.md).
+
+Tests (dev container, Xvfb), fixture `main/tests/test-projects/implicit-usings` (`dotnet new console`, plus a `Using`
+item, a static `Using` and an alias; `Program.cs` has no `using` directive):
+
+- `MonoDevelop.Core.Tests` `GetSourceFilesAsyncTests.SdkProjectIncludesGeneratedGlobalUsingsAndAssemblyInfo`: on the
+  never-built project, the source files include `ImplicitUsings.GlobalUsings.g.cs` (with the implicit, static and
+  alias usings), the assembly info and the target framework attribute, each once. A `Using` item added and saved
+  shows up in the file. Failed before the fix (no generated file). About 1 s.
+- `MonoDevelop.Ide.Tests` `TypeSystemServiceTests.ImplicitUsingsProjectHasNoErrorsAsync`: after an offline restore,
+  the Roslyn project has the generated document, and `Program.cs` and the whole compilation have 0 errors. Failed
+  before the fix. About 3 s.
+- Each new test passed 3 times in a row. Core.Tests (1139 passed), DotNetCore.Tests (252), Ide.Tests (862),
+  CSharpBinding.Tests (172), PackageManagement.Tests (704) and Ide.Gtk3.Tests (117) pass with
+  `Category!=Quarantine`. Core.Tests took 4 min 35 s with the fix and 4 min 37 s without it (same machine).
+
+`--smoke-test` with `MD_SMOKE_OPEN` now also compiles the opened file's project in the IDE's workspace and fails the
+run on any error there (it retries for up to 30 s while the workspace reloads the project). `gui-smoke-modern` in
+`scripts/ci.sh` checks the line for Modern. On a fresh `dotnet new console` project, restored but never built, before
+the fix:
+
+```
+Smoke test: Implicit compiles in the workspace with 1 errors, 1 in Program.cs
+Smoke test: workspace error <tmp>/Implicit/Program.cs(1,1): error CS0103: The name 'Console' does not exist in the current context
+Smoke test: exit code 2 (MD_SMOKE_OPEN: 1 errors in the workspace compilation of Implicit) after 38.4 s
+```
+
+After the fix (the screenshot adds `ReadOnlySpan`, `StringSplitOptions`, `List`, LINQ, `Task` and `File` to the
+template's `Program.cs`):
+
+```
+Smoke test: Program.cs parses as C# 14.0 with 0 syntax errors
+Smoke test: Implicit compiles in the workspace with 0 errors, 0 in Program.cs
+Smoke test: exit code 0 (loaded (MD_SMOKE_NO_BUILD)) after 11.7 s
+```
+
+```bash
+dotnet new console -o <tmp>/Implicit
+MD_SMOKE_NO_BUILD=1 MD_SMOKE_OPEN=Program.cs MD_SMOKE_OUT=out/smoke-t146 xvfb-run -a -s "-screen 0 1600x1000x24" \
+  dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect <tmp>/Implicit/Implicit.csproj
+```
+
+The Modern smoke (`gui-smoke-modern`) reports `Modern compiles in the workspace with 0 errors`.
+
+![A fresh console project with no squiggles](T146-implicit-usings.png)
+
+Open: source generators. The generators of the shared framework (`[GeneratedRegex]`, `[LibraryImport]`,
+System.Text.Json) come from `ResolveTargetingPackAssets`, which the design-time run does not execute, so a
+`[GeneratedRegex]` partial method is still a false error (CS8795) in the editor; `dotnet build` is fine.

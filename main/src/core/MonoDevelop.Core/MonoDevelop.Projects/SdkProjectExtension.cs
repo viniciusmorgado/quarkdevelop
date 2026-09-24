@@ -122,8 +122,9 @@ namespace MonoDevelop.Projects
 			// Ensure generated assembly info file is available to type system. It is created in the obj
 			// directory and is excluded from the project with a wildcard exclude but the type system needs it to
 			// ensure the project's assembly information is correct to prevent diagnostic errors.
+			// The design-time run of BeforeCompile (T146) usually returns it already: do not add it twice.
 			var generatedAssemblyInfoFile = GetGeneratedAssemblyInfoFile (configuration);
-			if (generatedAssemblyInfoFile != null) {
+			if (generatedAssemblyInfoFile != null && !sourceFiles.Any (f => f.FilePath == generatedAssemblyInfoFile.FilePath)) {
 				return sourceFiles.Add (generatedAssemblyInfoFile);
 			}
 

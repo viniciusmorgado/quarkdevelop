@@ -39,7 +39,8 @@ namespace MonoDevelop.Ide
 	/// <c>--smoke-test [solution or project]</c> (task T103, specs/001-linux-dotnet10-migration/contracts/smoke-test.md): start
 	/// the IDE, open the solution, build it, write out/smoke/{ide.log,screenshot.png} and exit with
 	/// 0 (built with no errors and no unhandled exception), 1 (build errors) or 2 (start-up/load failure or timeout).
-	/// MD_SMOKE_OPEN=&lt;file&gt; (relative to the solution's directory) opens that file in the editor before the screenshot.
+	/// MD_SMOKE_OPEN=&lt;file&gt; (relative to the solution's directory) opens that file in the editor before the screenshot,
+	/// and fails the run if the IDE's workspace sees errors in it or in its project.
 	/// </summary>
 	sealed class SmokeTest
 	{
@@ -253,7 +254,9 @@ namespace MonoDevelop.Ide
 		/// Opens the file named by MD_SMOKE_OPEN (relative to the solution's directory, off when unset) and waits for the
 		/// editor to show it, with the semantic highlighting of the C# binding. A C# file is also parsed with the
 		/// language version of its project in the IDE's workspace: syntax errors there would be false errors in the
-		/// editor (T138). Returns null on success, or what went wrong.
+		/// editor (T138). Its project is then compiled in the workspace: an error there that the build does not have (a
+		/// type from the global usings that the SDK generates, T146) is a false error too. Returns null on success, or
+		/// what went wrong.
 		/// </summary>
 		async Task<string> OpenRequestedFileAsync (Solution sln)
 		{
@@ -285,10 +288,39 @@ namespace MonoDevelop.Ide
 					if (syntaxErrors.Count > 0)
 						return $"{syntaxErrors.Count} syntax errors in {file.FileName}";
 				}
+				string semanticFailure = await CheckWorkspaceErrorsAsync (project, file);
+				if (semanticFailure != null)
+					return semanticFailure;
 			}
 			// let the editor draw the document and the C# binding classify it before the screenshot
 			await Task.Delay (3000);
 			return null;
+		}
+
+		/// <summary>
+		/// Returns null when the workspace compilation of <paramref name="project"/> has no errors, or what they are. The
+		/// workspace reloads a project after a restore or a build: the check is repeated for up to 30 s.
+		/// </summary>
+		async Task<string> CheckWorkspaceErrorsAsync (Project project, FilePath file)
+		{
+			var deadline = clock.Elapsed + TimeSpan.FromSeconds (30);
+			while (true) {
+				var roslynProject = await IdeApp.TypeSystemService.GetCodeAnalysisProjectAsync (project);
+				var document = roslynProject?.Documents.FirstOrDefault (d => (FilePath)d.FilePath == file);
+				var compilation = roslynProject != null ? await roslynProject.GetCompilationAsync () : null;
+				var errors = compilation?.GetDiagnostics ().Where (d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList ();
+				if ((document != null && errors?.Count == 0) || clock.Elapsed > deadline) {
+					int count = errors?.Count ?? -1;
+					LoggingService.LogInfo ("Smoke test: {0} compiles in the workspace with {1} errors, {2} in {3}", project.Name, count,
+						errors?.Count (e => (FilePath)e.Location.SourceTree?.FilePath == file) ?? -1, file.FileName);
+					foreach (var error in errors ?? Enumerable.Empty<Microsoft.CodeAnalysis.Diagnostic> ())
+						LoggingService.LogError ("Smoke test: workspace error {0}", error);
+					if (document == null)
+						return $"{file.FileName} is not a document of {project.Name} in the workspace";
+					return count == 0 ? null : $"{count} errors in the workspace compilation of {project.Name}";
+				}
+				await Task.Delay (1000);
+			}
 		}
 
 		void SaveScreenshot ()

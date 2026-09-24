@@ -118,7 +118,7 @@ namespace MonoDevelop.PackageManagement
 		/// </summary>
 		Task<TargetEvaluationResult> OnRunDotNetCoreProjectTarget (ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
 		{
-			target += ";ResolvePackageAssets;ResolveLockFileAnalyzers;RunProduceContentAssets";
+			target = InsertAfterCoreCompileDependsOn (target, "ResolvePackageAssets;ResolveLockFileAnalyzers;RunProduceContentAssets");
 			return base.OnRunTarget (monitor, target, configuration, context);
 		}
 
@@ -129,7 +129,7 @@ namespace MonoDevelop.PackageManagement
 		/// </summary>
 		Task<TargetEvaluationResult> OnRunPackageReferenceProjectTarget (ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
 		{
-			target += ";ResolveNuGetPackageAssets";
+			target = InsertAfterCoreCompileDependsOn (target, "ResolveNuGetPackageAssets");
 			context.GlobalProperties.SetValue ("ResolveNuGetPackages", true);
 			return base.OnRunTarget (monitor, target, configuration, context);
 		}
@@ -146,7 +146,21 @@ namespace MonoDevelop.PackageManagement
 				return false;
 
 			var dependsList = string.Join (";", coreCompileDependsOn.Split (new [] { ";" }, StringSplitOptions.RemoveEmptyEntries).Select (s => s.Trim ()).Where (s => s.Length > 0));
-			return target == dependsList;
+			return target == dependsList || target == dependsList + SdkGeneratedItemsTargets;
+		}
+
+		/// <summary>
+		/// Project appends BeforeCompile to the CoreCompileDependsOn targets of an SDK-style project (T146): the SDK
+		/// generates the global usings and the assembly info before it. BeforeCompile must stay last, since a failing
+		/// target stops the ones after it, so the NuGet targets go before it.
+		/// </summary>
+		const string SdkGeneratedItemsTargets = ";BeforeCompile";
+
+		static string InsertAfterCoreCompileDependsOn (string target, string targets)
+		{
+			if (target.EndsWith (SdkGeneratedItemsTargets, StringComparison.Ordinal))
+				return target.Insert (target.Length - SdkGeneratedItemsTargets.Length, ";" + targets);
+			return target + ";" + targets;
 		}
 	}
 }
