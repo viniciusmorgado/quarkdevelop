@@ -387,9 +387,15 @@ namespace Microsoft.VisualStudio.Platform
 		static ImmutableDictionary<string, Dictionary<string, ScopeStack>> classificationMapCache = ImmutableDictionary<string, Dictionary<string, ScopeStack>>.Empty;
 		Dictionary<string, ScopeStack> GetClassificationMap (string scope)
 		{
+			defaultScopeStack = new ScopeStack (scope).Push (EditorThemeColors.Foreground);
+			return CreateClassificationMap (scope);
+		}
+
+		/// <summary>The theme scopes of Roslyn's classification types in a document of the given scope (source.cs).</summary>
+		internal static Dictionary<string, ScopeStack> CreateClassificationMap (string scope)
+		{
 			Dictionary<string, ScopeStack> result;
 			var baseScopeStack = new ScopeStack (scope);
-			defaultScopeStack = baseScopeStack.Push (EditorThemeColors.Foreground);
 			if (classificationMapCache.TryGetValue (scope, out result))
 				return result;
 			result = new Dictionary<string, ScopeStack> {
@@ -397,6 +403,9 @@ namespace Microsoft.VisualStudio.Platform
 				[ClassificationTypeNames.ExcludedCode] = MakeScope (baseScopeStack, "comment.excluded." + scope),
 				[ClassificationTypeNames.Identifier] = MakeScope (baseScopeStack, scope),
                 [ClassificationTypeNames.Keyword] = MakeScope(baseScopeStack, "keyword." + scope),
+				// if, else, for, return and the like: without Roslyn EditorFeatures, "keyword - control" has no "keyword" base type
+				// (RoslynClassificationTaggerProvider creates it), so it needs a scope of its own (T138)
+				[ClassificationTypeNames.ControlKeyword] = MakeScope (baseScopeStack, "keyword.control." + scope),
                 ["identifier - keyword - (TRANSIENT)"] = MakeScope(baseScopeStack, "keyword." + scope), // required for highlighting of some context specific keywords like 'nameof'
                 [ClassificationTypeNames.NumericLiteral] = MakeScope (baseScopeStack, "constant.numeric." + scope),
 				[ClassificationTypeNames.Operator] = MakeScope (baseScopeStack, scope),
@@ -408,8 +417,12 @@ namespace Microsoft.VisualStudio.Platform
 				[ClassificationTypeNames.PreprocessorText] = MakeScope (baseScopeStack, "meta.preprocessor.region.name." + scope),
 				[ClassificationTypeNames.Punctuation] = MakeScope (baseScopeStack, "punctuation." + scope),
 				[ClassificationTypeNames.VerbatimStringLiteral] = MakeScope (baseScopeStack, "string.verbatim." + scope),
+				[ClassificationTypeNames.StringEscapeCharacter] = MakeScope (baseScopeStack, "constant.character.escape." + scope),
+				[ClassificationTypeNames.OperatorOverloaded] = MakeScope (baseScopeStack, scope),
 
 				[ClassificationTypeNames.ClassName] = MakeScope (baseScopeStack, "entity.name.class." + scope),
+				[ClassificationTypeNames.RecordClassName] = MakeScope (baseScopeStack, "entity.name.class." + scope),
+				[ClassificationTypeNames.RecordStructName] = MakeScope (baseScopeStack, "entity.name.struct." + scope),
 				[ClassificationTypeNames.DelegateName] = MakeScope (baseScopeStack, "entity.name.delegate." + scope),
 				[ClassificationTypeNames.EnumName] = MakeScope (baseScopeStack, "entity.name.enum." + scope),
 				[ClassificationTypeNames.InterfaceName] = MakeScope (baseScopeStack, "entity.name.interface." + scope),

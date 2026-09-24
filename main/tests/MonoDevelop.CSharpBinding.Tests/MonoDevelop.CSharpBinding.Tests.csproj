@@ -35,6 +35,7 @@
     <Compile Include="MonoDevelop.CSharpBinding/CSharpTextEditorIndentationTests.cs" />
     <Compile Include="MonoDevelop.CSharpBinding/FindMemberVisitorTests.cs" />
     <Compile Include="MonoDevelop.CSharpBinding/MonodevelopWorkspaceTests.cs" />
+    <Compile Include="MonoDevelop.CSharpBinding/ModernLanguageVersionTests.cs" />
     <Compile Include="MonoDevelop.CSharpBinding/NamedArgumentCompletionTests.cs" />
     <Compile Include="MonoDevelop.CSharpBinding.Refactoring/CSharpFindReferencesProviderTests.cs" />
     <Compile Include="MonoDevelop.CSharpBinding.Refactoring/GenerateNewMemberTests.cs" />

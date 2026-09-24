@@ -11,3 +11,7 @@ Command: `xvfb-run -a dotnet main/build/bin/MonoDevelop.dll --smoke-test <soluti
 5. Exit code: `0` if build succeeded with 0 errors and no unhandled exception was logged;
    `1` on build errors; `2` on start-up/load failure, timeout or failed error navigation.
 6. Writes `out/smoke/screenshot.png` (main window after build) and `out/smoke/ide.log`.
+7. `MD_SMOKE_OPEN=<file>` (relative to the solution's directory; off by default): before the screenshot, open
+   that file in the editor. A C# file is also parsed with the parse options of its project in the IDE's Roslyn
+   workspace; the log says `<file> parses as C# <version> with <n> syntax errors`, and syntax errors give exit
+   code `2` (T138).

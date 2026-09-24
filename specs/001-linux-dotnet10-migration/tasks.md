@@ -197,6 +197,10 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T107 [US3] M5c: `Ide.Tests`, `IdeUnitTests`, `MonoDevelop.CSharpBinding.Tests` on NUnit 3.14 under Xvfb; quarantine per suite → `docs/evidence/M4/quarantine.md` updated
 - [x] T108 [US3] M5c: `Main.sln` replaced by `MonoDevelop.Linux.sln` (ADR 0002); legacy build files removed or marked obsolete → `docs/BREAKING-CHANGES.md` updated
 - [ ] T109 [US3] M5c: evidence → `docs/evidence/M5/` (smoke logs, screenshots X11 + Wayland, grep = 0 for GTK2 APIs and for the ADR 0011 port helpers, startup time)
+- [x] T138 [US3] M5c: modern C# (8–14) highlighting and CLI-generated test projects → `main/tests/linux-smoke/Modern` (`dotnet new console`/`sln`) builds with 0 warnings (dotnet, mdtool, IDE smoke `gui-smoke-modern`); C# grammar and Roslyn classification scopes tested (`ModernCSharpHighlightingTests`, `RoslynClassificationScopeTests`); net10.0 parse options are C# 14 (`ModernLanguageVersionTests`) → `docs/evidence/M5/README.md`
+- [ ] T144 [US3] M5c: intermittent crash of the GTK test host ("Gdk-WARNING: losing last reference to undestroyed window", 1 in ~20 runs of MonoDevelop.Ide.Gtk3.Tests, never caught by `--blame-crash`; seen before and after the toggle-reference workaround, ADR 0024) → root cause found and fixed, 50 consecutive runs green
+- [ ] T145 [US6] M6: CI time: split the GUI test assemblies (Ide, CSharpBinding, Xml, TextEditor, Gtk3, Git, Refactoring) into a CI job/step that runs in parallel with the Core tests (830 s of the 900 s budget used on 2026-09-24) → each job ≤ 600 s, `scripts/ci.sh` keeps a sequential local mode
+- [ ] T146 [US3] M5c: projects with `<ImplicitUsings>enable</ImplicitUsings>` show false errors in the editor: the IDE workspace never gets the SDK-generated `GlobalUsings.g.cs` (`GenerateGlobalUsings` not run by the design-time compile) → `dotnet new console` project opens with 0 editor diagnostics
 
 ---
 

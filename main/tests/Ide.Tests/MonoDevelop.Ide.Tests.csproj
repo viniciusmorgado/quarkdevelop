@@ -35,6 +35,7 @@
     <Compile Include="MonoDevelop.Ide.Editor/StackMatchExpressionTests.cs" />
     <Compile Include="MonoDevelop.Ide.Editor/SyntaxHighlightingTest.cs" />
     <Compile Include="MonoDevelop.Ide.Editor/SyntaxHighlightingTest_TextMate.cs" />
+    <Compile Include="MonoDevelop.Ide.Editor/ModernCSharpHighlightingTests.cs" />
     <Compile Include="MonoDevelop.Ide.Editor/TestCSharpHighlighting.cs" />
     <Compile Include="MonoDevelop.Ide.Editor/Tests/MonoTextEditorImplementationTests.cs" />
     <Compile Include="MonoDevelop.Ide.Editor/Tests/SimpleReadonlyDocument_Tests.cs" />

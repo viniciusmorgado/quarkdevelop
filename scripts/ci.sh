@@ -2,8 +2,8 @@
 # The whole Linux CI gate in one script, run the same way locally and in GitHub Actions (T115).
 # Steps (each timed; the first failure stops the run):
 #   setup, lint, build --check (Release), duplicate-assembly check, tests + coverage ratchet,
-#   vulnerability audit, mdtool smoke (build linux-smoke/Hello and run it), GUI smoke (Xwt/GTK3
-#   sample window under Xvfb, screenshot).
+#   vulnerability audit, mdtool smoke (build linux-smoke/Hello and linux-smoke/Modern and run them), GUI smoke
+#   (the IDE's --smoke-test under Xvfb and Wayland: Smoke.sln, the Broken project, the C# 8 to 14 Modern.sln).
 # Writes out/ci/summary.txt (step, status, seconds) and fails when the total exceeds the SC-007
 # budget of 15 minutes (MD_CI_BUDGET_SECONDS overrides).
 # Usage: ./scripts/pm ./scripts/ci.sh
@@ -44,6 +44,12 @@ mdtool_smoke() {
 		dotnet main/build/bin/mdtool.dll build "$dir/Hello/Hello.csproj" \
 		&& dotnet "$dir/Hello/bin/Debug/net10.0/Hello.dll" | grep -q "Hello, MonoDevelop!" \
 		|| status=1
+	# T138: the C# 8 to 14 sample builds with no warnings
+	MONODEVELOP_PROFILE="$dir/.profile" MONO_ADDINS_REGISTRY="$dir/.profile" XDG_CONFIG_HOME="$dir/.profile" \
+		dotnet main/build/bin/mdtool.dll build "$dir/Modern/Modern.csproj" > "$ci_out/mdtool-modern.log" 2>&1 \
+		&& grep -q " 0 Warning(s)" "$ci_out/mdtool-modern.log" \
+		&& dotnet "$dir/Modern/bin/Debug/net10.0/Modern.dll" | grep -q "Modern C#: OK" \
+		|| status=1
 	rm -rf "$dir"
 	return "$status"
 }
@@ -81,6 +87,23 @@ gui_smoke_errors() {
 	[[ $status -eq 1 ]]
 }
 
+gui_smoke_modern() {
+	# T138: build the C# 8 to 14 sample in the IDE with no errors or warnings, open Patterns.cs (MD_SMOKE_OPEN) and
+	# check that the IDE's workspace parses it as C# 14 with no syntax errors; the screenshot shows its highlighting.
+	local dir
+	dir="$(mktemp -d)"
+	cp -r main/tests/linux-smoke/. "$dir/"
+	local status=0
+	XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+		MD_SMOKE_OUT="$ci_out/gui-smoke-modern" MD_SMOKE_OPEN=Modern/Patterns.cs \
+		xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Modern.sln" \
+		|| status=$?
+	rm -rf "$dir"
+	grep -q "build finished with 0 errors, 0 warnings" "$ci_out/gui-smoke-modern/ide.log" || return 1
+	grep -q "Patterns.cs parses as C# 14.0 with 0 syntax errors" "$ci_out/gui-smoke-modern/ide.log" || return 1
+	return "$status"
+}
+
 wayland_smoke() {
 	# The same smoke test on Wayland (T104): a headless Weston compositor (no input devices: GDK logs
 	# criticals for the missing seat, which the smoke tolerates), GDK_BACKEND=wayland, no X display.
@@ -113,6 +136,7 @@ step audit ./scripts/audit.sh
 step mdtool-smoke mdtool_smoke
 step gui-smoke gui_smoke
 step gui-smoke-errors gui_smoke_errors
+step gui-smoke-modern gui_smoke_modern
 step wayland-smoke wayland_smoke
 
 total=$((SECONDS - start_all))

@@ -173,8 +173,10 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
 			public const string ExcludedCode = "excluded code";
 			public const string Identifier = "identifier";
 			public const string Keyword = "keyword";
+			public const string ControlKeyword = "keyword - control";
 			public const string NumericLiteral = "number";
 			public const string Operator = "operator";
+			public const string OperatorOverloaded = "operator - overloaded";
 			public const string PreprocessorKeyword = "preprocessor keyword";
 			public const string StringLiteral = "string";
 			public const string WhiteSpace = "whitespace";
@@ -183,13 +185,16 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
 			public const string PreprocessorText = "preprocessor text";
 			public const string Punctuation = "punctuation";
 			public const string VerbatimStringLiteral = "string - verbatim";
+			public const string StringEscapeCharacter = "string - escape character";
 
 			public const string ClassName = "class name";
+			public const string RecordClassName = "record class name";
 			public const string DelegateName = "delegate name";
 			public const string EnumName = "enum name";
 			public const string InterfaceName = "interface name";
 			public const string ModuleName = "module name";
 			public const string StructName = "struct name";
+			public const string RecordStructName = "record struct name";
 			public const string TypeParameterName = "type parameter name";
 
 			public const string FieldName = "field name";

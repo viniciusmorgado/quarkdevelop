@@ -385,3 +385,78 @@ Open follow-up: fix the pad crash, then take the screenshot `T112-debugger.png`:
 MD_SMOKE_DEBUG=1 MD_SMOKE_OUT=out/smoke-debug xvfb-run -a -s "-screen 0 1600x1000x24" \
   dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect <copy of linux-smoke>/Smoke.sln
 ```
+
+## T138 — modern C# highlighting
+
+**Sample.** `main/tests/linux-smoke/Modern` was created with the .NET 10 SDK CLI (`dotnet new console -n Modern
+--framework net10.0`, `dotnet new sln -n Modern --format sln`, `dotnet sln Modern.sln add Modern/Modern.csproj`;
+`AllowUnsafeBlocks` added for the function pointers). Its files use top-level statements, `global using`, `using static`
+and an alias of a tuple type, file-scoped namespaces, records and record structs, `required`/`init`, `file` types,
+primary constructors, `with`, collection expressions and spreads, switch expressions with relational, logical and list
+patterns, raw strings (`"""`, `$"""`, `$$"""`), UTF-8 literals, static abstract and default interface members,
+`notnull`, `unmanaged`, `allows ref struct`, `scoped`, `nint`/`nuint`, function pointers, extension blocks and `field`
+(C# 14). It has its own `Modern.sln`, so `Smoke.sln` and the tests that copy Hello and Greeter are unchanged. It builds
+with 0 warnings and 0 errors with `dotnet build`, `mdtool build` (`/langversion:14.0` on the compiler command line) and
+in the IDE, and prints `Modern C#: OK`.
+
+**Grammar.** The editor highlights `.cs` files with the embedded `syntaxes/CSharp/C#.sublime-syntax` (MonoDevelop's own
+grammar, 2016). `csharp.tmLanguage` in the same folder is not an embedded resource and is not used. The grammar is
+extended in place rather than replaced by the upstream dotnet/csharp-tmLanguage grammar. The editor's regex translator
+turns Oniguruma subexpression calls `\g<name>` into back-references `\k<name>` (`Sublime3Format.CompileRegex`,
+`SyntaxHighlightingTest.TestGroupReplacement`), and the upstream grammar relies on those calls for type names. The
+editor themes also map the scopes of this grammar (`keyword.other.*`, `string.*`, `constant.*`). New rules:
+
+- contextual keywords only where they are keywords: `record`, `extension` (declaration), `file`, `required`
+  (modifiers), `scoped` (parameter), `init`, `field` (property), `with`, `nameof`, `and`/`or`/`not` (operators),
+  `when` (selection), `allows`, `managed`/`unmanaged`, `notnull` (context), `nint`/`nuint` (types);
+- `..` (`keyword.operator.range`), namespace names (`entity.name.namespace`), digit separators, `#nullable`, `#:`/`#!`;
+- raw strings with 3 to 5 quotes and interpolated raw strings with 1 to 3 `$` over several lines, whose holes have as
+  many braces as `$` signs; `@$"`; the `u8` suffix as a keyword, as Roslyn classifies it.
+
+**Semantic highlighting.** In a file of a project, `HighlightUsagesExtension` replaces the grammar with
+`TagBasedSyntaxHighlighting`, which colors Roslyn's classifications (`RoslynClassificationTaggerProvider`). Without Roslyn
+EditorFeatures, the classification types that Roslyn added after C# 7 have no base type, and the map to theme scopes did
+not know them. So `if`, `else`, `for`, `foreach`, `while`, `switch`, `return`, `break`, `throw` and the like
+("keyword - control"), record names ("record class name", "record struct name"), escape sequences and overloaded
+operators were drawn in the plain text color: this is what made C# look C# 7-era. They are mapped now.
+
+**Language version.** For a net10.0 project without `<LangVersion>`, the SDK sets `LangVersion` to 14.0
+(`_MaxSupportedLangVersion` in `Microsoft.CSharp.Core.targets`), `CSharpCompilerParameters` reads it from the evaluated
+project, and `MonoDevelopWorkspace` gives the Roslyn project C# 14 parse options. Nothing needed fixing; the tests
+below keep it that way.
+
+Tests (dev container, Xvfb):
+
+- `MonoDevelop.Ide.Tests` `ModernCSharpHighlightingTests` (86): the grammar the editor loads for `.cs` tokenizes the
+  Modern sources, and each construct gets its scope; contextual keywords used as names stay names; older literals keep
+  their scopes. On the old grammar, 41 of the 86 cases fail.
+- `MonoDevelop.Ide.Gtk3.Tests` `RoslynClassificationScopeTests` (25): Roslyn's classifications of the Modern sources map
+  to theme scopes (keyword, string, class and struct names).
+- `MonoDevelop.CSharpBinding.Tests` `ModernLanguageVersionTests` (2): the compiler parameters and the IDE workspace project
+  of `Modern.csproj` parse C# 14, and the C# 14 file parses without errors.
+
+`--smoke-test` has `MD_SMOKE_OPEN=<file>` (off by default): it opens that file before the screenshot and parses it with
+the project's parse options from the workspace. The CI step `gui-smoke-modern` builds `Modern.sln` in the IDE and opens
+`Patterns.cs`. `mdtool-smoke` also builds and runs Modern.
+`./scripts/ci.sh` (2026-09-24): every step ok, 771 s of the 900 s budget; `gui-smoke-modern` took 13 s and
+`mdtool-smoke` 9 s (Hello and Modern).
+
+```
+Smoke test: build finished with 0 errors, 0 warnings
+Smoke test: opened Patterns.cs
+Smoke test: Patterns.cs parses as C# 14.0 with 0 syntax errors
+Smoke test: exit code 0 (success) after 13.4 s
+```
+
+```bash
+MD_SMOKE_OPEN=Modern/Patterns.cs MD_SMOKE_OUT=out/smoke-modern xvfb-run -a -s "-screen 0 1600x1000x24" \
+  dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect <copy of linux-smoke>/Modern.sln
+```
+
+![Patterns.cs with semantic highlighting](T138-modern-csharp.png)
+
+![Raw and UTF-8 strings in Strings.cs](T138-modern-csharp-strings.png)
+
+Open: the `ReadOnlySpan` squiggle in `Strings.cs` (and `StringSplitOptions` in `Extensions.cs`) is not a language
+version problem. The IDE workspace does not get the SDK's implicit usings (`obj/.../Modern.GlobalUsings.g.cs`, target
+`GenerateGlobalUsings`), so types of `System` are unresolved in projects with `<ImplicitUsings>enable</ImplicitUsings>`.

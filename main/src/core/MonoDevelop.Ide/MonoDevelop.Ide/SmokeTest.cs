@@ -28,6 +28,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Logging;
 using MonoDevelop.Projects;
@@ -38,6 +39,7 @@ namespace MonoDevelop.Ide
 	/// <c>--smoke-test [solution or project]</c> (task T103, specs/001-linux-dotnet10-migration/contracts/smoke-test.md): start
 	/// the IDE, open the solution, build it, write out/smoke/{ide.log,screenshot.png} and exit with
 	/// 0 (built with no errors and no unhandled exception), 1 (build errors) or 2 (start-up/load failure or timeout).
+	/// MD_SMOKE_OPEN=&lt;file&gt; (relative to the solution's directory) opens that file in the editor before the screenshot.
 	/// </summary>
 	sealed class SmokeTest
 	{
@@ -128,8 +130,12 @@ namespace MonoDevelop.Ide
 				LoggingService.LogInfo ("Smoke test: loaded {0} ({1} projects)", sln.Name, sln.GetAllProjects ().Count ());
 
 				if (Environment.GetEnvironmentVariable ("MD_SMOKE_NO_BUILD") == "1") {
+					string loadedOpenFailure = await OpenRequestedFileAsync (sln);
 					SaveScreenshot ();
-					Exit (unhandledExceptions > 0 ? ExitFailure : ExitSuccess, "loaded (MD_SMOKE_NO_BUILD)");
+					if (loadedOpenFailure != null)
+						Exit (ExitFailure, "MD_SMOKE_OPEN: " + loadedOpenFailure);
+					else
+						Exit (unhandledExceptions > 0 ? ExitFailure : ExitSuccess, "loaded (MD_SMOKE_NO_BUILD)");
 					return;
 				}
 
@@ -148,10 +154,14 @@ namespace MonoDevelop.Ide
 				string navigationFailure = errors > 0 ? await CheckErrorNavigationAsync () : null;
 				// T112: MD_SMOKE_DEBUG=1 debugs the startup project (netcoredbg) to a breakpoint on the first line of Program.cs
 				string debugFailure = errors == 0 && Environment.GetEnvironmentVariable ("MD_SMOKE_DEBUG") == "1" ? await CheckDebuggingAsync (sln) : null;
+				// T138: MD_SMOKE_OPEN=<file> shows that file of the solution in the editor
+				string openFailure = navigationFailure == null && debugFailure == null ? await OpenRequestedFileAsync (sln) : null;
 				SaveScreenshot ();
 
 				if (navigationFailure != null)
 					Exit (ExitFailure, "error list navigation: " + navigationFailure);
+				else if (openFailure != null)
+					Exit (ExitFailure, "MD_SMOKE_OPEN: " + openFailure);
 				else if (debugFailure != null)
 					Exit (ExitFailure, "debugging: " + debugFailure);
 				else if (errors > 0)
@@ -235,6 +245,48 @@ namespace MonoDevelop.Ide
 				return $"stopped, but the active document is {active?.FileName.ToString () ?? "none"}:{active?.Editor?.CaretLine}";
 			LoggingService.LogInfo ("Smoke test: the debugger stopped at the breakpoint {0}:1", program.FilePath.FileName);
 			// let the debug pads (call stack, locals) fill before the screenshot
+			await Task.Delay (3000);
+			return null;
+		}
+
+		/// <summary>
+		/// Opens the file named by MD_SMOKE_OPEN (relative to the solution's directory, off when unset) and waits for the
+		/// editor to show it, with the semantic highlighting of the C# binding. A C# file is also parsed with the
+		/// language version of its project in the IDE's workspace: syntax errors there would be false errors in the
+		/// editor (T138). Returns null on success, or what went wrong.
+		/// </summary>
+		async Task<string> OpenRequestedFileAsync (Solution sln)
+		{
+			var requested = Environment.GetEnvironmentVariable ("MD_SMOKE_OPEN");
+			if (string.IsNullOrEmpty (requested))
+				return null;
+			var file = sln.BaseDirectory.Combine (requested).FullPath;
+			if (!File.Exists (file))
+				return file + " does not exist";
+			var project = sln.GetAllProjects ().FirstOrDefault (p => p.Files.GetFile (file) != null);
+			await IdeApp.Workbench.OpenDocument (file, project, 1, 1);
+			var deadline = clock.Elapsed + TimeSpan.FromSeconds (30);
+			while (IdeApp.Workbench.ActiveDocument?.FileName != file || IdeApp.Workbench.ActiveDocument.Editor == null) {
+				if (clock.Elapsed > deadline)
+					return "could not open " + file;
+				await Task.Delay (100);
+			}
+			LoggingService.LogInfo ("Smoke test: opened {0}", file.FileName);
+
+			if (project != null && file.HasExtension (".cs")) {
+				var roslynProject = await IdeApp.TypeSystemService.GetCodeAnalysisProjectAsync (project);
+				if (roslynProject?.ParseOptions is CSharpParseOptions options) {
+					var tree = CSharpSyntaxTree.ParseText (await File.ReadAllTextAsync (file), options, file);
+					var syntaxErrors = tree.GetDiagnostics ().Where (d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList ();
+					LoggingService.LogInfo ("Smoke test: {0} parses as C# {1} with {2} syntax errors",
+						file.FileName, options.LanguageVersion.ToDisplayString (), syntaxErrors.Count);
+					foreach (var error in syntaxErrors)
+						LoggingService.LogError ("Smoke test: syntax error {0}", error);
+					if (syntaxErrors.Count > 0)
+						return $"{syntaxErrors.Count} syntax errors in {file.FileName}";
+				}
+			}
+			// let the editor draw the document and the C# binding classify it before the screenshot
 			await Task.Delay (3000);
 			return null;
 		}

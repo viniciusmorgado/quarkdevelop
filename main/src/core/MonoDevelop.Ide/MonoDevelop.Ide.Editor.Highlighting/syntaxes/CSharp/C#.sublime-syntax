@@ -5,6 +5,7 @@
 #  Author:
 #    Mike Krüger <mkrueger@novell.com>
 #
+#  Copyright (c) 2026 MonoDevelop contributors (C# 8 to 14)
 #  Copyright (c) 2016 Microsoft Corporation
 #  Copyright (c) 2007 Novell, Inc (http://www.novell.com)
 #
@@ -35,6 +36,7 @@ contexts:
   main:
     - include: comments
     - include: keywords
+    - include: operators
     - include: numbers
     - include: strings
     - include: preprocessor
@@ -94,6 +96,35 @@ contexts:
       pop: true
   keywords:
     - match: '@\w+\b'
+    # Contextual keywords of C# 8 to 14: only where they are keywords, since they are valid names elsewhere.
+    - match: '\brecord\b(?=\s+(?:class|struct)\b|\s+@?[A-Za-z_]\w*\s*[(<{:;])(?!\s+with\b)'
+      scope: keyword.other.declaration.source.cs
+    - match: '\bextension\b(?=\s*(?:<[^<>]*>\s*)?\(\s*(?:(?:ref|in|scoped|readonly)\s+)*@?[A-Za-z_][\w.]*(?:<[^()]*>)?(?:\[\])*\??(?:\s+@?[A-Za-z_]\w*)?\s*\)\s*(?:where\b|\{|$))'
+      scope: keyword.other.declaration.source.cs
+    - match: '\bfile\b(?=\s+(?:(?:public|internal|abstract|sealed|static|partial|readonly|unsafe|ref)\s+)*(?:class|struct|interface|enum|record|delegate)\b)'
+      scope: keyword.other.modifiers.source.cs
+    - match: '\brequired\b(?=\s+@?[A-Za-z_])'
+      scope: keyword.other.modifiers.source.cs
+    - match: '\bscoped\b(?=\s+(?:ref\b|@?[A-Za-z_][\w.]*(?:<[^;=()]*>)?\??\s+@?[A-Za-z_]))'
+      scope: keyword.other.parameter.source.cs
+    - match: '\binit\b(?=\s*(?:[;{]|=>))'
+      scope: keyword.other.property.source.cs
+    - match: '\bfield\b(?<=(?:=>|\breturn|[{;])\s*field)(?=\s*(?:[;,)}.\[]|\?\.|\?\?=?|[-+*/%&|^]?=(?!=)|$))'
+      scope: keyword.other.property.source.cs
+    - match: '\bwith\b(?=\s*\{)'
+      scope: keyword.operator.source.cs
+    - match: '\b(and|or|not)\b(?=\s+[\w@"''(\[{<>!-])'
+      scope: keyword.operator.pattern.source.cs
+    - match: '\bnameof\b(?=\s*\()'
+      scope: keyword.operator.source.cs
+    - match: '\bwhen\b(?=\s*(?:[^\s=;,.)\]}:?]|$))'
+      scope: keyword.other.selection.source.cs
+    - match: '\ballows\b(?=\s+ref\s+struct\b)'
+      scope: keyword.other.context.source.cs
+    - match: '\b(managed|unmanaged)\b(?<=\bdelegate\s*\*\s*\w+)'
+      scope: keyword.other.context.source.cs
+    - match: '\b(unmanaged|notnull)\b(?<=\bwhere\s+@?[A-Za-z_]\w*\s*:(?:[^;{}()]|\(\))*)'
+      scope: keyword.other.context.source.cs
     - match: '\b(this|base)\b'
       scope: keyword.other.access.source.cs
     - match: '\b(as|is|new|sizeof|typeof|stackalloc)\b'
@@ -110,10 +141,14 @@ contexts:
       scope: keyword.other.exception.source.cs
     - match: '\b(abstract|async|await|const|event|extern|override|readonly|sealed|static|virtual|volatile|public|protected|private|internal)\b'
       scope: keyword.other.modifiers.source.cs
-    - match: '\b(bool|byte|char|decimal|double|float|int|long|sbyte|short|uint|ushort|ulong|object|string|var|dynamic)\b'
+    - match: '\b(bool|byte|char|decimal|double|float|int|long|sbyte|short|uint|ushort|ulong|nint|nuint|object|string|var|dynamic)\b'
       scope: keyword.other.type.source.cs
     - match: '\b(void)\b'
       scope: keyword.other.void.source.cs
+    - match: '\b(namespace)\s+(@?[A-Za-z_][\w.]*)'
+      captures:
+        1: keyword.other.namespace.source.cs
+        2: entity.name.namespace.source.cs
     - match: '\b(namespace|using)\b'
       scope: keyword.other.namespace.source.cs
     - match: '\b(get|set|add|remove|value)\b'
@@ -128,16 +163,135 @@ contexts:
       scope: keyword.other.source.cs
     - match: '\b(true|false|null)\b'
       scope: constant.language.source.cs
+  operators:
+    # ranges, slices and spreads (C# 8, C# 12)
+    - match: '\.\.(?!\.)'
+      scope: keyword.operator.range.source.cs
   numbers:
-    - match: '((\b\d+\.?\d+)|(\.\d+))([eE][+-]?\d*)?(F|f|D|d|M|m)?\b'
+    # digit separators (C# 7)
+    - match: '(\b\d[\d_]*\.\d[\d_]*|\B\.\d[\d_]*)([eE][+-]?\d[\d_]*)?[FfDdMm]?\b'
       scope: constant.numeric.float.source.cs
-    - match: '\b\d+(([eE][+-]?\d*)?(F|f|D|d|M|m)|([eE][+-]?\d*))\b'
+    - match: '\b\d[\d_]*([eE][+-]?\d[\d_]*[FfDdMm]?|[FfDdMm])\b'
       scope: constant.numeric.float.source.cs
-    - match: '\b0[bB][01_]+(U|u|L|l|UL|Ul|uL|ul|LU|Lu|lU|lu)?\b'
+    - match: '\b0[bB][01_]+([Uu][Ll]?|[Ll][Uu]?)?\b'
       scope: constant.numeric.binary.source.cs
-    - match: '\b(0[xX][0-9a-fA-F]+?|\d+)(U|u|L|l|UL|Ul|uL|ul|LU|Lu|lU|lu)?\b'
+    - match: '\b(0[xX][0-9a-fA-F_]+|\d[\d_]*)([Uu][Ll]?|[Ll][Uu]?)?\b'
       scope: constant.numeric.source.cs
   strings:
+    # Raw string literals (C# 11): the literal ends with as many quotes as it starts with; an interpolated
+    # raw string has holes of as many braces as it has dollar signs. More quotes and dollar signs come first.
+    # The u8 suffix of UTF-8 literals (C# 11) is a keyword, as Roslyn classifies it.
+    - match: '\$\$\$""""(?!")'
+      scope: string.quoted.other.interpolated.raw.source.cs
+      push:
+        - match: '""""'
+          pop: true
+        - match: '(\{\{\{)(?!\{)'
+          captures:
+            1: string.quoted.other.interpolated.raw.source.cs
+          push:
+            - meta_content_scope: source.cs
+            - match: '(\}\}\})'
+              captures:
+                1: string.quoted.other.interpolated.raw.source.cs
+              pop: true
+            - include: main
+    - match: '\$\$\$"""(?!")'
+      scope: string.quoted.other.interpolated.raw.source.cs
+      push:
+        - match: '"""'
+          pop: true
+        - match: '(\{\{\{)(?!\{)'
+          captures:
+            1: string.quoted.other.interpolated.raw.source.cs
+          push:
+            - meta_content_scope: source.cs
+            - match: '(\}\}\})'
+              captures:
+                1: string.quoted.other.interpolated.raw.source.cs
+              pop: true
+            - include: main
+    - match: '\$\$""""(?!")'
+      scope: string.quoted.other.interpolated.raw.source.cs
+      push:
+        - match: '""""'
+          pop: true
+        - match: '(\{\{)(?!\{)'
+          captures:
+            1: string.quoted.other.interpolated.raw.source.cs
+          push:
+            - meta_content_scope: source.cs
+            - match: '(\}\})'
+              captures:
+                1: string.quoted.other.interpolated.raw.source.cs
+              pop: true
+            - include: main
+    - match: '\$\$"""(?!")'
+      scope: string.quoted.other.interpolated.raw.source.cs
+      push:
+        - match: '"""'
+          pop: true
+        - match: '(\{\{)(?!\{)'
+          captures:
+            1: string.quoted.other.interpolated.raw.source.cs
+          push:
+            - meta_content_scope: source.cs
+            - match: '(\}\})'
+              captures:
+                1: string.quoted.other.interpolated.raw.source.cs
+              pop: true
+            - include: main
+    - match: '\$""""(?!")'
+      scope: string.quoted.other.interpolated.raw.source.cs
+      push:
+        - match: '""""'
+          pop: true
+        - match: '(\{)(?!\{)'
+          captures:
+            1: string.quoted.other.interpolated.raw.source.cs
+          push:
+            - meta_content_scope: source.cs
+            - match: '(\})'
+              captures:
+                1: string.quoted.other.interpolated.raw.source.cs
+              pop: true
+            - include: main
+    - match: '\$"""(?!")'
+      scope: string.quoted.other.interpolated.raw.source.cs
+      push:
+        - match: '"""'
+          pop: true
+        - match: '(\{)(?!\{)'
+          captures:
+            1: string.quoted.other.interpolated.raw.source.cs
+          push:
+            - meta_content_scope: source.cs
+            - match: '(\})'
+              captures:
+                1: string.quoted.other.interpolated.raw.source.cs
+              pop: true
+            - include: main
+    - match: '"""""(?!")'
+      scope: string.quoted.other.raw.source.cs
+      push:
+        - match: '"""""(u8)?'
+          captures:
+            1: keyword.other.source.cs
+          pop: true
+    - match: '""""(?!")'
+      scope: string.quoted.other.raw.source.cs
+      push:
+        - match: '""""(u8)?'
+          captures:
+            1: keyword.other.source.cs
+          pop: true
+    - match: '"""(?!")'
+      scope: string.quoted.other.raw.source.cs
+      push:
+        - match: '"""(u8)?'
+          captures:
+            1: keyword.other.source.cs
+          pop: true
     - match: "'"
       scope: string.quoted.single.source.cs
       push:
@@ -150,9 +304,11 @@ contexts:
       push:
         - match: '""'
           scope: constant.character.verbatim.escape.source.cs
-        - match: '"'
+        - match: '"(u8)?'
+          captures:
+            1: keyword.other.source.cs
           pop: true
-    - match: '\$@"'
+    - match: '(\$@|@\$)"'
       scope: string.quoted.other.interpolated.verbatim.source.cs
       push:
         - match: '""'
@@ -193,14 +349,19 @@ contexts:
       push:
         - match: '\\.'
           scope: constant.character.escape.source.cs
-        - match: '("|$\n?)'
+        - match: '("(u8)?|$\n?)'
+          captures:
+            2: keyword.other.source.cs
           pop: true
   preprocessor:
-    - match: '^\s*#(if|else|elif|endif|define|undef|warning|error|line|endregion|pragma)\b'
+    - match: '^\s*#(if|else|elif|endif|define|undef|warning|error|line|endregion|pragma|nullable)\b'
       scope: meta.preprocessor.source.cs
       push:
         - match: '\n?'
           pop: true
+    # the directives of file-based programs (#!, #:package and so on; .NET 10)
+    - match: '^#[!:].*$\n?'
+      scope: meta.preprocessor.source.cs
     - match: '^\s*(#region)(.*)$\n?'
       captures:
         1: meta.preprocessor.source.cs
