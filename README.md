@@ -47,7 +47,8 @@ Directory organization
  * `main`: the MonoDevelop assemblies and add-ins. `main/MonoDevelop.Linux.sln` is the solution;
    `main/vendor` holds the forked dependencies (Xwt, vs-editor-api, …).
  * `scripts`: build, test, run and CI scripts, run inside the dev container with `./scripts/pm`.
- * `docs`, `specs`: documentation, architecture decisions and the migration plan.
+ * `docs`, `specs`: documentation ([architecture](docs/architecture.md)), architecture decisions and the
+   migration plan.
 
 Building, running and debugging
 -------------------------------

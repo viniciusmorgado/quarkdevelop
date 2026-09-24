@@ -231,7 +231,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [ ] T125 [P] M8: ADR 0023 logging/observability + structured logging backend (`MD_LOG_LEVEL`, `MD_LOG_FORMAT=json`) and start-up version log → `MD_LOG_FORMAT=json dotnet mdtool.dll | jq` shows version fields
 - [ ] T126 [P] M8: metrics/tracing for `InstrumentationService` (`System.Diagnostics.Metrics`, `ActivitySource`) → test listener shows instruments
 - [ ] T127 [P] M8: security sweep (Remoting/BinaryFormatter grep = 0 in the Linux solution, `Process` with shell, audit) → `docs/evidence/M8/security.md`
-- [ ] T128 [P] M8: `docs/architecture.md` (layers, add-in model, build/run flow), README refresh → markdown link check passes
+- [x] T128 [P] M8: `docs/architecture.md` (layers, add-in model, build/run flow), README refresh → markdown link check passes
 - [ ] T129 M8: start-up time ≤ 10 s measured; quarantine reduced; warning baselines shrunk → `docs/evidence/M8/README.md`
 - [ ] T130 M9: full regression (`./scripts/test.sh --all` informational + gate run), acceptance checklist SC-001…SC-009 → `docs/evidence/M9/acceptance.md`
 - [ ] T131 M9: final the consistency analysis, release notes (BREAKING-CHANGES) → tag/release only with maintainer authorization
