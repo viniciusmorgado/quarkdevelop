@@ -39,6 +39,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 				string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("WAYLAND_DISPLAY")))
 				return;
 			Gtk.Application.Init ();
+			MonoDevelop.Components.GtkToplevelReferences.Install ();
 			Available = true;
 		}
 

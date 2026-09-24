@@ -45,6 +45,7 @@ namespace MonoDevelop.VersionControl
 			if (!string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("DISPLAY")) ||
 				!string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("WAYLAND_DISPLAY"))) {
 				Gtk.Application.Init ();
+				MonoDevelop.Components.GtkToplevelReferences.Install ();
 				GtkAvailable = true;
 			}
 			// Register the add-ins of the test folder (Core, Ide, VersionControl, VersionControl.Git) in the registry

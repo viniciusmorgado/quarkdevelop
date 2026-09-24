@@ -40,6 +40,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		public Task<int> Run (string[] arguments)
 		{
 			Gtk.Application.Init ();
+			MonoDevelop.Components.GtkToplevelReferences.Install ();
 			AddinManagerWindow.Run (null);
 			return Task.FromResult (0);
 		}

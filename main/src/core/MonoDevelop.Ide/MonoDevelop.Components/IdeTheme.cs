@@ -89,6 +89,7 @@ namespace MonoDevelop.Components
 			}
 #endif
 			Gtk.Application.Init (BrandingService.ApplicationName, ref args);
+			GtkToplevelReferences.Install ();
 #if MAC
 			// Reset our environment after initialization on Mac
 			if (Platform.IsMac)

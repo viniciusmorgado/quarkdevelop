@@ -45,6 +45,7 @@ namespace MonoDevelop.UnitTesting.Tests
 			if (!string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("DISPLAY")) ||
 				!string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("WAYLAND_DISPLAY"))) {
 				Gtk.Application.Init ();
+				MonoDevelop.Components.GtkToplevelReferences.Install ();
 			}
 			// Register the add-ins of the test folder in the registry TestHost uses before the runtime starts (as in
 			// the NuGet add-in tests): the add-in engine activates the root add-ins whose assemblies are already loaded
