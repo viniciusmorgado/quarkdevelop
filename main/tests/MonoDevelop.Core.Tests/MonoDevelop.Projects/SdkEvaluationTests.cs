@@ -47,6 +47,8 @@ namespace MonoDevelop.Projects
 			"TargetFramework", "TargetFrameworkIdentifier", "TargetFrameworkVersion", "TargetFrameworkMoniker",
 			"OutputType", "AssemblyName", "RootNamespace", "Configuration", "Platform", "LangVersion",
 			"Nullable", "ImplicitUsings", "UsingMicrosoftNETSdk",
+			// Microsoft.NETCoreSdk.BundledMSBuildInformation.props: $([System.Version]::Parse ('$(MSBuildVersion)').ToString (2))
+			"_MSBuildVersionMajorMinor", "_IsDisjointMSBuildVersion",
 		};
 
 		// Reserved properties are not listed among a project's evaluated properties; the probe project copies

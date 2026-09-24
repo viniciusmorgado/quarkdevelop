@@ -1156,6 +1156,10 @@ namespace MonoDevelop.Projects.MSBuild
 			{ typeof(System.Text.RegularExpressions.Regex), null },
 			{ typeof(Microsoft.Build.Utilities.ToolLocationHelper), null },
 			{ typeof(System.Globalization.CultureInfo), null },
+			// also allowed by MSBuild; the .NET SDK uses them (e.g. $([System.Version]::Parse ('$(MSBuildVersion)').ToString (2)))
+			{ typeof(System.Version), null },
+			{ typeof(System.Runtime.InteropServices.RuntimeInformation), null },
+			{ typeof(System.Runtime.InteropServices.OSPlatform), null },
 			{
 				typeof (System.Environment),
 				new string [] {

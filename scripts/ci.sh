@@ -38,10 +38,14 @@ mdtool_smoke() {
 	local dir
 	dir="$(mktemp -d)"
 	cp -r main/tests/linux-smoke/. "$dir/"
+	# step() runs this inside an if (no set -e): chain the checks and keep their status
+	local status=0
 	MONODEVELOP_PROFILE="$dir/.profile" MONO_ADDINS_REGISTRY="$dir/.profile" XDG_CONFIG_HOME="$dir/.profile" \
-		dotnet main/build/bin/mdtool.dll build "$dir/Hello/Hello.csproj"
-	dotnet "$dir/Hello/bin/Debug/net10.0/Hello.dll" | grep -q "Hello, MonoDevelop!"
+		dotnet main/build/bin/mdtool.dll build "$dir/Hello/Hello.csproj" \
+		&& dotnet "$dir/Hello/bin/Debug/net10.0/Hello.dll" | grep -q "Hello, MonoDevelop!" \
+		|| status=1
 	rm -rf "$dir"
+	return "$status"
 }
 
 gui_smoke() {
@@ -50,11 +54,15 @@ gui_smoke() {
 	local dir
 	dir="$(mktemp -d)"
 	cp -r main/tests/linux-smoke/. "$dir/"
+	# step() runs this function inside an if, where set -e does not apply: keep the exit status explicitly
+	local status=0
 	XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
 		MD_SMOKE_OUT="$ci_out/gui-smoke" \
-		xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln"
+		xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln" \
+		|| status=$?
 	rm -rf "$dir"
-	test -s "$ci_out/gui-smoke/screenshot.png"
+	test -s "$ci_out/gui-smoke/screenshot.png" || return 1
+	return "$status"
 }
 
 wayland_smoke() {
@@ -76,7 +84,7 @@ wayland_smoke() {
 		dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln" || status=$?
 	kill "$wpid"
 	rm -rf "$dir" "$runtime"
-	grep -q "GDK display wayland-md" "$ci_out/wayland-smoke/ide.log"
+	grep -q "GDK display wayland-md" "$ci_out/wayland-smoke/ide.log" || return 1
 	return "$status"
 }
 
