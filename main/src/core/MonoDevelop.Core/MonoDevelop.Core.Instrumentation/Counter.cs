@@ -263,6 +263,7 @@ namespace MonoDevelop.Core.Instrumentation
 
 		public void Inc (int n, string? message, IDictionary<string, object>? metadata)
 		{
+			InstrumentationTelemetry.RecordChange (this, n);
 			if (Enabled) {
 				lock (values) {
 					count += n;
@@ -296,6 +297,7 @@ namespace MonoDevelop.Core.Instrumentation
 
 		public void Dec (int n, string? message, IDictionary<string, object>? metadata)
 		{
+			InstrumentationTelemetry.RecordChange (this, -n);
 			if (Enabled) {
 				lock (values) {
 					count -= n;

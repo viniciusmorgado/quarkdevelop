@@ -118,9 +118,10 @@ namespace MonoDevelop.Core.Instrumentation
 
 		internal ITimeTracker<T> BeginTiming<T> (string? message, T? metadata, CancellationToken cancellationToken) where T : CounterMetadata, new()
 		{
-			if (!Enabled && !LogMessages) {
+			if (!Enabled && !LogMessages && !InstrumentationTelemetry.IsTimingObserved) {
 				return new DummyTimerCounter<T> (metadata);
 			}
+			InstrumentationTelemetry.RecordChange (this, 1);
 
 			var c = new TimeCounter<T> (this, metadata, cancellationToken);
 

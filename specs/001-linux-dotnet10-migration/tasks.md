@@ -229,7 +229,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 ## Phase 9: Polish — M8 hardening, M9 release
 
 - [x] T125 [P] M8: ADR 0023 logging/observability + structured logging backend (`MD_LOG_LEVEL`, `MD_LOG_FORMAT=json`) and start-up version log → `MD_LOG_FORMAT=json dotnet mdtool.dll | jq` shows version fields
-- [ ] T126 [P] M8: metrics/tracing for `InstrumentationService` (`System.Diagnostics.Metrics`, `ActivitySource`) → test listener shows instruments
+- [x] T126 [P] M8: metrics/tracing for `InstrumentationService` (`System.Diagnostics.Metrics`, `ActivitySource`) → test listener shows instruments
 - [x] T127 [P] M8: security sweep (Remoting/BinaryFormatter grep = 0 in the Linux solution, `Process` with shell, audit) → `docs/evidence/M8/security.md`
 - [x] T128 [P] M8: `docs/architecture.md` (layers, add-in model, build/run flow), README refresh → markdown link check passes
 - [ ] T129 M8: start-up time ≤ 10 s measured; quarantine reduced; warning baselines shrunk → `docs/evidence/M8/README.md`

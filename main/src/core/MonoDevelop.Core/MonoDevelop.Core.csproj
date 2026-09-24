@@ -142,6 +142,7 @@
     <Compile Include="MonoDevelop.Core.Execution/DefaultExecutionMode.cs" />
     <Compile Include="MonoDevelop.Core.Instrumentation/InstrumentationService.cs" />
     <Compile Include="MonoDevelop.Core.Instrumentation/Counter.cs" />
+    <Compile Include="MonoDevelop.Core.Instrumentation/InstrumentationTelemetry.cs" />
     <Compile Include="MonoDevelop.Core.Instrumentation/CounterCategory.cs" />
     <Compile Include="MonoDevelop.Core.Instrumentation/MemoryProbe.cs" />
     <Compile Include="MonoDevelop.Core.Assemblies/IAssemblyContext.cs" />

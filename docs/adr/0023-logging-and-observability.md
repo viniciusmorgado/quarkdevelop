@@ -41,8 +41,17 @@ Microsoft.Extensions.Logging (option 2) would replace an API used across the who
 forwarding bridge (option 3) adds dependencies to every host for no feature the JSON console mode lacks. It can
 still be added later as another `IStructuredLogger`.
 
-Metrics and tracing for `InstrumentationService` (`System.Diagnostics.Metrics`, `ActivitySource`) are task T126.
-This ADR will be amended when that is done.
+**Metrics and tracing (T126).** `InstrumentationTelemetry` publishes the existing instrumentation counters as a
+`Meter` and an `ActivitySource`, both named `MonoDevelop`:
+- `monodevelop.counter.changes` (`UpDownCounter<long>`) records the amounts of `Counter.Inc` and `Counter.Dec`
+  and each start of a timer counter.
+- `monodevelop.timer.duration` (`Histogram<double>`, ms) records the duration of each `TimerCounter.BeginTiming`.
+- `BeginTiming` also starts one `Activity`, named after the counter. A cancelled timing gets an error status.
+
+Every measurement is tagged with `counter` (the counter name). Nothing is allocated or recorded without a
+listener. A timer counter that is otherwise disabled starts a real timing only when a listener is attached.
+`Counter.SetValue` (gauge semantics) is not exported. `dotnet-counters monitor --counters MonoDevelop`,
+`dotnet-trace`, or an OpenTelemetry exporter added by an add-in can observe the IDE.
 
 ### Consequences
 

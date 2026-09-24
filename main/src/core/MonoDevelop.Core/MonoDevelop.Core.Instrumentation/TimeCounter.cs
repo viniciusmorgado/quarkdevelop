@@ -86,6 +86,7 @@ namespace MonoDevelop.Core.Instrumentation
 		long lastTraceTime;
 		T? metadata;
 		CancellationToken cancellationToken;
+		Activity? activity;
 
 		internal TimeCounter (TimerCounter counter, T? metadata, CancellationToken cancellationToken)
 		{
@@ -98,6 +99,7 @@ namespace MonoDevelop.Core.Instrumentation
 				traceList.Metadata = metadata?.Properties;
 			}
 			this.cancellationToken = cancellationToken;
+			activity = InstrumentationTelemetry.ActivitySource.StartActivity (counter.Name);
 			Begin ();
 		}
 
@@ -164,6 +166,13 @@ namespace MonoDevelop.Core.Instrumentation
 
 			stopWatch.Stop ();
 			Duration = stopWatch.Elapsed;
+			InstrumentationTelemetry.RecordDuration (counter!, Duration.TotalMilliseconds);
+			if (activity != null) {
+				if (cancellationToken.IsCancellationRequested)
+					activity.SetStatus (ActivityStatusCode.Error, "cancelled");
+				activity.Dispose ();
+				activity = null;
+			}
 
 			if (metadata != null && cancellationToken.IsCancellationRequested)
 				metadata.SetUserCancel ();
