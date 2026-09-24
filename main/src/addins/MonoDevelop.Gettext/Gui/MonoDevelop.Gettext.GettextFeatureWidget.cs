@@ -29,7 +29,7 @@ namespace MonoDevelop.Gettext
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 0F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Select the languages you want to support (more languages can be added later):");
+			this.label4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Select the languages you want to support (more languages can be added later):");
 			this.vbox2.Add (this.label4);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.label4]));
 			w1.Position = 0;

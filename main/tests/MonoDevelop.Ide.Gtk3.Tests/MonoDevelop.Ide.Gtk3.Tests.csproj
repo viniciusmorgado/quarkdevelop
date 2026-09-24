@@ -21,6 +21,10 @@
     <ProjectReference Include="../../src/addins/CSharpBinding/CSharpBinding.csproj" />
     <!-- Only so that the add-in dependencies of CSharpBinding (Refactoring -> RegexToolkit) resolve in the test registry. -->
     <ProjectReference Include="../../src/addins/MonoDevelop.RegexToolkit/MonoDevelop.RegexToolkit.csproj" />
+    <!-- The assembly browser on ICSharpCode.Decompiler 11 (T093, AssemblyBrowserTests). -->
+    <ProjectReference Include="../../src/addins/MonoDevelop.AssemblyBrowser/MonoDevelop.AssemblyBrowser.csproj" />
+    <!-- The Gettext add-in without Autotools/Deployment (T098, GettextTests). -->
+    <ProjectReference Include="../../src/addins/MonoDevelop.Gettext/MonoDevelop.Gettext.csproj" />
   </ItemGroup>
 
   <ItemGroup>

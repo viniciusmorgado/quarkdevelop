@@ -168,3 +168,49 @@ nuget.org through `IdeTestBase` (T107) are not compiled. FR-010: `PackageOperati
 the test, and resolves an MSBuild project SDK from that feed with the in-process `NuGetSdkResolver`.
 
 ![The smoke solution restored by the NuGet add-in](T100-nuget.png)
+
+## T093, T095, T096, T098 — Assembly browser, hex editor, DocFood and Gettext add-ins (M5c)
+
+`MonoDevelop.AssemblyBrowser`, `MonoDevelop.HexEditor`, `MonoDevelop.DocFood` and `MonoDevelop.Gettext` are SDK-style
+net10.0 add-ins on GTK 3, in their MonoDevelop 8.6 folders (`AddIns/DisplayBindings/{AssemblyBrowser,HexEditor,Gettext}`,
+`AddIns/BackendBindings`). Stetic output is frozen; DocFood's and HexEditor's `gui.stetic` are deleted (HexEditor's
+Stetic project had no widgets and was never compiled).
+
+- The assembly browser decompiles with ICSharpCode.Decompiler 11.1.0.9782 from nuget.org (metadata based, no
+  Mono.Cecil; upstream got 5.0 transitively from Roslyn EditorFeatures), copied next to the add-in. It never used
+  NRefactory; the MonoDoc lookup (`HelpExtensions.cs`, no callers) is not compiled. Decompilations of one assembly
+  are serialized (`CSharpDecompiler` keeps its syntax tree in a field: selecting nodes quickly mixed two outputs).
+- Gettext no longer depends on the Autotools and Deployment add-ins (ADR 0017): `MakefileHandler.cs` is not compiled,
+  the `IDeployable` part of `TranslationProject` is behind `GETTEXT_DEPLOYMENT`, and the GTK 2 GtkSpell binding (its
+  callers were commented out upstream) is not compiled. The catalog editor's text editors are hosted in frames
+  (GTK 3 would wrap them in viewports) and entry colors are CSS (`Gtk3BaseColor`). The add-in stays off by default.
+- Outside these projects: the source editor's scroll bar overview no longer creates a cairo context of the IDE
+  window on Linux (it was unused there, and disposing it made GTK lose references of the window: the IDE crashed when
+  the Gettext catalog editor opened); the vs-editor-api `Strings.resx` resources keep the manifest names their
+  generated classes look up (an undo transaction for a text change set outside of one logged a missing resource).
+
+Commands (dev container; a scratch profile with the Gettext add-in enabled, temporary start-up handlers opened the
+assembly browser on `System.Console` in C# and `Xwt.dll` in the hex editor for the screenshots):
+
+```bash
+./scripts/pm dotnet build main/MonoDevelop.Linux.sln
+./scripts/pm bash -lc 'xvfb-run -a -s "-screen 0 1600x1000x24" bash -c "dotnet main/build/bin/MonoDevelop.dll -no-redirect \
+  main/tests/linux-smoke/Smoke.sln > out/ide.log 2>&1 & sleep 70; import -window root out/ide.png; kill %1"'
+./scripts/pm ./scripts/ci.sh
+```
+
+Result (2026-09-24): the IDE loads the AssemblyBrowser and DocFood add-ins at start (HexEditor loads when a file is
+opened in it, Gettext when enabled) and `out/ide.log` has no ERROR/FATAL line. The assembly browser shows
+`System.Console` decompiled to C# ([T093-assembly-browser.png](T093-assembly-browser.png)), the hex editor `Xwt.dll`
+([T095-hex-editor.png](T095-hex-editor.png)) and the Gettext catalog editor a PO file with a valid, a fuzzy and a
+missing translation ([T098-gettext-po-editor.png](T098-gettext-po-editor.png)). DocFood's options panels are
+commented out in its manifest upstream; its editor extension and documentation generator load with the add-in.
+
+Tests (`MonoDevelop.Ide.Gtk3.Tests`, 64 passed): `AssemblyBrowserTests` (System.Console decompiled to C# with member
+links, and disassembled to IL), `GettextTests` (a PO catalog read, changed and written back; the CSS base color of an
+entry), `TextEditorOverviewTests` (an embedded editor redraws its overview after an options change),
+`EditorResourcesTests` (the string resources of the 11 vs-editor-api assemblies are found). `./scripts/ci.sh`: every
+step passes except `gui-smoke`, which fails the same way on an unmodified build of `1fefbbab95` (the IDE reports one
+build error for Smoke.sln with no message while `mdtool build` and `dotnet build` succeed).
+
+![System.Console in the assembly browser](T093-assembly-browser.png)

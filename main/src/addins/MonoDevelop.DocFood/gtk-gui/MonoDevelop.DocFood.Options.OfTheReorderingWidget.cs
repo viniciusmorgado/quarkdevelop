@@ -35,7 +35,7 @@ namespace MonoDevelop.DocFood.Options
 		{
 			global::Stetic.Gui.Initialize (this);
 			// Widget MonoDevelop.DocFood.Options.OfTheReorderingWidget
-			global::Stetic.BinContainer.Attach (this);
+			MonoDevelop.Components.BinContainer.Attach (this);
 			this.Name = "MonoDevelop.DocFood.Options.OfTheReorderingWidget";
 			// Container child MonoDevelop.DocFood.Options.OfTheReorderingWidget.Gtk.Container+ContainerChild
 			this.hbox1 = new global::Gtk.HBox ();
@@ -69,7 +69,7 @@ namespace MonoDevelop.DocFood.Options
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("\"of the\" reordering words:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("\"of the\" reordering words:");
 			this.label1.UseUnderline = true;
 			this.vbox1.Add (this.label1);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.label1]));
@@ -123,7 +123,7 @@ namespace MonoDevelop.DocFood.Options
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("A_cronym:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("A_cronym:");
 			this.label2.UseUnderline = true;
 			this.hbox2.Add (this.label2);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label2]));
@@ -167,7 +167,7 @@ namespace MonoDevelop.DocFood.Options
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Prefix words for the reordering:");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Prefix words for the reordering:");
 			this.label3.UseUnderline = true;
 			this.vbox3.Add (this.label3);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.label3]));
@@ -221,7 +221,7 @@ namespace MonoDevelop.DocFood.Options
 			// Container child hbox5.Gtk.Box+BoxChild
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("A_cronym:");
+			this.label4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("A_cronym:");
 			this.label4.UseUnderline = true;
 			this.hbox5.Add (this.label4);
 			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.label4]));

@@ -124,6 +124,8 @@ namespace MonoDevelop.AssemblyBrowser
 		}
 		
 		#region ITextOutput implementation
+		public string IndentationString { get; set; } = "\t";
+
 		int currentLine;
 		public int CurrentLine {
 			get {
@@ -159,14 +161,18 @@ namespace MonoDevelop.AssemblyBrowser
 			sb.Append (text);
 		}
 
-		public void WriteReference (OpCodeInfo opCode)
+		public void WriteReference (OpCodeInfo opCode, bool omitSuffix = false)
 		{
 			WriteIndent ();
-			ReferencedSegments.Add (new ReferenceSegment (sb.Length, opCode.Name.Length, opCode));
-			sb.Append (opCode.Name);
+			var name = opCode.Name;
+			int lastDot = name.LastIndexOf ('.');
+			if (omitSuffix && lastDot > 0)
+				name = name.Remove (lastDot + 1);
+			ReferencedSegments.Add (new ReferenceSegment (sb.Length, name.Length, opCode));
+			sb.Append (name);
 		}
 
-		public void WriteReference (PEFile module, EntityHandle handle, string text, bool isDefinition = false)
+		public void WriteReference (MetadataFile module, Handle handle, string text, string protocol = "decompile", bool isDefinition = false)
 		{
 			WriteIndent ();
 			if (isDefinition) {
@@ -198,7 +204,7 @@ namespace MonoDevelop.AssemblyBrowser
 			sb.Append (text);
 		}
 
-		public void WriteLocalReference (string text, object reference, bool isDefinition)
+		public void WriteLocalReference (string text, object reference, bool isDefinition = false, bool isHoverOnly = false)
 		{
 			WriteIndent ();
 
@@ -218,7 +224,7 @@ namespace MonoDevelop.AssemblyBrowser
 				return;
 			write_indent = false;
 			for (int i = 0; i < indent; i++)
-				sb.Append ("\t");
+				sb.Append (IndentationString);
 		}
 		
 		public void WriteLine ()
@@ -243,9 +249,14 @@ namespace MonoDevelop.AssemblyBrowser
 		
 		Stack<Tuple<int, string, bool>> foldSegmentStarts =new Stack<Tuple<int, string, bool>> ();
 		
-		public void MarkFoldStart (string collapsedText, bool defaultCollapsed)
+		public void MarkFoldStart (string collapsedText = "...", bool defaultCollapsed = false, bool isDefinition = false)
 		{
 			foldSegmentStarts.Push (Tuple.Create (sb.Length, collapsedText, defaultCollapsed));
+		}
+
+		// Folds start where MarkFoldStart is called; leading comments and attributes are not folded with the definition.
+		public void MarkDefinitionStart ()
+		{
 		}
 
 		public void MarkFoldEnd ()

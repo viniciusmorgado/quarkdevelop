@@ -129,7 +129,7 @@ namespace MonoDevelop.Gettext
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("_Filter:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Filter:");
 			this.label2.UseUnderline = true;
 			this.hbox2.Add (this.label2);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label2]));
@@ -170,7 +170,7 @@ namespace MonoDevelop.Gettext
 			// Container child togglebuttonOkHbox.Gtk.Box+BoxChild
 			this.togglebuttonOkLabel = new global::Gtk.Label ();
 			this.togglebuttonOkLabel.Name = "togglebuttonOkLabel";
-			this.togglebuttonOkLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Valid");
+			this.togglebuttonOkLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Valid");
 			this.togglebuttonOkLabel.UseUnderline = true;
 			this.togglebuttonOkHbox.Add (this.togglebuttonOkLabel);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.togglebuttonOkHbox [this.togglebuttonOkLabel]));
@@ -204,7 +204,7 @@ namespace MonoDevelop.Gettext
 			// Container child togglebuttonMissingHbox.Gtk.Box+BoxChild
 			this.togglebuttonMissingLabel = new global::Gtk.Label ();
 			this.togglebuttonMissingLabel.Name = "togglebuttonMissingLabel";
-			this.togglebuttonMissingLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Missing");
+			this.togglebuttonMissingLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Missing");
 			this.togglebuttonMissingLabel.UseUnderline = true;
 			this.togglebuttonMissingHbox.Add (this.togglebuttonMissingLabel);
 			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.togglebuttonMissingHbox [this.togglebuttonMissingLabel]));
@@ -238,7 +238,7 @@ namespace MonoDevelop.Gettext
 			// Container child togglebuttonFuzzyHbox.Gtk.Box+BoxChild
 			this.togglebuttonFuzzyLabel = new global::Gtk.Label ();
 			this.togglebuttonFuzzyLabel.Name = "togglebuttonFuzzyLabel";
-			this.togglebuttonFuzzyLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Fuzzy");
+			this.togglebuttonFuzzyLabel.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Fuzzy");
 			this.togglebuttonFuzzyLabel.UseUnderline = true;
 			this.togglebuttonFuzzyHbox.Add (this.togglebuttonFuzzyLabel);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.togglebuttonFuzzyHbox [this.togglebuttonFuzzyLabel]));
@@ -287,7 +287,7 @@ namespace MonoDevelop.Gettext
 			this.label6 = new global::Gtk.Label ();
 			this.label6.Name = "label6";
 			this.label6.Xalign = 0F;
-			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("_Comments:");
+			this.label6.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Comments:");
 			this.label6.UseUnderline = true;
 			this.vbox3.Add (this.label6);
 			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.label6]));
@@ -323,7 +323,7 @@ namespace MonoDevelop.Gettext
 			this.label7 = new global::Gtk.Label ();
 			this.label7.Name = "label7";
 			this.label7.Xalign = 0F;
-			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("_Translated (msgstr):");
+			this.label7.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Translated (msgstr):");
 			this.label7.UseUnderline = true;
 			this.vbox4.Add (this.label7);
 			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.label7]));
@@ -341,7 +341,7 @@ namespace MonoDevelop.Gettext
 			this.notebookTranslated.Add (w25);
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("page1");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("page1");
 			this.notebookTranslated.SetTabLabel (w25, this.label1);
 			this.label1.ShowAll ();
 			this.vbox4.Add (this.notebookTranslated);
@@ -365,7 +365,7 @@ namespace MonoDevelop.Gettext
 			this.label8 = new global::Gtk.Label ();
 			this.label8.Name = "label8";
 			this.label8.Xalign = 0F;
-			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("Original (msgid):");
+			this.label8.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Original (msgid):");
 			this.hbox3.Add (this.label8);
 			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.label8]));
 			w28.Position = 0;
@@ -373,7 +373,7 @@ namespace MonoDevelop.Gettext
 			this.checkbuttonWhiteSpaces = new global::Gtk.CheckButton ();
 			this.checkbuttonWhiteSpaces.CanFocus = true;
 			this.checkbuttonWhiteSpaces.Name = "checkbuttonWhiteSpaces";
-			this.checkbuttonWhiteSpaces.Label = global::Mono.Unix.Catalog.GetString ("S_how whitespaces");
+			this.checkbuttonWhiteSpaces.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("S_how whitespaces");
 			this.checkbuttonWhiteSpaces.DrawIndicator = true;
 			this.checkbuttonWhiteSpaces.UseUnderline = true;
 			this.hbox3.Add (this.checkbuttonWhiteSpaces);
@@ -401,7 +401,7 @@ namespace MonoDevelop.Gettext
 			this.label9 = new global::Gtk.Label ();
 			this.label9.Name = "label9";
 			this.label9.Xalign = 0F;
-			this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("Original plural (msgid_plural):");
+			this.label9.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Original plural (msgid_plural):");
 			this.vbox8.Add (this.label9);
 			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.vbox8 [this.label9]));
 			w32.Position = 0;
@@ -427,7 +427,7 @@ namespace MonoDevelop.Gettext
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 0F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("F_ound in:");
+			this.label4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("F_ound in:");
 			this.label4.UseUnderline = true;
 			this.vbox6.Add (this.label4);
 			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.vbox6 [this.label4]));
@@ -463,7 +463,7 @@ namespace MonoDevelop.Gettext
 			// Notebook tab
 			this.label5 = new global::Gtk.Label ();
 			this.label5.Name = "label5";
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("page1");
+			this.label5.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("page1");
 			this.notebookPages.SetTabLabel (this.vbox7, this.label5);
 			this.label5.ShowAll ();
 			this.vbox2.Add (this.notebookPages);

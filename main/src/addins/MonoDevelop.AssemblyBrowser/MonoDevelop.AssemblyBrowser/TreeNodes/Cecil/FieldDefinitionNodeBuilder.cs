@@ -81,7 +81,7 @@ namespace MonoDevelop.AssemblyBrowser
 			var field = (IField)navigator.DataItem;
 			if (field == null)
 				return EmptyReferenceSegmentTask;
-			return MethodDefinitionNodeBuilder.DisassembleAsync (data, rd => rd.DisassembleField (field.ParentModule.PEFile, (System.Reflection.Metadata.FieldDefinitionHandle)field.MetadataToken));
+			return MethodDefinitionNodeBuilder.DisassembleAsync (data, rd => rd.DisassembleField (field.ParentModule.MetadataFile, (System.Reflection.Metadata.FieldDefinitionHandle)field.MetadataToken));
 		}
 
 		Task<List<ReferenceSegment>> IAssemblyBrowserNodeBuilder.DecompileAsync (TextEditor data, ITreeNavigator navigator, DecompileFlags flags)

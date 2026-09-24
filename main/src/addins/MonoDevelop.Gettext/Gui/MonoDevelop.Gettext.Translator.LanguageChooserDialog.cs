@@ -33,17 +33,17 @@ namespace MonoDevelop.Gettext.Translator
 			// Widget MonoDevelop.Gettext.Translator.LanguageChooserDialog
 			this.Events = ((global::Gdk.EventMask)(256));
 			this.Name = "MonoDevelop.Gettext.Translator.LanguageChooserDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Create New Localization");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Create New Localization");
 			this.Icon = global::Gdk.Pixbuf.LoadFromResource ("prefs-language-16.png");
 			this.TypeHint = ((global::Gdk.WindowTypeHint)(1));
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Modal = true;
 			this.Resizable = false;
-			this.AllowGrow = false;
+			this.Resizable = false;
 			this.Gravity = ((global::Gdk.Gravity)(5));
 			this.SkipTaskbarHint = true;
 			// Internal child MonoDevelop.Gettext.Translator.LanguageChooserDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Events = ((global::Gdk.EventMask)(256));
 			w1.Name = "dialog_VBox";
 			w1.BorderWidth = ((uint)(2));
@@ -78,7 +78,7 @@ namespace MonoDevelop.Gettext.Translator
 			this.label3.WidthRequest = 170;
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("_Language:");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Language:");
 			this.label3.UseUnderline = true;
 			this.vbox4.Add (this.label3);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.label3]));
@@ -115,7 +115,7 @@ namespace MonoDevelop.Gettext.Translator
 			this.checkbuttonUseCoutry.WidthRequest = 220;
 			this.checkbuttonUseCoutry.CanFocus = true;
 			this.checkbuttonUseCoutry.Name = "checkbuttonUseCoutry";
-			this.checkbuttonUseCoutry.Label = global::Mono.Unix.Catalog.GetString ("U_se Country Code");
+			this.checkbuttonUseCoutry.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("U_se Country Code");
 			this.checkbuttonUseCoutry.DrawIndicator = true;
 			this.checkbuttonUseCoutry.UseUnderline = true;
 			this.vbox5.Add (this.checkbuttonUseCoutry);
@@ -142,11 +142,11 @@ namespace MonoDevelop.Gettext.Translator
 			w9.Position = 1;
 			this.GtkAlignment2.Add (this.tableKnown);
 			this.frame1.Add (this.GtkAlignment2);
-			this.radiobuttonKnown = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("_Known Language"));
+			this.radiobuttonKnown = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("_Known Language"));
 			this.radiobuttonKnown.Name = "radiobuttonKnown";
 			this.radiobuttonKnown.DrawIndicator = true;
 			this.radiobuttonKnown.UseUnderline = true;
-			this.radiobuttonKnown.Group = new global::GLib.SList (global::System.IntPtr.Zero);
+			this.radiobuttonKnown.Group = new global::Gtk.RadioButton [0];
 			this.frame1.LabelWidget = this.radiobuttonKnown;
 			this.vbox3.Add (this.frame1);
 			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.frame1]));
@@ -167,7 +167,7 @@ namespace MonoDevelop.Gettext.Translator
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("L_ocale:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("L_ocale:");
 			this.label2.UseUnderline = true;
 			this.hboxUser.Add (this.label2);
 			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hboxUser [this.label2]));
@@ -185,7 +185,7 @@ namespace MonoDevelop.Gettext.Translator
 			w14.Position = 1;
 			this.GtkAlignment3.Add (this.hboxUser);
 			this.frame2.Add (this.GtkAlignment3);
-			this.radiobuttonCustom = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("_User Defined Locale"));
+			this.radiobuttonCustom = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("_User Defined Locale"));
 			this.radiobuttonCustom.Name = "radiobuttonCustom";
 			this.radiobuttonCustom.DrawIndicator = true;
 			this.radiobuttonCustom.UseUnderline = true;
@@ -199,13 +199,13 @@ namespace MonoDevelop.Gettext.Translator
 			this.vbox2.Add (this.vbox3);
 			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.vbox3]));
 			w18.Position = 0;
-			w1.Add (this.vbox2);
+			w1.PackStart (this.vbox2, true, true, 0);
 			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
 			w19.Position = 0;
 			w19.Expand = false;
 			w19.Fill = false;
 			// Internal child MonoDevelop.Gettext.Translator.LanguageChooserDialog.ActionArea
-			global::Gtk.HButtonBox w20 = this.ActionArea;
+			global::Gtk.ButtonBox w20 = this.ActionArea;
 			w20.Name = "MonoDevelop.Gettext.LanguageChooserDialog_ActionArea";
 			w20.Spacing = 6;
 			w20.BorderWidth = ((uint)(5));

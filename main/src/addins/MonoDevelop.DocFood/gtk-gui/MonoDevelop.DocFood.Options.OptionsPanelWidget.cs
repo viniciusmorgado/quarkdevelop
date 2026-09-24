@@ -20,7 +20,7 @@ namespace MonoDevelop.DocFood.Options
 		{
 			global::Stetic.Gui.Initialize (this);
 			// Widget MonoDevelop.DocFood.Options.OptionsPanelWidget
-			global::Stetic.BinContainer.Attach (this);
+			MonoDevelop.Components.BinContainer.Attach (this);
 			this.Name = "MonoDevelop.DocFood.Options.OptionsPanelWidget";
 			// Container child MonoDevelop.DocFood.Options.OptionsPanelWidget.Gtk.Container+ContainerChild
 			this.vbox1 = new global::Gtk.VBox ();
@@ -30,7 +30,7 @@ namespace MonoDevelop.DocFood.Options
 			this.checkbutton1 = new global::Gtk.CheckButton ();
 			this.checkbutton1.CanFocus = true;
 			this.checkbutton1.Name = "checkbutton1";
-			this.checkbutton1.Label = global::Mono.Unix.Catalog.GetString ("Enable automatic documentation");
+			this.checkbutton1.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Enable automatic documentation");
 			this.checkbutton1.DrawIndicator = true;
 			this.checkbutton1.UseUnderline = true;
 			this.vbox1.Add (this.checkbutton1);
@@ -99,7 +99,7 @@ namespace MonoDevelop.DocFood.Options
 			this.frame1.Add (this.GtkAlignment);
 			this.GtkLabel2 = new global::Gtk.Label ();
 			this.GtkLabel2.Name = "GtkLabel2";
-			this.GtkLabel2.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Macros</b>");
+			this.GtkLabel2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Macros</b>");
 			this.GtkLabel2.UseMarkup = true;
 			this.frame1.LabelWidget = this.GtkLabel2;
 			this.vbox1.Add (this.frame1);

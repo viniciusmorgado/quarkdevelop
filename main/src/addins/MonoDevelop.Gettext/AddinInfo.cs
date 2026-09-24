@@ -15,5 +15,4 @@ using Mono.Addins.Description;
 [assembly:AddinDependency ("Core", MonoDevelop.BuildInfo.Version)]
 [assembly:AddinDependency ("Ide", MonoDevelop.BuildInfo.Version)]
 [assembly:AddinDependency ("DesignerSupport", MonoDevelop.BuildInfo.Version)]
-[assembly:AddinDependency ("Autotools", MonoDevelop.BuildInfo.Version)]
-[assembly:AddinDependency ("Deployment", MonoDevelop.BuildInfo.Version)]
+// Autotools and Deployment are excluded from the Linux build (ADR 0017): no Makefile handler, no deploy files.

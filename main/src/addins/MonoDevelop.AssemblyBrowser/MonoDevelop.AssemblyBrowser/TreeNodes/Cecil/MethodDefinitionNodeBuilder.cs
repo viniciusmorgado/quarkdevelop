@@ -36,7 +36,6 @@ using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.CSharp.OutputVisitor;
 using ICSharpCode.Decompiler.CSharp.Resolver;
 using ICSharpCode.Decompiler.CSharp.Syntax;
-using ICSharpCode.Decompiler.CSharp.TypeSystem;
 using ICSharpCode.Decompiler.Disassembler;
 using ICSharpCode.Decompiler.TypeSystem;
 using ICSharpCode.Decompiler.TypeSystem.Implementation;
@@ -135,7 +134,11 @@ namespace MonoDevelop.AssemblyBrowser
 				settings = settings ?? GetDecompilerSettings (data, publicOnly: flags.PublicOnly);
 				var csharpDecompiler = assemblyLoader.CSharpDecompiler;
 				try {
-					var syntaxTree = decompile (csharpDecompiler);
+					SyntaxTree syntaxTree;
+					// CSharpDecompiler keeps the tree it builds in a field: one decompilation per assembly at a time
+					// (selecting nodes quickly used to mix the output of two of them).
+					lock (csharpDecompiler)
+						syntaxTree = decompile (csharpDecompiler);
 					if (!flags.MethodBodies) {
 						MethodBodyRemoveVisitor.RemoveMethodBodies (syntaxTree);
 					}
@@ -143,7 +146,7 @@ namespace MonoDevelop.AssemblyBrowser
 						if (data.IsDisposed)
 							return new List<ReferenceSegment> ();
 						var output = new ColoredCSharpFormatter (data);
-						TokenWriter tokenWriter = new TextTokenWriter (output, settings, csharpDecompiler.TypeSystem) { FoldBraces = settings.FoldBraces };
+						TokenWriter tokenWriter = new TextTokenWriter (output, settings);
 						var formattingPolicy = settings.CSharpFormattingOptions;
 						syntaxTree.AcceptVisitor (new CSharpOutputVisitor (tokenWriter, formattingPolicy));
 						output.SetDocumentData ();
@@ -221,7 +224,7 @@ namespace MonoDevelop.AssemblyBrowser
 				return EmptyReferenceSegmentTask;
 			if (!(navigator.DataItem is IMethod cecilMethod))
 				return EmptyReferenceSegmentTask;
-			return DisassembleAsync (data, rd => rd.DisassembleMethod (cecilMethod.ParentModule.PEFile, (System.Reflection.Metadata.MethodDefinitionHandle)cecilMethod.MetadataToken));
+			return DisassembleAsync (data, rd => rd.DisassembleMethod (cecilMethod.ParentModule.MetadataFile, (System.Reflection.Metadata.MethodDefinitionHandle)cecilMethod.MetadataToken));
 		}
 
 		#endregion

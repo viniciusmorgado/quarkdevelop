@@ -14,7 +14,7 @@ namespace MonoDevelop.DocFood.Options
 		{
 			global::Stetic.Gui.Initialize (this);
 			// Widget MonoDevelop.DocFood.Options.RulesPanelWidget
-			global::Stetic.BinContainer.Attach (this);
+			MonoDevelop.Components.BinContainer.Attach (this);
 			this.Name = "MonoDevelop.DocFood.Options.RulesPanelWidget";
 			// Container child MonoDevelop.DocFood.Options.RulesPanelWidget.Gtk.Container+ContainerChild
 			this.vbox4 = new global::Gtk.VBox ();
@@ -24,7 +24,7 @@ namespace MonoDevelop.DocFood.Options
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("The rules are defined using XML. Click HELP for a full explaination.");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("The rules are defined using XML. Click HELP for a full explaination.");
 			this.vbox4.Add (this.label2);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.label2]));
 			w1.Position = 0;

@@ -157,7 +157,7 @@ namespace MonoDevelop.AssemblyBrowser
 			if (type == null)
 				return EmptyReferenceSegmentTask;
 
-			return MethodDefinitionNodeBuilder.DisassembleAsync (data, rd => rd.DisassembleType (type.ParentModule.PEFile, (System.Reflection.Metadata.TypeDefinitionHandle)type.MetadataToken));
+			return MethodDefinitionNodeBuilder.DisassembleAsync (data, rd => rd.DisassembleType (type.ParentModule.MetadataFile, (System.Reflection.Metadata.TypeDefinitionHandle)type.MetadataToken));
 		}
 
 		internal static DecompilerSettings CreateDecompilerSettings (bool publicOnly, MonoDevelop.CSharp.Formatting.CSharpFormattingPolicy codePolicy)

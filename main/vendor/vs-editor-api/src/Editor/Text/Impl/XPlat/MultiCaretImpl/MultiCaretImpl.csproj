@@ -19,6 +19,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Strings.resx">
+      <!-- The generated Strings class (namespace ...MultiSelection.Implementation) looks the resources up by this name. -->
+      <LogicalName>Microsoft.VisualStudio.Text.MultiSelection.Implementation.Strings.resources</LogicalName>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>

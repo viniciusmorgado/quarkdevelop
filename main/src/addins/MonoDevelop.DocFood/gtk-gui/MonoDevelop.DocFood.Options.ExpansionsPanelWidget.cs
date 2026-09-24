@@ -20,7 +20,7 @@ namespace MonoDevelop.DocFood.Options
 		{
 			global::Stetic.Gui.Initialize (this);
 			// Widget MonoDevelop.DocFood.Options.ExpansionsPanelWidget
-			global::Stetic.BinContainer.Attach (this);
+			MonoDevelop.Components.BinContainer.Attach (this);
 			this.Name = "MonoDevelop.DocFood.Options.ExpansionsPanelWidget";
 			// Container child MonoDevelop.DocFood.Options.ExpansionsPanelWidget.Gtk.Container+ContainerChild
 			this.hbox1 = new global::Gtk.HBox ();
@@ -50,7 +50,7 @@ namespace MonoDevelop.DocFood.Options
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("_Acronyms:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Acronyms:");
 			this.label1.UseUnderline = true;
 			this.vbox1.Add (this.label1);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.label1]));

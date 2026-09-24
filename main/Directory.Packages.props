@@ -94,6 +94,9 @@
     <!-- Debugger: Debug Adapter Protocol client (ADR 0016); netstandard2.0, latest stable on nuget.org -->
     <PackageVersion Include="Microsoft.VisualStudio.Shared.VsCodeDebugProtocol" Version="18.0.10427.1" />
 
+    <!-- Assembly browser (T093): ILSpy's metadata-based decompiler (no Mono.Cecil); netstandard2.0, latest stable -->
+    <PackageVersion Include="ICSharpCode.Decompiler" Version="11.1.0.9782" />
+
     <!-- Tests (ADR 0015) -->
     <PackageVersion Include="NUnit" Version="3.14.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />

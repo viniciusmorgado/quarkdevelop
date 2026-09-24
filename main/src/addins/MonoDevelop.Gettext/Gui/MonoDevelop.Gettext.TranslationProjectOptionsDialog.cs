@@ -38,11 +38,11 @@ namespace MonoDevelop.Gettext
 			MonoDevelop.Components.Gui.Initialize (this);
 			// Widget MonoDevelop.Gettext.TranslationProjectOptionsDialog
 			this.Name = "MonoDevelop.Gettext.TranslationProjectOptionsDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Translation Options");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString ("Translation Options");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(6));
 			// Internal child MonoDevelop.Gettext.TranslationProjectOptionsDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -63,7 +63,7 @@ namespace MonoDevelop.Gettext
 			// Container child hbox4.Gtk.Box+BoxChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("_Package name:");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Package name:");
 			this.label3.UseUnderline = true;
 			this.hbox4.Add (this.label3);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox4 [this.label3]));
@@ -120,18 +120,18 @@ namespace MonoDevelop.Gettext
 			w6.XOptions = ((global::Gtk.AttachOptions)(4));
 			w6.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.radiobuttonRelPath = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("_Relative to output path:"));
+			this.radiobuttonRelPath = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("_Relative to output path:"));
 			this.radiobuttonRelPath.CanFocus = true;
 			this.radiobuttonRelPath.Name = "radiobuttonRelPath";
 			this.radiobuttonRelPath.DrawIndicator = true;
 			this.radiobuttonRelPath.UseUnderline = true;
-			this.radiobuttonRelPath.Group = new global::GLib.SList (global::System.IntPtr.Zero);
+			this.radiobuttonRelPath.Group = new global::Gtk.RadioButton [0];
 			this.table1.Add (this.radiobuttonRelPath);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.radiobuttonRelPath]));
 			w7.XOptions = ((global::Gtk.AttachOptions)(4));
 			w7.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.radiobuttonSystemPath = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("_System path:"));
+			this.radiobuttonSystemPath = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("_System path:"));
 			this.radiobuttonSystemPath.CanFocus = true;
 			this.radiobuttonSystemPath.Name = "radiobuttonSystemPath";
 			this.radiobuttonSystemPath.DrawIndicator = true;
@@ -147,7 +147,7 @@ namespace MonoDevelop.Gettext
 			this.frame1.Add (this.GtkAlignment2);
 			this.GtkLabel4 = new global::Gtk.Label ();
 			this.GtkLabel4.Name = "GtkLabel4";
-			this.GtkLabel4.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Output</b>");
+			this.GtkLabel4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Output</b>");
 			this.GtkLabel4.UseMarkup = true;
 			this.frame1.LabelWidget = this.GtkLabel4;
 			this.vbox2.Add (this.frame1);
@@ -171,7 +171,7 @@ namespace MonoDevelop.Gettext
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 0F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("The catalog initialization string should look like:");
+			this.label4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("The catalog initialization string should look like:");
 			this.vbox4.Add (this.label4);
 			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.label4]));
 			w12.Position = 0;
@@ -200,7 +200,7 @@ namespace MonoDevelop.Gettext
 			this.frame2.Add (this.GtkAlignment3);
 			this.GtkLabel6 = new global::Gtk.Label ();
 			this.GtkLabel6.Name = "GtkLabel6";
-			this.GtkLabel6.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Init String</b>");
+			this.GtkLabel6.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("<b>Init String</b>");
 			this.GtkLabel6.UseMarkup = true;
 			this.frame2.LabelWidget = this.GtkLabel6;
 			this.vbox2.Add (this.frame2);
@@ -212,7 +212,7 @@ namespace MonoDevelop.Gettext
 			// Notebook tab
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Settings");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Settings");
 			this.notebook1.SetTabLabel (this.vbox2, this.label1);
 			this.label1.ShowAll ();
 			// Container child notebook1.Gtk.Notebook+NotebookChild
@@ -232,23 +232,23 @@ namespace MonoDevelop.Gettext
 			// Notebook tab
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Include in Projects");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Include in Projects");
 			this.notebook1.SetTabLabel (this.scrolledwindow1, this.label2);
 			this.label2.ShowAll ();
-			w1.Add (this.notebook1);
+			w1.PackStart (this.notebook1, true, true, 0);
 			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(w1 [this.notebook1]));
 			w22.Position = 0;
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.hseparator1 = new global::Gtk.HSeparator ();
 			this.hseparator1.Name = "hseparator1";
-			w1.Add (this.hseparator1);
+			w1.PackStart (this.hseparator1, true, true, 0);
 			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(w1 [this.hseparator1]));
 			w23.PackType = ((global::Gtk.PackType)(1));
 			w23.Position = 2;
 			w23.Expand = false;
 			w23.Fill = false;
 			// Internal child MonoDevelop.Gettext.TranslationProjectOptionsDialog.ActionArea
-			global::Gtk.HButtonBox w24 = this.ActionArea;
+			global::Gtk.ButtonBox w24 = this.ActionArea;
 			w24.Name = "dialog1_ActionArea";
 			w24.Spacing = 6;
 			w24.BorderWidth = ((uint)(5));

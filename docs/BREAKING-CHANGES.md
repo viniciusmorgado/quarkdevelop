@@ -53,6 +53,10 @@ Compared with MonoDevelop 8.6:
 | NuGet credential provider plug-ins that are .NET Framework `.exe` files (run with Mono) | not supported; .NET plug-ins run through NuGet's own plug-in support |
 | Encrypted package source passwords in `NuGet.Config` | Linux stores them in clear text (NuGet encrypts only on Windows); the Mono key store check is removed |
 | C# NUnit test markers in the editor and source locations of tests | deferred to the `MonoDevelop.UnitTesting` port |
+| Gettext: Makefile rules for translation projects (Autotools) and `.mo` files as deploy files (Deployment) | removed with those add-ins (ADR 0017) |
+| Gettext: GtkSpell spell checking in the catalog editor | removed (it was already disabled upstream; GtkSpell 2 is GTK 2 only) |
+| Assembly browser: MonoDoc documentation of the browsed members | removed (no MonoDoc) |
+| Assembly browser decompiler | ICSharpCode.Decompiler 11 (was 5): the decompiled C# and IL follow the newer ILSpy output |
 
 ## Add-in authors
 

@@ -21,7 +21,7 @@ namespace MonoDevelop.Gettext.Editor
 		private global::Gtk.TextView textviewComments;
 		private global::Gtk.Label label3;
 		private global::Gtk.Table table2;
-		private global::Gtk.ComboBoxEntry comboboxentryCharset;
+		private global::Gtk.ComboBoxText comboboxentryCharset;
 		private global::Gtk.Entry entryLanguageGroupEmail;
 		private global::Gtk.Entry entryLanguageGroupName;
 		private global::Gtk.Entry entryTranslatorEmail;
@@ -101,7 +101,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 0F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Last modification:");
+			this.label4.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Last modification:");
 			this.table1.Add (this.label4);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
 			w4.TopAttach = ((uint)(5));
@@ -112,7 +112,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label5 = new global::Gtk.Label ();
 			this.label5.Name = "label5";
 			this.label5.Xalign = 0F;
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("_Comments:");
+			this.label5.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Comments:");
 			this.label5.UseUnderline = true;
 			this.table1.Add (this.label5);
 			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.label5]));
@@ -122,7 +122,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label6 = new global::Gtk.Label ();
 			this.label6.Name = "label6";
 			this.label6.Xalign = 0F;
-			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("_Project name:");
+			this.label6.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Project name:");
 			this.label6.UseUnderline = true;
 			this.table1.Add (this.label6);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.label6]));
@@ -134,7 +134,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label7 = new global::Gtk.Label ();
 			this.label7.Name = "label7";
 			this.label7.Xalign = 0F;
-			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("P_roject version:");
+			this.label7.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("P_roject version:");
 			this.label7.UseUnderline = true;
 			this.table1.Add (this.label7);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.label7]));
@@ -146,7 +146,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label8 = new global::Gtk.Label ();
 			this.label8.Name = "label8";
 			this.label8.Xalign = 0F;
-			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("_Bugzilla URL:");
+			this.label8.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Bugzilla URL:");
 			this.label8.UseUnderline = true;
 			this.table1.Add (this.label8);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.label8]));
@@ -158,7 +158,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label9 = new global::Gtk.Label ();
 			this.label9.Name = "label9";
 			this.label9.Xalign = 0F;
-			this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("Creation date:");
+			this.label9.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Creation date:");
 			this.table1.Add (this.label9);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.label9]));
 			w9.TopAttach = ((uint)(4));
@@ -211,7 +211,7 @@ namespace MonoDevelop.Gettext.Editor
 			// Notebook tab
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Project settings");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Project settings");
 			this.notebook1.SetTabLabel (this.table1, this.label3);
 			this.label3.ShowAll ();
 			// Container child notebook1.Gtk.Notebook+NotebookChild
@@ -221,7 +221,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.table2.ColumnSpacing = ((uint)(6));
 			this.table2.BorderWidth = ((uint)(8));
 			// Container child table2.Gtk.Table+TableChild
-			this.comboboxentryCharset = new global::Gtk.ComboBoxEntry ();
+			this.comboboxentryCharset = global::Gtk.ComboBoxText.NewWithEntry ();
 			this.comboboxentryCharset.Name = "comboboxentryCharset";
 			this.table2.Add (this.comboboxentryCharset);
 			global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.table2 [this.comboboxentryCharset]));
@@ -309,7 +309,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label10 = new global::Gtk.Label ();
 			this.label10.Name = "label10";
 			this.label10.Xalign = 0F;
-			this.label10.LabelProp = global::Mono.Unix.Catalog.GetString ("_Translator name:");
+			this.label10.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Translator name:");
 			this.label10.UseUnderline = true;
 			this.table2.Add (this.label10);
 			global::Gtk.Table.TableChild w22 = ((global::Gtk.Table.TableChild)(this.table2 [this.label10]));
@@ -319,7 +319,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label11 = new global::Gtk.Label ();
 			this.label11.Name = "label11";
 			this.label11.Xalign = 0F;
-			this.label11.LabelProp = global::Mono.Unix.Catalog.GetString ("T_ranslator e-mail:");
+			this.label11.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("T_ranslator e-mail:");
 			this.label11.UseUnderline = true;
 			this.table2.Add (this.label11);
 			global::Gtk.Table.TableChild w23 = ((global::Gtk.Table.TableChild)(this.table2 [this.label11]));
@@ -331,7 +331,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label12 = new global::Gtk.Label ();
 			this.label12.Name = "label12";
 			this.label12.Xalign = 0F;
-			this.label12.LabelProp = global::Mono.Unix.Catalog.GetString ("_Language group:");
+			this.label12.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Language group:");
 			this.label12.UseUnderline = true;
 			this.table2.Add (this.label12);
 			global::Gtk.Table.TableChild w24 = ((global::Gtk.Table.TableChild)(this.table2 [this.label12]));
@@ -343,7 +343,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label13 = new global::Gtk.Label ();
 			this.label13.Name = "label13";
 			this.label13.Xalign = 0F;
-			this.label13.LabelProp = global::Mono.Unix.Catalog.GetString ("L_anguage group e-mail:");
+			this.label13.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("L_anguage group e-mail:");
 			this.label13.UseUnderline = true;
 			this.table2.Add (this.label13);
 			global::Gtk.Table.TableChild w25 = ((global::Gtk.Table.TableChild)(this.table2 [this.label13]));
@@ -355,7 +355,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label14 = new global::Gtk.Label ();
 			this.label14.Name = "label14";
 			this.label14.Xalign = 0F;
-			this.label14.LabelProp = global::Mono.Unix.Catalog.GetString ("_Charset:");
+			this.label14.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Charset:");
 			this.label14.UseUnderline = true;
 			this.table2.Add (this.label14);
 			global::Gtk.Table.TableChild w26 = ((global::Gtk.Table.TableChild)(this.table2 [this.label14]));
@@ -367,7 +367,7 @@ namespace MonoDevelop.Gettext.Editor
 			this.label15 = new global::Gtk.Label ();
 			this.label15.Name = "label15";
 			this.label15.Xalign = 0F;
-			this.label15.LabelProp = global::Mono.Unix.Catalog.GetString ("_Plural forms:");
+			this.label15.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Plural forms:");
 			this.label15.UseUnderline = true;
 			this.table2.Add (this.label15);
 			global::Gtk.Table.TableChild w27 = ((global::Gtk.Table.TableChild)(this.table2 [this.label15]));
@@ -381,7 +381,7 @@ namespace MonoDevelop.Gettext.Editor
 			// Notebook tab
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Language settings");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("Language settings");
 			this.notebook1.SetTabLabel (this.table2, this.label2);
 			this.label2.ShowAll ();
 			this.Add (this.notebook1);

@@ -69,8 +69,16 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 
 				var displayScale = Core.Platform.IsMac ? GtkWorkarounds.GetScaleFactor (mode) : 1.0;
 				if (surface == null) {
-					using (var similiar = CairoHelper.Create (IdeApp.Workbench.RootWindow.GdkWindow))
-						surface = new SurfaceWrapper (similiar, (int)(allocation.Width * displayScale), (int)(allocation.Height * displayScale));
+					int width = (int)(allocation.Width * displayScale), height = (int)(allocation.Height * displayScale);
+					// GTK3: SurfaceWrapper uses the context only on Windows (image surfaces elsewhere), and creating and
+					// disposing a cairo context of the IDE window here dropped references of that window (Gdk "losing last
+					// reference to undestroyed window", then a crash once a few editors had redrawn their overview).
+					if (Core.Platform.IsWindows) {
+						using (var similiar = CairoHelper.Create (IdeApp.Workbench.RootWindow.GdkWindow))
+							surface = new SurfaceWrapper (similiar, width, height);
+					} else {
+						surface = new SurfaceWrapper ((Cairo.Context)null, width, height);
+					}
 				}
 				state = IndicatorDrawingState.Create ();
 				state.Width = allocation.Width;

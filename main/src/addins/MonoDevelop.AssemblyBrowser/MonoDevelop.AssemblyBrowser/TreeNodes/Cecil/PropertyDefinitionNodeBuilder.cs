@@ -97,7 +97,7 @@ namespace MonoDevelop.AssemblyBrowser
 			if (MethodDefinitionNodeBuilder.HandleSourceCodeEntity (navigator, data)) 
 				return EmptyReferenceSegmentTask;
 			var property = (IProperty)navigator.DataItem;
-			return MethodDefinitionNodeBuilder.DisassembleAsync (data, rd => rd.DisassembleProperty (property.ParentModule.PEFile, (System.Reflection.Metadata.PropertyDefinitionHandle)property.MetadataToken));
+			return MethodDefinitionNodeBuilder.DisassembleAsync (data, rd => rd.DisassembleProperty (property.ParentModule.MetadataFile, (System.Reflection.Metadata.PropertyDefinitionHandle)property.MetadataToken));
 		}
 
 		Task<List<ReferenceSegment>> IAssemblyBrowserNodeBuilder.DecompileAsync (TextEditor data, ITreeNavigator navigator, DecompileFlags flags)

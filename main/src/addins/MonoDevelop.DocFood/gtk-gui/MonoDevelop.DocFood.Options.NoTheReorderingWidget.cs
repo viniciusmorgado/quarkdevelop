@@ -23,7 +23,7 @@ namespace MonoDevelop.DocFood.Options
 		{
 			global::Stetic.Gui.Initialize (this);
 			// Widget MonoDevelop.DocFood.Options.NoTheReorderingWidget
-			global::Stetic.BinContainer.Attach (this);
+			MonoDevelop.Components.BinContainer.Attach (this);
 			this.Name = "MonoDevelop.DocFood.Options.NoTheReorderingWidget";
 			// Container child MonoDevelop.DocFood.Options.NoTheReorderingWidget.Gtk.Container+ContainerChild
 			this.hbox1 = new global::Gtk.HBox ();
@@ -53,7 +53,7 @@ namespace MonoDevelop.DocFood.Options
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("_Acronyms:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("_Acronyms:");
 			this.label1.UseUnderline = true;
 			this.vbox1.Add (this.label1);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.label1]));
@@ -107,7 +107,7 @@ namespace MonoDevelop.DocFood.Options
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("A_cronym:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("A_cronym:");
 			this.label2.UseUnderline = true;
 			this.hbox2.Add (this.label2);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label2]));

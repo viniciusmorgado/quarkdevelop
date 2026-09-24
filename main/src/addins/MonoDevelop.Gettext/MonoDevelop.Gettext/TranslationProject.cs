@@ -35,7 +35,9 @@ using System.Xml;
 using MonoDevelop.Core;
 using MonoDevelop.Projects;
 using MonoDevelop.Core.Serialization;
+#if GETTEXT_DEPLOYMENT // the Deployment add-in is excluded from the Linux build (ADR 0017)
 using MonoDevelop.Deployment;
+#endif
 using MonoDevelop.Ide;
 using MonoDevelop.Core.Execution;
 using System.Linq;
@@ -43,7 +45,10 @@ using System.Threading.Tasks;
 
 namespace MonoDevelop.Gettext
 {	
-	class TranslationProject : Project, IDeployable
+	class TranslationProject : Project
+#if GETTEXT_DEPLOYMENT
+		, IDeployable
+#endif
 	{
 		[ItemProperty("packageName")]
 		string packageName = null;
@@ -386,6 +391,7 @@ namespace MonoDevelop.Gettext
 			return BuildResult.CreateSuccess ();
 		}
 
+#if GETTEXT_DEPLOYMENT
 #region Deployment
 		public DeployFileCollection GetDeployFiles (ConfigurationSelector configuration)
 		{
@@ -406,6 +412,7 @@ namespace MonoDevelop.Gettext
 			return result;
 		}
 #endregion
+#endif
 		
 		protected override bool OnGetNeedsBuilding (ConfigurationSelector configuration)
 		{

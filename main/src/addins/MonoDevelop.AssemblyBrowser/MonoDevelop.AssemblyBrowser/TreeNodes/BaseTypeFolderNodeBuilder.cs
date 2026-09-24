@@ -40,7 +40,7 @@ namespace MonoDevelop.AssemblyBrowser
 	class BaseTypeNodeBuilder : AssemblyBrowserTypeNodeBuilder
 	{
 		public override Type NodeDataType {
-			get { return typeof(ITypeReference); }
+			get { return typeof(IType); }
 		}
 		
 		public BaseTypeNodeBuilder (AssemblyBrowserWidget widget) : base (widget)
@@ -49,13 +49,13 @@ namespace MonoDevelop.AssemblyBrowser
 		
 		public override string GetNodeName (ITreeNavigator thisNode, object dataObject)
 		{
-			var reference = dataObject as ITypeReference;
+			var reference = dataObject as IType;
 			return reference.ToString ();
 		}
 
 		public override void BuildNode (ITreeBuilder treeBuilder, object dataObject, NodeInfo nodeInfo)
 		{
-			var reference = dataObject as ITypeReference;
+			var reference = dataObject as IType;
 			nodeInfo.Label = MonoDevelop.Ide.TypeSystem.Ambience.EscapeText (reference.ToString ());
 			nodeInfo.Icon = Context.GetIcon (Stock.Class);
 		}

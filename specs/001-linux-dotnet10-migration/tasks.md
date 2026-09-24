@@ -176,12 +176,12 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T090 [US3] M5c: `MonoDevelop.Refactoring` → builds; refactoring tests subset pass
 - [x] T091 [P] [US3] M5c: `Xml` add-in → Xml tests pass
 - [x] T092 [P] [US3] M5c: `DesignerSupport` (Stetic output frozen; `gui.stetic` deleted) → builds
-- [ ] T093 [P] [US3] M5c: `AssemblyBrowser` → builds
+- [x] T093 [P] [US3] M5c: `AssemblyBrowser` → builds
 - [x] T094 [P] [US3] M5c: `RegexToolkit` (Thread.Abort removed) → builds
-- [ ] T095 [P] [US3] M5c: `HexEditor` (Stetic frozen) → builds
-- [ ] T096 [P] [US3] M5c: `DocFood` (Stetic frozen) → builds
+- [x] T095 [P] [US3] M5c: `HexEditor` (Stetic frozen) → builds
+- [x] T096 [P] [US3] M5c: `DocFood` (Stetic frozen) → builds
 - [x] T097 [P] [US3] M5c: `ChangeLogAddIn` → builds
-- [ ] T098 [P] [US3] M5c: `MonoDevelop.Gettext` add-in → builds
+- [x] T098 [P] [US3] M5c: `MonoDevelop.Gettext` add-in → builds
 - [ ] T099 [US3] M5c: `MonoDevelop.DotNetCore` (GUI) → DotNetCore tests subset pass
 - [x] T100 [US3] M5c: ADR 0020 NuGet client version + `MonoDevelop.PackageManagement` on NuGet 6.x/7.x → test add/update/remove/restore a package on an SDK project (FR-010)
 - [ ] T101 [US3] M5c: `MonoDevelop.UnitTesting` + VSTest → test discovers/runs NUnit + xUnit + MSTest samples (FR-011)

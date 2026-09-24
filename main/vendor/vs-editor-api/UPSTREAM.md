@@ -33,8 +33,9 @@ These parts are not vendored:
 Listed per commit in `git log -- main/vendor/vs-editor-api`; summary:
 
 - **Build:** `Directory.Build.props` builds everything for `net10.0` with the repository props and
-  keeps the upstream `NoWarn` list. Analyzer findings are baselined in
-  `main/msbuild/Linux/warning-baselines/`.
+  keeps the upstream `NoWarn` list. The `Strings.resx` resources keep the manifest names their generated
+  `Strings` classes look up (SDK names; `MultiCaretImpl.csproj` sets its `LogicalName`). Analyzer findings are
+  baselined in `main/msbuild/Linux/warning-baselines/`.
 - **Project files:** .NET Framework `<Reference>` items were removed. MEF comes from the
   System.ComponentModel.Composition package. References to `TextUIWpf`, `Microsoft.VisualStudio.Imaging`
   and `Microsoft.VisualStudio.Utilities` (Windows/VS-only) were dropped.

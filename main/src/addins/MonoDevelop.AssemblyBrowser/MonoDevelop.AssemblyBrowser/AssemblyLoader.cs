@@ -135,10 +135,10 @@ namespace MonoDevelop.AssemblyBrowser
 				this.widget = widget;
 			}
 
-			public PEFile Resolve (IAssemblyReference reference)
+			public MetadataFile Resolve (IAssemblyReference reference)
 			{
 				try {
-					var targetFramework = assembly.Reader.DetectTargetFrameworkId () ?? "";
+					var targetFramework = assembly.DetectTargetFrameworkId () ?? "";
 					var resolver = new MyUniversalAssemblyResolver (assembly.FileName, false, targetFramework);
 					var fileName = resolver.FindAssemblyFile (reference);
 					if (fileName != null && File.Exists (fileName))
@@ -150,10 +150,16 @@ namespace MonoDevelop.AssemblyBrowser
 				return widget.AddReferenceByAssemblyName (reference.FullName)?.Assembly;
 			}
 
-			public PEFile ResolveModule (PEFile mainModule, string moduleName)
+			public MetadataFile ResolveModule (MetadataFile mainModule, string moduleName)
 			{
 				return widget.AddReferenceByFileName (mainModule.FileName)?.Assembly;
 			}
+
+			public Task<MetadataFile> ResolveAsync (IAssemblyReference reference) => Task.FromResult (Resolve (reference));
+
+			public Task<MetadataFile> ResolveModuleAsync (MetadataFile mainModule, string moduleName) => Task.FromResult (ResolveModule (mainModule, moduleName));
+
+			public IDisposable BeginSnapshot () => null;
 		}
 
 		class FastNonInterningProvider : InterningProvider

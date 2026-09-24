@@ -2,73 +2,11 @@
   "version": 2,
   "dependencies": {
     "net10.0": {
-      "coverlet.collector": {
-        "type": "Direct",
-        "requested": "[10.0.1, )",
-        "resolved": "10.0.1",
-        "contentHash": "27jXSV/0DbVqF5jDrAxuQFZ9oaz6gmG03p8ttxAFk+X0M4woFYj7MoWDLCna5EGLb0CE6OE7X6ZH3Wt5smTtaA=="
-      },
-      "GtkSharp": {
-        "type": "Direct",
-        "requested": "[3.24.24.95, )",
-        "resolved": "3.24.24.95",
-        "contentHash": "RRUY45hAa5gsMcadvVjcLUzMjVtmuHSYTcIwM6j8LNgKhzFFHk69qM1D5ULfGxaWmVjicqNWiFtOtk8WsvPqaQ==",
-        "dependencies": {
-          "AtkSharp": "3.24.24.95",
-          "CairoSharp": "3.24.24.95",
-          "GLibSharp": "3.24.24.95",
-          "GdkSharp": "3.24.24.95",
-          "GioSharp": "3.24.24.95",
-          "PangoSharp": "3.24.24.95"
-        }
-      },
-      "Microsoft.Build": {
-        "type": "Direct",
-        "requested": "[18.9.6, )",
-        "resolved": "18.9.6",
-        "contentHash": "RBgF5w+fN1FZ1ltQr2FYFLYWP13UjFTZXXG/H30B9FlXgBqdLJl1zTj1X9G03q4hDAQ8K3DUoSBE8Q/5G05F4w==",
-        "dependencies": {
-          "Microsoft.Build.Framework": "18.9.6",
-          "System.Configuration.ConfigurationManager": "10.0.8",
-          "System.Diagnostics.EventLog": "10.0.8",
-          "System.Reflection.MetadataLoadContext": "10.0.8",
-          "System.Security.Cryptography.ProtectedData": "10.0.8"
-        }
-      },
-      "Microsoft.Build.Framework": {
-        "type": "Direct",
-        "requested": "[18.9.6, )",
-        "resolved": "18.9.6",
-        "contentHash": "P5y8IAhu6UyN6FtzfN4sCNZEQGyV6S4kSTBYldtzB9bzvgdCBBKjsS6epH5aJVFM0q1yJqa8RaTzr1iEJBwIMA==",
-        "dependencies": {
-          "Microsoft.NET.StringTools": "18.9.6"
-        }
-      },
-      "Microsoft.NET.StringTools": {
-        "type": "Direct",
-        "requested": "[18.9.6, )",
-        "resolved": "18.9.6",
-        "contentHash": "CNZfh4P65tHm1Wh/uuIbYfvHlPnb0dJ9SCaIZbXRzOMn+8JEorSqSdXdGRsrDbKBDJfNG6nmgleYhnfL2pd1oQ=="
-      },
-      "Microsoft.NET.Test.Sdk": {
-        "type": "Direct",
-        "requested": "[18.10.1, )",
-        "resolved": "18.10.1",
-        "contentHash": "SxCFvJE/2ltUQgCgv6+Ixagohw4sZc9hM7Wid2foaNM7paBscktoHLoRDz91fW8wbHG87Rg9Ku59/8PXumqUrA==",
-        "dependencies": {
-          "Microsoft.CodeCoverage": "18.10.1",
-          "Microsoft.TestPlatform.TestHost": "18.10.1"
-        }
-      },
-      "Mono.Addins.CecilReflector": {
+      "Mono.Addins": {
         "type": "Direct",
         "requested": "[1.4.1, )",
         "resolved": "1.4.1",
-        "contentHash": "3NVnFYu/oAmolY/AkVk/ZfG+jyVd7GX8pvV6v9cY8Ra4+nXSOVihUZc6i/KytNjx2lwbOzYlSdEVLldl3WUp+A==",
-        "dependencies": {
-          "Mono.Addins": "1.4.1",
-          "Mono.Cecil": "0.10.1"
-        }
+        "contentHash": "UnNau41KjyQP8ktn95VKAw7Gm39NM0zG8Kb5zaZ830VhacbpfJnFCwj+sVZU/w7+89LYLCW9lSSzd2oK7TPFoA=="
       },
       "NuGet.Commands": {
         "type": "Direct",
@@ -172,21 +110,6 @@
         "resolved": "7.9.0",
         "contentHash": "r4sZuVpVqwSBLe4qYDrnpScqdyctlRXg0HSF5OoCGkeBc8b+o8BBYHuI/u1RoWYX78PbieijU13TBt71/Xf3lw=="
       },
-      "NUnit": {
-        "type": "Direct",
-        "requested": "[3.14.0, )",
-        "resolved": "3.14.0",
-        "contentHash": "R7iPwD7kbOaP3o2zldWJbWeMQAvDKD0uld27QvA3PAALl1unl7x0v2J7eGiJOYjimV/BuGT4VJmr45RjS7z4LA==",
-        "dependencies": {
-          "NETStandard.Library": "2.0.0"
-        }
-      },
-      "NUnit3TestAdapter": {
-        "type": "Direct",
-        "requested": "[4.6.0, )",
-        "resolved": "4.6.0",
-        "contentHash": "R7e1+a4vuV/YS+ItfL7f//rG+JBvVeVLX4mHzFEZo4W1qEKl8Zz27AqvQSAqo+BtIzUCo4aAJMYa56VXS4hudw=="
-      },
       "AtkSharp": {
         "type": "Transitive",
         "resolved": "3.24.24.95",
@@ -266,11 +189,6 @@
           "Microsoft.CodeAnalysis.Common": "[5.9.0]"
         }
       },
-      "Microsoft.CodeCoverage": {
-        "type": "Transitive",
-        "resolved": "18.10.1",
-        "contentHash": "tV7tCyp/t+DuwQugLkCeUN7NBFFB4fEGRPr0gkMQ2nQgAvQQjmGlZZi1dsLzbyoe/A0mbnKybmkIh8qhT9p4Zw=="
-      },
       "Microsoft.DiaSymReader": {
         "type": "Transitive",
         "resolved": "2.0.0",
@@ -293,11 +211,6 @@
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.11"
         }
-      },
-      "Microsoft.NETCore.Platforms": {
-        "type": "Transitive",
-        "resolved": "1.1.0",
-        "contentHash": "kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A=="
       },
       "Microsoft.TemplateEngine.Abstractions": {
         "type": "Transitive",
@@ -336,19 +249,6 @@
           "Microsoft.Extensions.Logging.Abstractions": "10.0.11",
           "Microsoft.TemplateEngine.Abstractions": "10.0.401",
           "Newtonsoft.Json": "13.0.3"
-        }
-      },
-      "Microsoft.TestPlatform.ObjectModel": {
-        "type": "Transitive",
-        "resolved": "18.10.1",
-        "contentHash": "o+PuLDRVp1iwiVAPBADZItXgm9Ck23XtPhE4kZtZVi0uYnMiiz1Dx9Cjh75kJ+ijfqnORL3VOTOaQVKi0f/ixg=="
-      },
-      "Microsoft.TestPlatform.TestHost": {
-        "type": "Transitive",
-        "resolved": "18.10.1",
-        "contentHash": "KYz2omqkoz9E2mWa4fdgT+Ycie1wi5968EmyJlusjlp87RxxtA2FvDm8tcBEYIDzLnkWGnsKjE4d13Z7/rxkQA==",
-        "dependencies": {
-          "Microsoft.TestPlatform.ObjectModel": "18.10.1"
         }
       },
       "Microsoft.VisualStudio.Composition.Analyzers": {
@@ -394,14 +294,6 @@
         "dependencies": {
           "Microsoft.VisualStudio.Threading.Only": "17.13.61",
           "Microsoft.VisualStudio.Validation": "17.8.8"
-        }
-      },
-      "NETStandard.Library": {
-        "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "7jnbRU+L08FXKMxqUflxEXtVymWvNOrS8yHgu9s6EM8Anr6T/wIX4nZ08j/u3Asz+tCufp3YVwFSEvFTPYmBPA==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0"
         }
       },
       "PangoSharp": {
@@ -476,25 +368,10 @@
         "resolved": "10.0.12",
         "contentHash": "sOZM+VyRj1pg/ItlHsvrSbjws6oGqZveTzTNBGZ9ziwRDyKsOF3ub6vhvOdxotCIqtlnyHAIwP5sLNvgiZC+pQ=="
       },
-      "System.Reflection.MetadataLoadContext": {
-        "type": "Transitive",
-        "resolved": "10.0.8",
-        "contentHash": "w9sjhVDe4AKkyswUctVK3oCmZHaA7g+ZUG/xDmzgbsOGxmeRQA6lCQeAh6r75K0lcsLlfBzZXmsNblndyNJhxw=="
-      },
       "System.Security.Cryptography.ProtectedData": {
         "type": "Transitive",
         "resolved": "10.0.12",
         "contentHash": "wO0W8VDMeRJZakRySOmemAnrBZMwEFRlbfBtATxUiLf2I3IhSRnCp1Vt157NWptdE4IJ7eftd5n8q9LtaKHFTQ=="
-      },
-      "gnomeplatform": {
-        "type": "Project",
-        "dependencies": {
-          "GtkSharp": "[3.24.24.95, )",
-          "Mono.Addins": "[1.4.1, )",
-          "MonoDevelop.Core": "[1.0.0, )",
-          "MonoDevelop.Ide": "[1.0.0, )",
-          "Xwt": "[1.0.0, )"
-        }
       },
       "Microsoft.VisualStudio.CoreUtility": {
         "type": "Project",
@@ -628,18 +505,6 @@
       "mono.debugging": {
         "type": "Project"
       },
-      "monodevelop.assemblybrowser": {
-        "type": "Project",
-        "dependencies": {
-          "ICSharpCode.Decompiler": "[11.1.0.9782, )",
-          "Mono.Addins": "[1.4.1, )",
-          "MonoDevelop.CSharpBinding": "[1.0.0, )",
-          "MonoDevelop.Core": "[1.0.0, )",
-          "MonoDevelop.Ide": "[1.0.0, )",
-          "MonoDevelop.Refactoring": "[1.0.0, )",
-          "Xwt": "[1.0.0, )"
-        }
-      },
       "monodevelop.core": {
         "type": "Project",
         "dependencies": {
@@ -656,55 +521,12 @@
           "System.Configuration.ConfigurationManager": "[10.0.12, )"
         }
       },
-      "MonoDevelop.CSharpBinding": {
-        "type": "Project",
-        "dependencies": {
-          "Mono.Addins": "[1.4.1, )",
-          "Mono.Debugging": "[1.0.0, )",
-          "MonoDevelop.CSharpBinding.Core": "[1.0.0, )",
-          "MonoDevelop.Core": "[1.0.0, )",
-          "MonoDevelop.Debugger": "[1.0.0, )",
-          "MonoDevelop.DesignerSupport": "[1.0.0, )",
-          "MonoDevelop.Ide": "[1.0.0, )",
-          "MonoDevelop.Refactoring": "[1.0.0, )",
-          "MonoDevelop.SourceEditor": "[1.0.0, )",
-          "Xwt": "[1.0.0, )",
-          "Xwt.Gtk3": "[1.0.0, )"
-        }
-      },
-      "monodevelop.csharpbinding.core": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp": "[5.9.0, 5.9.0]",
-          "Mono.Addins": "[1.4.1, )",
-          "MonoDevelop.Core": "[1.0.0, )",
-          "System.CodeDom": "[10.0.12, )"
-        }
-      },
       "monodevelop.debugger": {
         "type": "Project",
         "dependencies": {
           "Mono.Addins": "[1.4.1, )",
           "Mono.Debugging": "[1.0.0, )",
           "MonoDevelop.Core": "[1.0.0, )",
-          "MonoDevelop.Ide": "[1.0.0, )",
-          "Xwt": "[1.0.0, )"
-        }
-      },
-      "monodevelop.designersupport": {
-        "type": "Project",
-        "dependencies": {
-          "MonoDevelop.Core": "[1.0.0, )",
-          "MonoDevelop.Ide": "[1.0.0, )",
-          "Xwt": "[1.0.0, )"
-        }
-      },
-      "monodevelop.gettext": {
-        "type": "Project",
-        "dependencies": {
-          "Mono.Addins": "[1.4.1, )",
-          "MonoDevelop.Core": "[1.0.0, )",
-          "MonoDevelop.DesignerSupport": "[1.0.0, )",
           "MonoDevelop.Ide": "[1.0.0, )",
           "Xwt": "[1.0.0, )"
         }
@@ -745,47 +567,6 @@
           "YamlDotNet": "[18.1.0, )"
         }
       },
-      "monodevelop.refactoring": {
-        "type": "Project",
-        "dependencies": {
-          "Mono.Addins": "[1.4.1, )",
-          "Mono.Debugging": "[1.0.0, )",
-          "MonoDevelop.Core": "[1.0.0, )",
-          "MonoDevelop.Debugger": "[1.0.0, )",
-          "MonoDevelop.DesignerSupport": "[1.0.0, )",
-          "MonoDevelop.Ide": "[1.0.0, )",
-          "MonoDevelop.SourceEditor": "[1.0.0, )",
-          "Xwt": "[1.0.0, )",
-          "Xwt.Gtk3": "[1.0.0, )"
-        }
-      },
-      "monodevelop.regextoolkit": {
-        "type": "Project",
-        "dependencies": {
-          "Mono.Addins": "[1.4.1, )",
-          "MonoDevelop.Core": "[1.0.0, )",
-          "MonoDevelop.Ide": "[1.0.0, )"
-        }
-      },
-      "monodevelop.sourceeditor": {
-        "type": "Project",
-        "dependencies": {
-          "Mono.Addins": "[1.4.1, )",
-          "Mono.Debugging": "[1.0.0, )",
-          "MonoDevelop.Core": "[1.0.0, )",
-          "MonoDevelop.Debugger": "[1.0.0, )",
-          "MonoDevelop.DesignerSupport": "[1.0.0, )",
-          "MonoDevelop.Ide": "[1.0.0, )",
-          "Xwt": "[1.0.0, )",
-          "Xwt.Gtk3": "[1.0.0, )"
-        }
-      },
-      "MonoDevelop.TestStartupHook": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Build.Locator": "[1.11.2, )"
-        }
-      },
       "MonoDevelop.Wpf.Primitives": {
         "type": "Project"
       },
@@ -799,11 +580,19 @@
           "Xwt": "[1.0.0, )"
         }
       },
-      "ICSharpCode.Decompiler": {
+      "GtkSharp": {
         "type": "CentralTransitive",
-        "requested": "[11.1.0.9782, )",
-        "resolved": "11.1.0.9782",
-        "contentHash": "8aXhTlTHfq+Ng+w415pMapSfhsI768AQrix7q3lDf8BBbmPyNUaJVB+mFg2Sv7oCs72MZkK2Zk8K6DE6tsb1Mg=="
+        "requested": "[3.24.24.95, )",
+        "resolved": "3.24.24.95",
+        "contentHash": "RRUY45hAa5gsMcadvVjcLUzMjVtmuHSYTcIwM6j8LNgKhzFFHk69qM1D5ULfGxaWmVjicqNWiFtOtk8WsvPqaQ==",
+        "dependencies": {
+          "AtkSharp": "3.24.24.95",
+          "CairoSharp": "3.24.24.95",
+          "GLibSharp": "3.24.24.95",
+          "GdkSharp": "3.24.24.95",
+          "GioSharp": "3.24.24.95",
+          "PangoSharp": "3.24.24.95"
+        }
       },
       "Microsoft.Build.Locator": {
         "type": "CentralTransitive",
@@ -975,12 +764,6 @@
         "requested": "[17.13.22, )",
         "resolved": "17.13.22",
         "contentHash": "fC20ITOxlUpGQ0ltAxITQbeFxwuB6OjLT3lByC4+/Gm46o/Mwv9hlIVrBhiUhnqdQzUUvr4EHkdiYe7WOSMLmw=="
-      },
-      "Mono.Addins": {
-        "type": "CentralTransitive",
-        "requested": "[1.4.1, )",
-        "resolved": "1.4.1",
-        "contentHash": "UnNau41KjyQP8ktn95VKAw7Gm39NM0zG8Kb5zaZ830VhacbpfJnFCwj+sVZU/w7+89LYLCW9lSSzd2oK7TPFoA=="
       },
       "Mono.Addins.Setup": {
         "type": "CentralTransitive",
