@@ -56,6 +56,12 @@ PM_PODMAN_ARGS="-e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix" ./scripts/pm ./scri
 PM_PODMAN_ARGS="-e WAYLAND_DISPLAY -e XDG_RUNTIME_DIR=/tmp/xdg -v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/tmp/xdg/$WAYLAND_DISPLAY" ./scripts/pm ./scripts/run.sh
 ```
 
+Wayland forwarding was checked on a GNOME Wayland desktop (2026-09-23). Rootless podman usually cannot
+connect to an X server without extra authorization, so prefer Wayland. The commands above use paths
+relative to the checkout; from any other directory, give `scripts/pm` and `scripts/run.sh` as absolute
+paths (the repository is mounted at the same path inside the container). Append a solution path to
+open it at start-up.
+
 ## 5. Editors
 
 `.devcontainer/devcontainer.json` uses the same `Containerfile` (VS Code Dev Containers with

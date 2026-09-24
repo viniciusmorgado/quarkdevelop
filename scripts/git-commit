@@ -38,7 +38,8 @@ fail() {
 trailer="$(grep -E '^Tasks: (none|T[0-9]{3}(, ?T[0-9]{3})*)$' <<< "$message" || true)"
 [[ -n "$trailer" ]] || fail "the message must contain a trailer line 'Tasks: Tnnn[, Tnnn...]' (or 'Tasks: none')"
 
-task_count="$(grep -oE 'T[0-9]{3}' <<< "$trailer" | sort -u | wc -l)"
+# grep exits 1 for "Tasks: none" (no IDs); with pipefail that aborted the script silently
+task_count="$({ grep -oE 'T[0-9]{3}' <<< "$trailer" || true; } | sort -u | wc -l)"
 if (( task_count > 1 )) && ! grep -qE '^Coupled: .+' <<< "$message"; then
 	fail "more than one task in the trailer: add a line 'Coupled: <reason>' or split the commit"
 fi
