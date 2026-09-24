@@ -52,7 +52,10 @@ namespace UnitTests
 				if (mainContext != null)
 					return;
 
-				var configRoot = Path.Combine (Util.TestsRootDir, "config");
+				// One profile and add-in registry per test host (output directory): the test assemblies run in
+				// parallel and start from different folders, and a shared registry lost the C# project type.
+				var host = Path.GetFileName (Path.TrimEndingDirectorySeparator (AppContext.BaseDirectory));
+				var configRoot = Path.Combine (Util.TestsRootDir, "config", host);
 				Directory.CreateDirectory (configRoot);
 				// Isolated user profile and add-in registry for the test run.
 				Environment.SetEnvironmentVariable ("MONODEVELOP_PROFILE", configRoot);

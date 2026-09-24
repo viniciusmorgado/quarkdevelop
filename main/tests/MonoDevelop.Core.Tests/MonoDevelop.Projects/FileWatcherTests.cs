@@ -133,12 +133,16 @@ namespace MonoDevelop.Projects
 		{
 			string solFile = Util.GetSampleProject ("console-project", "ConsoleProject.sln");
 			ProjectFile file;
+			Solution disposed;
 			using (var sol = (Solution)await Services.ProjectService.ReadWorkspaceItem (Util.GetMonitor (), solFile)) {
 				var p = (DotNetProject)sol.Items [0];
 				file = p.Files.First (f => f.FilePath.FileName == "Program.cs");
 				ClearFileEventsCaptured ();
 				await FileWatcherService.Add (sol);
+				disposed = sol;
 			}
+			// Disposing removes the watchers asynchronously: wait for that before changing the file
+			await FileWatcherService.Remove (disposed);
 
 			TextFileUtility.WriteText (file.FilePath, string.Empty, Encoding.UTF8);
 

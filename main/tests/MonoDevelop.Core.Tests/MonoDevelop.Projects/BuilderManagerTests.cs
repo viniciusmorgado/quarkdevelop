@@ -368,6 +368,9 @@ namespace MonoDevelop.Projects
 
 				Assert.AreEqual (1, RemoteBuildEngineManager.ActiveEnginesCount);
 				Assert.AreEqual (1, RemoteBuildEngineManager.EnginesCount);
+				// the project builder is disposed asynchronously
+				for (int i = 0; i < 100 && await RemoteBuildEngineManager.CountActiveBuildersForProject (project.FileName) != 0; i++)
+					await Task.Delay (100);
 				Assert.AreEqual (0, await RemoteBuildEngineManager.CountActiveBuildersForProject (project.FileName));
 			}
 			await WaitForBuildersToShutDown (projectFile);
@@ -720,10 +723,23 @@ namespace MonoDevelop.Projects
 				File.Delete (file);
 		}
 
-		async Task WaitForBuildSyncEvent (SolutionItem p)
+		/// <summary>
+		/// Waits for the build of <paramref name="p"/> to reach its sync task. Fails (instead of hanging until the
+		/// test timeout) when the build ends first — with its errors — or does not get there in time.
+		/// </summary>
+		async Task WaitForBuildSyncEvent (SolutionItem p, Task<BuildResult> build = null)
 		{
 			var file = p.FileName.ParentDirectory.Combine ("sync-event");
+			var watch = System.Diagnostics.Stopwatch.StartNew ();
 			while (!File.Exists (file)) {
+				if (build != null && build.IsCompleted) {
+					var errors = build.Status == TaskStatus.RanToCompletion
+						? string.Join ("; ", build.Result.Errors.Select (e => e.ToString ()))
+						: build.Exception?.ToString ();
+					Assert.Fail ("The build ended before reaching the sync task: " + errors);
+				}
+				if (watch.ElapsedMilliseconds > timeoutMs)
+					Assert.Fail ("The build did not reach the sync task in time");
 				await Task.Delay (50);
 			}
 		}

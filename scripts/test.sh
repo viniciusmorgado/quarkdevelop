@@ -26,8 +26,10 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-rm -rf "$MD_OUT/tests" "$MD_OUT/coverage"
+rm -rf "$MD_OUT/tests" "$MD_OUT/coverage" "$MD_OUT/test-profile"
 mkdir -p "$MD_OUT/tests" "$MD_OUT/coverage"
+# out/test-profile: the tests' MonoDevelop profile (the runsettings of main/msbuild/Linux/Test.targets point
+# XDG_* there, per checkout); removed above so that every run starts with a fresh add-in registry.
 
 args=("$MD_SLN" --logger "trx" --results-directory "$MD_OUT/tests" --collect "XPlat Code Coverage")
 if [[ -n "$filter" ]]; then

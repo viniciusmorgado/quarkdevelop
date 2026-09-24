@@ -25,6 +25,11 @@
       <DOTNET_STARTUP_HOOKS>$(MonoDevelopBuildDir)tests/MonoDevelop.TestStartupHook.dll</DOTNET_STARTUP_HOOKS>
       <MONODEVELOP_TEST_ROOT>$(MonoDevelopRootDir)tests</MONODEVELOP_TEST_ROOT>
       <MONODEVELOP_MSBUILD_BUILDER>$(MonoDevelopBuildDir)bin/MonoDevelop.MSBuildBuilder.dll</MONODEVELOP_MSBUILD_BUILDER>
+      <!-- MonoDevelop profile (add-in registry cache, config) of this checkout: the container home is shared by
+           all worktrees, and a registry left by another checkout made C# projects load as unknown items. -->
+      <XDG_CONFIG_HOME>$(MonoDevelopRepoRoot)out/test-profile/config</XDG_CONFIG_HOME>
+      <XDG_DATA_HOME>$(MonoDevelopRepoRoot)out/test-profile/data</XDG_DATA_HOME>
+      <XDG_CACHE_HOME>$(MonoDevelopRepoRoot)out/test-profile/cache</XDG_CACHE_HOME>
     </EnvironmentVariables>
   </RunConfiguration>
   <DataCollectionRunSettings>

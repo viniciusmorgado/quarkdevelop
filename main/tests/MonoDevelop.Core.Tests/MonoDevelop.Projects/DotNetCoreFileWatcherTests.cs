@@ -41,7 +41,9 @@ namespace MonoDevelop.Projects
 	[TestFixture]
 	class DotNetCoreFileWatcherTests : TestBase
 	{
-		const int FileWatcherTimeout = 2000; // ms
+		// ms; only positive waits use it (they return as soon as the event arrives): 2 s was too short for the
+		// watcher event plus the project re-evaluation on a loaded machine
+		const int FileWatcherTimeout = 10000;
 
 		Solution solution;
 		DotNetProject project;
