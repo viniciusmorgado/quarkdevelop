@@ -103,7 +103,7 @@ same image power local work and CI.
   implementation, and the consistency analysis must report no CRITICAL issue before implementation.
 - **ADRs**: every architectural decision is recorded in `docs/adr/NNNN-title.md` (MADR format).
 - **Review before merge**: nothing merges into `main` without review and a green pipeline.
-- **Git identity**: commits use only `Vinicius Morgado <34577818+viniciusmorgado@users.noreply.github.com>`
+- **Git identity**: commits use only `Vinicius Donatto Morgado <34577818+viniciusmorgado@users.noreply.github.com>`
   (enforced by `scripts/git-commit`); pushing requires explicit maintainer authorization.
 - **Definition of Done (per milestone)**: all acceptance criteria met; validation commands pass inside
   the container with their output stored under `docs/evidence/Mx/`; documentation updated; no new

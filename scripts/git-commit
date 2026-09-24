@@ -16,7 +16,7 @@
 #
 # Usage (inside the container): ./scripts/git-commit -m "message" [git commit args...]
 set -euo pipefail
-readonly NAME="Vinicius Morgado"
+readonly NAME="Vinicius Donatto Morgado"
 readonly EMAIL="34577818+viniciusmorgado@users.noreply.github.com"
 readonly UPSTREAM_BASE="ba01d2d6d3c84e92a6b5f360dac76ee821547529"
 root="$(git rev-parse --show-toplevel)"
