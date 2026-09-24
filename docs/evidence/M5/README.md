@@ -278,3 +278,19 @@ and checks the Dependencies folder; `DotNetCoreSdkTemplatesTests` finds the SDK 
 The .NET Core 1.x-3.1 template tests (`DotNetCoreProjectTemplateTests`, `IdeUnitTests`, nuget.org) are not compiled (T107).
 
 ![The Dependencies folder of an SDK-style project](T099-dotnetcore.png)
+
+## T105 — Errors pad navigation (M5c, US3-3)
+
+When the build has errors, `--smoke-test` activates the first row of the Errors pad the way a
+double-click does (`ErrorListPad.ActivateFirstRow`). It then checks that the editor opens the file of that
+error with the caret on its line; if not, the exit code is 2. The CI step `gui-smoke-errors` runs it on
+`main/tests/linux-smoke/Broken` and expects exit code 1 and this log line:
+
+```
+Smoke test: build finished with 1 errors, 0 warnings
+Smoke test: build error /tmp/tmp.IsBKlzyLTi/Broken/Program.cs(2,27): CS0103 The name 'undefinedSymbol' does not exist in the current context
+Smoke test: error list navigation opened Program.cs at line 2
+Smoke test: exit code 1 (1 build errors) after 10.4 s
+```
+
+![Program.cs opened at the error line](T105-error-navigation.png)

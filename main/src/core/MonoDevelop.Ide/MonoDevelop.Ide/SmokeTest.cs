@@ -143,9 +143,14 @@ namespace MonoDevelop.Ide
 
 				// let the error list and the status bar update before the screenshot
 				await Task.Delay (1000);
+
+				// T105: activating an error in the Errors pad must open the file with the caret on the error line
+				string navigationFailure = errors > 0 ? await CheckErrorNavigationAsync () : null;
 				SaveScreenshot ();
 
-				if (errors > 0)
+				if (navigationFailure != null)
+					Exit (ExitFailure, "error list navigation: " + navigationFailure);
+				else if (errors > 0)
 					Exit (ExitBuildErrors, errors + " build errors");
 				else if (unhandledExceptions > 0)
 					Exit (ExitFailure, unhandledExceptions + " unhandled exceptions were logged");
@@ -154,6 +159,32 @@ namespace MonoDevelop.Ide
 			} catch (Exception e) {
 				LoggingService.LogError ("Smoke test failed", e);
 				Exit (ExitFailure, e.Message);
+			}
+		}
+
+		/// <summary>Returns null when the first row of the Errors pad opens its file at its line, or what went wrong.</summary>
+		async Task<string> CheckErrorNavigationAsync ()
+		{
+			var pad = IdeApp.Workbench.GetPad<MonoDevelop.Ide.Gui.Pads.ErrorListPad> ();
+			if (pad == null)
+				return "no Errors pad";
+			pad.BringToFront ();
+			var task = ((MonoDevelop.Ide.Gui.Pads.ErrorListPad)pad.Content).ActivateFirstRow ();
+			if (task == null)
+				return "the Errors pad is empty";
+
+			var deadline = clock.Elapsed + TimeSpan.FromSeconds (30);
+			while (true) {
+				var editor = IdeApp.Workbench.ActiveDocument?.Editor;
+				if (editor != null && IdeApp.Workbench.ActiveDocument.FileName == task.FileName && editor.CaretLine == task.Line) {
+					LoggingService.LogInfo ("Smoke test: error list navigation opened {0} at line {1}", task.FileName.FileName, task.Line);
+					return null;
+				}
+				if (clock.Elapsed > deadline) {
+					var document = IdeApp.Workbench.ActiveDocument;
+					return $"expected {task.FileName}:{task.Line}, the active document is {document?.FileName.ToString () ?? "none"}:{document?.Editor?.CaretLine}";
+				}
+				await Task.Delay (100);
 			}
 		}
 

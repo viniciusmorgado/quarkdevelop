@@ -65,6 +65,22 @@ gui_smoke() {
 	return "$status"
 }
 
+gui_smoke_errors() {
+	# T105: build the Broken project in the IDE; the smoke test activates the first row of the Errors pad and
+	# checks that the editor opens Program.cs on the error line. Expected exit status: 1 (build errors).
+	local dir
+	dir="$(mktemp -d)"
+	cp -r main/tests/linux-smoke/. "$dir/"
+	local status=0
+	XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+		MD_SMOKE_OUT="$ci_out/gui-smoke-errors" \
+		xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Broken/Broken.csproj" \
+		|| status=$?
+	rm -rf "$dir"
+	grep -q "error list navigation opened Program.cs at line 2" "$ci_out/gui-smoke-errors/ide.log" || return 1
+	[[ $status -eq 1 ]]
+}
+
 wayland_smoke() {
 	# The same smoke test on Wayland (T104): a headless Weston compositor (no input devices: GDK logs
 	# criticals for the missing seat, which the smoke tolerates), GDK_BACKEND=wayland, no X display.
@@ -96,6 +112,7 @@ step test ./scripts/test.sh --no-build
 step audit ./scripts/audit.sh
 step mdtool-smoke mdtool_smoke
 step gui-smoke gui_smoke
+step gui-smoke-errors gui_smoke_errors
 step wayland-smoke wayland_smoke
 
 total=$((SECONDS - start_all))

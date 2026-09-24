@@ -1033,6 +1033,21 @@ namespace MonoDevelop.Ide.Gui.Pads
 			HandleBinLogClicked (this, EventArgs.Empty);
 		}
 
+		/// <summary>
+		/// Selects the first row of the list and activates it the way a double-click does (smoke test, T105).
+		/// Returns the task of that row, or null when the list is empty.
+		/// </summary>
+		internal TaskListEntry ActivateFirstRow ()
+		{
+			if (!view.Model.GetIterFirst (out TreeIter sortedIter))
+				return null;
+			var path = view.Model.GetPath (sortedIter);
+			view.Selection.SelectPath (path);
+			view.ActivateRow (path, view.Columns [0]);
+			var iter = filter.ConvertIterToChildIter (sort.ConvertIterToChildIter (sortedIter));
+			return store.GetValue (iter, DataColumns.Task) as TaskListEntry;
+		}
+
 		void HandleTextLogToggled (object sender, EventArgs e)
 		{
 			var visible = logBtn.Active;
