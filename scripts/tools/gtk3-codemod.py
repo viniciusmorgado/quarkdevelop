@@ -15,7 +15,8 @@ understanding the code:
   4. CellRenderer `public override void GetSize (Widget, ref Rectangle, out x, out y, out w, out h)` ->
      `protected override void OnGetSize (...)` plus OnGetPreferredWidth/Height(-For-Width/Height)
      overrides measuring through it (GtkCellRendererText no longer calls get_size); `base.GetSize`
-     becomes a generated `Gtk3BaseGetSize` built on the base preferred sizes.
+     becomes a generated `Gtk3BaseGetSize` built on the base preferred sizes. The sizes are stored
+     with `Gtk3Compat.SetPreferredSize`, since GTK passes NULL for the size it does not need.
   5. CellRenderer `protected override void Render (Drawable window, Widget, bg, cell, expose, flags)` ->
      `protected override void OnRender (Cairo.Context gtk3cr, Widget, bg, cell, flags)`;
      `CairoHelper.Create (window)` becomes `gtk3cr.CreateSharedContext ()`,
@@ -203,12 +204,12 @@ def port_cell_get_size(text, nl):
 
     extra = method("protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)", [
         "var area = Gdk.Rectangle.Zero;",
-        "OnGetSize (widget, ref area, out _, out _, out natural_size, out _);",
-        "minimum_size = natural_size;"])
+        "OnGetSize (widget, ref area, out _, out _, out int width, out _);",
+        "MonoDevelop.Components.Gtk3Compat.SetPreferredSize (out minimum_size, out natural_size, width);"])
     extra += method("protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)", [
         "var area = Gdk.Rectangle.Zero;",
-        "OnGetSize (widget, ref area, out _, out _, out _, out natural_size);",
-        "minimum_size = natural_size;"])
+        "OnGetSize (widget, ref area, out _, out _, out _, out int height);",
+        "MonoDevelop.Components.Gtk3Compat.SetPreferredSize (out minimum_size, out natural_size, height);"])
     extra += method("protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)", [
         "OnGetPreferredHeight (widget, out minimum_height, out natural_height);"])
     extra += method("protected override void OnGetPreferredWidthForHeight (Gtk.Widget widget, int height, out int minimum_width, out int natural_width)", [

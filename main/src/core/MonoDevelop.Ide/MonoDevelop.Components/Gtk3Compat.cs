@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace MonoDevelop.Components
 {
@@ -100,6 +101,32 @@ namespace MonoDevelop.Components
 				owner.Restore ();
 			}
 			base.Dispose (disposing);
+		}
+	}
+
+	/// <summary>Helpers for GTK3 virtual methods implemented in managed code.</summary>
+	public static class Gtk3Compat
+	{
+		/// <summary>
+		/// Stores a cell renderer's size in the out parameters of its OnGetPreferredWidth/Height(-For-Width/Height)
+		/// overrides. GTK passes NULL for the size it does not need (e.g. <c>gtk_cell_renderer_get_preferred_width
+		/// (cell, widget, NULL, &amp;natural)</c> in tree views) and GtkSharp hands it over as a null reference, which
+		/// throws when written to and terminates the IDE: only the sizes asked for are written.
+		/// </summary>
+		public static void SetPreferredSize (out int minimum_size, out int natural_size, int size)
+		{
+			SetPreferredSize (out minimum_size, out natural_size, size, size);
+		}
+
+		/// <inheritdoc cref="SetPreferredSize(out int, out int, int)"/>
+		public static void SetPreferredSize (out int minimum_size, out int natural_size, int minimum, int natural)
+		{
+			Unsafe.SkipInit (out minimum_size);
+			Unsafe.SkipInit (out natural_size);
+			if (!Unsafe.IsNullRef (ref minimum_size))
+				minimum_size = minimum;
+			if (!Unsafe.IsNullRef (ref natural_size))
+				natural_size = natural;
 		}
 	}
 

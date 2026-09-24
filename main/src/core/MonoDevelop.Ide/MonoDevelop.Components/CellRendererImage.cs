@@ -27,7 +27,6 @@ using System;
 using Xwt.Drawing;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace MonoDevelop.Components
@@ -204,28 +203,14 @@ namespace MonoDevelop.Components
 		{
 			var area = Gdk.Rectangle.Zero;
 			OnGetSize (widget, ref area, out _, out _, out int width, out _);
-			SetPreferredSize (out minimum_size, out natural_size, width);
+			Gtk3Compat.SetPreferredSize (out minimum_size, out natural_size, width);
 		}
 
 		protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
 		{
 			var area = Gdk.Rectangle.Zero;
 			OnGetSize (widget, ref area, out _, out _, out _, out int height);
-			SetPreferredSize (out minimum_size, out natural_size, height);
-		}
-
-		/// <summary>
-		/// GTK passes NULL for the size it does not need (e.g. gtk_cell_renderer_get_preferred_width (cell, widget,
-		/// NULL, &amp;natural) in tree views), which GtkSharp hands over as a null reference: only write the sizes asked for.
-		/// </summary>
-		static void SetPreferredSize (out int minimum_size, out int natural_size, int size)
-		{
-			Unsafe.SkipInit (out minimum_size);
-			Unsafe.SkipInit (out natural_size);
-			if (!Unsafe.IsNullRef (ref minimum_size))
-				minimum_size = size;
-			if (!Unsafe.IsNullRef (ref natural_size))
-				natural_size = size;
+			Gtk3Compat.SetPreferredSize (out minimum_size, out natural_size, height);
 		}
 
 		protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)

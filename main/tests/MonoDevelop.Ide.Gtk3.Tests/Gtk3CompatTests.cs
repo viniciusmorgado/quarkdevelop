@@ -151,6 +151,69 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			}
 		}
 
+		[System.Runtime.InteropServices.DllImport ("libgtk-3.so.0")]
+		static extern void gtk_cell_renderer_get_preferred_height_for_width (IntPtr cell, IntPtr widget, int width, IntPtr minimum_height, out int natural_height);
+
+		[System.Runtime.InteropServices.DllImport ("libgtk-3.so.0")]
+		static extern void gtk_cell_renderer_get_preferred_width_for_height (IntPtr cell, IntPtr widget, int height, out int minimum_width, IntPtr natural_width);
+
+		/// <summary>
+		/// Asks <paramref name="renderer"/> for each preferred size with a NULL pointer for the other one, as GTK does,
+		/// and checks the answers against the ones given when both are asked for.
+		/// </summary>
+		static void AssertAcceptsNullSizePointers (Gtk.CellRenderer renderer, Gtk.Widget widget)
+		{
+			renderer.GetPreferredWidth (widget, out int minimumWidth, out int naturalWidth);
+			renderer.GetPreferredHeight (widget, out int minimumHeight, out int naturalHeight);
+			Assert.Greater (naturalWidth, 0);
+			Assert.Greater (naturalHeight, 0);
+
+			gtk_cell_renderer_get_preferred_width (renderer.Handle, widget.Handle, IntPtr.Zero, out int width);
+			Assert.AreEqual (naturalWidth, width);
+			gtk_cell_renderer_get_preferred_height (renderer.Handle, widget.Handle, out int height, IntPtr.Zero);
+			Assert.AreEqual (minimumHeight, height);
+			gtk_cell_renderer_get_preferred_height_for_width (renderer.Handle, widget.Handle, naturalWidth, IntPtr.Zero, out height);
+			Assert.AreEqual (naturalHeight, height);
+			gtk_cell_renderer_get_preferred_width_for_height (renderer.Handle, widget.Handle, naturalHeight, out width, IntPtr.Zero);
+			Assert.AreEqual (minimumWidth, width);
+		}
+
+		/// <summary>A text renderer ported by scripts/tools/gtk3-codemod.py (OnGetSize over the base text sizes).</summary>
+		[Test]
+		public void CellRendererComboBoxAcceptsNullSizePointers ()
+		{
+			GtkFixture.Require ();
+			var renderer = new CellRendererComboBox { Text = "some text" };
+			AssertAcceptsNullSizePointers (renderer, new Gtk.TreeView ());
+		}
+
+		/// <summary>The icon renderer of the solution and class pads, which overrides the sizes of CellRendererImage.</summary>
+		[Test]
+		public void ZoomableCellRendererPixbufAcceptsNullSizePointers ()
+		{
+			GtkFixture.Require ();
+			// No image (the image service needs the add-in engine): the size is the padding.
+			var renderer = new MonoDevelop.Ide.Gui.Components.ZoomableCellRendererPixbuf { Xpad = 3, Ypad = 2 };
+			var view = new Gtk.TreeView ();
+			AssertAcceptsNullSizePointers (renderer, view);
+			renderer.GetPreferredWidth (view, out _, out int width);
+			renderer.GetPreferredHeight (view, out _, out int height);
+			Assert.AreEqual (6, width);
+			Assert.AreEqual (4, height);
+		}
+
+		[Test]
+		public void SetPreferredSizeWritesOnlyTheSizesAskedFor ()
+		{
+			ref int none = ref System.Runtime.CompilerServices.Unsafe.NullRef<int> ();
+			Gtk3Compat.SetPreferredSize (out none, out int natural, 3, 5);
+			Assert.AreEqual (5, natural);
+			Gtk3Compat.SetPreferredSize (out int minimum, out none, 7);
+			Assert.AreEqual (7, minimum);
+			Gtk3Compat.SetPreferredSize (out minimum, out natural, 1, 2);
+			Assert.AreEqual ((1, 2), (minimum, natural));
+		}
+
 		[Test]
 		public void SizeRequestReturnsTheNaturalSize ()
 		{

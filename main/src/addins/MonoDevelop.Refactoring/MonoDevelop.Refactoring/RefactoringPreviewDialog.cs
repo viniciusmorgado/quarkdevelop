@@ -356,15 +356,15 @@ namespace MonoDevelop.Refactoring
 			protected override void OnGetPreferredWidth (Gtk.Widget widget, out int minimum_size, out int natural_size)
 			{
 				var area = Gdk.Rectangle.Zero;
-				OnGetSize (widget, ref area, out _, out _, out natural_size, out _);
-				minimum_size = natural_size;
+				OnGetSize (widget, ref area, out _, out _, out int width, out _);
+				Gtk3Compat.SetPreferredSize (out minimum_size, out natural_size, width);
 			}
 
 			protected override void OnGetPreferredHeight (Gtk.Widget widget, out int minimum_size, out int natural_size)
 			{
 				var area = Gdk.Rectangle.Zero;
-				OnGetSize (widget, ref area, out _, out _, out _, out natural_size);
-				minimum_size = natural_size;
+				OnGetSize (widget, ref area, out _, out _, out _, out int height);
+				Gtk3Compat.SetPreferredSize (out minimum_size, out natural_size, height);
 			}
 
 			protected override void OnGetPreferredHeightForWidth (Gtk.Widget widget, int width, out int minimum_height, out int natural_height)
