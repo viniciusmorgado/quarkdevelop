@@ -31,7 +31,10 @@ mkdir -p "$MD_OUT/tests" "$MD_OUT/coverage"
 # out/test-profile: the tests' MonoDevelop profile (the runsettings of main/msbuild/Linux/Test.targets point
 # XDG_* there, per checkout); removed above so that every run starts with a fresh add-in registry.
 
-args=("$MD_SLN" --logger "trx" --results-directory "$MD_OUT/tests" --collect "XPlat Code Coverage")
+# -m:1: one test assembly at a time. Run in parallel, the test hosts interfered with each other (mdtool
+# children of Core.Tests intermittently could not load the C# project type, file watcher tests timed out);
+# root cause still open (T135). Costs about 3.5 minutes (519 s instead of about 300 s).
+args=("$MD_SLN" -m:1 --logger "trx" --results-directory "$MD_OUT/tests" --collect "XPlat Code Coverage")
 if [[ -n "$filter" ]]; then
 	args+=(--filter "$filter")
 fi

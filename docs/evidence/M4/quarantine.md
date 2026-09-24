@@ -4,7 +4,7 @@ Tests excluded from the gate with `[Category ("Quarantine")]` (constitution V). 
 
 ## MonoDevelop.Core.Tests
 
-Quarantined 77 test cases (76 methods; 80 at first run) on 2026-09-23. Bug: 47, legacy-fixture: 13, Flaky: 10, net4x-fixture: 6, Mono-only: 1.
+Quarantined 78 test cases (77 methods; 80 at first run) on 2026-09-23 (+1 on 2026-09-24). Bug: 47, legacy-fixture: 13, Flaky: 11, net4x-fixture: 6, Mono-only: 1.
 
 | Test | Reason | Note | First error line | Owner | Date | Task |
 |---|---|---|---|---|---|---|
@@ -23,6 +23,7 @@ Quarantined 77 test cases (76 methods; 80 at first run) on 2026-09-23. Bug: 47, 
 | `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithAcquiredCredentialsOn403_RetriesRequest` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Expected: OK | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithMissingCredentials_Returns401` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Moq.MockException :  | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithWrongCredentials_StopsRetryingAfter3Times` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Expected: 5 | migration | 2026-09-23 | T135 |
+| `MonoDevelop.Projects.DotNetCoreFileWatcherTests.AddFileExternally_FileGlobHasMSBuildMetadata_FileAddedToProject` | Flaky | timing-dependent (file watcher event + project re-evaluation); timed out at 10 s with load average 26 (high machine load) | System.ApplicationException : Timed out waiting. | migration | 2026-09-24 | T135 |
 | `MonoDevelop.Projects.DotNetCoreFileWatcherTests.AddRenameRemoveSingleFile` | Flaky | timing-dependent (file watcher / event timing) | System.ApplicationException : Timed out waiting. | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.DotNetCoreFileWatcherTests.FileRenamedInSolutionPad_FileWatcherRenameEventIsIgnored` | Flaky | timing-dependent (file watcher / event timing) | Expected: not equal to <System.Threading.Tasks.Task`1[MonoDevelop.Projects.ProjectFile]> | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.DotNetCoreFileWatcherTests.FileWrittenButAlreadyExistsInFilesCollection_DuplicateFileNotAdded` | Flaky | timing-dependent (file watcher / event timing) | Expected: 1 | migration | 2026-09-23 | T135 |

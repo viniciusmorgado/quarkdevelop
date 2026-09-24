@@ -490,6 +490,7 @@ namespace MonoDevelop.Projects
 		/// Content Include="wwwroot\**" CopyToPublishDirectory="PreserveNewest"
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public async Task AddFileExternally_FileGlobHasMSBuildMetadata_FileAddedToProject ()
 		{
 			await OpenProject ("DotNetCoreMetadataTests.sln");

@@ -136,6 +136,10 @@ namespace MonoDevelop.Ide
 				var result = await IdeApp.ProjectOperations.Build (sln).Task;
 				int errors = result?.ErrorCount ?? 1;
 				LoggingService.LogInfo ("Smoke test: build finished with {0} errors, {1} warnings", errors, result?.WarningCount ?? 0);
+				if (result != null) {
+					foreach (var error in result.Errors.Where (e => !e.IsWarning))
+						LoggingService.LogError ("Smoke test: build error {0}({1},{2}): {3} {4}", error.FileName, error.Line, error.Column, error.ErrorNumber, error.ErrorText);
+				}
 
 				// let the error list and the status bar update before the screenshot
 				await Task.Delay (1000);
