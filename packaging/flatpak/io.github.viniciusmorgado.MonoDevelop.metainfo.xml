@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AppStream metadata of the Flatpak (ADR 0022); replaces main/monodevelop.appdata.xml for this build. -->
+<component type="desktop-application">
+  <id>io.github.viniciusmorgado.MonoDevelop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LGPL-2.1-only AND MIT</project_license>
+
+  <name>MonoDevelop</name>
+  <summary>Integrated development environment for C# and .NET</summary>
+  <developer id="io.github.viniciusmorgado">
+    <name>Vinicius Donatto Morgado</name>
+  </developer>
+
+  <description>
+    <p>
+      MonoDevelop is an integrated development environment for C# and .NET. This edition runs on
+      .NET 10 with a GTK 3 user interface and is made for Linux.
+    </p>
+    <ul>
+      <li>C# editor with code completion, navigation and refactoring</li>
+      <li>Build and run SDK-style .NET projects and solutions with the bundled .NET 10 SDK</li>
+      <li>NuGet package management</li>
+      <li>Git status, diff and history</li>
+      <li>Unit test runner</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">io.github.viniciusmorgado.MonoDevelop.desktop</launchable>
+
+  <url type="homepage">https://github.com/viniciusmorgado/monodevelop</url>
+  <url type="bugtracker">https://github.com/viniciusmorgado/monodevelop/issues</url>
+  <url type="vcs-browser">https://github.com/viniciusmorgado/monodevelop</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>A C# solution open in the editor</caption>
+      <image>https://raw.githubusercontent.com/viniciusmorgado/monodevelop/main/docs/evidence/M5/T083-theme-light.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The dark theme</caption>
+      <image>https://raw.githubusercontent.com/viniciusmorgado/monodevelop/main/docs/evidence/M5/T083-theme-dark.png</image>
+    </screenshot>
+  </screenshots>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#9bcbf0</color>
+    <color type="primary" scheme_preference="dark">#1c4f7a</color>
+  </branding>
+
+  <content_rating type="oars-1.1"/>
+
+  <supports>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </supports>
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+
+  <provides>
+    <binary>monodevelop</binary>
+    <binary>mdtool</binary>
+  </provides>
+
+  <releases>
+    <release version="8.6" date="2026-09-24" type="development">
+      <description>
+        <p>First Linux edition: .NET 10, GTK 3, MSBuild and NuGet from the .NET SDK.</p>
+      </description>
+    </release>
+  </releases>
+</component>

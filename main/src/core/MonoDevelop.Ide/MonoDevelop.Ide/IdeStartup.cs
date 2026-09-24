@@ -70,7 +70,7 @@ namespace MonoDevelop.Ide
 		Task<int> IApplication.Run (string[] args)
 		{
 			var options = MonoDevelopOptions.Parse (args);
-			if (options.Error != null || options.ShowHelp)
+			if (options.Error != null || options.ShowHelp || options.ShowVersion)
 				return Task.FromResult (options.Error != null? -1 : 0);
 			return Task.FromResult (Run (options));
 		}
@@ -732,7 +732,7 @@ namespace MonoDevelop.Ide
 			IdeStartupTracker.StartupTracker.Start ();
 
 			var options = MonoDevelopOptions.Parse (args);
-			if (options.ShowHelp || options.Error != null)
+			if (options.ShowHelp || options.ShowVersion || options.Error != null)
 				return options.Error != null? -1 : 0;
 			
 			LoggingService.Initialize (options.RedirectOutput);

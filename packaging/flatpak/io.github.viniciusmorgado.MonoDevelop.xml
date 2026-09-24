@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MIME types the Linux build opens (from main/monodevelop.xml, ADR 0022). text/x-csharp comes
+     from shared-mime-info; legacy MonoDevelop/SharpDevelop, VB.NET and ASP.NET Web Forms types are
+     not registered (docs/BREAKING-CHANGES.md). -->
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-sln">
+    <sub-class-of type="text/plain"/>
+    <comment>Visual Studio solution</comment>
+    <glob pattern="*.sln"/>
+  </mime-type>
+  <mime-type type="application/x-csproj">
+    <sub-class-of type="application/xml"/>
+    <comment>C# project</comment>
+    <glob pattern="*.csproj"/>
+  </mime-type>
+</mime-info>

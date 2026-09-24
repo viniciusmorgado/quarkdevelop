@@ -20,6 +20,21 @@ Compared with MonoDevelop 8.6:
   `main/build/locale` (T048). It replaces the autotools `po/Makefile.am`, including its `gettext-update`
   rule that regenerated the catalogs from `Main.sln`.
 
+## Flatpak package
+
+The Flatpak `io.github.viniciusmorgado.MonoDevelop` ([ADR 0022](adr/0022-flatpak.md)) replaces the
+distribution packages of MonoDevelop 8.6:
+
+- It ships its own .NET 10 SDK (10.0.401), which builds and runs projects; SDKs installed on the host
+  are not used inside the sandbox.
+- Only the home directory is visible to the IDE; projects elsewhere (e.g. `/opt`, other disks outside
+  `~`) cannot be opened.
+- Settings are kept in `~/.var/app/io.github.viniciusmorgado.MonoDevelop/`, separate from a
+  MonoDevelop profile in `~/.config/MonoDevelop`.
+- File associations: C# files, `.sln` and `.csproj`. The legacy MonoDevelop (`.mds`, `.mdp`),
+  SharpDevelop (`.prjx`, `.cmbx`), VB.NET and ASP.NET Web Forms MIME types are no longer registered.
+- No external terminal for "Run in external console", no netcoredbg debugger yet (T112).
+
 ## Removed or deferred features
 
 | Feature | Status |

@@ -97,7 +97,42 @@ Build first (`./scripts/pm ./scripts/build.sh`); the configurations use `${works
 `main/build/bin/MonoDevelop.dll`, runtime `dotnet`), or attach to a running `dotnet MonoDevelop.dll`
 process. To use netcoredbg from Rider, run `scripts/debug.sh` in its terminal.
 
-## 6. Editors
+## 6. Flatpak
+
+The Flatpak bundle is built in a second container profile, `PM_PROFILE=flatpak`, which adds flatpak,
+flatpak-builder and the AppStream/desktop validators to the same .NET SDK image
+([ADR 0022](../adr/0022-flatpak.md)). The Flathub runtimes (GNOME 51, .NET 10 SDK extension, about
+3 GB on first use) and the build cache live in the podman volume `md-flatpak`; your own flatpak
+installation is not touched.
+
+```bash
+PM_PROFILE=flatpak ./scripts/pm ./scripts/package-flatpak.sh   # → out/monodevelop.flatpak (+ .sha256, SBOM)
+PM_PROFILE=flatpak ./scripts/pm ./scripts/test-flatpak.sh      # install test in a clean installation
+```
+
+`package-flatpak.sh` builds the IDE itself (Release, `ContinuousIntegrationBuild=true` so that no
+file carries the path of your checkout) when `main/build/bin` is missing; `--rebuild-ide` forces it,
+and is needed after an ordinary `./scripts/build.sh`. Outputs: `out/monodevelop.flatpak`, `out/monodevelop.flatpak.sha256`,
+`out/monodevelop.cdx.json` (CycloneDX SBOM), logs in `out/flatpak/`. `test-flatpak.sh` installs the
+bundle into a fresh installation in the volume, checks the desktop entry, icons and MIME types, and
+runs `--version`, `mdtool build` of `main/tests/linux-smoke/Hello` and the IDE smoke test under Xvfb
+(`out/flatpak-test/`).
+
+On a desktop with Flatpak, install and run the bundle (the GNOME 51 runtime is fetched from Flathub):
+
+```bash
+flatpak install --user out/monodevelop.flatpak
+flatpak run io.github.viniciusmorgado.MonoDevelop            # or from the application menu
+flatpak run --command=mdtool io.github.viniciusmorgado.MonoDevelop build path/to/Project.csproj
+flatpak run --command=dotnet io.github.viniciusmorgado.MonoDevelop --info
+```
+
+The bundle carries its own .NET 10 SDK (10.0.401), which runs the IDE and builds your projects. It
+can read and write your home directory (projects outside it are not visible), uses the network for
+NuGet, and keeps its settings in `~/.var/app/io.github.viniciusmorgado.MonoDevelop/`. Workloads
+(`dotnet workload install`) and global tools go to `~/.dotnet`.
+
+## 7. Editors
 
 `.devcontainer/devcontainer.json` uses the same `Containerfile` (VS Code Dev Containers with
 `"dev.containers.dockerPath": "podman"`, or JetBrains Rider).

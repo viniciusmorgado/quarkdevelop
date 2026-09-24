@@ -1,0 +1,5 @@
+validate        0s
+flatpak-build   41s
+bundle        153s
+sbom            4s
+total         199s

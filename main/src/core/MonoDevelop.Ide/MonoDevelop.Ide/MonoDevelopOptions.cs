@@ -52,6 +52,7 @@ namespace MonoDevelop.Ide
 				{ "ipc-tcp", "Use the Tcp channel for inter-process communication.", s => IpcTcp = true },
 				{ "new-window", "Do not open in an existing instance of " + BrandingService.ApplicationName, s => NewWindow = true },
 				{ "h|?|help", "Show help", s => ShowHelp = true },
+				{ "version", "Show the version and exit", s => ShowVersion = true },
 				{ "perf-log", "Enable performance counter logging", s => PerfLog = true },
 				{ "no-redirect", "Disable redirection of stdout/stderr to a log file", s => RedirectOutput = false },
 				{ "smoke-test", "Open a solution (default: " + MonoDevelop.Ide.SmokeTest.DefaultSolution + "), build it and exit: 0 no errors, 1 build errors, 2 start-up/load failure or timeout", s => SmokeTest = true },
@@ -74,6 +75,12 @@ namespace MonoDevelop.Ide
 				Console.WriteLine ("Pass --help for usage information.");
 			}
 
+			if (opt.ShowVersion && !opt.ShowHelp) {
+				// One line for scripts and packaging checks (Flatpak install test, T124).
+				Console.WriteLine (BrandingService.ApplicationName + " " + BuildInfo.VersionLabel + " (" + BuildInfo.FullVersion + ", " +
+					System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription + ")");
+			}
+
 			if (opt.ShowHelp) {
 				Console.WriteLine (BrandingService.ApplicationName + " " + BuildInfo.VersionLabel);
 				Console.WriteLine ("Options:");
@@ -91,6 +98,7 @@ namespace MonoDevelop.Ide
 		public bool IpcTcp { get; set; }
 		public bool NewWindow { get; set; }
 		public bool ShowHelp { get; set; }
+		public bool ShowVersion { get; set; }
 		public bool PerfLog { get; set; }
 		public bool RedirectOutput { get; set; }
 		public bool SmokeTest { get; set; }

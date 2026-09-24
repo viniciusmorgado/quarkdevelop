@@ -61,9 +61,14 @@ jobs:
       - name: Release gate (scripts/ci.sh)
         run: ./scripts/pm ./scripts/ci.sh
 
-      # M7 (T123): the Flatpak bundle, its sha256 and the CycloneDX SBOM
+      # M7 (T123, ADR 0022): the Flatpak bundle, its sha256 and the CycloneDX SBOM, built in the flatpak
+      # profile of scripts/pm from the Release output of the gate above
       - name: Package
         if: hashFiles('scripts/package-flatpak.sh') != ''
+        env:
+          PM_PROFILE: flatpak
+          MD_RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          PM_PODMAN_ARGS: ${{ env.PM_PODMAN_ARGS }} -e MD_RELEASE_VERSION
         run: |
           ./scripts/pm ./scripts/package-flatpak.sh
           mkdir -p out/release

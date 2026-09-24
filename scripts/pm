@@ -13,6 +13,10 @@
 #   PM_IMAGE       use this image instead of building ./Containerfile
 #   PM_PODMAN_ARGS extra arguments for `podman run` (word-split)
 #   PM_REBUILD=1   force a rebuild of the development image
+#   PM_PROFILE     dev (default): ./Containerfile, image localhost/md-dev
+#                  flatpak: packaging/flatpak/Containerfile, image localhost/md-flatpak, with the
+#                  podman options flatpak-builder and `flatpak run` need (bubblewrap sandboxes nested
+#                  in the rootless container) and the md-flatpak volume (ADR 0022)
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -27,14 +31,38 @@ if [[ -f "$here/.git" ]]; then
 	esac
 fi
 
+profile_args=()
+case "${PM_PROFILE:-dev}" in
+	dev)
+		containerfile="$here/Containerfile"
+		image_name=localhost/md-dev
+		;;
+	flatpak)
+		containerfile="$here/packaging/flatpak/Containerfile"
+		image_name=localhost/md-flatpak
+		# bubblewrap (flatpak-builder, flatpak run) mounts a new /proc in its sandbox; the kernel refuses
+		# that while podman masks paths under /proc, hence unmask=/proc/*. Nothing else is needed: no
+		# capabilities (bwrap refuses to run unprivileged with extra capabilities), default seccomp, no
+		# /dev/fuse (flatpak-builder runs with --disable-rofiles-fuse). Runtimes and caches: md-flatpak.
+		profile_args=(
+			-v md-flatpak:/var/lib/md-flatpak
+			--security-opt 'unmask=/proc/*'
+		)
+		;;
+	*)
+		echo "pm: unknown PM_PROFILE '${PM_PROFILE}' (dev, flatpak)" >&2
+		exit 2
+		;;
+esac
+
 image="${PM_IMAGE:-}"
 if [[ -z "$image" ]]; then
-	hash="$(sha256sum "$here/Containerfile" | cut -c1-12)"
-	image="localhost/md-dev:$hash"
+	hash="$(sha256sum "$containerfile" | cut -c1-12)"
+	image="$image_name:$hash"
 	if [[ "${PM_REBUILD:-0}" == 1 ]] || ! podman image exists "$image"; then
 		echo "pm: building $image" >&2
-		podman build --pull=newer -t "$image" -f "$here/Containerfile" "$here" >&2
-		podman tag "$image" localhost/md-dev:latest
+		podman build --pull=newer -t "$image" -f "$containerfile" "$here" >&2
+		podman tag "$image" "$image_name:latest"
 	fi
 fi
 
@@ -67,5 +95,6 @@ exec podman run --rm --init "${tty_args[@]}" \
 	-e DOTNET_NOLOGO=1 \
 	-e NUGET_PACKAGES=/home/dev/.nuget/packages \
 	-w "$workdir" \
+	"${profile_args[@]}" \
 	"${extra_args[@]}" \
 	"$image" "$@"

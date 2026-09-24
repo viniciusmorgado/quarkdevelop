@@ -222,11 +222,11 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 
 ## Phase 8: User Story 5 — Flatpak (P3) — M7
 
-- [ ] T120 [US5] M7: ADR 0022 Flatpak (app id `io.github.viniciusmorgado.MonoDevelop`, runtime `org.gnome.Platform`, .NET 10 SDK extension, SDK access strategy, bundled deps)
-- [ ] T121 [US5] M7: `PM_PROFILE=flatpak` in `scripts/pm` (flatpak-builder image, required podman flags) → `PM_PROFILE=flatpak ./scripts/pm flatpak --version`
-- [ ] T122 [US5] M7: `packaging/flatpak/io.github.viniciusmorgado.MonoDevelop.yml` + launcher; desktop entry, icon, AppStream, MIME from `main/monodevelop.{desktop,appdata.xml,xml}` → `appstreamcli validate` / `desktop-file-validate` pass
-- [ ] T123 [US5] M7: `scripts/package-flatpak.sh` → `out/monodevelop.flatpak` + `out/monodevelop.flatpak.sha256` + CycloneDX SBOM `out/monodevelop.cdx.json` (names used by `release.yml`)
-- [ ] T124 [US5] M7: install test in a clean container: `--version`, `mdtool build Hello`, IDE under Xvfb → `docs/evidence/M7/`
+- [x] T120 [US5] M7: ADR 0022 Flatpak (app id `io.github.viniciusmorgado.MonoDevelop`, runtime `org.gnome.Platform`, .NET 10 SDK extension, SDK access strategy, bundled deps)
+- [x] T121 [US5] M7: `PM_PROFILE=flatpak` in `scripts/pm` (flatpak-builder image, required podman flags) → `PM_PROFILE=flatpak ./scripts/pm flatpak --version`
+- [x] T122 [US5] M7: `packaging/flatpak/io.github.viniciusmorgado.MonoDevelop.yml` + launcher; desktop entry, icon, AppStream, MIME from `main/monodevelop.{desktop,appdata.xml,xml}` → `appstreamcli validate` / `desktop-file-validate` pass
+- [x] T123 [US5] M7: `scripts/package-flatpak.sh` → `out/monodevelop.flatpak` + `out/monodevelop.flatpak.sha256` + CycloneDX SBOM `out/monodevelop.cdx.json` (names used by `release.yml`)
+- [x] T124 [US5] M7: install test in a clean container: `--version`, `mdtool build Hello`, IDE under Xvfb → `docs/evidence/M7/`
 
 ---
 
