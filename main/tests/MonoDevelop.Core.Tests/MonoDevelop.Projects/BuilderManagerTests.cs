@@ -310,6 +310,16 @@ namespace MonoDevelop.Projects
 			}
 		}
 
+		static async Task WaitForEnginesCount (int count)
+		{
+			var watch = System.Diagnostics.Stopwatch.StartNew ();
+			while (RemoteBuildEngineManager.ActiveEnginesCount > count || RemoteBuildEngineManager.EnginesCount > count) {
+				if (watch.ElapsedMilliseconds > timeoutMs)
+					return;
+				await Task.Delay (50);
+			}
+		}
+
 		static async Task WaitForBuildersToShutDown (FilePath projectFile)
 		{
 			for (int i = 0; i < 100; i++) {
@@ -510,7 +520,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task AtLeastOneBuilderPersolution ()
 		{
 			// There should always be at least one builder running per solution,
@@ -545,22 +554,27 @@ namespace MonoDevelop.Projects
 
 					var build2 = project2.Build (Util.GetMonitor (), sol.Configurations [0].Selector);
 
-					if (await Task.WhenAny (build2, Task.Delay (timeoutMs)) != build2)
-						Assert.Fail ("Build did not start");
+					try {
+						if (await Task.WhenAny (build2, Task.Delay (timeoutMs)) != build2)
+							Assert.Fail ("Build did not start");
 
-					Assert.AreEqual (2, RemoteBuildEngineManager.ActiveEnginesCount);
-					Assert.AreEqual (2, RemoteBuildEngineManager.EnginesCount);
-					Assert.AreEqual (1, await RemoteBuildEngineManager.CountActiveBuildersForProject (project1.FileName));
-					Assert.AreEqual (1, await RemoteBuildEngineManager.CountActiveBuildersForProject (project2.FileName));
-
-					SignalBuildToContinue (project1);
+						Assert.AreEqual (2, RemoteBuildEngineManager.ActiveEnginesCount);
+						Assert.AreEqual (2, RemoteBuildEngineManager.EnginesCount);
+						Assert.AreEqual (1, await RemoteBuildEngineManager.CountActiveBuildersForProject (project1.FileName));
+						Assert.AreEqual (1, await RemoteBuildEngineManager.CountActiveBuildersForProject (project2.FileName));
+					} finally {
+						// Also when an assertion fails: a blocked build keeps its builder and hangs the next tests.
+						SignalBuildToContinue (project1);
+					}
 
 					if (await Task.WhenAny (build1, Task.Delay (timeoutMs)) != build1)
 						Assert.Fail ("Build did not end in time");
 
-					// Build engine disposal delay is set to 400ms, so unused
-					// builders should go away after a 500ms wait.
+					// Build engine disposal delay is set to 400ms: wait until the unused builder is gone (a fixed
+					// 500 ms wait was too short on a loaded machine), then one more delay to check that the
+					// solution keeps its last builder.
 
+					await WaitForEnginesCount (1);
 					await Task.Delay (500);
 
 					// There should be at least one builder left

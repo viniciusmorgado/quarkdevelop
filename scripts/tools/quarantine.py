@@ -7,6 +7,10 @@ suite's section of docs/evidence/M4/quarantine.md (reason, owner, date, linked t
 
 Usage (inside the dev container):
     python3 scripts/tools/quarantine.py <results.trx> <tests-project-dir> <suite-name> [--dry-run]
+    python3 scripts/tools/quarantine.py --sanitize   (rewrite the checkout paths of the existing record)
+
+Paths of the checkout in error messages are written as <repo>, so the record does not depend on where the
+tests ran. A suite's "### Released" subsection is kept when its table is regenerated.
 """
 import collections
 import datetime
@@ -18,11 +22,33 @@ import xml.etree.ElementTree as ET
 
 NS = {"t": "http://microsoft.com/schemas/VisualStudio/TeamTest/2010"}
 OWNER = "migration"
+DOC = "docs/evidence/M4/quarantine.md"
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Any checkout (worktree, CI workspace) of the repository: the part of an absolute path before its main/ folder.
+CHECKOUT_PATH = re.compile(r"(?<![\w<>.])/(?:[^\s\"'`/|]+/)+?(?=main/)")
 
 # (regex, reason category, note, follow-up task). Rules are tried in order on "test name + message";
 # rules marked stack=True also look at the stack trace (fixture paths). Timeouts are only read from the
 # message: with NUnit's DefaultTimeout every stack contains TimeoutCommand frames.
 RULES = [
+    # Core.Tests triage (T135): root causes with their follow-up tasks
+    (r"MSBuildSearchPathTests\.", False,
+     "Bug", "the out-of-process .NET builder ignores the MSBuild import search paths and SDK folders registered by "
+     "add-ins (the Mono builder got them from its patched MSBuild.exe.config toolset; ADR 0008)", "T140"),
+    (r"UnknownSdk_DotNetMSBuildSdkResolverDoesNotFatalReportError", False,
+     "Bug", "MonoDevelop's SDK resolution does not load the .NET SDK resolver (SDK 10 ships Microsoft.DotNet.SdkResolver.dll "
+     "at the SDK root, not under SdkResolvers/)", "T141"),
+    (r"ProjectTests\.RefreshReferences", False,
+     "Mono-only", "expects a missing local gtk-sharp.dll to fall back to the Mono GAC package (no GAC on .NET, ADR 0007)", "T142"),
+    (r"MakefileTests\.", False,
+     "excluded", "needs the MonoDevelop.Autotools add-in, excluded from the Linux build (ADR 0017)", "T142"),
+    (r"UnknownNuGetPackageReferenceId_DesignTimeBuilds|start process 'nuget'", False,
+     "network", "runs `nuget restore` against nuget.org (no nuget executable, no network in tests)", "T143"),
+    (r"DotNetCoreProjectTests\.BuildMultiTargetProject", False,
+     "network", "restores netcoreapp1.1/netstandard1.0 packages from nuget.org (no network in tests)", "T143"),
+    (r"MSB382[23]|ProjectTests\.Resources", False,
+     "SDK-change", "MSBuild on .NET needs System.Resources.Extensions and GenerateResourceUsePreserializedResources for "
+     "the non-string .resx resources of a .NET Framework project (MSB3822/MSB3823)", "T143"),
     (r"start process 'msbuild'|Should_pack_multi_target_project", False,
      "network", "restores packages from nuget.org (msbuild /t:Restore, netstandard1.x packages; no network in tests); "
      "DependenciesNodeSdkProjectTests restores from a local feed", "T099"),
@@ -74,6 +100,18 @@ RULES = [
      "IDE-host", "needs the VS editor MEF composition of the IDE host (Mono.TextEditor text model)", "T107"),
 ]
 DEFAULT = ("Bug", "fails on .NET 10; root cause to be analysed", "T135")
+
+
+def sanitize(text):
+    """Replaces the checkout's location with <repo> (the record must not depend on where the tests ran)."""
+    text = text.replace(REPO_ROOT.rstrip("/") + "/", "<repo>/")
+    return CHECKOUT_PATH.sub("<repo>/", text)
+
+
+def sanitize_doc():
+    text = open(DOC).read()
+    lines = [sanitize(line) if line.startswith("| `") else line for line in text.split("\n")]
+    open(DOC, "w").write("\n".join(lines))
 
 
 def classify(name, msg, stack):
@@ -132,6 +170,9 @@ def add_category(project_dir, cls, method):
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     dry = "--dry-run" in sys.argv
+    if "--sanitize" in sys.argv:
+        sanitize_doc()
+        return 0
     if len(args) != 3:
         print(__doc__)
         return 2
@@ -140,9 +181,7 @@ def main():
     rows, methods, missing = [], set(), []
     for cls, method, test_name, msg, stack in failed_tests(trx):
         category, note, task = classify(f"{cls}.{test_name}", msg, stack)
-        first = (msg.strip().splitlines() or [""])[0]
-        # repo-relative: no checkout paths in the evidence
-        first = re.sub(r"/\S*?/main/", "<repo>/main/", first)[:110].replace("|", "\\|")
+        first = sanitize((msg.strip().splitlines() or [""])[0])[:110].replace("|", "\\|")
         rows.append((f"{cls}.{test_name}", category, note, first, task))
         if (cls, method) in methods:
             continue
@@ -158,11 +197,15 @@ def main():
                "|---|---|---|---|---|---|---|"]
     section += [f"| `{t}` | {c} | {n} | {e} | {OWNER} | {today} | {task} |" for t, c, n, e, task in sorted(rows)]
     section.append("")
-    out = "docs/evidence/M4/quarantine.md"
+    out = DOC
     os.makedirs(os.path.dirname(out), exist_ok=True)
     header = ("# Quarantined tests\n\nTests excluded from the gate with `[Category (\"Quarantine\")]` "
               "(constitution V). Per suite, the count may not grow after the suite is first converted.\n\n")
     existing = open(out).read() if os.path.exists(out) else header
+    old = re.search(r"(?ms)^## " + re.escape(suite) + r"\n.*?(?=^## |\Z)", existing)
+    released = re.search(r"(?ms)^### Released\n.*", old.group(0)) if old else None
+    if released:
+        section += [released.group(0).rstrip(), ""]
     existing = re.sub(r"(?ms)^## " + re.escape(suite) + r"\n.*?(?=^## |\Z)", "", existing)
     if not dry:
         with open(out, "w") as f:

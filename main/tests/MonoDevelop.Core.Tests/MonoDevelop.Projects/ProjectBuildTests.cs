@@ -393,10 +393,13 @@ namespace MonoDevelop.Projects
 		/// </summary>
 		[Test]
 		[Platform (Exclude = "Win")]
-		[Category ("Quarantine")]
 		public async Task BuildWithCustomProps3 ()
 		{
 			(var sol, var p) = await LoadSampleSolutionItem<Project> ("msbuild-tests", "project-with-custom-build-target3.csproj");
+			// The IDE defines BuildingInsideVisualStudio=true only when it builds a solution (a project built alone
+			// keeps the command-line behaviour), so the wrapping solution needs a file.
+			sol.FileName = p.BaseDirectory.Combine ("project-with-custom-build-target3.sln");
+			await sol.SaveAsync (Util.GetMonitor ());
 
 			var ctx = new ProjectOperationContext ();
 			ctx.GlobalProperties.SetValue ("BuildingInsideVisualStudio", "false");
@@ -545,7 +548,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task FastBuildCheckWithLibrary ()
 		{
 			string solFile = Util.GetSampleProject ("fast-build-test", "FastBuildTest.sln");
@@ -566,6 +568,8 @@ namespace MonoDevelop.Projects
 			var myClass = sol.ItemDirectory.Combine ("MyClass.cs");
 			File.WriteAllText (myClass, "public class MyClass { public const string Message = \"Bye\" ; }");
 			FileService.NotifyFileChanged (myClass);
+			// File events are raised on the main thread; the test runs on an NUnit worker thread.
+			await Runtime.RunInMainThread (() => { });
 
 			Assert.IsTrue (app.FastCheckNeedsBuild (cs));
 			Assert.IsTrue (lib.FastCheckNeedsBuild (cs));

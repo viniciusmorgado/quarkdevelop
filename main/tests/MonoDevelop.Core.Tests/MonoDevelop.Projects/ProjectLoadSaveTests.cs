@@ -51,7 +51,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test ()]
-		[Category ("Quarantine")]
 		public async Task LoadSaveBuildConsoleProject ()
 		{
 			string solFile = Util.GetSampleProject ("console-project", "ConsoleProject.sln");
@@ -80,7 +79,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task CreateConsoleProject ()
 		{
 			Solution sol = TestProjectsChecks.CreateConsoleSolution ("console-project-msbuild");
@@ -108,7 +106,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SetCustomPropertiesInNewProject ()
 		{
 			Solution sol = TestProjectsChecks.CreateConsoleSolution ("console-project-msbuild");
@@ -659,7 +656,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task AddProjectConfigurationWithProperties ()
 		{
 			string solFile = Util.GetSampleProject ("console-project", "ConsoleProject.sln");
@@ -690,7 +686,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task RenameProjectConfiguration ()
 		{
 			// Change the name of the Debug configuration.
@@ -758,7 +753,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task CopyConfiguration ()
 		{
 			string solFile = Util.GetSampleProject ("console-project", "ConsoleProject.sln");
@@ -804,7 +798,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public void FrameworkAssemblyVersionNotStored ()
 		{
 			// We don't store the version number for framework assemblies
@@ -886,7 +879,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task RenameConfiguration ()
 		{
 			// When renaming a configuration, paths that use the configuration name should also be renamed
@@ -982,7 +974,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test ()]
-		[Category ("Quarantine")]
 		public async Task LoadSaveConsoleProjectWithEmptyGroup ()
 		{
 			var fn = new CustomFlavorNode ();
@@ -1129,10 +1120,10 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public void LoadReferenceWithSpaces_bug43510 ()
 		{
-			var pref = ProjectReference.CreateAssemblyReference (" gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f");
+			// A framework assembly: the original gtk-sharp 2.12 reference came from the Mono GAC, which .NET has not.
+			var pref = ProjectReference.CreateAssemblyReference (" System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
 			var p = (DotNetProject)Services.ProjectService.CreateProject ("C#");
 			p.References.Add (pref);
 			Assert.IsTrue (pref.IsValid);

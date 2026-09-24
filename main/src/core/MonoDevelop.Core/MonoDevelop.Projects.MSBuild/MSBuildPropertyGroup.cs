@@ -109,6 +109,10 @@ namespace MonoDevelop.Projects.MSBuild
 				var prop = node as MSBuildProperty;
 				if (prop != null) {
 					var cp = prop.Clone ();
+					// The copy has its own value: linking the group to the evaluated project of another configuration
+					// must not replace it with the evaluated value (e.g. the default OutputPath that the .NET SDK's
+					// common targets define for every configuration).
+					cp.Modified = true;
 					var currentPropIndex = ChildNodes.FindIndex (p => (p is MSBuildProperty) && ((MSBuildProperty)p).Name == prop.Name);
 					if (currentPropIndex != -1) {
 						var currentProp = (MSBuildProperty) ChildNodes [currentPropIndex];

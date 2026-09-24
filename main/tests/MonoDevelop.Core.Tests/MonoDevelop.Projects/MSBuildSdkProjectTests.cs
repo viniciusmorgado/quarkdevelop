@@ -469,16 +469,18 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public void WriteProject_ProjectDefinesMultipleTargetFrameworksAndTargetFrameworkVersionChanged_TargetFrameworksUpdated ()
 		{
+			// Outside the source tree: main/Directory.Build.props (imported for a relative file name, resolved from the
+			// test host folder) defines TargetFramework=net10.0.
 			CreateMSBuildProject (
 				"<Project Sdk=\"Microsoft.NET.Sdk\">\r\n" +
 				"  <PropertyGroup>\r\n" +
 				"      <OutputType>Exe</OutputType>\r\n" +
 				"      <TargetFrameworks>netcoreapp1.0;net45</TargetFrameworks>\r\n" +
 				"  </PropertyGroup>\r\n" +
-				"</Project>");
+				"</Project>",
+				UnitTests.Util.GetTmpProjectFileName ("MyProject.csproj"));
 			msbuildProject.Evaluate ();
 			ReadProject ();
 			project.HasSdk = true;

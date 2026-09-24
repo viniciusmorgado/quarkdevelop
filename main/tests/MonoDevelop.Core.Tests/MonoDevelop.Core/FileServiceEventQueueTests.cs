@@ -38,6 +38,11 @@ namespace MonoDevelop.Core
 		readonly FilePath a = "a", b = "b", c = "c", d = "d", e = "e", btmp = "b.tmp";
 		readonly EventDataKind [] AllKinds = (EventDataKind [])Enum.GetValues (typeof (EventDataKind));
 
+		// RaiseEvent posts to Runtime.MainSynchronizationContext off the main thread: initialize it when this fixture
+		// runs first.
+		[OneTimeSetUp]
+		public void InitializeTestHost () => UnitTests.TestHost.EnsureInitialized ();
+
 		[Test]
 		public void TestMergeRemovesEmptyChangeSets()
 		{
@@ -325,20 +330,23 @@ namespace MonoDevelop.Core
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public void TestTimeTracking ()
 		{
-			var queue = new CallTrackingEventQueue ();
+			// RaiseEvent calls the handlers synchronously only on the main thread (GuiUnit ran the tests there);
+			// NUnit runs the test on a worker thread.
+			UnitTests.TestHost.MainSynchronizationContext.Send (_ => {
+				var queue = new CallTrackingEventQueue ();
 
-			foreach (var kind in AllKinds) {
-				Assert.AreEqual (TimeSpan.Zero, queue.GetTimings (kind));
+				foreach (var kind in AllKinds) {
+					Assert.AreEqual (TimeSpan.Zero, queue.GetTimings (kind));
 
-				queue.RaiseEvent (kind, new FileCopyEventArgs ());
-				Assert.That (queue.GetTimings (kind), Is.GreaterThan (TimeSpan.Zero), "Time it took to call event handler was not recorded");
+					queue.RaiseEvent (kind, new FileCopyEventArgs ());
+					Assert.That (queue.GetTimings (kind), Is.GreaterThan (TimeSpan.Zero), "Time it took to call event handler was not recorded");
 
-				queue.RaiseEvent (kind, new FileCopyEventArgs ());
-				Assert.AreEqual (2, queue.Values.Where (x => x.Kind == kind).Count (), "We did not call the handlers the correct number of times");
-			}
+					queue.RaiseEvent (kind, new FileCopyEventArgs ());
+					Assert.AreEqual (2, queue.Values.Where (x => x.Kind == kind).Count (), "We did not call the handlers the correct number of times");
+				}
+			}, null);
 		}
 
 		FileEventData [] DoRun(Action<Processor> callback)
@@ -396,7 +404,13 @@ namespace MonoDevelop.Core
 			public List<WrappedFileEventArgs> Values = new List<WrappedFileEventArgs> ();
 
 			protected override void OnRaiseSync (EventDataKind kind, FileEventArgs args)
-				=> Values.Add (new WrappedFileEventArgs (kind, args));
+			{
+				Values.Add (new WrappedFileEventArgs (kind, args));
+				// Take at least one TimeSpan tick (100 ns): the Add alone is faster on .NET, and its timing rounds to zero.
+				var stopwatch = System.Diagnostics.Stopwatch.StartNew ();
+				while (stopwatch.Elapsed.Ticks == 0) {
+				}
+			}
 		}
 
 		class WrappedFileEventArgs : EventArgs

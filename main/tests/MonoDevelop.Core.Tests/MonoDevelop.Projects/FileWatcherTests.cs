@@ -250,7 +250,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SaveProjectFileExternally_TwoSolutionsOpen_SolutionsHaveCommonDirectories ()
 		{
 			FilePath rootProject = Util.GetSampleProject ("FileWatcherTest", "Root.csproj");
@@ -260,7 +259,7 @@ namespace MonoDevelop.Projects
 			var file1 = p1.Files.First (f => f.FilePath.FileName == "MyClass.cs");
 			solFile = rootProject.ParentDirectory.Combine ("FileWatcherTest", "FileWatcherTest2.sln");
 			using (var sol2 = (Solution) await Services.ProjectService.ReadWorkspaceItem (Util.GetMonitor (), solFile)) {
-				var p2 = (DotNetProject) sol.Items [0];
+				var p2 = (DotNetProject)sol2.Items[0];
 				var file2 = p2.Files.First (f => f.FilePath.FileName == "MyClass.cs");
 				ClearFileEventsCaptured ();
 				await FileWatcherService.Add (sol);
@@ -472,7 +471,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task AddSolutionToWorkspace_ChangeFileInAddedSolution ()
 		{
 			FilePath rootProject = Util.GetSampleProject ("FileWatcherTest", "Root.csproj");

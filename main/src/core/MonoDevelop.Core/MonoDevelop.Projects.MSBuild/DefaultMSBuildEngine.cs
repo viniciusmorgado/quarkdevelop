@@ -925,7 +925,7 @@ namespace MonoDevelop.Projects.MSBuild
 				else if (!baseDir.EndsWith ("\\", StringComparison.Ordinal))
 					baseDir += '\\';
 				var recursiveDir = baseRecursiveDir.IsNullOrEmpty ? FilePath.Null : basePath.ToRelative (baseRecursiveDir);
-				res = FastConcat (res, Directory.GetFiles (basePath, path).Select (f => func (f, baseDir + Path.GetFileName (f), recursiveDir)));
+				res = FastConcat (res, GetSortedFileSystemEntries (Directory.GetFiles (basePath, path)).Select (f => func (f, baseDir + Path.GetFileName (f), recursiveDir)));
 			} else {
 				// Directory specifier
 				// Look for matching directories.
@@ -933,7 +933,7 @@ namespace MonoDevelop.Projects.MSBuild
 				// The recursive search is done below.
 
 				if (path.IndexOfAny (wildcards) != -1) {
-					foreach (var dir in Directory.EnumerateDirectories (basePath, path))
+					foreach (var dir in GetSortedFileSystemEntries (Directory.GetDirectories (basePath, path)))
 						res = FastConcat (res, ExpandWildcardFilePath (project, dir, baseRecursiveDir, false, filePath, func, directoryExcludeRegex));
 				} else
 					res = FastConcat (res, ExpandWildcardFilePath (project, basePath.Combine (path), baseRecursiveDir, false, filePath, func, directoryExcludeRegex));
@@ -941,11 +941,20 @@ namespace MonoDevelop.Projects.MSBuild
 
 			if (recursive) {
 				// Recursive search. Try to match the remaining subpath in all subdirectories.
-				foreach (var dir in Directory.EnumerateDirectories (basePath))
+				foreach (var dir in GetSortedFileSystemEntries (Directory.GetDirectories (basePath)))
 					res = FastConcat (res, ExpandWildcardFilePath (project, dir, baseRecursiveDir, true, filePathInput, func, directoryExcludeRegex));
 			}
 
 			return res;
+
+			// Glob matches in a stable order: the order of the directory entries depends on the file system (sorted
+			// on macOS/Windows, hash order on ext4/overlayfs), and it decides the order of the items the project
+			// model writes back (Remove/Update items, Exclude lists).
+			static string[] GetSortedFileSystemEntries (string[] entries)
+			{
+				Array.Sort (entries, StringComparer.Ordinal);
+				return entries;
+			}
 
 			static IEnumerable<T> FastConcat (IEnumerable<T> first, IEnumerable<T> maybeEmpty)
 				=> maybeEmpty == Enumerable.Empty<T> () ? first : first.Concat (maybeEmpty);

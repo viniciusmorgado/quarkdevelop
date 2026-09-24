@@ -282,7 +282,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task AddRenameRemoveSingleFile ()
 		{
 			var project = await OpenProject ();
@@ -328,7 +327,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task RenameDirectory ()
 		{
 			var project = await OpenProject ();
@@ -354,14 +352,17 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task FileWrittenButAlreadyExistsInFilesCollection_DuplicateFileNotAdded ()
 		{
 			var project = await OpenProject ();
 
-			var newCSharpFilePath = WriteFile (project.BaseDirectory, "NewCSharpFile.cs");
-			var projectFile = new ProjectFile (newCSharpFilePath, BuildAction.Compile);
-			project.AddFile (projectFile);
+			// Written and added in one main loop iteration, as the IDE does: the file watcher handler that runs
+			// afterwards on the main thread then finds the file in the project.
+			var newCSharpFilePath = FilePath.Null;
+			await Runtime.RunInMainThread (() => {
+				newCSharpFilePath = WriteFile (project.BaseDirectory, "NewCSharpFile.cs");
+				project.AddFile (new ProjectFile (newCSharpFilePath, BuildAction.Compile));
+			});
 
 			var fileAdded = WaitForSingleFileAdded (project);
 
@@ -372,7 +373,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task MoveDirectoryUpToProjectRootDirectory_FileServiceEventsFired ()
 		{
 			var project = await OpenProject ();
@@ -411,7 +411,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task FileRenamedInSolutionPad_FileWatcherRenameEventIsIgnored ()
 		{
 			var project = await OpenProject ();
@@ -420,13 +419,16 @@ namespace MonoDevelop.Projects
 			var csharpFilePath = WriteFile (project.BaseDirectory, "CSharpFile.cs");
 			await AssertFileAddedToProject (fileAdded, csharpFilePath, "Compile");
 
-			// Rename file.
+			// Rename file. Renamed on the main thread, as by the solution pad: the file watcher handler that
+			// runs afterwards on the main thread then finds the project already updated.
 			var renamedCSharpFilePath = csharpFilePath.ChangeName ("RenamedCSharpFile");
-			FileService.RenameFile (csharpFilePath, renamedCSharpFilePath);
+			await Runtime.RunInMainThread (() => {
+				FileService.RenameFile (csharpFilePath, renamedCSharpFilePath);
 
-			// Simulate the behaviour of the RootWorkspace after receiving a
-			// FileService.FileRenamed event.
-			solution.RootFolder.RenameFileInProjects (csharpFilePath, renamedCSharpFilePath);
+				// Simulate the behaviour of the RootWorkspace after receiving a
+				// FileService.FileRenamed event.
+				solution.RootFolder.RenameFileInProjects (csharpFilePath, renamedCSharpFilePath);
+			});
 			Assert.AreEqual (1, project.Files.Count (file => file.FilePath == renamedCSharpFilePath));
 
 			fileAdded = WaitForSingleFileAdded (project);
@@ -490,7 +492,6 @@ namespace MonoDevelop.Projects
 		/// Content Include="wwwroot\**" CopyToPublishDirectory="PreserveNewest"
 		/// </summary>
 		[Test]
-		[Category ("Quarantine")]
 		public async Task AddFileExternally_FileGlobHasMSBuildMetadata_FileAddedToProject ()
 		{
 			await OpenProject ("DotNetCoreMetadataTests.sln");
@@ -524,7 +525,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task MoveDirectoryOutsideProjectDirectory ()
 		{
 			await OpenProject ();

@@ -119,6 +119,8 @@ namespace UnitTests
 
 			WriteFrameworkReferenceProps (Path.Combine (TmpDir, "Directory.Build.props"));
 			WriteEmptyProjectFile (Path.Combine (TmpDir, "Directory.Build.targets"));
+			// Nor central package management (main/Directory.Packages.props): the fixtures give package versions.
+			WriteEmptyProjectFile (Path.Combine (TmpDir, "Directory.Packages.props"));
 
 			// Legacy .NET Framework fixtures resolve their reference assemblies from the directory
 			// installed by scripts/netfx-refasm.sh (task T134); Linux has no .NETFramework directory.
@@ -147,6 +149,16 @@ namespace UnitTests
 				if (!File.Exists (fileName))
 					File.WriteAllText (fileName, "<Project></Project>");
 			}
+		}
+
+		/// <summary>
+		/// Returns the path of a project file that a test creates in memory, in a new folder of the tmp folder, so that its
+		/// evaluation does not import the Directory.Build.* files of the MonoDevelop source tree.
+		/// </summary>
+		public static string GetTmpProjectFileName (string fileName)
+		{
+			CreateDirectoryBuildMSBuildFiles ();
+			return Path.Combine (CreateTmpDir (Path.GetFileNameWithoutExtension (fileName)), fileName);
 		}
 
 		static void DeleteSubDirectory (string directory, string subDirectory)

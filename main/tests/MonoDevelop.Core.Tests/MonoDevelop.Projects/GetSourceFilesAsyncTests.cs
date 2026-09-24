@@ -180,7 +180,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task ImportWithCoreCompileDependsOnAddedAfterSourceFilesCached ()
 		{
 			string projectFile = Util.GetSampleProject ("project-with-corecompiledepends", "consoleproject.csproj");
@@ -197,6 +196,8 @@ namespace MonoDevelop.Projects
 
 			var before = new MSBuildItem (); // Ensures import added at end of project.
 			project.MSBuildProject.AddNewImport ("consoleproject-import.targets", null, before);
+			// The project notifies the change on the main thread; the test runs on an NUnit worker thread.
+			await Runtime.RunInMainThread (() => { });
 			Assert.AreEqual ("CoreCompileFiles", modifiedHint);
 
 			sourceFiles = await project.GetSourceFilesAsync (project.Configurations[0].Selector);
@@ -205,6 +206,7 @@ namespace MonoDevelop.Projects
 
 			modifiedHint = null;
 			project.MSBuildProject.RemoveImport ("consoleproject-import.targets");
+			await Runtime.RunInMainThread (() => { });
 			Assert.AreEqual ("CoreCompileFiles", modifiedHint);
 
 			sourceFiles = await project.GetSourceFilesAsync (project.Configurations[0].Selector);

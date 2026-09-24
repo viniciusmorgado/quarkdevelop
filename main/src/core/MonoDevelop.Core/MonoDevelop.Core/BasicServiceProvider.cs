@@ -159,8 +159,10 @@ namespace MonoDevelop.Core
 
 			lock (servicesByType) {
 				if (completionTask != null) {
-					completionTask.SetResult (service);
+					// Remove the task before completing it: SetResult runs the continuations of GetService inline,
+					// and PeekService called from them would still see the service as being initialized.
 					initializationTasks.Remove (service);
+					completionTask.SetResult (service);
 				}
 				if (initializationCallbacks.TryGetValue (typeof (T), out callbacks))
 					initializationCallbacks.Remove (typeof (T));

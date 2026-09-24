@@ -500,15 +500,13 @@ namespace MonoDevelop.Projects
 			using (readerWriterLock.Read ()) {
 				var sw = FileWatcherService.Timings.Get ();
 				sw.Restart ();
-				NotifyNode (rootNode, e.FullPath, (id, path) => {
-					try {
-						if (id is Project project) {
-							project.OnFileCreated (path);
-						}
-					} catch (Exception e) {
-						LoggingService.LogInternalError ("Exception in file watcher handler", e);
-					}
-				});
+				NotifyNode (rootNode, e.FullPath, NotifyProjectFileCreated);
+				// inotify (Linux) watches a new directory only after reporting its creation, so files written into it
+				// right away raise no event. Report the files it already has; the project ignores files it contains.
+				if (Directory.Exists (e.FullPath)) {
+					foreach (var file in GetFilesInNewDirectory (e.FullPath))
+						NotifyNode (rootNode, file, NotifyProjectFileCreated);
+				}
 				sw.Stop ();
 				FileWatcherService.Timings.Add (sw, FileService.EventDataKind.Created);
 			}
@@ -519,6 +517,27 @@ namespace MonoDevelop.Projects
 			// from a non-monitored directory to a monitored directory. So this is turned into a Changed
 			// event so the file will be reloaded.
 			FileService.NotifyFileChanged (e.FullPath);
+		}
+
+		static void NotifyProjectFileCreated (object id, string path)
+		{
+			try {
+				if (id is Project project)
+					project.OnFileCreated (path);
+			} catch (Exception e) {
+				LoggingService.LogInternalError ("Exception in file watcher handler", e);
+			}
+		}
+
+		static string[] GetFilesInNewDirectory (string directory)
+		{
+			try {
+				return Directory.GetFiles (directory, "*", SearchOption.AllDirectories);
+			} catch (IOException) {
+				// Deleted or moved again in the meantime
+			} catch (UnauthorizedAccessException) {
+			}
+			return Array.Empty<string> ();
 		}
 
 		void OnFileDeleted (object sender, FileSystemEventArgs e)

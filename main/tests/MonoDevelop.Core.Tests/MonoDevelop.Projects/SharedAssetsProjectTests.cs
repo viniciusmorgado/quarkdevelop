@@ -182,7 +182,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SaveSharedProject ()
 		{
 			Solution sol = TestProjectsChecks.CreateConsoleSolution ("shared-project");

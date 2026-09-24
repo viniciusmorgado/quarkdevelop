@@ -4,7 +4,7 @@ Tests excluded from the gate with `[Category ("Quarantine")]` (constitution V). 
 
 ## MonoDevelop.Core.Tests
 
-Quarantined 78 test cases (77 methods; 80 at first run) on 2026-09-23 (+1 on 2026-09-24). Bug: 47, legacy-fixture: 13, Flaky: 11, net4x-fixture: 6, Mono-only: 1.
+Quarantined 78 test cases (77 methods; 80 at first run) on 2026-09-23 (+1 on 2026-09-24); 47 released on 2026-09-24 (T135, below). 31 cases (30 methods) remain, 2.7% of the suite's 1158 cases: legacy-fixture: 13, Bug: 7, net4x-fixture: 6, network: 2, excluded: 1, Mono-only: 1, SDK-change: 1.
 
 | Test | Reason | Note | First error line | Owner | Date | Task |
 |---|---|---|---|---|---|---|
@@ -13,85 +13,92 @@ Quarantined 78 test cases (77 methods; 80 at first run) on 2026-09-23 (+1 on 202
 | `MonoDevelop.Core.Assemblies.SystemAssemblyServiceTests.RequiresFacadeAssembliesAsync(False,"MonoDevelop.Core.dll")` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | Expected: False | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Core.Assemblies.SystemAssemblyServiceTests.RequiresFacadeAssembliesAsync(True,"System.Collections.Immutable.dll")` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | Expected: True | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Core.Assemblies.SystemAssemblyServiceTests.TestFrameworkVersion` | net4x-fixture | legacy .NET Framework fixture project | Expected string length 13 but was 7. Strings differ at index 0. | migration | 2026-09-23 | T134 |
-| `MonoDevelop.Core.FileServiceEventQueueTests.TestTimeTracking` | Flaky | timing-dependent (file watcher / event timing) | Time it took to call event handler was not recorded | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Core.SdkResolverTests.UnknownSdk_DotNetMSBuildSdkResolverDoesNotFatalReportError` | Bug | project model / evaluator difference on SDK 10 | Expected: String containing "Check that a recent enough .NET Core SDK is installed" | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Core.ServiceProviderTests.PeekService` | Bug | fails on .NET 10; root cause to be analysed | Expected: same as <MonoDevelop.Core.TestService> | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WhenCredentialServiceThrows_Returns401` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Moq.MockException :  | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WhenOperationCanceledExceptionThrownDuringAcquiringCredentials_Throws` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Multiple failures or warnings in test: | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WhenTaskCanceledExceptionThrownDuringAcquiringCredentials_Throws` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Multiple failures or warnings in test: | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithAcquiredCredentialsOn401_RetriesRequest` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Expected: OK | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithAcquiredCredentialsOn403_RetriesRequest` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Expected: OK | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithMissingCredentials_Returns401` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Moq.MockException :  | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Core.Web.HttpSourceAuthenticationHandlerTests.SendAsync_WithWrongCredentials_StopsRetryingAfter3Times` | Bug | mock expectations differ on the .NET 10 HttpClient pipeline | Expected: 5 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.DotNetCoreFileWatcherTests.AddFileExternally_FileGlobHasMSBuildMetadata_FileAddedToProject` | Flaky | timing-dependent (file watcher event + project re-evaluation); timed out at 10 s with load average 26 (high machine load) | System.ApplicationException : Timed out waiting. | migration | 2026-09-24 | T135 |
-| `MonoDevelop.Projects.DotNetCoreFileWatcherTests.AddRenameRemoveSingleFile` | Flaky | timing-dependent (file watcher / event timing) | System.ApplicationException : Timed out waiting. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.DotNetCoreFileWatcherTests.FileRenamedInSolutionPad_FileWatcherRenameEventIsIgnored` | Flaky | timing-dependent (file watcher / event timing) | Expected: not equal to <System.Threading.Tasks.Task`1[MonoDevelop.Projects.ProjectFile]> | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.DotNetCoreFileWatcherTests.FileWrittenButAlreadyExistsInFilesCollection_DuplicateFileNotAdded` | Flaky | timing-dependent (file watcher / event timing) | Expected: 1 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.DotNetCoreFileWatcherTests.MoveDirectoryOutsideProjectDirectory` | Flaky | timing-dependent (file watcher / event timing) | System.ApplicationException : Timed out waiting. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.DotNetCoreFileWatcherTests.MoveDirectoryUpToProjectRootDirectory_FileServiceEventsFired` | Flaky | timing-dependent (file watcher / event timing) | System.ApplicationException : Timed out waiting. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.DotNetCoreFileWatcherTests.RenameDirectory` | Flaky | timing-dependent (file watcher / event timing) | System.ApplicationException : Timed out waiting. | migration | 2026-09-23 | T135 |
+| `MonoDevelop.Core.SdkResolverTests.UnknownSdk_DotNetMSBuildSdkResolverDoesNotFatalReportError` | Bug | MonoDevelop's SDK resolution does not load the .NET SDK resolver (SDK 10 ships Microsoft.DotNet.SdkResolver.dll at the SDK root, not under SdkResolvers/) | Expected: String containing "Check that a recent enough .NET Core SDK is installed" | migration | 2026-09-23 | T141 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.AddFiles_NetStandardProjectWithXamarinFormsVersion24PackageReference` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
-| `MonoDevelop.Projects.DotNetCoreProjectTests.BuildMultiTargetProject` | Bug | fails on .NET 10; root cause to be analysed | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T135 |
+| `MonoDevelop.Projects.DotNetCoreProjectTests.BuildMultiTargetProject` | network | restores netcoreapp1.1/netstandard1.0 packages from nuget.org (no network in tests) | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T143 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.DependsOn_FilesInProjectSubDirectory_XamarinFormsVersion24PackageReference` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.FSharpXamarinFormsProject_SaveProject_XamlFilesDependentUponUnchanged` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.MultiTargetProject_ExecutionTargets` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.ReevaluateXamarinFormsVersion24PackageReference` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | System.InvalidOperationException : Sequence contains no matching element | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.ReloadModifiedFile_XamarinFormsVersion24PackageReference` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.DotNetCoreProjectTests.SaveNetStandardProjectWithXamarinFormsVersion24PackageReference` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | msbuild /t:Restore "<repo>/main/te | migration | 2026-09-23 | T134 |
-| `MonoDevelop.Projects.FileServiceTests.ThawAfterGeneratingFileChangeEvents_File1ChangeFollowedByFile2ChangeThenFile2Change` | Bug | fails on .NET 10; root cause to be analysed | Expected: some item equal to /tmp/tmpmjsnC6.tmp.tmp | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.FileWatcherTests.AddSolutionToWorkspace_ChangeFileInAddedSolution` | Flaky | timing-dependent (file watcher / event timing) | MonoDevelop.Core.UserException : Could not load workspace item: <repo>/… | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.GenericProjectTests.LoadGenericProject` | Bug | project model / evaluator difference on SDK 10 | Expected: instance of <MonoDevelop.Projects.GenericProject> | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.GenericProjectTests.LoadGenericProjectWithImportBeforePropertyGroup` | Bug | project model / evaluator difference on SDK 10 | Expected: instance of <MonoDevelop.Projects.GenericProject> | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.GetAnalyzerFilesAsyncTests.ImportWithCoreCompileDependsOnAddedAfterAnalyzerFilesCached` | Bug | fails on .NET 10; root cause to be analysed | Expected: "CoreCompileFiles" | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.GetSourceFilesAsyncTests.ImportWithCoreCompileDependsOnAddedAfterSourceFilesCached` | Bug | fails on .NET 10; root cause to be analysed | Expected: "CoreCompileFiles" | migration | 2026-09-23 | T135 |
 | `MonoDevelop.Projects.LocalCopyTests.LocalCopyDefault` | net4x-fixture | legacy .NET Framework fixture project | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-23 | T134 |
-| `MonoDevelop.Projects.MSBuildGlobTests.FileUpdateRemoveMetadataDefinedInGlob` | Bug | fails on .NET 10; root cause to be analysed | String lengths are both 1772. Strings differ at index 1473. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MSBuildGlobTests.RemoveAllFilesFromProject_NoFilesDeleted_RemoveItemAddedForFiles` | Bug | fails on .NET 10; root cause to be analysed | String lengths are both 1657. Strings differ at index 1495. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MSBuildSdkProjectTests.WriteProject_ProjectDefinesMultipleTargetFrameworksAndTargetFrameworkVersionChanged_TargetFrameworksUpdated` | Bug | fails on .NET 10; root cause to be analysed | String lengths are both 19. Strings differ at index 12. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MSBuildSearchPathTests.InjectTarget` | Bug | project model / evaluator difference on SDK 10 | Expected: 1 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MSBuildSearchPathTests.InjectTargetAfterLoadingProject` | Bug | project model / evaluator difference on SDK 10 | Expected: 1 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MSBuildSearchPathTests.MultipleProjectsUsingSdk` | Bug | project model / evaluator difference on SDK 10 | <repo>/main/tests/tmp/ProjectUsing | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MSBuildSearchPathTests.ProjectUsingMultipleSdk` | Bug | project model / evaluator difference on SDK 10 | Expected: 1 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MSBuildSearchPathTests.ProjectUsingSdk` | Bug | project model / evaluator difference on SDK 10 | <repo>/main/tests/tmp/ProjectUsing | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MSBuildSearchPathTests.ProjectUsingSdkImport` | Bug | project model / evaluator difference on SDK 10 | Expected: 1 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MakefileTests.MakefileSynchronization` | Bug | project model / evaluator difference on SDK 10 | Contains Program.cs | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.MultiTargetProjectTests.TargetFrameworkMonikers_DifferentShortNameFormats` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/… | migration | 2026-09-23 | T134 |
+| `MonoDevelop.Projects.MSBuildSearchPathTests.InjectTarget` | Bug | the out-of-process .NET builder ignores the MSBuild import search paths and SDK folders registered by add-ins (the Mono builder got them from its patched MSBuild.exe.config toolset; ADR 0008) | Expected: 1 | migration | 2026-09-23 | T140 |
+| `MonoDevelop.Projects.MSBuildSearchPathTests.InjectTargetAfterLoadingProject` | Bug | the out-of-process .NET builder ignores the MSBuild import search paths and SDK folders registered by add-ins (the Mono builder got them from its patched MSBuild.exe.config toolset; ADR 0008) | Expected: 1 | migration | 2026-09-23 | T140 |
+| `MonoDevelop.Projects.MSBuildSearchPathTests.MultipleProjectsUsingSdk` | Bug | the out-of-process .NET builder ignores the MSBuild import search paths and SDK folders registered by add-ins (the Mono builder got them from its patched MSBuild.exe.config toolset; ADR 0008) | <repo>/main/tests/tmp/ProjectUsing | migration | 2026-09-23 | T140 |
+| `MonoDevelop.Projects.MSBuildSearchPathTests.ProjectUsingMultipleSdk` | Bug | the out-of-process .NET builder ignores the MSBuild import search paths and SDK folders registered by add-ins (the Mono builder got them from its patched MSBuild.exe.config toolset; ADR 0008) | Expected: 1 | migration | 2026-09-23 | T140 |
+| `MonoDevelop.Projects.MSBuildSearchPathTests.ProjectUsingSdk` | Bug | the out-of-process .NET builder ignores the MSBuild import search paths and SDK folders registered by add-ins (the Mono builder got them from its patched MSBuild.exe.config toolset; ADR 0008) | <repo>/main/tests/tmp/ProjectUsing | migration | 2026-09-23 | T140 |
+| `MonoDevelop.Projects.MSBuildSearchPathTests.ProjectUsingSdkImport` | Bug | the out-of-process .NET builder ignores the MSBuild import search paths and SDK folders registered by add-ins (the Mono builder got them from its patched MSBuild.exe.config toolset; ADR 0008) | Expected: 1 | migration | 2026-09-23 | T140 |
+| `MonoDevelop.Projects.MakefileTests.MakefileSynchronization` | excluded | needs the MonoDevelop.Autotools add-in, excluded from the Linux build (ADR 0017) | Contains Program.cs | migration | 2026-09-23 | T142 |
+| `MonoDevelop.Projects.MultiTargetProjectTests.TargetFrameworkMonikers_DifferentShortNameFormats` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/main/tests/tmp/short-name-formats.csproj-33/short-na | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.NetStandardProjectTests.NetStandardProjectReferenceIncludesFacades` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | Expected: True | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.PortableLibraryTests.AddingRemovingAndThenAddingReferenceToPortableLibrarySavesReferenceToFile` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.PortableLibraryTests.BuildPortableLibrary` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | Expected: null | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.PortableLibraryTests.LoadPortableLibrary` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | Expected: instance of <MonoDevelop.Projects.DotNetProject> | migration | 2026-09-23 | T134 |
 | `MonoDevelop.Projects.PortableLibraryTests.PortableLibraryImplicitReferences` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-23 | T134 |
-| `MonoDevelop.Projects.ProjectBuildTests.BuildWithCustomProps3` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 37 but was 49. Strings differ at index 0. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectBuildTests.FastBuildCheckWithLibrary` | Bug | fails on .NET 10; root cause to be analysed | Expected: True | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.AddProjectConfigurationWithProperties` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 2263 but was 2225. Strings differ at index 1571. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.CopyConfiguration` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 2497 but was 2496. Strings differ at index 1627. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.CreateConsoleProject` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 1954 but was 2155. Strings differ at index 1376. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.FrameworkAssemblyVersionNotStored` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 6 but was 73. Strings differ at index 6. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.LoadReferenceWithSpaces_bug43510` | Bug | fails on .NET 10; root cause to be analysed | Expected: True | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.LoadSaveBuildConsoleProject` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 73 but was 6. Strings differ at index 6. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.LoadSaveConsoleProjectWithEmptyGroup` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 73 but was 6. Strings differ at index 6. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.RenameConfiguration` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 1965 but was 1969. Strings differ at index 1205. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.RenameProjectConfiguration` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 1970 but was 1969. Strings differ at index 880. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectLoadSaveTests.SetCustomPropertiesInNewProject` | Bug | fails on .NET 10; root cause to be analysed | Expected string length 1998 but was 2199. Strings differ at index 1420. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectTests.AddReference` | Bug | fails on .NET 10; root cause to be analysed | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectTests.MSBuildRuntimeVersionProperty` | Mono-only | exercises Mono runtime behaviour | Expected: False | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectTests.RefreshReferences` | Bug | fails on .NET 10; root cause to be analysed | Expected: not null | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectTests.Resources` | Bug | fails on .NET 10; root cause to be analysed | Expected: 0 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectTests.UnknownNuGetPackageReferenceId_DesignTimeBuilds` | Bug | fails on .NET 10; root cause to be analysed | System.ComponentModel.Win32Exception : An error occurred trying to start process 'nuget' with working director | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectWithWildcardsTests.LoadProjectWithWildcardLinks` | Bug | project model / evaluator difference on SDK 10 | System.InvalidCastException : Unable to cast object of type 'MonoDevelop.Projects.UnknownSolutionItem' to type | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectWithWildcardsTests.LoadProjectWithWildcardLinks2` | Bug | project model / evaluator difference on SDK 10 | System.InvalidCastException : Unable to cast object of type 'MonoDevelop.Projects.UnknownSolutionItem' to type | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectWithWildcardsTests.LoadProjectWithWildcardLinks3` | Bug | project model / evaluator difference on SDK 10 | System.InvalidCastException : Unable to cast object of type 'MonoDevelop.Projects.UnknownSolutionItem' to type | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.ProjectWithWildcardsTests.LoadProjectWithWildcardLinks4` | Bug | project model / evaluator difference on SDK 10 | System.InvalidCastException : Unable to cast object of type 'MonoDevelop.Projects.UnknownSolutionItem' to type | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.SharedAssetsProjectTests.SaveSharedProject` | Bug | fails on .NET 10; root cause to be analysed | String lengths are both 942. Strings differ at index 236. | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.SolutionTests.SkipBuildingUnmodifiedProjects(True,1,2)` | Bug | fails on .NET 10; root cause to be analysed | Expected: 1 | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.BuilderManagerTests.AtLeastOneBuilderPersolution` | Flaky | builder counts are timing-dependent; a failed assertion leaves the sync build blocked and its builder hangs later tests | Test exceeded Timeout value of 120000ms | migration | 2026-09-23 | T135 |
-| `MonoDevelop.Projects.FileWatcherTests.SaveProjectFileExternally_TwoSolutionsOpen_SolutionsHaveCommonDirectories` | Flaky | timing-dependent (file watcher / event timing); fails about 1 run in 3 | Expected: 1 | migration | 2026-09-23 | T135 |
+| `MonoDevelop.Projects.ProjectTests.RefreshReferences` | Mono-only | expects a missing local gtk-sharp.dll to fall back to the Mono GAC package (no GAC on .NET, ADR 0007) | Expected: not null | migration | 2026-09-23 | T142 |
+| `MonoDevelop.Projects.ProjectTests.Resources` | SDK-change | MSBuild on .NET needs System.Resources.Extensions and GenerateResourceUsePreserializedResources for the non-string .resx resources of a .NET Framework project (MSB3822/MSB3823) | Expected: 0 | migration | 2026-09-23 | T143 |
+| `MonoDevelop.Projects.ProjectTests.UnknownNuGetPackageReferenceId_DesignTimeBuilds` | network | runs `nuget restore` against nuget.org (no nuget executable, no network in tests) | System.ComponentModel.Win32Exception : An error occurred trying to start process 'nuget' with working director | migration | 2026-09-23 | T143 |
 
 ### Released
 
 - 2026-09-23: the 5 `SynchronizationContext may not be used as a TaskScheduler` cases pass after
   `WorkspaceObject.Dispose` switched to `Runtime.MainTaskScheduler` (the failure appeared when NUnit's
   timeout wrapper ran a test on a thread-pool thread) — T135.
+- 2026-09-24 (T135): 47 cases, by root cause.
+  - 4: Mono.Addins 1.4 gives extension nodes created from custom attributes (`[ProjectModelDataItem]`,
+    `[ExportProjectType]`) an assembly-qualified type name. `DataContext` registered the serializable classes
+    under a wrong name (`GenericProject` and the `.mdw` `Workspace` were unknown) and `GetTypeGuidForItem`
+    wrote the generic GUID for shared projects. Both now strip the assembly part (`DataContext.GetTypeFullName`):
+    `GenericProjectTests` (2), `SharedAssetsProjectTests.SaveSharedProject`,
+    `FileWatcherTests.AddSolutionToWorkspace_ChangeFileInAddedSolution`.
+  - 8: the tests run on NUnit worker threads, and the project and the file service raise their events on the main
+    loop (GuiUnit ran the tests on it). The tests now wait for the main loop (`await Runtime.RunInMainThread`) or
+    run the user's steps on it, and `TestTimeTracking` uses a handler longer than one `TimeSpan` tick:
+    `ImportWithCoreCompileDependsOn*` (2), `FastBuildCheckWithLibrary`, `SkipBuildingUnmodifiedProjects`,
+    `ThawAfterGeneratingFileChangeEvents_*`, `TestTimeTracking`,
+    `FileWrittenButAlreadyExistsInFilesCollection_DuplicateFileNotAdded`,
+    `FileRenamedInSolutionPad_FileWatcherRenameEventIsIgnored`.
+  - 5: inotify watches a new directory only after reporting its creation, so a file written into it right away
+    raised no event and was not added to the project. `FileWatcherWrapper` now reports the files that a new
+    directory already has: `DotNetCoreFileWatcherTests` `AddRenameRemoveSingleFile`, `RenameDirectory`,
+    `MoveDirectoryOutsideProjectDirectory`, `MoveDirectoryUpToProjectRootDirectory_FileServiceEventsFired`,
+    `AddFileExternally_FileGlobHasMSBuildMetadata_FileAddedToProject`.
+  - 2 (timing): `FileWatcherTestBase` started waiting after the files were written and missed events that had
+    already arrived (it now checks the captured events first, under a lock);
+    `BuilderManagerTests.AtLeastOneBuilderPersolution` waits for the builder disposal instead of a fixed 500 ms,
+    and releases the blocked build in `finally`: `SaveProjectFileExternally_TwoSolutionsOpen_*`,
+    `AtLeastOneBuilderPersolution`.
+  - 1: `BasicServiceProvider` completed the initialization task before removing it, and `SetResult` ran the
+    `GetService` continuation inline, so `PeekService` still saw the service as initializing:
+    `ServiceProviderTests.PeekService`.
+  - 2: glob matches came in directory order (sorted on macOS, hash order on ext4/overlayfs), which decides the
+    order of the Remove items and Exclude lists the project writes. `DefaultMSBuildEngine` sorts them (ordinal):
+    `MSBuildGlobTests` (2).
+  - 4: the .NET SDK's common targets give every configuration a default `OutputPath` (`bin\$(Configuration)\`).
+    Linking a copied configuration to its evaluated project replaced the copied values with it, so copying and
+    renaming configurations wrote the wrong output path. `MSBuildPropertyGroup.CopyFrom` marks the copies as
+    modified: `RenameProjectConfiguration`, `CopyConfiguration`, `RenameConfiguration`. A new configuration whose
+    `OutputPath` equals that default no longer writes it (SDK 10 difference; fixture
+    `ConsoleProject.csproj.config-props-added` updated): `AddProjectConfigurationWithProperties`.
+  - 3: test premises from Mono: `LoadReferenceWithSpaces_bug43510` used gtk-sharp 2.12 from the Mono GAC (now a
+    framework assembly); `MSBuildRuntimeVersionProperty`: like `dotnet msbuild`, the evaluator leaves
+    `MSBuildRuntimeVersion` empty on .NET; `BuildWithCustomProps3`: the IDE sets `BuildingInsideVisualStudio=true`
+    only for solution builds, so the test saves its wrapping solution.
+  - 1: an in-memory project with a relative file name was evaluated under `main/` and imported the repository's
+    `Directory.Build.props` (`TargetFramework=net10.0`). `Util.GetTmpProjectFileName` places it in the tests' tmp
+    folder, which now also stops `Directory.Packages.props` (central package management) from applying to
+    fixtures: `WriteProject_ProjectDefinesMultipleTargetFrameworksAndTargetFrameworkVersionChanged_*`.
+  - 4: `project-with-wildcard-links` was a PCL project (retired project type, loaded as an unknown item); the tests
+    are about wildcard links, so the fixture is now a plain C# library: `LoadProjectWithWildcardLinks*` (4).
+  - 13: already fixed by earlier commits and passing 3 runs in a row. `ProxyCache` dereferenced the null that .NET's
+    `GetProxy` returns for an unproxied URI (23da988aa3): `HttpSourceAuthenticationHandlerTests` (7). One add-in
+    registry per test host (763695990b); a shared registry made C# projects load as unknown items:
+    `ProjectLoadSaveTests` `CreateConsoleProject`, `FrameworkAssemblyVersionNotStored`,
+    `LoadSaveBuildConsoleProject`, `SetCustomPropertiesInNewProject`, `LoadSaveConsoleProjectWithEmptyGroup`,
+    `ProjectTests.AddReference`.
+  - Every released case passed 3 runs in a row. The timing ones also passed a run of their classes with 13 busy
+    processes in parallel (load average 28).
 
 ## MonoDevelop.Xml.Tests
 

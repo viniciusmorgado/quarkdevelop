@@ -41,6 +41,8 @@ namespace MonoDevelop.Projects
 		List<FilePath> waitingForFileChangeFileNames;
 		TaskCompletionSource<bool> fileRemovedTask;
 		List<FilePath> waitingForFilesToBeRemoved;
+		// The events are raised on the main thread, the tests wait for them on NUnit worker threads.
+		readonly object eventsLock = new object ();
 
 		[SetUp]
 		public void Init ()
@@ -76,10 +78,10 @@ namespace MonoDevelop.Projects
 
 		void OnFileChanged (object sender, FileEventArgs e)
 		{
-			fileChanges.AddRange (e);
+			lock (eventsLock) {
+				fileChanges.AddRange (e);
 
-			if (waitingForFileChangeFileNames != null) {
-				lock (fileChangesTask) {
+				if (waitingForFileChangeFileNames != null) {
 					int removedCount = waitingForFileChangeFileNames.RemoveAll (file => {
 						return fileChanges.Any (fileChange => fileChange.FileName == file);
 					});
@@ -93,10 +95,10 @@ namespace MonoDevelop.Projects
 
 		void OnFileRemoved (object sender, FileEventArgs e)
 		{
-			filesRemoved.AddRange (e);
+			lock (eventsLock) {
+				filesRemoved.AddRange (e);
 
-			if (waitingForFilesToBeRemoved != null) {
-				lock (fileRemovedTask) {
+				if (waitingForFilesToBeRemoved != null) {
 					int removedCount = waitingForFilesToBeRemoved.RemoveAll (file => {
 						return filesRemoved.Any (fileChange => fileChange.FileName == file);
 					});
@@ -109,7 +111,9 @@ namespace MonoDevelop.Projects
 
 		protected void AssertFileChanged (FilePath fileName)
 		{
-			var files = fileChanges.Select (fileChange => fileChange.FileName);
+			List<FilePath> files;
+			lock (eventsLock)
+				files = fileChanges.Select (fileChange => fileChange.FileName).ToList ();
 			Assert.That (files, Contains.Item (fileName));
 		}
 
@@ -124,13 +128,21 @@ namespace MonoDevelop.Projects
 		/// </summary>
 		protected Task WaitForFilesChanged (FilePath [] fileNames, int millisecondsTimeout = 2000)
 		{
-			waitingForFileChangeFileNames = new List<FilePath> (fileNames);
+			lock (eventsLock) {
+				// The tests start waiting after changing the files: the events may already have arrived.
+				waitingForFileChangeFileNames = new List<FilePath> (fileNames);
+				waitingForFileChangeFileNames.RemoveAll (file => fileChanges.Any (fileChange => fileChange.FileName == file));
+				if (waitingForFileChangeFileNames.Count == 0)
+					fileChangesTask.TrySetResult (true);
+			}
 			return Task.WhenAny (Task.Delay (millisecondsTimeout), fileChangesTask.Task);
 		}
 
 		protected void AssertFileRemoved (FilePath fileName)
 		{
-			var files = filesRemoved.Select (fileChange => fileChange.FileName);
+			List<FilePath> files;
+			lock (eventsLock)
+				files = filesRemoved.Select (fileChange => fileChange.FileName).ToList ();
 			Assert.That (files, Contains.Item (fileName));
 		}
 
@@ -145,7 +157,12 @@ namespace MonoDevelop.Projects
 		/// </summary>
 		protected Task WaitForFilesRemoved (FilePath [] fileNames, int millisecondsTimeout = 2000)
 		{
-			waitingForFilesToBeRemoved = new List<FilePath> (fileNames);
+			lock (eventsLock) {
+				waitingForFilesToBeRemoved = new List<FilePath> (fileNames);
+				waitingForFilesToBeRemoved.RemoveAll (file => filesRemoved.Any (fileChange => fileChange.FileName == file));
+				if (waitingForFilesToBeRemoved.Count == 0)
+					fileRemovedTask.TrySetResult (true);
+			}
 			return Task.WhenAny (Task.Delay (millisecondsTimeout), fileRemovedTask.Task);
 		}
 

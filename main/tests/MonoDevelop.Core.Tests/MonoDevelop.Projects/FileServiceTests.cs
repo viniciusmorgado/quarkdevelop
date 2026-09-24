@@ -139,7 +139,6 @@ namespace MonoDevelop.Projects
 		/// File events were being merged the wrong way so a file change event was not being fired.
 		/// </summary>
 		[Test]
-		[Category ("Quarantine")]
 		public void ThawAfterGeneratingFileChangeEvents_File1ChangeFollowedByFile2ChangeThenFile2Change ()
 		{
 			FileService.FreezeEvents ();
@@ -157,6 +156,8 @@ namespace MonoDevelop.Projects
 				File.Delete (tmp2);
 
 				FileService.ThawEvents ();
+				// ThawEvents raises the events on the main thread; the test runs on an NUnit worker thread.
+				Runtime.RunInMainThread (() => { }).Wait ();
 
 				var allFilesChanged = new List<FilePath> ();
 				foreach (var fileChangeEvent in fileChangeEvents) {

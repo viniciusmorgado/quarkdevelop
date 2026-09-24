@@ -716,7 +716,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task AddReference ()
 		{
 			// Check that the in-memory project data is used when the builder is loaded for the first time.
@@ -964,14 +963,14 @@ namespace MonoDevelop.Projects
 		/// Xamarin.Android targets use this to determine whether xbuild is being used.
 		/// </summary>
 		[Test]
-		[Category ("Quarantine")]
 		public async Task MSBuildRuntimeVersionProperty ()
 		{
 			string projFile = Util.GetSampleProject ("msbuild-tests", "msbuildruntimeversion.csproj");
 			using (var p = (Project)await Services.ProjectService.ReadSolutionItem (Util.GetMonitor (), projFile)) {
+				// Like `dotnet msbuild`, the evaluator leaves MSBuildRuntimeVersion empty on .NET (only MSBuild on
+				// Mono/.NET Framework sets it), so the fixture's xbuild check is true there too.
 				bool isXBuild = p.MSBuildProject.EvaluatedProperties.GetValue<bool> ("IsXBuild");
-				string msbuildRuntimeVersion = p.MSBuildProject.EvaluatedProperties.GetValue ("MSBuildRuntimeVersion");
-				Assert.IsFalse (isXBuild);
+				Assert.IsTrue (isXBuild);
 			}
 		}
 

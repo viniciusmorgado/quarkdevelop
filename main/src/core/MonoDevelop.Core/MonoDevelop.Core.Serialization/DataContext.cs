@@ -214,11 +214,12 @@ namespace MonoDevelop.Core.Serialization
 		public void IncludeType (RuntimeAddin addin, string typeName, string itemName)
 		{
 			if (string.IsNullOrEmpty (itemName)) {
-				int i = typeName.LastIndexOf ('.');
+				var fullName = GetTypeFullName (typeName);
+				int i = fullName.LastIndexOf ('.');
 				if (i >= 0)
-					itemName = typeName.Substring (i + 1);
+					itemName = fullName.Substring (i + 1);
 				else
-					itemName = typeName;
+					itemName = fullName;
 			}
 			TypeRef tr;
 			if (!pendingTypesByTypeName.TryGetValue (typeName, out tr)) {
@@ -229,6 +230,32 @@ namespace MonoDevelop.Core.Serialization
 			pendingTypes [itemName] = tr;
 		}
 		
+		/// <summary>
+		/// Returns a type name without its assembly qualification. Mono.Addins 1.4 gives the extension nodes created
+		/// from custom attributes (e.g. [ProjectModelDataItem], [ExportProjectType]) an assembly-qualified type name.
+		/// </summary>
+		internal static string GetTypeFullName (string typeName)
+		{
+			if (typeName == null)
+				return null;
+			int depth = 0;
+			for (int n = 0; n < typeName.Length; n++) {
+				switch (typeName[n]) {
+				case '[':
+					depth++;
+					break;
+				case ']':
+					depth--;
+					break;
+				case ',':
+					if (depth == 0)
+						return typeName.Substring (0, n).Trim ();
+					break;
+				}
+			}
+			return typeName;
+		}
+
 		public void SetTypeInfo (DataItem item, Type type)
 		{
 			item.ItemData.Add (new DataValue ("ctype", GetConfigurationDataType (type).Name));

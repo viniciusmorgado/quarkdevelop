@@ -57,7 +57,6 @@ namespace MonoDevelop.Core.Web
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SendAsync_WithAcquiredCredentialsOn401_RetriesRequest ()
 		{
 			var packageSource = new Uri ("http://package.source.net");
@@ -96,7 +95,6 @@ namespace MonoDevelop.Core.Web
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SendAsync_WithAcquiredCredentialsOn403_RetriesRequest ()
 		{
 			// Arrange
@@ -138,7 +136,6 @@ namespace MonoDevelop.Core.Web
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SendAsync_WhenTaskCanceledExceptionThrownDuringAcquiringCredentials_Throws ()
 		{
 			// Arrange
@@ -184,7 +181,6 @@ namespace MonoDevelop.Core.Web
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SendAsync_WhenOperationCanceledExceptionThrownDuringAcquiringCredentials_Throws ()
 		{
 			// Arrange
@@ -233,7 +229,6 @@ namespace MonoDevelop.Core.Web
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SendAsync_WithWrongCredentials_StopsRetryingAfter3Times ()
 		{
 			// Arrange
@@ -282,7 +277,6 @@ namespace MonoDevelop.Core.Web
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SendAsync_WithMissingCredentials_Returns401 ()
 		{
 			// Arrange
@@ -322,7 +316,6 @@ namespace MonoDevelop.Core.Web
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task SendAsync_WhenCredentialServiceThrows_Returns401 ()
 		{
 			// Arrange

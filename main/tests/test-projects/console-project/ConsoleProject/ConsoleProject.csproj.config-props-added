@@ -32,7 +32,6 @@
     <TestProperty>TestValue</TestProperty>
     <TestPath>Subdir\SomeFile.txt</TestPath>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Test</OutputPath>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>

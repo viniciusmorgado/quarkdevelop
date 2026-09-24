@@ -741,7 +741,7 @@ namespace MonoDevelop.Projects.MSBuild
 		{
 			var className = item.GetType ().FullName;
 			foreach (SolutionItemTypeNode node in GetItemTypeNodes ()) {
-				if (node.ItemTypeName == className)
+				if (node.ItemTypeName == className || DataContext.GetTypeFullName (node.ItemTypeName) == className)
 					return node.Guid;
 			}
 			return GenericItemGuid;
