@@ -16,8 +16,9 @@ Compared with MonoDevelop 8.6:
   `Makefile`s and `Makefile.am`s, `configure.ac`, `autogen.sh`, `profiles/`, `version-checks`,
   `winbuild*.bat`, `main/mdtool.in`/`main/monodevelop.in` launchers (use `scripts/run.sh`), the macOS
   app bundle files (`main/build/MacOSX`) and `setup/` (Windows installer, Mono libraries).
-- Translations: the `.po` catalogs in `main/po` are kept but no longer compiled to `.mo` files
-  (that was the autotools `po/Makefile.am`); the IDE runs in English until packaging compiles them.
+- Translations: `main/po/MonoDevelop.Translations.csproj` compiles the `.po` catalogs into
+  `main/build/locale` (T048). It replaces the autotools `po/Makefile.am`, including its `gettext-update`
+  rule that regenerated the catalogs from `Main.sln`.
 
 ## Removed or deferred features
 
