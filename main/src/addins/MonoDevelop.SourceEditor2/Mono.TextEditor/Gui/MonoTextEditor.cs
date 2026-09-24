@@ -46,7 +46,7 @@ namespace Mono.TextEditor
 {
 	[System.ComponentModel.Category("Mono.TextEditor")]
 	[System.ComponentModel.ToolboxItem(true)]
-	partial class MonoTextEditor : Container
+	partial class MonoTextEditor : Container, IScrollableImplementor
 	{
 		readonly TextArea textArea;
 
@@ -85,7 +85,7 @@ namespace Mono.TextEditor
 			this.Direction = TextDirection.Ltr;
 			uiThread = Thread.CurrentThread;
 			GtkWorkarounds.FixContainerLeak (this);
-			WidgetFlags |= WidgetFlags.NoWindow;
+			HasWindow = false;
 			LayoutCache = new LayoutCache (this);
 			this.textArea = new TextArea (doc, options, initialMode);
 			this.textArea.Initialize (this, doc, options, initialMode);
@@ -146,12 +146,37 @@ namespace Mono.TextEditor
 
 		Adjustment hAdjustement;
 		Adjustment vAdjustement;
-		protected override void OnSetScrollAdjustments (Adjustment hAdjustement, Adjustment vAdjustement)
+
+		// GTK3: scrolled windows hand their adjustments to Gtk.IScrollable children through the
+		// hadjustment/vadjustment properties (GTK2 used the set-scroll-adjustments signal).
+		public Adjustment Hadjustment {
+			get { return hAdjustement; }
+			set { SetScrollAdjustments (value, vAdjustement); }
+		}
+
+		public Adjustment Vadjustment {
+			get { return vAdjustement; }
+			set { SetScrollAdjustments (hAdjustement, value); }
+		}
+
+		public ScrollablePolicy HscrollPolicy { get; set; }
+
+		public ScrollablePolicy VscrollPolicy { get; set; }
+
+		public bool GetBorder (out Border border)
 		{
+			border = default (Border);
+			return false;
+		}
+
+		void SetScrollAdjustments (Adjustment hAdjustement, Adjustment vAdjustement)
+		{
+			// GObject sets the (null) construct properties before the managed constructor has run.
+			if (textArea == null)
+				return;
 			UnregisterAdjustments ();
 			this.vAdjustement = vAdjustement;
 			this.hAdjustement = hAdjustement;
-			base.OnSetScrollAdjustments (hAdjustement, vAdjustement);
 			textArea.SetTextEditorScrollAdjustments (hAdjustement, vAdjustement);
 			if (hAdjustement != null) {
 				hAdjustement.ValueChanged += HandleAdjustmentValueChange;
@@ -179,10 +204,29 @@ namespace Mono.TextEditor
 			SetChildrenPositions (allocation);
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			containerChildren.ForEach (c => c.Child.SizeRequest ());
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		internal protected virtual string GetIdeColorStyleName ()

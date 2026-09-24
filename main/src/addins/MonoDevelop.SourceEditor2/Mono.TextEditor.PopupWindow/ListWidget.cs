@@ -30,10 +30,11 @@ using Pango;
 using System;
 using System.Text;
 using MonoDevelop.Components;
+using MonoDevelop.Ide;
 
 namespace Mono.TextEditor.PopupWindow
 {
-	class ListWidget<T> : Gtk.DrawingArea
+	class ListWidget<T> : Gtk.DrawingArea, Gtk.IScrollableImplementor
 	{
 		int margin = 0;
 		int padding = 4;
@@ -149,8 +150,7 @@ namespace Mono.TextEditor.PopupWindow
 			if (!buttonPressed)
 				return base.OnMotionNotifyEvent (e);
 			
-			int winWidth, winHeight;
-			this.GdkWindow.GetSize (out winWidth, out winHeight);
+			int winWidth = GdkWindow.Width, winHeight = GdkWindow.Height;
 			
 	/*		int ypos = (int) e.Y;
 			if (ypos < 0) {
@@ -166,13 +166,34 @@ namespace Mono.TextEditor.PopupWindow
 		Adjustment hadj;
 		Adjustment vadj;
 
-		protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj)
+		// GTK3: scrolled windows hand their adjustments to Gtk.IScrollable children through the
+		// hadjustment/vadjustment properties (GTK2 used the set-scroll-adjustments signal).
+		public Adjustment Hadjustment {
+			get { return hadj; }
+			set { hadj = value; }
+		}
+
+		public Adjustment Vadjustment {
+			get { return vadj; }
+			set {
+				if (vadj != null)
+					vadj.ValueChanged -= HandleVadjValueChanged;
+				vadj = value;
+				if (vadj != null)
+					vadj.ValueChanged += HandleVadjValueChanged;
+			}
+		}
+
+		void HandleVadjValueChanged (object sender, EventArgs e) => QueueDraw ();
+
+		public ScrollablePolicy HscrollPolicy { get; set; }
+
+		public ScrollablePolicy VscrollPolicy { get; set; }
+
+		public bool GetBorder (out Border border)
 		{
-			this.hadj = hadj;
-			this.vadj = vadj;
-			if (this.vadj != null)
-				this.vadj.ValueChanged += (sender, e) => QueueDraw ();
-			base.OnSetScrollAdjustments (hadj, vadj);
+			border = default (Border);
+			return false;
 		}
 
 		void SetAdjustments (Gdk.Rectangle allocation)
@@ -189,9 +210,10 @@ namespace Mono.TextEditor.PopupWindow
 			base.OnSizeAllocated (allocation);
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose args)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			base.OnExposeEvent (args);
+			var args = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			base.OnDrawn (gtk3cr);
 			DrawList (args);
 	  		return true;
 		}
@@ -207,21 +229,20 @@ namespace Mono.TextEditor.PopupWindow
 		}
 
 		//FIXME: we could use the expose event's clipbox to make the drawing more efficient
-		void DrawList (Gdk.EventExpose args)
+		void DrawList (MonoDevelop.Components.Gtk3ExposeEvent args)
 		{
 			var window = args.Window;
 			
-			int winWidth, winHeight;
-			window.GetSize (out winWidth, out winHeight);
+			int winWidth = window.Width, winHeight = window.Height;
 			
 			int ypos = margin;
 			int lineWidth = winWidth - margin*2;
 			int xpos = margin + padding;
 
-			using (var cr = this.CreateXwtContext ()) {
+			using (var cr = GtkUtil.GtkToolkit.WrapContext (this, args.CreateContext ())) {
 
 				//avoid recreating the GC objects that we use multiple times
-				var textColor = this.Style.Text (StateType.Normal).ToXwtColor ();
+				var textColor = this.GetStyleText (StateType.Normal).ToXwtColor ();
 
 				int n = 0;
 				n = (int)(vadj.Value / rowHeight);
@@ -259,14 +280,14 @@ namespace Mono.TextEditor.PopupWindow
 					if (n == selection) {
 						if (!disableSelection) {
 							cr.Rectangle (margin, ypos, lineWidth, he + padding);
-							cr.SetColor (this.Style.Base (StateType.Selected).ToXwtColor ());
+							cr.SetColor (this.GetStyleBase (StateType.Selected).ToXwtColor ());
 							cr.Fill ();
 
-							cr.SetColor (this.Style.Text (StateType.Selected).ToXwtColor ());
+							cr.SetColor (this.GetStyleText (StateType.Selected).ToXwtColor ());
 							cr.DrawTextLayout (layout, xpos + iconWidth + 2, typos);
 						} else {
 							cr.Rectangle (margin, ypos, lineWidth, he + padding);
-							cr.SetColor (this.Style.Base (StateType.Selected).ToXwtColor ());
+							cr.SetColor (this.GetStyleBase (StateType.Selected).ToXwtColor ());
 							cr.Stroke ();
 
 							cr.SetColor (textColor);
@@ -340,7 +361,7 @@ namespace Mono.TextEditor.PopupWindow
 		
 		void UpdateStyle ()
 		{
-			this.GdkWindow.Background = this.Style.Base (StateType.Normal);
+			this.GdkWindow.Background = this.GetStyleBase (StateType.Normal);
 			if (layout != null)
 				layout.Dispose ();
 			layout = new Xwt.Drawing.TextLayout ();

@@ -258,7 +258,8 @@ namespace Mono.TextEditor
 			{
 				return new Span (line.Offset, line.LengthIncludingDelimiter).IntersectsWith (bufferSpan);
 			}
-#if MAC
+#if MAC || LINUX
+			// The vendored vs-editor-api (ADR 0012) is the Mac flavour: ITextViewLine has these members.
 			public void SetChange (TextViewLineChange change)
 			{
 				throw new NotImplementedException ();

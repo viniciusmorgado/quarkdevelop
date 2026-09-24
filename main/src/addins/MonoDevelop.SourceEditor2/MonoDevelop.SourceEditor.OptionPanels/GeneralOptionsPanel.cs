@@ -64,10 +64,11 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			wordWrapVisualGlyphsCheckBox.Toggled += HandleNewEditorOptionToggled;
 			newEditorOptionsBox.PackStart (wordWrapVisualGlyphsCheckBox);
 
-			if (Xwt.Toolkit.CurrentEngine.Type == Xwt.ToolkitType.Gtk)
+			// The IDE runs Xwt on its GTK 3 backend (ToolkitType.Gtk3).
+			if (Xwt.Toolkit.CurrentEngine.Type == Xwt.ToolkitType.Gtk3)
 				vbox4.PackStart ((Gtk.Widget)Xwt.Toolkit.CurrentEngine.GetNativeWidget (newEditorOptionsBox), false, false, 0);
 			else
-				LoggingService.LogError ("GeneralOptionsPanel: Xwt.Toolkit.CurrentEngine.Type != Xwt.ToolkitType.Gtk - currently unsupported");
+				LoggingService.LogError ("GeneralOptionsPanel: Xwt.Toolkit.CurrentEngine.Type != Xwt.ToolkitType.Gtk3 - currently unsupported");
 
 			HandleNewEditorOptionToggled (this, EventArgs.Empty);
 

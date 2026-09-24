@@ -1,10 +1,7 @@
-﻿//
-// NavigationExtensionTests.cs
 //
-// Author:
-//       Mike Krüger <mikkrg@microsoft.com>
+// SourceEditorNativeLibraries.cs
 //
-// Copyright (c) 2017 Microsoft
+// Copyright (c) 2026 MonoDevelop contributors
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,28 +21,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Runtime.CompilerServices;
+using MonoDevelop.Core;
 
-using System;
-using NUnit.Framework;
-using System.Linq;
-using MonoDevelop.Ide.Editor.Extension;
-using MonoDevelop.Ide.Editor;
-
-namespace Mono.TextEditor.Tests.Actions
+namespace MonoDevelop.SourceEditor
 {
-	[TestFixture]
-	class NavigationExtensionTests : TextEditorTestBase
+	/// <summary>
+	/// The P/Invokes of this assembly use Windows library names (PangoUtil.LIBGTK = "libgtk-win32-2.0-0.dll",
+	/// PangoUtil.LIBPANGOCAIRO, ...); NativeLibraryMap resolves them to the Linux sonames (ADR 0013).
+	/// Replaces MonoDevelop.SourceEditor.dll.config.
+	/// </summary>
+	static class SourceEditorNativeLibraries
 	{
-		[Test]
-		[Category ("Quarantine")]
-		public void TestBug294858 () // [Feedback] Do NOT go to definition if Ctrl/Cmd is pressed AFTER mouse down.
-		{
-			var editor = TextEditorFactory.CreateNewEditor ();
-			editor.Text = "Hello World";
-			Assert.IsTrue (AbstractNavigationExtension.IsHoverNavigationValid (editor));
-			editor.SetSelection (0, editor.Length);
-			Assert.IsFalse (AbstractNavigationExtension.IsHoverNavigationValid (editor));
-		}
+#pragma warning disable CA2255 // module initializers are intended for this: P/Invokes resolve before first use
+		[ModuleInitializer]
+		internal static void Register () => NativeLibraryMap.Register (typeof (SourceEditorNativeLibraries).Assembly);
+#pragma warning restore CA2255
 	}
-
 }

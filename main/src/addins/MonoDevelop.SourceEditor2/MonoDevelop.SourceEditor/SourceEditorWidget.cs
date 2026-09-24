@@ -195,9 +195,10 @@ namespace MonoDevelop.SourceEditor
 		
 		class Border : Gtk.DrawingArea
 		{
-			protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
-				evnt.Window.DrawRectangle (this.Style.DarkGC (State), true, evnt.Area);
+				gtk3cr.SetSourceColor (this.GetStyleDarkColor (State));
+				gtk3cr.Paint ();
 				return true;
 			}
 		}
@@ -273,26 +274,9 @@ namespace MonoDevelop.SourceEditor
 					return;
 				suppressScrollbar = value;
 
-				if (suppressScrollbar) {
-					scrolledWindow.VScrollbar.SizeRequested += SuppressSize;
-					scrolledWindow.VScrollbar.ExposeEvent += SuppressExpose;
-				} else {
-					scrolledWindow.VScrollbar.SizeRequested -= SuppressSize;
-					scrolledWindow.VScrollbar.ExposeEvent -= SuppressExpose;
-				}
-			}
-
-			[GLib.ConnectBefore]
-			static void SuppressExpose (object o, ExposeEventArgs args)
-			{
-				args.RetVal = true;
-			}
-
-			[GLib.ConnectBefore]
-			static void SuppressSize (object o, SizeRequestedArgs args)
-			{
-				args.Requisition = Requisition.Zero;
-				args.RetVal = true;
+				// GTK3: the External policy hides the scrollbar and keeps the adjustment scrolling (GTK2 zeroed the
+				// scrollbar's size request and skipped its expose); the quick task strip is the scrollbar then.
+				scrolledWindow.VscrollbarPolicy = suppressScrollbar ? PolicyType.External : PolicyType.Automatic;
 			}
 			
 			public void AddQuickTaskProvider (IQuickTaskProvider p)
@@ -335,8 +319,7 @@ namespace MonoDevelop.SourceEditor
 				SetSuppressScrollbar (false);
 				QuickTaskStrip.EnableFancyFeatures.Changed -= FancyFeaturesChanged;
 				scrolledWindow.ButtonPressEvent -= PrepareEvent;
-				scrolledWindow.Vadjustment.Destroy ();
-				scrolledWindow.Hadjustment.Destroy ();
+				// GTK3: adjustments are plain GObjects, destroyed with the scrolled window (no gtk_object_destroy).
 				scrolledWindow.Destroy ();
 				scrolledWindow = null;
 				strip.Destroy ();
@@ -1183,7 +1166,7 @@ namespace MonoDevelop.SourceEditor
 				KillWidgets ();
 				searchAndReplaceWidgetFrame = new RoundedFrame ();
 				//searchAndReplaceWidgetFrame.SetFillColor (MonoDevelop.Components.CairoExtensions.GdkColorToCairoColor (widget.TextEditor.ColorStyle.Default.BackgroundColor));
-				searchAndReplaceWidgetFrame.SetFillColor (CairoExtensions.GdkColorToCairoColor (vbox.Style.Background (StateType.Normal)));
+				searchAndReplaceWidgetFrame.SetFillColor (CairoExtensions.GdkColorToCairoColor (vbox.GetStyleBackground (StateType.Normal)));
 				
 				searchAndReplaceWidgetFrame.Child = searchAndReplaceWidget = new SearchAndReplaceWidget (TextEditor, searchAndReplaceWidgetFrame);
 				searchAndReplaceWidget.Destroyed += (sender, e) => RemoveSearchWidget ();
@@ -1222,7 +1205,7 @@ namespace MonoDevelop.SourceEditor
 				
 				gotoLineNumberWidgetFrame = new MonoDevelop.Components.RoundedFrame ();
 				//searchAndReplaceWidgetFrame.SetFillColor (MonoDevelop.Components.CairoExtensions.GdkColorToCairoColor (widget.TextEditor.ColorStyle.Default.BackgroundColor));
-				gotoLineNumberWidgetFrame.SetFillColor (MonoDevelop.Components.CairoExtensions.GdkColorToCairoColor (vbox.Style.Background (StateType.Normal)));
+				gotoLineNumberWidgetFrame.SetFillColor (MonoDevelop.Components.CairoExtensions.GdkColorToCairoColor (vbox.GetStyleBackground (StateType.Normal)));
 				
 				gotoLineNumberWidgetFrame.Child = gotoLineNumberWidget = new GotoLineNumberWidget (textEditor, gotoLineNumberWidgetFrame);
 				gotoLineNumberWidget.Destroyed += (sender, e) => RemoveSearchWidget ();

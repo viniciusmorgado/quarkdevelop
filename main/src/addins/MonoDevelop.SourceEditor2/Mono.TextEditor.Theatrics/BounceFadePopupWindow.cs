@@ -52,7 +52,7 @@ namespace Mono.TextEditor.Theatrics
 			DoubleBuffered = true;
 			Decorated = false;
 			BorderWidth = 0;
-			HasFrame = true;
+			// GTK3: Gtk.Window has no HasFrame (a GTK2 window frame feature).
 			this.editor = editor;
 			Events = Gdk.EventMask.ExposureMask;
 			Duration = 500;
@@ -60,10 +60,10 @@ namespace Mono.TextEditor.Theatrics
 			ExpandHeight = 2;
 			BounceEasing = Easing.Sine;
 			
-			var rgbaColormap = Screen.RgbaColormap;
-			if (rgbaColormap == null)
+			var rgbaVisual = Screen.RgbaVisual; // GTK3: visuals replace colormaps
+			if (rgbaVisual == null)
 				return;
-			Colormap = rgbaColormap;
+			Visual = rgbaVisual;
 
 			stage.ActorStep += OnAnimationActorStep;
 			stage.Iteration += OnAnimationIteration;
@@ -239,7 +239,7 @@ namespace Mono.TextEditor.Theatrics
 				throw new InvalidOperationException ("Only works with composited screen. Check Widget.IsComposited.");
 			if (editor == null)
 				throw new ArgumentNullException ("Editor");
-			WidgetFlags |= Gtk.WidgetFlags.NoWindow;
+			HasWindow = false;
 			this.editor = editor;
 			Events = EventMask.ExposureMask;
 			Duration = 500;
@@ -247,10 +247,10 @@ namespace Mono.TextEditor.Theatrics
 			ExpandHeight = 2;
 			BounceEasing = Easing.Sine;
 			
-			var rgbaColormap = Screen.RgbaColormap;
-			if (rgbaColormap == null)
+			var rgbaVisual = Screen.RgbaVisual; // GTK3: visuals replace colormaps
+			if (rgbaVisual == null)
 				return;
-			Colormap = rgbaColormap;
+			Visual = rgbaVisual;
 
 			stage.ActorStep += OnAnimationActorStep;
 			stage.Iteration += OnAnimationIteration;
@@ -337,11 +337,12 @@ namespace Mono.TextEditor.Theatrics
 			return true;
 		}
 
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			try {
 				var alloc = Allocation;
-				using (var cr = CairoHelper.Create (evnt.Window)) {
+				using (var cr = evnt.CreateContext ()) {
 					cr.Translate (alloc.X, alloc.Y);
 					cr.Translate (xExpandedOffset * (1 - scale), yExpandedOffset * (1 - scale));
 					var scaleX = (alloc.Width / userspaceArea.Width - 1) * scale + 1;

@@ -16,8 +16,6 @@ namespace MonoDevelop.SourceEditor
     using Microsoft.VisualStudio.Text.Formatting;
     using Microsoft.VisualStudio.Text.Outlining;
     using Microsoft.VisualStudio.Text.Utilities;
-    using System.Windows.Input;
-    using System.Windows.Interop;
     using System.Collections.Generic;
     using Xwt;
     using Mono.TextEditor;

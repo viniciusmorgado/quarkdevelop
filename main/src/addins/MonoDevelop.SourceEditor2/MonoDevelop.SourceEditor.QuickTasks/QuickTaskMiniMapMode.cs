@@ -83,7 +83,8 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 				doc.Folded += HandleFolded;
 			}
 
-			Pixmap backgroundPixbuf, backgroundBuffer;
+			// GTK3: client-side image surfaces replace the GTK2 server-side pixmaps.
+			Cairo.ImageSurface backgroundPixbuf, backgroundBuffer;
 			uint redrawTimeout;
 			TextDocument doc;
 
@@ -151,10 +152,29 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 				vadjustment.Value = position;
 			}
 
-			protected override void OnSizeRequested (ref Requisition requisition)
+			Gtk.Requisition Gtk3SizeRequest ()
 			{
-				base.OnSizeRequested (ref requisition);
+				var requisition = new Gtk.Requisition ();
+				requisition = Gtk3BaseSizeRequest ();
 				requisition.Width = 150;
+				return requisition;
+			}
+
+			protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+			{
+				minimum_width = natural_width = Gtk3SizeRequest ().Width;
+			}
+
+			protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+			{
+				minimum_height = natural_height = Gtk3SizeRequest ().Height;
+			}
+
+			Gtk.Requisition Gtk3BaseSizeRequest ()
+			{
+				base.OnGetPreferredWidth (out _, out int width);
+				base.OnGetPreferredHeight (out _, out int height);
+				return new Gtk.Requisition { Width = width, Height = height };
 			}
 
 			void DestroyBgBuffer ()
@@ -215,11 +235,11 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 				if (GdkWindow == null || curWidth < 1 || curHeight < 1)
 					return;
 				var displayScale = Platform.IsWindows ? GtkWorkarounds.GetScaleFactor (this) : 1.0;
-				backgroundPixbuf = new Pixmap (GdkWindow, (int)(curWidth * displayScale), (int)(curHeight * displayScale));
-				backgroundBuffer = new Pixmap (GdkWindow, (int)(curWidth * displayScale), (int)(curHeight * displayScale));
+				backgroundPixbuf = new Cairo.ImageSurface (Cairo.Format.Rgb24, (int)(curWidth * displayScale), (int)(curHeight * displayScale));
+				backgroundBuffer = new Cairo.ImageSurface (Cairo.Format.Rgb24, (int)(curWidth * displayScale), (int)(curHeight * displayScale));
 				
 				if (TextEditor.EditorTheme != null) {
-					using (var cr = Gdk.CairoHelper.Create (backgroundPixbuf)) {
+					using (var cr = new Cairo.Context (backgroundPixbuf)) {
 						cr.Rectangle (0, 0, curWidth * displayScale, curHeight * displayScale);
 						cr.SetSourceColor (SyntaxHighlightingService.GetColor (TextEditor.EditorTheme, EditorThemeColors.Background));
 						cr.Fill ();
@@ -245,11 +265,11 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 				{
 					this.mode = mode;
 
-					cr = Gdk.CairoHelper.Create (mode.backgroundBuffer);
+					cr = new Cairo.Context (mode.backgroundBuffer);
 					
 					cr.LineWidth = 1;
-					int w = mode.backgroundBuffer.ClipRegion.Clipbox.Width;
-					int h = mode.backgroundBuffer.ClipRegion.Clipbox.Height;
+					int w = mode.backgroundBuffer.Width;
+					int h = mode.backgroundBuffer.Height;
 					cr.Rectangle (0, 0, w, h);
 					if (mode.TextEditor.EditorTheme != null)
 						cr.SetSourceColor (SyntaxHighlightingService.GetColor (mode.TextEditor.EditorTheme, EditorThemeColors.Background));
@@ -315,20 +335,26 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 			int GetBufferYOffset ()
 			{
 				var displayScale = Platform.IsWindows ? GtkWorkarounds.GetScaleFactor (this) : 1.0;
-				int h = (int)(backgroundPixbuf.ClipRegion.Clipbox.Height / displayScale) - Allocation.Height;
+				int h = (int)(backgroundPixbuf.Height / displayScale) - Allocation.Height;
 				if (h < 0)
 					return 0;
 				return Math.Max (0, (int)(h * (vadjustment.Value) / (vadjustment.Upper - vadjustment.Lower - vadjustment.PageSize)));
 			}
 
-			protected override bool OnExposeEvent (Gdk.EventExpose e)
+			protected override bool OnDrawn (Cairo.Context gtk3cr)
 			{
+				var e = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 				if (TextEditor == null)
 					return true;
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (e.Window)) {
+				using (Cairo.Context cr = e.CreateContext ()) {
 					cr.LineWidth = 1;
 					if (backgroundPixbuf != null) {
-						e.Window.DrawDrawable (Style.BlackGC, backgroundPixbuf, 0, GetBufferYOffset (), 0, 0, Allocation.Width, Allocation.Height);
+						cr.Save ();
+						cr.Rectangle (0, 0, Allocation.Width, Allocation.Height);
+						cr.Clip ();
+						cr.SetSourceSurface (backgroundPixbuf, 0, -GetBufferYOffset ());
+						cr.Paint ();
+						cr.Restore ();
 					} else {
 						cr.Rectangle (0, 0, Allocation.Width, Allocation.Height);
 						if (TextEditor.EditorTheme != null)
@@ -353,7 +379,7 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 									  dy - y,
 									  Allocation.Width,
 									  lineHeight * vadjustment.PageSize / TextEditor.LineHeight);
-						var c = (Cairo.Color)(HslColor)Style.Dark (State);
+						var c = this.GetStyleDarkColor (StateType.Normal);
 						c.A = 0.2;
 						cr.SetSourceColor (c);
 						cr.Fill ();

@@ -44,6 +44,7 @@ using MonoDevelop.Components.AtkCocoaHelper;
 using Gdk;
 using Gtk;
 using GLib;
+using DateTime = System.DateTime; // GLibSharp 3 has a GLib.DateTime
 using System.Threading.Tasks;
 using MonoDevelop.Components;
 using MonoDevelop.Core;
@@ -126,15 +127,15 @@ namespace Mono.TextEditor
 			get { return imContext; }
 		}
 
-		public MenuItem CreateInputMethodMenuItem (string label)
+		public Gtk.MenuItem CreateInputMethodMenuItem (string label)
 		{
 			if (GtkWorkarounds.GtkMinorVersion >= 16) {
-				bool showMenu = (bool) GtkWorkarounds.GetProperty (Settings, "gtk-show-input-method-menu").Val;
+				bool showMenu = (bool) GtkWorkarounds.GetProperty (Gtk.Settings.GetForScreen (Screen), "gtk-show-input-method-menu").Val;
 				if (!showMenu)
 					return null;
 			}
-			MenuItem imContextMenuItem = new MenuItem (label);
-			Menu imContextMenu = new Menu ();
+			Gtk.MenuItem imContextMenuItem = new Gtk.MenuItem (label);
+			Gtk.Menu imContextMenu = new Gtk.Menu ();
 			imContextMenuItem.Submenu = imContextMenu;
 			IMContext.AppendMenuitems (imContextMenu);
 			return imContextMenuItem;
@@ -451,9 +452,7 @@ namespace Mono.TextEditor
 				args.RetVal = true;
 			};
 			
-			using (Pixmap inv = new Pixmap (null, 1, 1, 1)) {
-				invisibleCursor = new Cursor (inv, inv, Gdk.Color.Zero, Gdk.Color.Zero, 0, 0);
-			}
+			invisibleCursor = new Cursor (CursorType.BlankCursor); // GTK3: no 1x1 bitmap cursors
 			
 			InitAnimations ();
 			this.Document.HeightChanged += HandleDocumentHeightChanged;
@@ -908,25 +907,22 @@ namespace Mono.TextEditor
 
 		protected override void OnRealized ()
 		{
-			WidgetFlags |= WidgetFlags.Realized;
+			IsRealized = true;
 			WindowAttr attributes = new WindowAttr () {
 				WindowType = Gdk.WindowType.Child,
 				X = Allocation.X,
 				Y = Allocation.Y,
 				Width = Allocation.Width,
 				Height = Allocation.Height,
-				Wclass = WindowClass.InputOutput,
+				Wclass = WindowWindowClass.InputOutput,
 				Visual = this.Visual,
-				Colormap = this.Colormap,
 				EventMask = (int)(this.Events | Gdk.EventMask.ExposureMask),
 				Mask = this.Events | Gdk.EventMask.ExposureMask,
 			};
 			
-			WindowAttributesType mask = WindowAttributesType.X | WindowAttributesType.Y | WindowAttributesType.Colormap | WindowAttributesType.Visual;
+			WindowAttributesType mask = WindowAttributesType.X | WindowAttributesType.Y | WindowAttributesType.Visual;
 			GdkWindow = new Gdk.Window (ParentWindow, attributes, mask);
-			GdkWindow.UserData = Raw;
-			GdkWindow.Background = Style.Background (StateType.Normal);
-			Style = Style.Attach (GdkWindow);
+			RegisterWindow (GdkWindow);
 
 			imContext.ClientWindow = this.GdkWindow;
 			Caret.PositionChanged += CaretPositionChanged;
@@ -996,7 +992,10 @@ namespace Mono.TextEditor
 
 				if (parent != null) {
 					
-					parent.ModifyBg (StateType.Normal, SyntaxHighlightingService.GetColor (textEditorData.ColorStyle, EditorThemeColors.Background));
+					// GTK3: ModifyBg would also color the scrolled window's "undershoot" nodes, which then paint opaque 40px
+					// bands over the text where it continues; only the scrolled window node gets the editor background.
+					GtkCss.SetStyle (parent, "MonoDevelop.SourceEditor.EditorBackground", "scrolledwindow { background-color: " +
+						SyntaxHighlightingService.GetColor (textEditorData.ColorStyle, EditorThemeColors.Background).ToPangoString () + "; }");
 				}
 
 				// set additionally the real parent background for gtk themes that use the content background
@@ -1361,11 +1360,11 @@ namespace Mono.TextEditor
 			GtkWorkarounds.MapKeys (evnt, out key, out mod, out accels);
 
 			if (key == Gdk.Key.space) {
-				cm.HandleItemCommand (Margin.ItemCommand.ActivateCurrentItem);
+				cm.HandleItemCommand (Mono.TextEditor.Margin.ItemCommand.ActivateCurrentItem);
 			} else if (key == Gdk.Key.Up) {
-				cm.HandleItemCommand (Margin.ItemCommand.FocusPreviousItem);
+				cm.HandleItemCommand (Mono.TextEditor.Margin.ItemCommand.FocusPreviousItem);
 			} else if (key == Gdk.Key.Down) {
-				cm.HandleItemCommand (Margin.ItemCommand.FocusNextItem);
+				cm.HandleItemCommand (Mono.TextEditor.Margin.ItemCommand.FocusNextItem);
 			} else if (key == Gdk.Key.Tab || key == Gdk.Key.Right) {
 				return FocusNextMargin (Gtk.DirectionType.TabForward);
 			} else if (key == Gdk.Key.ISO_Left_Tab || key == Gdk.Key.Left) {
@@ -1559,7 +1558,7 @@ namespace Mono.TextEditor
 		{
 			var undo = OpenUndoGroup ();
 			int dragOffset = Document.LocationToOffset (dragCaretPos);
-			if (context.Action == DragAction.Move) {
+			if (context.SelectedAction == DragAction.Move) {
 				if (CanEdit (Caret.Line) && !selection.IsEmpty) {
 					var selectionRange = selection.GetSelectionRange (textEditorData);
 					if (selectionRange.Offset < dragOffset)
@@ -2328,8 +2327,9 @@ namespace Mono.TextEditor
 		DateTime started = DateTime.Now;
 #endif
 		Stopwatch timingsWatch = new Stopwatch ();
-		protected override bool OnExposeEvent (Gdk.EventExpose e)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var e = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (this.isDisposed)
 				return false;
 
@@ -2340,17 +2340,32 @@ namespace Mono.TextEditor
 			}
 
 			keyPressTimings.EndTimer (true);
-			return base.OnExposeEvent (e);
+			return base.OnDrawn (gtk3cr);
 		}
 
-		void ExposeEventInternal (Gdk.EventExpose e)
+		// GTK3: the margins and the text view margin keep drawing on two independent contexts, as with GTK2's two
+		// CairoHelper.Create (window) calls: new cairo contexts on the target of the one GTK passes to OnDrawn,
+		// with its transformation and clip.
+		static Cairo.Context CreateIndependentContext (Cairo.Context context)
+		{
+			var clip = context.ClipExtents ();
+			Cairo.Context result;
+			using (var target = context.GetGroupTarget ())
+				result = new Cairo.Context (target);
+			result.Matrix = context.Matrix;
+			result.Rectangle (clip.X, clip.Y, clip.Width, clip.Height);
+			result.Clip ();
+			return result;
+		}
+
+		void ExposeEventInternal (MonoDevelop.Components.Gtk3ExposeEvent e)
 		{
 			UpdateAdjustments ();
 
-			var area = e.Region.Clipbox;
+			var area = e.Area;
 			var cairoArea = new Cairo.Rectangle (area.X, area.Y, area.Width, area.Height);
-			using (Cairo.Context cr = Gdk.CairoHelper.Create (e.Window))
-			using (Cairo.Context textViewCr = Gdk.CairoHelper.Create (e.Window)) {
+			using (Cairo.Context cr = CreateIndependentContext (e.Context))
+			using (Cairo.Context textViewCr = CreateIndependentContext (e.Context)) {
 				UpdateMarginXOffsets ();
 				
 				cr.LineWidth = Options.Zoom;
@@ -2381,7 +2396,7 @@ namespace Mono.TextEditor
 
 			if (Caret.IsVisible) {
 				timingsWatch.Restart ();
-				textViewMargin.DrawCaret (e.Window, Allocation);
+				textViewMargin.DrawCaret (e.Context, Allocation);
 				keyPressTimings.AddCaretDrawingTime (timingsWatch.Elapsed);
 			}
 		}
@@ -2828,6 +2843,8 @@ namespace Mono.TextEditor
 				double y = editor.TextViewMargin.caretY;
 				if (editor.Caret.Mode != CaretMode.Block)
 					x -= editor.TextViewMargin.charWidth / 2;
+				// GTK3: save/restore the clip; ResetClip would also drop the clip of the context GTK hands out.
+				cr.Save ();
 				cr.Rectangle (editor.TextViewMargin.XOffset, 0, editor.Allocation.Width - editor.TextViewMargin.XOffset, editor.Allocation.Height);
 				cr.Clip ();
 
@@ -2844,7 +2861,7 @@ namespace Mono.TextEditor
 				cr.LineWidth = editor.Options.Zoom;
 				cr.SetSourceColor (color);
 				cr.Stroke ();
-				cr.ResetClip ();
+				cr.Restore ();
 			}
 		}
 		
@@ -2893,6 +2910,7 @@ namespace Mono.TextEditor
 				int y = region.Y;
 				int animationPosition = (int)(Percent * 100);
 				
+				cr.Save (); // GTK3: see CaretPulseAnimation.Draw
 				cr.Rectangle (editor.TextViewMargin.XOffset, 0, editor.Allocation.Width - editor.TextViewMargin.XOffset, editor.Allocation.Height);
 				cr.Clip ();
 
@@ -2908,7 +2926,7 @@ namespace Mono.TextEditor
 				cr.LineWidth = editor.Options.Zoom;
 				cr.SetSourceColor (color);
 				cr.Stroke ();
-				cr.ResetClip ();
+				cr.Restore ();
 			}
 		}
 		
@@ -3758,7 +3776,7 @@ namespace Mono.TextEditor
 		
 		protected override void OnMapped ()
 		{
-			WidgetFlags |= WidgetFlags.Mapped;
+			IsMapped = true;
 			// Note: SourceEditorWidget.ShowAutoSaveWarning() might have set TextEditor.Visible to false,
 			// in which case we want to not map it (would cause a gtk+ critical error).
 			containerChildren.ForEach (child => { if (child.Child.Visible) child.Child.Map (); });
@@ -3767,7 +3785,7 @@ namespace Mono.TextEditor
 		
 		protected override void OnUnmapped ()
 		{
-			WidgetFlags &= ~WidgetFlags.Mapped;
+			IsMapped = false;
 			
 			// We hide the window first so that the user doesn't see widgets disappearing one by one.
 			GdkWindow.Hide ();

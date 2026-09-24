@@ -446,7 +446,7 @@ namespace Mono.TextEditor
 						LoggingService.LogError ("Could not load gutter font: " + GutterFontName, e);
 					}
 					if (gutterFont == null || String.IsNullOrEmpty (gutterFont.Family))
-						gutterFont = Gtk.Widget.DefaultStyle.FontDescription.Copy ();
+						gutterFont = Pango.FontDescription.FromString (Gtk.Settings.Default.FontName); // GTK3: no default Gtk.Style
 					if (gutterFont != null)
 						gutterFont.Size = (int)(gutterFont.Size * Zoom);
 				}

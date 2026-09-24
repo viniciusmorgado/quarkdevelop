@@ -183,7 +183,7 @@ namespace MonoDevelop.SourceEditor
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("All");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString ("All");
 			this.hbox3.Add (this.label1);
 			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.label1]));
 			w15.Position = 1;

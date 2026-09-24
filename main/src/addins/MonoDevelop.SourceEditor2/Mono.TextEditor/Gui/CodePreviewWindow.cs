@@ -167,11 +167,11 @@ namespace Mono.TextEditor
 			base.OnDestroyed ();
 		}
 
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (var cr = CairoHelper.Create (GdkWindow)) {
-				CairoHelper.Region (cr, evnt.Region);
-				cr.Clip ();
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var cr = evnt.CreateContext ()) {
+				// GTK3 hands out a context already clipped to the area to redraw.
 				cr.Translate (Allocation.X, Allocation.Y);
 				Draw (cr);
 			}

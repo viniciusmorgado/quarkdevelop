@@ -38,7 +38,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 
 		private global::Gtk.Label label1;
 
-		private global::Gtk.ComboBox indentationCombobox;
+		private global::Gtk.ComboBoxText indentationCombobox;
 
 		private global::Gtk.CheckButton tabAsReindentCheckbutton;
 
@@ -54,7 +54,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 
 		private global::Gtk.Label label2;
 
-		private global::Gtk.ComboBox controlLeftRightCombobox;
+		private global::Gtk.ComboBoxText controlLeftRightCombobox;
 
 		protected virtual void Build()
 		{
@@ -70,7 +70,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.GtkLabel5 = new global::Gtk.Label();
 			this.GtkLabel5.Name = "GtkLabel5";
 			this.GtkLabel5.Xalign = 0F;
-			this.GtkLabel5.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Automatic behaviors</b>");
+			this.GtkLabel5.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("<b>Automatic behaviors</b>");
 			this.GtkLabel5.UseMarkup = true;
 			this.vbox1.Add(this.GtkLabel5);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkLabel5]));
@@ -89,7 +89,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.autoInsertBraceCheckbutton = new global::Gtk.CheckButton();
 			this.autoInsertBraceCheckbutton.CanFocus = true;
 			this.autoInsertBraceCheckbutton.Name = "autoInsertBraceCheckbutton";
-			this.autoInsertBraceCheckbutton.Label = global::Mono.Unix.Catalog.GetString("_Insert matching brace");
+			this.autoInsertBraceCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString("_Insert matching brace");
 			this.autoInsertBraceCheckbutton.DrawIndicator = true;
 			this.autoInsertBraceCheckbutton.UseUnderline = true;
 			this.vbox4.Add(this.autoInsertBraceCheckbutton);
@@ -114,7 +114,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.smartSemicolonPlaceCheckbutton = new global::Gtk.CheckButton();
 			this.smartSemicolonPlaceCheckbutton.CanFocus = true;
 			this.smartSemicolonPlaceCheckbutton.Name = "smartSemicolonPlaceCheckbutton";
-			this.smartSemicolonPlaceCheckbutton.Label = global::Mono.Unix.Catalog.GetString("_Smart semicolon placement");
+			this.smartSemicolonPlaceCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString("_Smart semicolon placement");
 			this.smartSemicolonPlaceCheckbutton.Active = true;
 			this.smartSemicolonPlaceCheckbutton.DrawIndicator = true;
 			this.smartSemicolonPlaceCheckbutton.UseUnderline = true;
@@ -131,7 +131,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.checkbuttonFormatOnSave = new global::Gtk.CheckButton();
 			this.checkbuttonFormatOnSave.CanFocus = true;
 			this.checkbuttonFormatOnSave.Name = "checkbuttonFormatOnSave";
-			this.checkbuttonFormatOnSave.Label = global::Mono.Unix.Catalog.GetString("_Format document on save");
+			this.checkbuttonFormatOnSave.Label = global::MonoDevelop.Core.GettextCatalog.GetString("_Format document on save");
 			this.checkbuttonFormatOnSave.DrawIndicator = true;
 			this.checkbuttonFormatOnSave.UseUnderline = true;
 			this.vbox4.Add(this.checkbuttonFormatOnSave);
@@ -143,7 +143,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.checkbuttonAutoSetSearchPatternCasing = new global::Gtk.CheckButton();
 			this.checkbuttonAutoSetSearchPatternCasing.CanFocus = true;
 			this.checkbuttonAutoSetSearchPatternCasing.Name = "checkbuttonAutoSetSearchPatternCasing";
-			this.checkbuttonAutoSetSearchPatternCasing.Label = global::Mono.Unix.Catalog.GetString("_Automatically set search pattern case sensitivity");
+			this.checkbuttonAutoSetSearchPatternCasing.Label = global::MonoDevelop.Core.GettextCatalog.GetString("_Automatically set search pattern case sensitivity");
 			this.checkbuttonAutoSetSearchPatternCasing.DrawIndicator = true;
 			this.checkbuttonAutoSetSearchPatternCasing.UseUnderline = true;
 			this.vbox4.Add(this.checkbuttonAutoSetSearchPatternCasing);
@@ -155,7 +155,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.checkbuttonGenerateFormattingUndoStep = new global::Gtk.CheckButton();
 			this.checkbuttonGenerateFormattingUndoStep.CanFocus = true;
 			this.checkbuttonGenerateFormattingUndoStep.Name = "checkbuttonGenerateFormattingUndoStep";
-			this.checkbuttonGenerateFormattingUndoStep.Label = global::Mono.Unix.Catalog.GetString("_Generate additional undo steps for formatting");
+			this.checkbuttonGenerateFormattingUndoStep.Label = global::MonoDevelop.Core.GettextCatalog.GetString("_Generate additional undo steps for formatting");
 			this.checkbuttonGenerateFormattingUndoStep.DrawIndicator = true;
 			this.checkbuttonGenerateFormattingUndoStep.UseUnderline = true;
 			this.vbox4.Add(this.checkbuttonGenerateFormattingUndoStep);
@@ -167,7 +167,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.checkbuttonEnableSelectionSurrounding = new global::Gtk.CheckButton();
 			this.checkbuttonEnableSelectionSurrounding.CanFocus = true;
 			this.checkbuttonEnableSelectionSurrounding.Name = "checkbuttonEnableSelectionSurrounding";
-			this.checkbuttonEnableSelectionSurrounding.Label = global::Mono.Unix.Catalog.GetString("Enable _selection surrounding keys");
+			this.checkbuttonEnableSelectionSurrounding.Label = global::MonoDevelop.Core.GettextCatalog.GetString("Enable _selection surrounding keys");
 			this.checkbuttonEnableSelectionSurrounding.DrawIndicator = true;
 			this.checkbuttonEnableSelectionSurrounding.UseUnderline = true;
 			this.vbox4.Add(this.checkbuttonEnableSelectionSurrounding);
@@ -185,7 +185,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.GtkLabel8 = new global::Gtk.Label();
 			this.GtkLabel8.Name = "GtkLabel8";
 			this.GtkLabel8.Xalign = 0F;
-			this.GtkLabel8.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Indentation</b>");
+			this.GtkLabel8.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("<b>Indentation</b>");
 			this.GtkLabel8.UseMarkup = true;
 			this.vbox1.Add(this.GtkLabel8);
 			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkLabel8]));
@@ -207,7 +207,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("_Indentation mode:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("_Indentation mode:");
 			this.label1.UseUnderline = true;
 			this.hbox1.Add(this.label1);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.label1]));
@@ -215,7 +215,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			w14.Expand = false;
 			w14.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.indentationCombobox = global::Gtk.ComboBox.NewText();
+			this.indentationCombobox = new global::Gtk.ComboBoxText ();
 			this.indentationCombobox.Name = "indentationCombobox";
 			this.hbox1.Add(this.indentationCombobox);
 			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.indentationCombobox]));
@@ -231,7 +231,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.tabAsReindentCheckbutton = new global::Gtk.CheckButton();
 			this.tabAsReindentCheckbutton.CanFocus = true;
 			this.tabAsReindentCheckbutton.Name = "tabAsReindentCheckbutton";
-			this.tabAsReindentCheckbutton.Label = global::Mono.Unix.Catalog.GetString("Interpret tab _keystroke as reindent command");
+			this.tabAsReindentCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString("Interpret tab _keystroke as reindent command");
 			this.tabAsReindentCheckbutton.DrawIndicator = true;
 			this.tabAsReindentCheckbutton.UseUnderline = true;
 			this.vbox2.Add(this.tabAsReindentCheckbutton);
@@ -243,7 +243,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.smartBackspaceCheckbutton = new global::Gtk.CheckButton();
 			this.smartBackspaceCheckbutton.CanFocus = true;
 			this.smartBackspaceCheckbutton.Name = "smartBackspaceCheckbutton";
-			this.smartBackspaceCheckbutton.Label = global::Mono.Unix.Catalog.GetString("Backspace removes indentation");
+			this.smartBackspaceCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString("Backspace removes indentation");
 			this.smartBackspaceCheckbutton.DrawIndicator = true;
 			this.smartBackspaceCheckbutton.UseUnderline = true;
 			this.vbox2.Add(this.smartBackspaceCheckbutton);
@@ -261,7 +261,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.GtkLabel10 = new global::Gtk.Label();
 			this.GtkLabel10.Name = "GtkLabel10";
 			this.GtkLabel10.Xalign = 0F;
-			this.GtkLabel10.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Navigation</b>");
+			this.GtkLabel10.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("<b>Navigation</b>");
 			this.GtkLabel10.UseMarkup = true;
 			this.vbox1.Add(this.GtkLabel10);
 			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkLabel10]));
@@ -283,7 +283,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString("Word _break mode:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("Word _break mode:");
 			this.label2.UseUnderline = true;
 			this.hbox3.Add(this.label2);
 			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.label2]));
@@ -291,7 +291,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			w22.Expand = false;
 			w22.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
-			this.controlLeftRightCombobox = global::Gtk.ComboBox.NewText();
+			this.controlLeftRightCombobox = new global::Gtk.ComboBoxText ();
 			this.controlLeftRightCombobox.Name = "controlLeftRightCombobox";
 			this.hbox3.Add(this.controlLeftRightCombobox);
 			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.controlLeftRightCombobox]));

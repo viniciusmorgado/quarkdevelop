@@ -535,8 +535,8 @@ namespace Mono.TextEditor
 		public IGuardedOperations GuardedOperations;
 		internal MDSpaceReservationStack _spaceReservationStack;
 
-#if MAC
-		// on Mac ITextView has the extra member GetSpaceReservationManager that isn't there on Windows
+#if MAC || LINUX
+		// on Mac (and in the vendored vs-editor-api, ADR 0012) ITextView has the extra member GetSpaceReservationManager that isn't there on Windows
 		ISpaceReservationManager ITextView.GetSpaceReservationManager (string name) => throw new NotImplementedException();
 #endif
 

@@ -44,7 +44,7 @@ vbox1
 
 		private global::Gtk.Label label1;
 
-		private global::Gtk.ComboBox comboboxLineEndings;
+		private global::Gtk.ComboBoxText comboboxLineEndings;
 
 		private global::Gtk.Label GtkLabel14;
 
@@ -80,7 +80,7 @@ vbox1
 			this.GtkLabel13 = new global::Gtk.Label();
 			this.GtkLabel13.Name = "GtkLabel13";
 			this.GtkLabel13.Xalign = 0F;
-			this.GtkLabel13.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Coding</b>");
+			this.GtkLabel13.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("<b>Coding</b>");
 			this.GtkLabel13.UseMarkup = true;
 			this.vbox1.Add(this.GtkLabel13);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkLabel13]));
@@ -120,7 +120,7 @@ vbox1
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("_Line ending conversion:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("_Line ending conversion:");
 			this.label1.UseUnderline = true;
 			this.hbox1.Add(this.label1);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.label1]));
@@ -128,7 +128,7 @@ vbox1
 			w4.Expand = false;
 			w4.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.comboboxLineEndings = global::Gtk.ComboBox.NewText();
+			this.comboboxLineEndings = new global::Gtk.ComboBoxText ();
 			this.comboboxLineEndings.Name = "comboboxLineEndings";
 			this.hbox1.Add(this.comboboxLineEndings);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.comboboxLineEndings]));
@@ -150,7 +150,7 @@ vbox1
 			this.GtkLabel14 = new global::Gtk.Label();
 			this.GtkLabel14.Name = "GtkLabel14";
 			this.GtkLabel14.Xalign = 0F;
-			this.GtkLabel14.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Code Folding</b>");
+			this.GtkLabel14.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("<b>Code Folding</b>");
 			this.GtkLabel14.UseMarkup = true;
 			this.vbox1.Add(this.GtkLabel14);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkLabel14]));
@@ -169,7 +169,7 @@ vbox1
 			this.foldingCheckbutton = new global::Gtk.CheckButton();
 			this.foldingCheckbutton.CanFocus = true;
 			this.foldingCheckbutton.Name = "foldingCheckbutton";
-			this.foldingCheckbutton.Label = global::Mono.Unix.Catalog.GetString("Enable code _folding");
+			this.foldingCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString("Enable code _folding");
 			this.foldingCheckbutton.DrawIndicator = true;
 			this.foldingCheckbutton.UseUnderline = true;
 			this.vbox5.Add(this.foldingCheckbutton);
@@ -181,7 +181,7 @@ vbox1
 			this.foldregionsCheckbutton = new global::Gtk.CheckButton();
 			this.foldregionsCheckbutton.CanFocus = true;
 			this.foldregionsCheckbutton.Name = "foldregionsCheckbutton";
-			this.foldregionsCheckbutton.Label = global::Mono.Unix.Catalog.GetString("Fold #_regions by default");
+			this.foldregionsCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString("Fold #_regions by default");
 			this.foldregionsCheckbutton.DrawIndicator = true;
 			this.foldregionsCheckbutton.UseUnderline = true;
 			this.vbox5.Add(this.foldregionsCheckbutton);
@@ -193,7 +193,7 @@ vbox1
 			this.foldCommentsCheckbutton = new global::Gtk.CheckButton();
 			this.foldCommentsCheckbutton.CanFocus = true;
 			this.foldCommentsCheckbutton.Name = "foldCommentsCheckbutton";
-			this.foldCommentsCheckbutton.Label = global::Mono.Unix.Catalog.GetString("Fold _comments by default");
+			this.foldCommentsCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString("Fold _comments by default");
 			this.foldCommentsCheckbutton.DrawIndicator = true;
 			this.foldCommentsCheckbutton.UseUnderline = true;
 			this.vbox5.Add(this.foldCommentsCheckbutton);
@@ -211,7 +211,7 @@ vbox1
 			this.GtkLabel15 = new global::Gtk.Label();
 			this.GtkLabel15.Name = "GtkLabel15";
 			this.GtkLabel15.Xalign = 0F;
-			this.GtkLabel15.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Appearance</b>");
+			this.GtkLabel15.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("<b>Appearance</b>");
 			this.GtkLabel15.UseMarkup = true;
 			this.vbox1.Add(this.GtkLabel15);
 			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkLabel15]));
@@ -230,7 +230,7 @@ vbox1
 			this.antiAliasingCheckbutton = new global::Gtk.CheckButton();
 			this.antiAliasingCheckbutton.CanFocus = true;
 			this.antiAliasingCheckbutton.Name = "antiAliasingCheckbutton";
-			this.antiAliasingCheckbutton.Label = global::Mono.Unix.Catalog.GetString("_Use anti aliasing");
+			this.antiAliasingCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString("_Use anti aliasing");
 			this.antiAliasingCheckbutton.DrawIndicator = true;
 			this.antiAliasingCheckbutton.UseUnderline = true;
 			this.vbox6.Add(this.antiAliasingCheckbutton);

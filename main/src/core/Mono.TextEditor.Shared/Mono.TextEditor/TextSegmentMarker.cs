@@ -201,10 +201,12 @@ namespace Mono.TextEditor
 
 			switch (Effect) {
 			case MonoDevelop.Ide.Editor.TextSegmentMarkerEffect.WavedLine:
+				// GTK3: save/restore the clip; ResetClip would also drop the clip of the context GTK hands out.
+				cr.Save ();
 				cr.Rectangle (@from, 0, to - @from, editor.Allocation.Height);
 				cr.Clip ();
 				Pango.CairoHelper.ShowErrorUnderline (cr, metrics.TextRenderStartPosition, y + editor.LineHeight - height, editor.Allocation.Width, height);
-				cr.ResetClip ();
+				cr.Restore ();
 				break;
 			case MonoDevelop.Ide.Editor.TextSegmentMarkerEffect.DottedLine:
 				cr.Save ();

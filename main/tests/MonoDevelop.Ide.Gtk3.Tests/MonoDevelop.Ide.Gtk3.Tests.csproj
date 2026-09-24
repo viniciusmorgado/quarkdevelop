@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    Tests for code of MonoDevelop.Ide changed by the GTK3 / .NET 10 port (task T136), run under Xvfb.
+    Tests for code of MonoDevelop.Ide and the source editor add-in changed by the GTK3 / .NET 10 port
+    (tasks T136, T085/T088), run under Xvfb.
     The legacy Ide test suites join in M5c (T107).
   -->
   <PropertyGroup>
@@ -14,6 +15,8 @@
   <ItemGroup>
     <ProjectReference Include="../../src/core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" />
     <ProjectReference Include="../../src/addins/GnomePlatform/GnomePlatform.csproj" />
+    <!-- The GTK 3 source editor (T085/T088, SourceEditorTests). -->
+    <ProjectReference Include="../../src/addins/MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +25,8 @@
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="GtkSharp" />
+    <!-- Mono.Addins scans add-ins with Cecil on .NET (SourceEditorTests initialize the MonoDevelop runtime). -->
+    <PackageReference Include="Mono.Addins.CecilReflector" />
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NET.StringTools" ExcludeAssets="runtime" PrivateAssets="all" />

@@ -110,9 +110,10 @@ namespace MonoDevelop.SourceEditor
 
 			readonly int maxTextWidth = (int)(260 * Pango.Scale.PangoScale);
 
-			protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+			Gtk.Requisition Gtk3SizeRequest ()
 			{
-				base.OnSizeRequested (ref requisition);
+				var requisition = new Gtk.Requisition ();
+				requisition = Gtk3BaseSizeRequest ();
 				double y = verticalTextBorder * 2 - verticalTextSpace + (MonoDevelop.Core.Platform.IsWindows ? 10 : 2);
 
 				using (var drawingLayout = new Pango.Layout (this.PangoContext)) {
@@ -134,6 +135,24 @@ namespace MonoDevelop.SourceEditor
 				}
 
 				requisition.Height = (int)y;
+				return requisition;
+			}
+
+			protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+			{
+				minimum_width = natural_width = Gtk3SizeRequest ().Width;
+			}
+
+			protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+			{
+				minimum_height = natural_height = Gtk3SizeRequest ().Height;
+			}
+
+			Gtk.Requisition Gtk3BaseSizeRequest ()
+			{
+				base.OnGetPreferredWidth (out _, out int width);
+				base.OnGetPreferredHeight (out _, out int height);
+				return new Gtk.Requisition { Width = width, Height = height };
 			}
 
 			protected override bool OnEnterNotifyEvent (Gdk.EventCrossing evnt)
@@ -142,7 +161,7 @@ namespace MonoDevelop.SourceEditor
 				return base.OnEnterNotifyEvent (evnt);
 			}
 
-			protected override void OnDrawContent (Gdk.EventExpose evnt, Cairo.Context g)
+			protected override void OnDrawContent (Cairo.Context g)
 			{
 				g.Rectangle (0, 0, Allocation.Width, Allocation.Height);
 				g.SetSourceColor (marker.TooltipColor);

@@ -12,7 +12,8 @@ namespace Microsoft.VisualStudio.Text.AdornmentLibrary.ToolTip.Implementation
     using Microsoft.VisualStudio.Threading;
     using Microsoft.VisualStudio.Utilities;
 
-    //[Export(typeof(IViewElementFactoryService))]
+    // Linux build: exported here; upstream the closed-source VS editor (Microsoft.VisualStudio.Platform.VSEditor) provided it.
+    [Export(typeof(IViewElementFactoryService))]
     internal sealed class ViewElementFactoryService : IViewElementFactoryService
     {
         private readonly IEnumerable<Lazy<IViewElementFactory, IViewElementFactoryMetadata>> unorderedViewFactories;

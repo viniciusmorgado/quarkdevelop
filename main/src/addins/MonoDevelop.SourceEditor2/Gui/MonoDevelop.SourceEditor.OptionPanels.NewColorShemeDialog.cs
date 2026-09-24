@@ -6,7 +6,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 	{
 		private global::Gtk.Table table1;
 
-		private global::Gtk.ComboBox comboboxBaseStyle;
+		private global::Gtk.ComboBoxText comboboxBaseStyle;
 
 		private global::Gtk.Entry entryDescription;
 
@@ -27,11 +27,11 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			MonoDevelop.Components.Gui.Initialize(this);
 			// Widget MonoDevelop.SourceEditor.OptionPanels.NewColorShemeDialog
 			this.Name = "MonoDevelop.SourceEditor.OptionPanels.NewColorShemeDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString("Create new color sheme");
+			this.Title = global::MonoDevelop.Core.GettextCatalog.GetString("Create new color sheme");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.BorderWidth = ((uint)(6));
 			// Internal child MonoDevelop.SourceEditor.OptionPanels.NewColorShemeDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
+			global::Gtk.Box w1 = this.ContentArea;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
@@ -40,7 +40,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
-			this.comboboxBaseStyle = global::Gtk.ComboBox.NewText();
+			this.comboboxBaseStyle = new global::Gtk.ComboBoxText ();
 			this.comboboxBaseStyle.Name = "comboboxBaseStyle";
 			this.table1.Add(this.comboboxBaseStyle);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1[this.comboboxBaseStyle]));
@@ -79,7 +79,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.label1 = new global::Gtk.Label();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("_Based on:");
+			this.label1.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("_Based on:");
 			this.label1.UseMarkup = true;
 			this.label1.UseUnderline = true;
 			this.table1.Add(this.label1);
@@ -90,7 +90,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.label2 = new global::Gtk.Label();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString("_Name:");
+			this.label2.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("_Name:");
 			this.label2.UseUnderline = true;
 			this.table1.Add(this.label2);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1[this.label2]));
@@ -101,7 +101,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			// Container child table1.Gtk.Table+TableChild
 			this.label3 = new global::Gtk.Label();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString("_Description:");
+			this.label3.LabelProp = global::MonoDevelop.Core.GettextCatalog.GetString("_Description:");
 			this.label3.UseUnderline = true;
 			this.table1.Add(this.label3);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1[this.label3]));
@@ -109,13 +109,13 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			w7.BottomAttach = ((uint)(3));
 			w7.XOptions = ((global::Gtk.AttachOptions)(4));
 			w7.YOptions = ((global::Gtk.AttachOptions)(4));
-			w1.Add(this.table1);
+			w1.PackStart (this.table1, true, true, 0);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(w1[this.table1]));
 			w8.Position = 0;
 			w8.Expand = false;
 			w8.Fill = false;
 			// Internal child MonoDevelop.SourceEditor.OptionPanels.NewColorShemeDialog.ActionArea
-			global::Gtk.HButtonBox w9 = this.ActionArea;
+			global::Gtk.ButtonBox w9 = this.ActionArea;
 			w9.Name = "dialog1_ActionArea";
 			w9.Spacing = 10;
 			w9.BorderWidth = ((uint)(5));

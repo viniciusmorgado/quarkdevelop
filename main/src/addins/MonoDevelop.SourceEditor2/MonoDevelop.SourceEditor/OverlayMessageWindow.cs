@@ -75,14 +75,32 @@ namespace MonoDevelop.SourceEditor
 			}
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 
 			if (SizeFunc != null) {
 				requisition.Width = Math.Min (SizeFunc (), textEditor.Allocation.Width - border * 2);
 			}
+			return requisition;
+		}
 
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -101,9 +119,10 @@ namespace MonoDevelop.SourceEditor
 			textEditor.MoveTopLevelWidget (this, (textEditor.Allocation.Width - alloc.Width) / 2, textEditor.Allocation.Height - alloc.Height - 8);
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (var cr = CairoHelper.Create (evnt.Window)) {
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var cr = evnt.CreateContext ()) {
 				cr.LineWidth = 1;
 				cr.Rectangle (0, 0, Allocation.Width, Allocation.Height);
 
@@ -117,7 +136,7 @@ namespace MonoDevelop.SourceEditor
 				cr.Stroke();
 			}
 
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 	}

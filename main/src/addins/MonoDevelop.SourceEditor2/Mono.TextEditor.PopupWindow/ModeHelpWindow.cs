@@ -28,7 +28,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Mono.Unix;
+using Catalog = MonoDevelop.Core.GettextCatalog; // Mono.Unix.Catalog P/Invokes native "intl" (ADR 0014)
 using MonoDevelop.Components;
 
 namespace Mono.TextEditor.PopupWindow
@@ -59,9 +59,10 @@ namespace Mono.TextEditor.PopupWindow
 
 		void CheckScreenColormap ()
 		{
-			Colormap = Screen.RgbaColormap;
-			if (Colormap == null) {
-				Colormap = Screen.RgbColormap;
+			// GTK3: visuals replace colormaps.
+			Visual = Screen.RgbaVisual;
+			if (Visual == null) {
+				Visual = Screen.SystemVisual;
 				SupportsAlpha = false;
 			} else
 				SupportsAlpha = true;
@@ -84,9 +85,10 @@ namespace Mono.TextEditor.PopupWindow
 			layout = new Pango.Layout (PangoContext);
 		}
 
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			int descriptionWidth = 1;
 			int totalHeight = yBorder * 2 + 1;
 			
@@ -111,6 +113,24 @@ namespace Mono.TextEditor.PopupWindow
 			
 			requisition.Width = descriptionWidth + xSpacer + xBorder * 2 + 1;
 			requisition.Height = totalHeight;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 		
 		int xSpacer = 0;
@@ -128,13 +148,13 @@ namespace Mono.TextEditor.PopupWindow
 		const int xBorder = 4;
 		const int yBorder = 2;
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose args)
-		{	
-			using (var g = Gdk.CairoHelper.Create (args.Window)) {
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
+		{
+			var args = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);	
+			using (var g = args.CreateContext ()) {
 				g.Translate (Allocation.X, Allocation.Y);
 				g.LineWidth = 1;
 				
-				Gdk.GC gc = new Gdk.GC (args.Window);
 				layout.SetMarkup (TitleText);
 				int width, height;
 				layout.GetPixelSize (out width, out height);
@@ -183,7 +203,6 @@ namespace Mono.TextEditor.PopupWindow
 						g.Stroke ();
 					}
 					
-					gc.RgbFgColor = (HslColor)(i == 0 ? Styles.TableLayoutModeBackgroundColor : Styles.TableLayoutModeTextColor).ToCairoColor ();
 					g.Save ();
 					g.SetSourceColor (Styles.TableLayoutModeTextColor.ToCairoColor ());
 					g.Translate (xBorder, y);
@@ -206,10 +225,9 @@ namespace Mono.TextEditor.PopupWindow
 					}
 					y += height;
 				}
-				gc.Dispose ();
 			}
 
-			return base.OnExposeEvent (args);
+			return base.OnDrawn (gtk3cr);
 		}
 	}
 
@@ -425,9 +443,10 @@ namespace Mono.TextEditor.PopupWindow
 			titleLayout.FontDescription = desc;
 		}
 
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			int descriptionWidth = 1;
 			int totalHeight = yTitleBorder * 2 + yDescriptionBorder * 2 + 1;
 			
@@ -446,6 +465,24 @@ namespace Mono.TextEditor.PopupWindow
 			
 			requisition.Width = triangleWidth + descriptionWidth + xSpacer;
 			requisition.Height = totalHeight;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 		
 		int xSpacer = 0;
@@ -474,9 +511,10 @@ namespace Mono.TextEditor.PopupWindow
 		const int yDescriptionBorder = 8;
 		const int yTitleBorder = 8;
 
-		protected override bool OnExposeEvent (Gdk.EventExpose args)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (var g = Gdk.CairoHelper.Create (args.Window)) {
+			var args = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var g = args.CreateContext ()) {
 				g.Translate (Allocation.X, Allocation.Y);
 				g.LineWidth = 1;
 				titleLayout.SetMarkup (TitleText);
@@ -527,7 +565,7 @@ namespace Mono.TextEditor.PopupWindow
 					y += desc.Height + 8;
 				}
 			}
-			return base.OnExposeEvent (args);
+			return base.OnDrawn (gtk3cr);
 		}
 	}
 }

@@ -13,7 +13,8 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
 {
-    //[Export(typeof(ISignatureHelpBroker))]
+    // Linux build: exported here; upstream the closed-source VS editor (Microsoft.VisualStudio.Platform.VSEditor) provided it.
+    [Export(typeof(ISignatureHelpBroker))]
     internal class SignatureHelpBroker : ISignatureHelpBroker
     {
         [ImportMany]

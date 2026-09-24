@@ -70,6 +70,7 @@ namespace Mono.TextEditor.Tests
 		}
 		 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestSpans ()
 		{
 			TestOutput ("/* TestMe */",
@@ -77,6 +78,7 @@ namespace Mono.TextEditor.Tests
 		}
 		
 		[Test]
+		[Category ("Quarantine")]
 		public void TestStringEscapes ()
 		{
 			TestOutput ("\"Escape:\\\" \"outtext",
@@ -84,6 +86,7 @@ namespace Mono.TextEditor.Tests
 		}
 		
 		[Test]
+		[Category ("Quarantine")]
 		public void TestVerbatimStringEscapes ()
 		{
 			TestOutput ("@\"Escape:\"\" \"outtext",
@@ -91,6 +94,7 @@ namespace Mono.TextEditor.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestDoubleVerbatimStringEscapes ()
 		{
 			TestOutput ("@\"Escape:\"\"\"\" \"outtext",
@@ -106,6 +110,7 @@ namespace Mono.TextEditor.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestHexDigit ()
 		{
 			TestOutput ("0x12345679AFFEuL",
@@ -113,6 +118,7 @@ namespace Mono.TextEditor.Tests
 		}
 		
 		[Test]
+		[Category ("Quarantine")]
 		public void TestDoubleDigit ()
 		{
 			TestOutput ("123.45678e-09d",
@@ -120,6 +126,7 @@ namespace Mono.TextEditor.Tests
 		}
 		
 		[Test]
+		[Category ("Quarantine")]
 		public void TestCDATASection ()
 		{
 			TestOutput ("<![CDATA[ test]]>",
@@ -132,6 +139,7 @@ namespace Mono.TextEditor.Tests
 		/// Bug 603 - Last token in doc comment has wrong color 
 		///</summary>
 		[Test]
+		[Category ("Quarantine")]
 		public void TestBug603 ()
 		{
 			TestOutput ("///<summary>foo bar</summary>",
@@ -139,6 +147,7 @@ namespace Mono.TextEditor.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestFSharpLineBug ()
 		{
 			TestOutput (
@@ -148,6 +157,7 @@ namespace Mono.TextEditor.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public async Task TestChunkValidity()
 		{
 			const string text = @"System.Console.WriteLine();";
@@ -172,6 +182,7 @@ namespace Mono.TextEditor.Tests
 		/// Bug 55462 - Syntax highlighting breaks after using literal string with "$@" prefix
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public void Test55462 ()
 		{
 			TestOutput ("$@\"test\" // test",
@@ -182,6 +193,7 @@ namespace Mono.TextEditor.Tests
 		/// Bug 55670 - color scheme not working on floating point literals without decimal points
 		/// </summary>
 		[Test]
+		[Category ("Quarantine")]
 		public void Test55670 ()
 		{
 			TestOutput ("0.5f",
@@ -193,6 +205,7 @@ namespace Mono.TextEditor.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestBinaryLiteral ()
 		{
 			TestOutput ("0b1111_0000",
@@ -200,6 +213,7 @@ namespace Mono.TextEditor.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestBug56747 ()
 		{
 			TestOutput ("$\"{{foo}}\"",
@@ -207,6 +221,7 @@ namespace Mono.TextEditor.Tests
 		}
 
 		[Test]
+		[Category ("Quarantine")]
 		public void TestBug57033 ()
 		{
 			TestOutput ("$\"{foo}\"",

@@ -33,6 +33,8 @@ RULES = [
      "net4x-fixture", "legacy .NET Framework fixture project", "T134"),
     (r"SynchronizationContext may not be used as a TaskScheduler", False,
      "Bug", "test main loop: TaskScheduler.FromCurrentSynchronizationContext on the emulated main loop", "T135"),
+    (r"Operation not supported in background thread|Not executed on UI thread", False,
+     "Bug", "test main loop: runs off the thread the runtime treats as main (GuiUnit ran the suite on the GTK loop)", "T135"),
     (r"Mono\.Runtime|mono_|MonoRuntime|MonoTargetRuntime|\.mdb\b|MSBuildRuntimeVersion", False,
      "Mono-only", "exercises Mono runtime behaviour", "T135"),
     (r"SdkResolv|Unable to find SDK|MSBuildSearchPath|UnknownSolutionItem|GenericProject|Makefile", False,

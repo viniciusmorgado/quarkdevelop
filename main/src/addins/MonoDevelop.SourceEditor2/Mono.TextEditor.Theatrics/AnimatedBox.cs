@@ -62,7 +62,7 @@ namespace Mono.TextEditor.Theatrics
 		{
 			GtkWorkarounds.FixContainerLeak (this);
 			
-			WidgetFlags |= WidgetFlags.NoWindow;
+			HasWindow = false;
 			this.horizontal = horizontal;
 			stage.ActorStep += OnActorStep;
 			border_stage.Iteration += OnBorderIteration;
@@ -179,8 +179,9 @@ namespace Mono.TextEditor.Theatrics
 			PackStart (widget, duration, easing, blocking);
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			int width = 0;
 			int height = 0;
 			
@@ -203,6 +204,17 @@ namespace Mono.TextEditor.Theatrics
 			
 			requisition.Width = width;
 			requisition.Height = height;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		protected override void OnSizeAllocated (Rectangle allocation)

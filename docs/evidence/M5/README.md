@@ -67,4 +67,38 @@ stays open.
   0/1/2 (checked: Smoke.sln 0, Broken.csproj 1, a 2 s watchdog 2). X11: [T103-smoke-x11.png](T103-smoke-x11.png).
 - **Wayland (T104):** the same smoke on headless Weston, `GDK_BACKEND=wayland`:
   [T104-smoke-wayland.png](T104-smoke-wayland.png). Both run in `scripts/ci.sh`.
-- Not yet: the source editor (SourceEditor2, T088), C# editing features (T089) and the other add-ins.
+- Not yet: C# editing features (T089) and the other add-ins.
+
+## T085, T088 — the source editor on GTK 3 (M5c)
+
+`MonoDevelop.SourceEditor2` (with the `Mono.TextEditor.Shared` document model) is SDK-style net10.0 on
+GtkSharp 3.24.24.95; `MonoDevelop.SourceEditor.dll.config` is deleted (P/Invokes resolve through
+`NativeLibraryMap`, `SourceEditorNativeLibraries`).
+
+Commands (dev container):
+
+```bash
+./scripts/pm dotnet build main/MonoDevelop.Linux.sln
+./scripts/pm bash -lc 'xvfb-run -a -s "-screen 0 1600x1000x24" bash -c "dotnet main/build/bin/MonoDevelop.dll \
+  -no-redirect main/tests/linux-smoke/Hello/Program.cs > out/ide.log 2>&1 & sleep 60; import -window root out/ide.png; kill %1"'
+./scripts/pm ./scripts/test.sh --no-build
+```
+
+Result (2026-09-24): the IDE opens `Program.cs` in the source editor: line numbers, caret, syntax highlighting
+(the string literal) and the quick task strip ([T088-editor.png](T088-editor.png)); a larger file shows
+comments and keywords highlighted and the text area filling the document view
+([T088-editor-highlighting.png](T088-editor-highlighting.png)). `out/ide.log` has no ERROR/FATAL line; the only
+MEF composition error left is Roslyn's Pythia signature help provider (external access, not used).
+
+The editor platform services that upstream came from the closed-source VS editor
+(`Microsoft.VisualStudio.Platform.VSEditor`) are exported by SourceEditor2 (ISmartIndentationService,
+IToolTipService, IViewElementFactoryService, IIntellisenseSessionStackMapService, ISignatureHelpBroker) or added
+in `VSEditor/EditorPlatformServices.cs` (ILoggingServiceInternal, IObscuringTipManager, the `BraceCompletion/Enabled`
+option definition).
+
+Tests: `MonoDevelop.TextEditor.Tests` (the legacy Mono.TextEditor suite, converted) 289 passed, 12 skipped
+(legacy `[Ignore]`), 16 quarantined ([quarantine.md](../M4/quarantine.md)); `MonoDevelop.Ide.Gtk3.Tests`
+`SourceEditorTests` (editor MEF exports, text area in a GTK 3 scrolled window rendering a document offscreen
+within the clip it is given, typing).
+
+![Program.cs in the source editor](T088-editor.png)

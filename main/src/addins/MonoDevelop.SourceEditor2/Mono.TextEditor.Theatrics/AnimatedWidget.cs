@@ -63,7 +63,8 @@ namespace Mono.TextEditor.Theatrics
 		private readonly bool horizontal;
 		private double percent;
 		private Rectangle widget_alloc;
-		private Pixmap canvas;
+		// GTK3: a pixbuf snapshot of the window replaces the GTK2 server-side pixmap.
+		private Pixbuf canvas;
 
 		public AnimatedWidget (Widget widget, uint duration, Easing easing, Blocking blocking, bool horizontal)
 		{
@@ -95,13 +96,10 @@ namespace Mono.TextEditor.Theatrics
 				return;
 			}
 			
-			canvas = new Pixmap (GdkWindow, widget_alloc.Width, widget_alloc.Height);
-			if (Platform.IsMac) {
-				//FIXME: quick hack to make less ugly on Mac, because Mac GTK doesn't yet support offscreen drawing
-				canvas.DrawRectangle (Style.BackgroundGC (State), true, 0, 0, widget_alloc.Width, widget_alloc.Height);
-			} else {
-				canvas.DrawDrawable (Style.BackgroundGC (State), GdkWindow, widget_alloc.X, widget_alloc.Y, 0, 0, widget_alloc.Width, widget_alloc.Height);
-			}
+			canvas?.Dispose ();
+			canvas = null;
+			if (widget_alloc.Width > 0 && widget_alloc.Height > 0)
+				canvas = new Pixbuf (GdkWindow, widget_alloc.X, widget_alloc.Y, widget_alloc.Width, widget_alloc.Height);
 			
 			if (AnimationState != AnimationState.Going) {
 				WidgetDestroyed (this, args);
@@ -120,20 +118,25 @@ namespace Mono.TextEditor.Theatrics
 
 		protected override void OnRealized ()
 		{
-			WidgetFlags |= WidgetFlags.Realized;
+			IsRealized = true;
 			
 			Gdk.WindowAttr attributes = new Gdk.WindowAttr ();
+			attributes.X = Allocation.X;
+			attributes.Y = Allocation.Y;
+			attributes.Width = Allocation.Width;
+			attributes.Height = Allocation.Height;
 			attributes.WindowType = Gdk.WindowType.Child;
-			attributes.Wclass = Gdk.WindowClass.InputOutput;
-			attributes.EventMask = (int)Gdk.EventMask.ExposureMask;
-			GdkWindow = new Gdk.Window (Parent.GdkWindow, attributes, 0);
-			GdkWindow.UserData = Handle;
-			GdkWindow.Background = Style.Background (State);
-			Style.Attach (GdkWindow);
+			attributes.Wclass = Gdk.WindowWindowClass.InputOutput;
+			attributes.Visual = Visual;
+			attributes.EventMask = (int)(Events | Gdk.EventMask.ExposureMask);
+			GdkWindow = new Gdk.Window (ParentWindow, attributes, Gdk.WindowAttributesType.X | Gdk.WindowAttributesType.Y | Gdk.WindowAttributesType.Visual);
+			RegisterWindow (GdkWindow);
+			StyleContext.Background = GdkWindow;
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
+			var requisition = new Gtk.Requisition ();
 			if (Widget != null) {
 				Requisition req = Widget.SizeRequest ();
 				widget_alloc.Width = req.Width;
@@ -150,6 +153,17 @@ namespace Mono.TextEditor.Theatrics
 			
 			requisition.Width = Width;
 			requisition.Height = Height;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
 		}
 
 		protected override void OnSizeAllocated (Rectangle allocation)
@@ -176,14 +190,16 @@ namespace Mono.TextEditor.Theatrics
 			}
 		}
 
-		protected override bool OnExposeEvent (EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (canvas != null) {
-				GdkWindow.DrawDrawable (Style.BackgroundGC (State), canvas, 0, 0, widget_alloc.X, widget_alloc.Y, widget_alloc.Width, widget_alloc.Height);
+				Gdk.CairoHelper.SetSourcePixbuf (gtk3cr, canvas, widget_alloc.X, widget_alloc.Y);
+				gtk3cr.Paint ();
 				return true;
 			}
 
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		protected override void ForAll (bool include_internals, Callback callback)

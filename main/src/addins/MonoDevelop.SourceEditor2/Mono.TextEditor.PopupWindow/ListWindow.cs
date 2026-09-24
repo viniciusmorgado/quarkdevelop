@@ -31,6 +31,7 @@ using Pango;
 using System;
 using System.Text;
 using Mono.TextEditor;
+using MonoDevelop.Components;
 
 namespace Mono.TextEditor.PopupWindow
 {
@@ -368,13 +369,17 @@ namespace Mono.TextEditor.PopupWindow
 		{
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose args)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			base.OnExposeEvent (args);
+			var args = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			base.OnDrawn (gtk3cr);
 			
 			int winWidth, winHeight;
 			this.GetSize (out winWidth, out winHeight);
-			this.GdkWindow.DrawRectangle (this.Style.ForegroundGC (StateType.Insensitive), false, 0, 0, winWidth-1, winHeight-1);
+			gtk3cr.Rectangle (0.5, 0.5, winWidth - 1, winHeight - 1);
+			gtk3cr.SetSourceColor (this.GetStyleTextColor (StateType.Insensitive));
+			gtk3cr.LineWidth = 1;
+			gtk3cr.Stroke ();
 			return false;
 		}
 		

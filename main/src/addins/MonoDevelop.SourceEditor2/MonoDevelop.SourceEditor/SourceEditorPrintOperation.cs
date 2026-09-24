@@ -49,7 +49,7 @@ namespace MonoDevelop.SourceEditor
 			this.filename = filename;
 			this.settings = SourceEditorPrintSettings.Load ();
 			
-			this.Unit = Unit.Pixel;
+			this.Unit = Unit.None; // GTK3: GTK_UNIT_PIXEL is GTK_UNIT_NONE
 		}
 		
 		protected override void OnBeginPrint (PrintContext context)
@@ -67,8 +67,8 @@ namespace MonoDevelop.SourceEditor
 			
 			style = SyntaxHighlightingService.GetEditorTheme (settings.EditorTheme);
 
-			pageWidth = context.PageSetup.GetPageWidth (Unit.Pixel);
-			pageHeight = context.PageSetup.GetPageHeight (Unit.Pixel);
+			pageWidth = context.PageSetup.GetPageWidth (Unit.None);
+			pageHeight = context.PageSetup.GetPageHeight (Unit.None);
 			double contentHeight = pageHeight
 				- (headerLines > 0? settings.HeaderPadding : 0) 
 				- (footerLines > 0? settings.FooterPadding : 0);

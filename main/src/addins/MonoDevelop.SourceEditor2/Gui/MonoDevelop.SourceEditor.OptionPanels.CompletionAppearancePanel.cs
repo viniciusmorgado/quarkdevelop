@@ -22,7 +22,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.filterByBrowsableCheckbutton = new global::Gtk.CheckButton();
 			this.filterByBrowsableCheckbutton.CanFocus = true;
 			this.filterByBrowsableCheckbutton.Name = "filterByBrowsableCheckbutton";
-			this.filterByBrowsableCheckbutton.Label = global::Mono.Unix.Catalog.GetString("_Show EditorBrowsable.Advanced members");
+			this.filterByBrowsableCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString("_Show EditorBrowsable.Advanced members");
 			this.filterByBrowsableCheckbutton.Active = true;
 			this.filterByBrowsableCheckbutton.DrawIndicator = true;
 			this.filterByBrowsableCheckbutton.UseUnderline = true;

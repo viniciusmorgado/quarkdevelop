@@ -183,7 +183,7 @@ namespace MonoDevelop.SourceEditor
 
                 if (!_isAttached || (_textView == null))
                 {
-                    return Geometry.Empty;
+                    return new RectangleGeometry (System.Windows.Rect.Empty); // the WPF shim has no Geometry.Empty
                 }
 
                 var caretLine = _textView.Caret.ContainingTextViewLine;
@@ -204,7 +204,7 @@ namespace MonoDevelop.SourceEditor
                 }
                 else
                 {
-                    return Geometry.Empty;
+                    return new RectangleGeometry (System.Windows.Rect.Empty);
                 }
             }
         }

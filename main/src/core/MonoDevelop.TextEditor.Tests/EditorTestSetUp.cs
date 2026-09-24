@@ -1,10 +1,7 @@
-﻿//
-// NavigationExtensionTests.cs
 //
-// Author:
-//       Mike Krüger <mikkrg@microsoft.com>
+// EditorTestSetUp.cs
 //
-// Copyright (c) 2017 Microsoft
+// Copyright (c) 2026 MonoDevelop contributors
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,28 +21,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
-using System;
 using NUnit.Framework;
-using System.Linq;
-using MonoDevelop.Ide.Editor.Extension;
-using MonoDevelop.Ide.Editor;
 
-namespace Mono.TextEditor.Tests.Actions
+namespace Mono.TextEditor
 {
-	[TestFixture]
-	class NavigationExtensionTests : TextEditorTestBase
+	/// <summary>
+	/// Initializes GTK, the MonoDevelop runtime, Xwt and the editor MEF composition once for the tests of the
+	/// Mono.TextEditor namespaces, on the test thread (the legacy suite ran under GuiUnit inside a full IDE
+	/// environment). Run under Xvfb.
+	/// </summary>
+	[SetUpFixture]
+	public class EditorTestSetUp
 	{
-		[Test]
-		[Category ("Quarantine")]
-		public void TestBug294858 () // [Feedback] Do NOT go to definition if Ctrl/Cmd is pressed AFTER mouse down.
+		[OneTimeSetUp]
+		public void InitializeEditorEnvironment ()
 		{
-			var editor = TextEditorFactory.CreateNewEditor ();
-			editor.Text = "Hello World";
-			Assert.IsTrue (AbstractNavigationExtension.IsHoverNavigationValid (editor));
-			editor.SetSelection (0, editor.Length);
-			Assert.IsFalse (AbstractNavigationExtension.IsHoverNavigationValid (editor));
+			MonoDevelop.Ide.Gtk3.Tests.EditorTestEnvironment.EnsureInitialized ();
 		}
 	}
-
 }

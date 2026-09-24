@@ -13,7 +13,8 @@ namespace Microsoft.VisualStudio.Text.Editor.Implementation
     using Microsoft.VisualStudio.Text.Utilities;
     using Microsoft.VisualStudio.Utilities;
 
-    //[Export(typeof(ISmartIndentationService))]
+    // Linux build: exported here; upstream the closed-source VS editor (Microsoft.VisualStudio.Platform.VSEditor) provided it.
+    [Export(typeof(ISmartIndentationService))]
     internal sealed class SmartIndentationService : ISmartIndentationService, ISmartIndent
     {
         [ImportMany]

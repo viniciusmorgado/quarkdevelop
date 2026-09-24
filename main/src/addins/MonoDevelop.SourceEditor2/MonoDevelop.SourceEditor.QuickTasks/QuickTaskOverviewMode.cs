@@ -88,24 +88,7 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 			}
 		}
 
-		Cairo.Color win81Slider;
-		Cairo.Color win81SliderPrelight;
-		int win81ScrollbarWidth;
-
-		protected override void OnStyleSet (Style previous_style)
-		{
-			base.OnStyleSet (previous_style);
-			if (Core.Platform.IsWindows) {
-				using (var scrollstyle = Rc.GetStyleByPaths (Settings, null, null, VScrollbar.GType)) {
-					var scrl = new VScrollbar (null);
-					scrl.Style = scrollstyle;
-					win81Slider = scrollstyle.Background (StateType.Normal).ToCairoColor ();
-					win81SliderPrelight = scrollstyle.Background (StateType.Prelight).ToCairoColor ();
-					win81ScrollbarWidth = (int)scrl.StyleGetProperty ("slider-width");
-					scrl.Destroy ();
-				}
-			}
-		}
+		// Linux build: the Windows 8.1 scrollbar colors and width read from the GTK2 rc styles (OnStyleSet) are removed.
 
 		readonly int barPadding = MonoDevelop.Core.Platform.IsWindows ? 1 : 3;
 
@@ -440,7 +423,7 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 		void UpdateState (StateType state)
 		{
 			if (State != state) {
-				State = state;
+				this.SetState (state);
 				QueueDraw ();
 			}
 		}
@@ -685,10 +668,29 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 			cr.DrawImage (this, img, Math.Round ((Allocation.Width - img.Width) / 2), -1);
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
-			requisition.Width = MonoDevelop.Core.Platform.IsWindows ? win81ScrollbarWidth : 15;
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
+			requisition.Width = 15;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		double LineToY (int logicalLine)
@@ -876,14 +878,9 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 				MonoDevelop.Components.CairoExtensions.RoundedRectangle (cr, x, y, w, h, 4);
 			}
 
-			bool prelight = State == StateType.Prelight;
-
+			// Linux build: the Windows-only prelight slider color is removed.
 			Cairo.Color c;
-			if (MonoDevelop.Core.Platform.IsWindows) {
-				c = prelight ? win81SliderPrelight : win81Slider;
-				//compute new color such that it will produce same color when blended with bg
-				c = AddAlpha (SyntaxHighlightingService.GetColor (TextEditor.EditorTheme, EditorThemeColors.Background), c, 0.5d);
-			} else {
+			{
 				var brightness = HslColor.Brightness (SyntaxHighlightingService.GetColor (TextEditor.EditorTheme, EditorThemeColors.Background));
 				c = new Cairo.Color (1 - brightness, 1 - brightness, 1 - brightness, barColorValue * (barAlphaMax - barAlphaMin) + barAlphaMin);
 			}
@@ -937,12 +934,13 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 		}
 		IndicatorDrawingState currentDrawingState = IndicatorDrawingState.Create ();
 		SurfaceWrapper backgroundSurface, indicatorSurface, swapIndicatorSurface;
-		protected override bool OnExposeEvent (Gdk.EventExpose e)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
+			var e = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
 			if (TextEditor == null)
 				return true;
 
-			using (Cairo.Context cr = Gdk.CairoHelper.Create (e.Window)) {
+			using (Cairo.Context cr = e.CreateContext ()) {
 
 				cr.Save ();
 				var allocation = Allocation;

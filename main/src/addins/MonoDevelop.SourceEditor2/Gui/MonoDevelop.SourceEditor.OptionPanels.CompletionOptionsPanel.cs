@@ -66,10 +66,10 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.vbox5.Spacing = 6;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.autoCodeCompletionCheckbutton = new global::Gtk.CheckButton ();
-			this.autoCodeCompletionCheckbutton.TooltipMarkup = global::Mono.Unix.Catalog.GetString ("Automatic Completion with Enter or Tab keys");
+			this.autoCodeCompletionCheckbutton.TooltipMarkup = global::MonoDevelop.Core.GettextCatalog.GetString ("Automatic Completion with Enter or Tab keys");
 			this.autoCodeCompletionCheckbutton.CanFocus = true;
 			this.autoCodeCompletionCheckbutton.Name = "autoCodeCompletionCheckbutton";
-			this.autoCodeCompletionCheckbutton.Label = global::Mono.Unix.Catalog.GetString ("_Show completion list after a character is typed");
+			this.autoCodeCompletionCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Show completion list after a character is typed");
 			this.autoCodeCompletionCheckbutton.DrawIndicator = true;
 			this.autoCodeCompletionCheckbutton.UseUnderline = true;
 			this.vbox5.Add (this.autoCodeCompletionCheckbutton);
@@ -92,10 +92,10 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			w2.Padding = ((uint)(6));
 			// Container child hbox6.Gtk.Box+BoxChild
 			this.automaticCompletionModeCheckbutton = new global::Gtk.CheckButton ();
-			this.automaticCompletionModeCheckbutton.TooltipMarkup = global::Mono.Unix.Catalog.GetString ("Enables automatic completion with the Space key or Punctuation");
+			this.automaticCompletionModeCheckbutton.TooltipMarkup = global::MonoDevelop.Core.GettextCatalog.GetString ("Enables automatic completion with the Space key or Punctuation");
 			this.automaticCompletionModeCheckbutton.CanFocus = true;
 			this.automaticCompletionModeCheckbutton.Name = "automaticCompletionModeCheckbutton";
-			this.automaticCompletionModeCheckbutton.Label = global::Mono.Unix.Catalog.GetString ("Complete with Space or Punctuation");
+			this.automaticCompletionModeCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Complete with Space or Punctuation");
 			this.automaticCompletionModeCheckbutton.DrawIndicator = true;
 			this.automaticCompletionModeCheckbutton.UseUnderline = true;
 			this.hbox6.Add (this.automaticCompletionModeCheckbutton);
@@ -123,7 +123,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.includeKeywordsCheckbutton = new global::Gtk.CheckButton ();
 			this.includeKeywordsCheckbutton.CanFocus = true;
 			this.includeKeywordsCheckbutton.Name = "includeKeywordsCheckbutton";
-			this.includeKeywordsCheckbutton.Label = global::Mono.Unix.Catalog.GetString ("Include _keywords in completion list");
+			this.includeKeywordsCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Include _keywords in completion list");
 			this.includeKeywordsCheckbutton.DrawIndicator = true;
 			this.includeKeywordsCheckbutton.UseUnderline = true;
 			this.hbox4.Add (this.includeKeywordsCheckbutton);
@@ -151,7 +151,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.includeCodeSnippetsCheckbutton = new global::Gtk.CheckButton ();
 			this.includeCodeSnippetsCheckbutton.CanFocus = true;
 			this.includeCodeSnippetsCheckbutton.Name = "includeCodeSnippetsCheckbutton";
-			this.includeCodeSnippetsCheckbutton.Label = global::Mono.Unix.Catalog.GetString ("Include _code snippets in completion list");
+			this.includeCodeSnippetsCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("Include _code snippets in completion list");
 			this.includeCodeSnippetsCheckbutton.DrawIndicator = true;
 			this.includeCodeSnippetsCheckbutton.UseUnderline = true;
 			this.hbox5.Add (this.includeCodeSnippetsCheckbutton);
@@ -166,7 +166,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.showImportsCheckbutton = new global::Gtk.CheckButton ();
 			this.showImportsCheckbutton.CanFocus = true;
 			this.showImportsCheckbutton.Name = "showImportsCheckbutton";
-			this.showImportsCheckbutton.Label = global::Mono.Unix.Catalog.GetString ("_Show import items");
+			this.showImportsCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("_Show import items");
 			this.showImportsCheckbutton.DrawIndicator = true;
 			this.showImportsCheckbutton.UseUnderline = true;
 			this.vbox5.Add (this.showImportsCheckbutton);
@@ -178,7 +178,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.insertParenthesesCheckbutton = new global::Gtk.CheckButton ();
 			this.insertParenthesesCheckbutton.CanFocus = true;
 			this.insertParenthesesCheckbutton.Name = "insertParenthesesCheckbutton";
-			this.insertParenthesesCheckbutton.Label = global::Mono.Unix.Catalog.GetString ("A_utomatically insert parentheses after completion:");
+			this.insertParenthesesCheckbutton.Label = global::MonoDevelop.Core.GettextCatalog.GetString ("A_utomatically insert parentheses after completion:");
 			this.insertParenthesesCheckbutton.DrawIndicator = true;
 			this.insertParenthesesCheckbutton.UseUnderline = true;
 			this.vbox5.Add (this.insertParenthesesCheckbutton);
@@ -200,12 +200,12 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			w13.Expand = false;
 			w13.Padding = ((uint)(6));
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.openingRadiobutton = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("_Opening only"));
+			this.openingRadiobutton = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("_Opening only"));
 			this.openingRadiobutton.CanFocus = true;
 			this.openingRadiobutton.Name = "openingRadiobutton";
 			this.openingRadiobutton.DrawIndicator = true;
 			this.openingRadiobutton.UseUnderline = true;
-			this.openingRadiobutton.Group = new global::GLib.SList (global::System.IntPtr.Zero);
+			this.openingRadiobutton.Group = new global::Gtk.RadioButton [0];
 			this.hbox2.Add (this.openingRadiobutton);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.openingRadiobutton]));
 			w14.Position = 1;
@@ -228,7 +228,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			w16.Expand = false;
 			w16.Padding = ((uint)(6));
 			// Container child hbox3.Gtk.Box+BoxChild
-			this.bothRadiobutton = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("_Both opening and closing"));
+			this.bothRadiobutton = new global::Gtk.RadioButton (global::MonoDevelop.Core.GettextCatalog.GetString ("_Both opening and closing"));
 			this.bothRadiobutton.CanFocus = true;
 			this.bothRadiobutton.Name = "bothRadiobutton";
 			this.bothRadiobutton.DrawIndicator = true;

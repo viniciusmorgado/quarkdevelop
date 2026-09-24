@@ -17,6 +17,14 @@
 
   <Target Name="WriteMonoDevelopRunSettings" BeforeTargets="Build" Condition="'$(RunSettingsFilePath)' == '$(MDTestRunSettings)'">
     <PropertyGroup>
+      <!-- A hung test (e.g. waiting for a build that cannot run) fails instead of aborting the run. -->
+      <_MDNUnitSettings><![CDATA[<DefaultTimeout>120000</DefaultTimeout>]]></_MDNUnitSettings>
+      <!--
+        MDTestSingleThread=true: every test runs on the thread of the set-up fixtures, as under GuiUnit (the GTK
+        editor checks that it is used from the thread that created it). No NUnit test workers, and no per-test
+        timeout: NUnit runs a test with a timeout on another thread.
+      -->
+      <_MDNUnitSettings Condition="'$(MDTestSingleThread)' == 'true'"><![CDATA[<NumberOfTestWorkers>0</NumberOfTestWorkers>]]></_MDNUnitSettings>
       <_MDRunSettings><![CDATA[<?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
   <RunConfiguration>
@@ -38,14 +46,13 @@
         <Configuration>
           <!-- Coverage counts MonoDevelop product assemblies only (SC-003): vendored third-party code,
                tests and test helpers are not measured. -->
-          <Exclude>[Xwt]*,[Xwt.*]*,[Microsoft.VisualStudio.*]*,[Mono.Addins.GuiGtk3]*,[MonoDevelop.Wpf.Primitives]*,[UnitTests]*,[*.Tests]*,[*.Tests.*]*,[MonoDevelop.TestStartupHook]*</Exclude>
+          <Exclude>[Xwt]*,[Xwt.*]*,[Microsoft.VisualStudio.*]*,[Mono.Addins.GuiGtk3]*,[MonoDevelop.Wpf.Primitives]*,[Mono.Debugging]*,[UnitTests]*,[*.Tests]*,[*.Tests.*]*,[MonoDevelop.TestStartupHook]*</Exclude>
         </Configuration>
       </DataCollector>
     </DataCollectors>
   </DataCollectionRunSettings>
   <NUnit>
-    <!-- A hung test (e.g. waiting for a build that cannot run) fails instead of aborting the run. -->
-    <DefaultTimeout>120000</DefaultTimeout>
+    ]]>$(_MDNUnitSettings)<![CDATA[
   </NUnit>
 </RunSettings>
 ]]></_MDRunSettings>

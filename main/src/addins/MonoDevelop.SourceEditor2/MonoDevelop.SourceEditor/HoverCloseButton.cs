@@ -39,10 +39,29 @@ namespace MonoDevelop.SourceEditor
 			Events |= EventMask.LeaveNotifyMask | EventMask.EnterNotifyMask | EventMask.ButtonPressMask | EventMask.ButtonReleaseMask;
 		}
 
-		protected override void OnSizeRequested (ref Requisition requisition)
+		Gtk.Requisition Gtk3SizeRequest ()
 		{
-			base.OnSizeRequested (ref requisition);
+			var requisition = new Gtk.Requisition ();
+			requisition = Gtk3BaseSizeRequest ();
 			requisition.Width = requisition.Height = 16;
+			return requisition;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+		{
+			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+		{
+			minimum_height = natural_height = Gtk3SizeRequest ().Height;
+		}
+
+		Gtk.Requisition Gtk3BaseSizeRequest ()
+		{
+			base.OnGetPreferredWidth (out _, out int width);
+			base.OnGetPreferredHeight (out _, out int height);
+			return new Gtk.Requisition { Width = width, Height = height };
 		}
 
 		protected override bool OnEnterNotifyEvent (Gdk.EventCrossing evnt)
@@ -84,12 +103,13 @@ namespace MonoDevelop.SourceEditor
 				handler (this, e);
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (var cr = CairoHelper.Create (evnt.Window)) {
+			var evnt = new MonoDevelop.Components.Gtk3ExposeEvent (this, gtk3cr);
+			using (var cr = evnt.CreateContext ()) {
 				DrawCloseButton (cr, new Gdk.Point (Allocation.X + Allocation.Width / 2, Allocation.Y + Allocation.Height / 2), hovered, 1.0, 0);
 			}
-			return base.OnExposeEvent (evnt);
+			return base.OnDrawn (gtk3cr);
 		}
 
 		static void DrawCloseButton (Cairo.Context context, Gdk.Point center, bool hovered, double opacity, double animationProgress)
