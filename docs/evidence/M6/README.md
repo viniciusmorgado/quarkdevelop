@@ -35,3 +35,17 @@ total                    392s (budget 900s)
   Weston's headless backend has no input devices, so GDK logs criticals for the missing seat.
 - **Hosted run:** no hosted GitHub Actions run yet. Pushing needs the maintainer's authorization
   (T119).
+
+## T118 — Dependabot and CodeQL (2026-09-24)
+
+- `.github/dependabot.yml` sends weekly update PRs for:
+  - NuGet (`/main`, central versions in `Directory.Packages.props`), with Roslyn, MSBuild, the NuGet client and the test
+    packages each in their own group;
+  - GitHub Actions.
+
+  The `Containerfile` base images are not covered: they are pinned by digest through `ARG`s, which
+  Dependabot's docker updater does not follow, so they are updated by hand with `global.json`.
+- `.github/workflows/codeql.yml` runs CodeQL for C# (`build-mode: none`, no container needed) and for the
+  workflows (`actions`). It runs on pushes and PRs to `main` and weekly, with `security-events: write` only
+  on the analysis job. Code outside the Linux build (Mac/Windows platforms, externals, fixtures) is skipped.
+- `./scripts/pm actionlint`: clean. No hosted run yet (it needs a push, T119).
