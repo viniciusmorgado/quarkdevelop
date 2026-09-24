@@ -11,8 +11,13 @@ Compared with MonoDevelop 8.6:
   `mdtool build -r:<mono prefix>`) are ignored.
 - The UI toolkit is GTK 3.24 (was GTK 2.24); GTK2 themes (`gtkrc`) no longer apply
   ([ADR 0011](adr/0011-gtk3-port-strategy.md)).
-- The build system is `dotnet build` on `main/MonoDevelop.Linux.sln`; `./configure && make`,
-  `winbuild.bat` and profiles are obsolete.
+- The build system is `dotnet build` on `main/MonoDevelop.Linux.sln`, which replaces `main/Main.sln`
+  ([ADR 0002](adr/0002-linux-solution.md)). The legacy build files are removed: `configure`, the
+  `Makefile`s and `Makefile.am`s, `configure.ac`, `autogen.sh`, `profiles/`, `version-checks`,
+  `winbuild*.bat`, `main/mdtool.in`/`main/monodevelop.in` launchers (use `scripts/run.sh`), the macOS
+  app bundle files (`main/build/MacOSX`) and `setup/` (Windows installer, Mono libraries).
+- Translations: the `.po` catalogs in `main/po` are kept but no longer compiled to `.mo` files
+  (that was the autotools `po/Makefile.am`); the IDE runs in English until packaging compiles them.
 
 ## Removed or deferred features
 
@@ -32,7 +37,7 @@ Compared with MonoDevelop 8.6:
 | Property editor (Xamarin.PropertyEditing) | removed (Mac-only UI) |
 | New Cocoa/WPF text editor (`MonoDevelop.TextEditor`) | removed; the GTK source editor remains |
 | Windows installer (`setup/WixSetup`) | removed |
-| `./configure`, `scripts/configure.*`, `winbuild*.bat`, autotools `make` targets | obsolete (use `scripts/*.sh`) |
+| `./configure`, `scripts/configure.*`, `winbuild*.bat`, autotools `make` targets | removed (use `scripts/*.sh`) |
 | `mdtool` tools `run-md-tests`, `update-perf-baseline`, `generate-makefiles`, `gsetup` | removed |
 | ASP.NET Core project support (`MonoDevelop.AspNetCore`) | deferred |
 | NuGet package authoring projects (`MonoDevelop.Packaging`) | deferred |

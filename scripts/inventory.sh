@@ -66,10 +66,12 @@ projects() {
 	echo "| SDK-style csproj | $(projects | xargs -d '\n' grep -l '<Project Sdk=' | wc -l || true) |"
 	echo "| csproj targeting \$(MDFrameworkVersion) / v4.x | $(projects | xargs -d '\n' grep -lE 'TargetFrameworkVersion>(\$\(MDFrameworkVersion\)|v4)' | wc -l || true) |"
 	echo "| csproj targeting net10.0 | $(projects | xargs -d '\n' grep -l '<TargetFramework>net10.0' | wc -l || true) |"
-	echo "| Projects in Main.sln | $(grep -c '^Project(' Main.sln) |"
-	if [[ -f MonoDevelop.Linux.sln ]]; then
-		echo "| Projects in MonoDevelop.Linux.sln | $(grep -c '^Project(' MonoDevelop.Linux.sln) |"
-	fi
+	# Main.sln (218 entries in M0) was replaced by MonoDevelop.Linux.sln in M5 (ADR 0002)
+	for sln in Main.sln MonoDevelop.Linux.sln; do
+		if [[ -f $sln ]]; then
+			echo "| Projects in $sln | $(grep -c '^Project(' "$sln") |"
+		fi
+	done
 	echo "| .cs files (excl. fixtures) | $(find src tests -name '*.cs' -not -path "$fixtures/*" -not -path "$test_output/*" | wc -l) |"
 	echo "| *.addin.xml manifests | $(find src tests -name '*.addin.xml' -not -path "$fixtures/*" -not -path "$test_output/*" | wc -l) |"
 	echo

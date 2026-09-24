@@ -27,3 +27,8 @@ When milestone M5 completes, `Main.sln` is replaced by the Linux solution (Linux
 
 - Good: `dotnet build main/MonoDevelop.Linux.sln` is the single, always-green entry point.
 - Bad: two solutions coexist until M5; `Main.sln` is not maintained meanwhile.
+
+### Follow-up (M5c, task T108)
+
+`main/Main.sln` and the autotools/`configure`/Windows batch build files were removed; the solution keeps
+the name `MonoDevelop.Linux.sln` so that scripts, CI and documentation stay valid.

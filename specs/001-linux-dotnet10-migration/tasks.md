@@ -191,7 +191,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [ ] T105 [US3] M5c: error-list navigation test (build Broken; activate error; editor at line) (US3-3) → test passes
 - [x] T106 [US3] M5c: main-loop stall probe during `MonoDevelop.Linux.sln` load (≤ 1 s) → evidence
 - [ ] T107 [US3] M5c: `Ide.Tests`, `IdeUnitTests`, `MonoDevelop.CSharpBinding.Tests` on NUnit 3.14 under Xvfb; quarantine per suite → `docs/evidence/M4/quarantine.md` updated
-- [ ] T108 [US3] M5c: `Main.sln` replaced by `MonoDevelop.Linux.sln` (ADR 0002); legacy build files removed or marked obsolete → `docs/BREAKING-CHANGES.md` updated
+- [x] T108 [US3] M5c: `Main.sln` replaced by `MonoDevelop.Linux.sln` (ADR 0002); legacy build files removed or marked obsolete → `docs/BREAKING-CHANGES.md` updated
 - [ ] T109 [US3] M5c: evidence → `docs/evidence/M5/` (smoke logs, screenshots X11 + Wayland, grep = 0 for GTK2 APIs and for the ADR 0011 port helpers, startup time)
 
 ---
