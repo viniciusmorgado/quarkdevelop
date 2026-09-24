@@ -178,6 +178,8 @@ namespace MonoDevelop.Ide
 				var editor = IdeApp.Workbench.ActiveDocument?.Editor;
 				if (editor != null && IdeApp.Workbench.ActiveDocument.FileName == task.FileName && editor.CaretLine == task.Line) {
 					LoggingService.LogInfo ("Smoke test: error list navigation opened {0} at line {1}", task.FileName.FileName, task.Line);
+					// let the editor draw the document before the screenshot
+					await Task.Delay (1000);
 					return null;
 				}
 				if (clock.Elapsed > deadline) {

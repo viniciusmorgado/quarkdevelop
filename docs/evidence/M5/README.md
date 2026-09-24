@@ -54,8 +54,16 @@ applied with `gtk-application-prefer-dark-theme`. Per-widget RC styles (tab clos
 size, compact scrolled window, paned handles) are CSS providers on the widget (`GtkCss`). The bundled
 GTK 2 gtkrc themes (Xamarin engine, Mac, Windows) are no longer used. Tests: `GtkThemesTests`
 (discovery, dark variants, applying a theme, a CSS style property set/replaced/removed on a real
-widget). Screenshots of the IDE in a light and a dark theme wait for the IDE to start (M5c), so T083
-stays open.
+widget).
+
+T083 screenshots (2026-09-24, M5c): the smoke test on `Broken` under Xvfb, once with no theme preference
+(the default GTK theme) and once with `MonoDevelop.Ide.UserInterfaceTheme` = `Adwaita:dark` in
+`MonoDevelopProperties.xml`. The log says `GTK: Using Gtk theme Adwaita:dark`. The IDE then detects the
+dark background, and the editor switches to its dark colour scheme.
+
+| Light | Dark |
+|---|---|
+| ![light theme](T083-theme-light.png) | ![dark theme](T083-theme-dark.png) |
 
 ## M5c: the IDE runs (2026-09-23)
 
