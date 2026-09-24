@@ -39,7 +39,7 @@ Option 1:
   is ported to Roslyn when its project is converted. Code that only served the NRefactory-based
   code-issue pipeline or the mcs parser is excluded from the Linux compile list and recorded in
   `docs/BREAKING-CHANGES.md`.
-- The `main/external/nrefactory` submodule is removed when no Linux project references it.
+- The `main/external/nrefactory` submodule is removed when no Linux project references it (done 2026-09-24, T148).
 
 ### Consequences
 

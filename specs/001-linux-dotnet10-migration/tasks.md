@@ -202,6 +202,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T145 [US6] M6: CI time: split the GUI test assemblies (Ide, CSharpBinding, Xml, TextEditor, Gtk3, Git, Refactoring) into a CI job/step that runs in parallel with the Core tests (830 s of the 900 s budget used on 2026-09-24) → each job ≤ 600 s, `scripts/ci.sh` keeps a sequential local mode
 - [x] T146 [US3] M5c: projects with `<ImplicitUsings>enable</ImplicitUsings>` show false errors in the editor: the IDE workspace never gets the SDK-generated `GlobalUsings.g.cs` (`GenerateGlobalUsings` not run by the design-time compile) → `dotnet new console` project opens with 0 editor diagnostics
 - [ ] T147 [US3] M5c: source generators in the IDE workspace: the framework generators (Regex, LibraryImport, System.Text.Json) come from `ResolveTargetingPackAssets`, which the design-time run does not execute, so `[GeneratedRegex]` shows a false CS8795 while `dotnet build` succeeds (ADR 0008 amendment, T146) → generator outputs in the workspace, 0 editor errors on a `[GeneratedRegex]` sample
+- [x] T148 [US1] M5c: remove the last 8 git submodules (guiunit, nrefactory, nuget-binary, sharpsvn-binary, macdoc, mono-tools, mdtestharness, Xamarin.PropertyEditing) and `.gitmodules` (ADR 0005 update) → `git submodule status` empty, CI without `submodules: recursive`
 
 ---
 

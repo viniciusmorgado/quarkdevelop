@@ -34,6 +34,12 @@ commit, license and a list of local patches. The corresponding submodule is remo
 | nuget-binary | removed (SDK restore) |
 | sharpsvn-binary, macdoc, mono-tools, mdtestharness, Xamarin.PropertyEditing | removed from the Linux build |
 
+Update 2026-09-24 (T148): the last eight submodules (guiunit, nrefactory, nuget-binary, sharpsvn-binary, macdoc,
+mono-tools, mdtestharness, Xamarin.PropertyEditing) are removed together with `.gitmodules`; the repository has no
+submodules. Projects outside the Linux build that still point into `main/external/` (legacy test projects, Subversion,
+Mac/Windows platform tests, the legacy `DownloadNupkg` restore in `main/msbuild/MDBuildTasks.targets`) cannot be built
+from this repository any more.
+
 Code cherry-picked from DotDevelop (github.com/dotdevelop/dotdevelop) records the source commit in
 the commit message and in `specs/001-linux-dotnet10-migration/research.md`.
 

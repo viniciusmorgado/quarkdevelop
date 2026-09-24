@@ -11,6 +11,10 @@ Compared with MonoDevelop 8.6:
   `mdtool build -r:<mono prefix>`) are ignored.
 - The UI toolkit is GTK 3.24 (was GTK 2.24); GTK2 themes (`gtkrc`) no longer apply
   ([ADR 0011](adr/0011-gtk3-port-strategy.md)).
+- The repository has no git submodules (`.gitmodules` is gone): dependencies come from NuGet or from
+  `main/vendor/` ([ADR 0005](adr/0005-third-party-dependencies.md)). guiunit, nrefactory, nuget-binary,
+  sharpsvn-binary, macdoc, mono-tools, mdtestharness and Xamarin.PropertyEditing were dropped; legacy projects
+  outside the Linux build that referenced them no longer build.
 - The build system is `dotnet build` on `main/MonoDevelop.Linux.sln`, which replaces `main/Main.sln`
   ([ADR 0002](adr/0002-linux-solution.md)). The legacy build files are removed: `configure`, the
   `Makefile`s and `Makefile.am`s, `configure.ac`, `autogen.sh`, `profiles/`, `version-checks`,

@@ -12,7 +12,7 @@ Every command below runs from the repository root. `./scripts/pm` builds the dev
 
 ```bash
 ./scripts/pm ./scripts/inventory.sh && test -s docs/evidence/M0/inventory.md
-./scripts/pm bash -lc 'git submodule status | grep -c "^ "'                     # 15 initialized
+./scripts/pm bash -lc 'git submodule status | wc -l'                            # 0 (all 15 replaced or removed, T148)
 ./scripts/pm bash -lc 'cd spikes/gtk3-hello && dotnet build -c Release && xvfb-run -a dotnet bin/Release/net10.0/gtk3-hello.dll'   # "gtk3-hello: OK"
 ./scripts/pm bash -lc 'cd spikes && dotnet build addins-plugin -c Release && dotnet addins-host/bin/Release/net10.0/AddinsHost.dll'   # "addins-spike: OK"
 ./scripts/pm bash -lc 'cd spikes/roslyn-publicizer && dotnet run -c Release'     # "roslyn-publicizer: OK"

@@ -11,12 +11,6 @@ git clone <this repository> monodevelop
 cd monodevelop
 ```
 
-Submodules are only needed while legacy code is still being migrated:
-
-```bash
-./scripts/pm git submodule update --init --jobs 8
-```
-
 ## 2. Enter the toolchain
 
 `./scripts/pm <command>` runs `<command>` in the dev container. The first call builds the image from
