@@ -146,10 +146,14 @@ namespace MonoDevelop.Ide
 
 				// T105: activating an error in the Errors pad must open the file with the caret on the error line
 				string navigationFailure = errors > 0 ? await CheckErrorNavigationAsync () : null;
+				// T112: MD_SMOKE_DEBUG=1 debugs the startup project (netcoredbg) to a breakpoint on the first line of Program.cs
+				string debugFailure = errors == 0 && Environment.GetEnvironmentVariable ("MD_SMOKE_DEBUG") == "1" ? await CheckDebuggingAsync (sln) : null;
 				SaveScreenshot ();
 
 				if (navigationFailure != null)
 					Exit (ExitFailure, "error list navigation: " + navigationFailure);
+				else if (debugFailure != null)
+					Exit (ExitFailure, "debugging: " + debugFailure);
 				else if (errors > 0)
 					Exit (ExitBuildErrors, errors + " build errors");
 				else if (unhandledExceptions > 0)
@@ -188,6 +192,51 @@ namespace MonoDevelop.Ide
 				}
 				await Task.Delay (100);
 			}
+		}
+
+		/// <summary>
+		/// Sets a breakpoint on the first line of the startup project's Program.cs with the Toggle Breakpoint command, runs
+		/// the Debug command and waits until the debugger is paused there. Returns null on success, or what went wrong.
+		/// The debugger add-in is not referenced by the IDE core: its commands are dispatched by id and
+		/// DebuggingService.IsPaused is read by reflection.
+		/// </summary>
+		async Task<string> CheckDebuggingAsync (Solution sln)
+		{
+			var project = sln.StartupItem as Project ?? sln.GetAllProjects ().FirstOrDefault ();
+			var program = project?.Files.FirstOrDefault (f => f.FilePath.FileName == "Program.cs");
+			if (program == null)
+				return "the startup project has no Program.cs";
+			await IdeApp.Workbench.OpenDocument (program.FilePath, project, 1, 1);
+			// the editor is created after the document opens: wait for it, as the error navigation check does
+			var editorDeadline = clock.Elapsed + TimeSpan.FromSeconds (30);
+			while (IdeApp.Workbench.ActiveDocument?.FileName != program.FilePath || IdeApp.Workbench.ActiveDocument.Editor == null) {
+				if (clock.Elapsed > editorDeadline)
+					return "could not open " + program.FilePath;
+				await Task.Delay (100);
+			}
+			if (!IdeApp.CommandService.DispatchCommand ("MonoDevelop.Debugger.DebugCommands.ToggleBreakpoint"))
+				return "the Toggle Breakpoint command is not available";
+			if (!IdeApp.CommandService.DispatchCommand ("MonoDevelop.Debugger.DebugCommands.Debug"))
+				return "the Debug command is not available";
+
+			var isPaused = AppDomain.CurrentDomain.GetAssemblies ()
+				.Select (a => a.GetType ("MonoDevelop.Debugger.DebuggingService"))
+				.FirstOrDefault (t => t != null)?.GetProperty ("IsPaused");
+			if (isPaused == null)
+				return "the debugger add-in is not loaded";
+			var deadline = clock.Elapsed + TimeSpan.FromSeconds (60);
+			while (!(bool)isPaused.GetValue (null)) {
+				if (clock.Elapsed > deadline)
+					return "the debugger did not stop at the breakpoint";
+				await Task.Delay (100);
+			}
+			var active = IdeApp.Workbench.ActiveDocument;
+			if (active?.FileName != program.FilePath || active.Editor?.CaretLine != 1)
+				return $"stopped, but the active document is {active?.FileName.ToString () ?? "none"}:{active?.Editor?.CaretLine}";
+			LoggingService.LogInfo ("Smoke test: the debugger stopped at the breakpoint {0}:1", program.FilePath.FileName);
+			// let the debug pads (call stack, locals) fill before the screenshot
+			await Task.Delay (3000);
+			return null;
 		}
 
 		void SaveScreenshot ()

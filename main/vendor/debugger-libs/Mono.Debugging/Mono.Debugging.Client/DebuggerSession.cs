@@ -905,6 +905,16 @@ namespace Mono.Debugging.Client
 				return currentProcesses;
 			}
 		}
+
+		/// <summary>
+		/// Forgets the process list cached by <see cref="GetProcesses"/> (until the next target event), for sessions
+		/// that learn about the debuggee process after the session started (Debug Adapter Protocol "process" event).
+		/// </summary>
+		/// <remarks>Does not take the session lock: it may be called while a request of the session waits for its response.</remarks>
+		protected void ResetProcesses ()
+		{
+			Volatile.Write (ref currentProcesses, null);
+		}
 		
 		/// <summary>
 		/// Gets or sets the output writer callback.

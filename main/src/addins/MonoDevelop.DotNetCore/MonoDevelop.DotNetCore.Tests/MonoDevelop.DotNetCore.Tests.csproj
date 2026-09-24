@@ -32,6 +32,7 @@
     <Compile Include="MonoDevelop.DotNetCore.Tests/FrameworkReferenceTests.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/GlobalToolTests.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/TargetFrameworkTests.cs" />
+    <Compile Include="MonoDevelop.DotNetCore.Tests/NetCoreDbgEngineTests.cs" />
   </ItemGroup>
 
   <!--
@@ -54,6 +55,8 @@
     <ProjectReference Include="../../CSharpBinding/CSharpBinding.csproj" />
     <ProjectReference Include="../../MonoDevelop.RegexToolkit/MonoDevelop.RegexToolkit.csproj" />
     <ProjectReference Include="../../../../vendor/xwt/Xwt/Xwt.csproj" />
+    <!-- The .NET debugger engine (netcoredbg) that debugs the projects of the add-in (NetCoreDbgEngineTests). -->
+    <ProjectReference Include="../../MonoDevelop.Debugger.NetCoreDbg/MonoDevelop.Debugger.NetCoreDbg.csproj" />
     <!-- UnitTests.TestHost initializes the MonoDevelop runtime (GuiUnit and mdtool run-md-tests did it before, ADR 0015). -->
     <ProjectReference Include="../../../../tests/UnitTests/UnitTests.csproj" />
   </ItemGroup>

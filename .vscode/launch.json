@@ -1,0 +1,106 @@
+// Debugging MonoDevelop itself with netcoredbg (Samsung, MIT; ADR 0016), see docs/linux/setup.md, "Debugging".
+// vsdbg, the debugger of Microsoft's C# extension, may only be used in Microsoft products, so these configurations
+// start netcoredbg through "pipeTransport" (supported by the C# extension and its open-source forks for VS Code OSS /
+// VSCodium). Build first: ./scripts/pm ./scripts/build.sh
+// - "(dev container)": VS Code attached to .devcontainer/ (netcoredbg is on PATH there).
+// - "(host, scripts/pm)": VS Code on the host; netcoredbg and the IDE run in the podman dev container, where the
+//   repository has the same path, so breakpoints bind without source maps. The IDE window is shown through Wayland.
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "IDE (dev container)",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "${workspaceFolder}/main/build/bin/MonoDevelop.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}",
+			"env": {
+				"MONODEVELOP_LOCALE_PATH": "${workspaceFolder}/main/build/locale"
+			},
+			"justMyCode": false,
+			"pipeTransport": {
+				"pipeCwd": "${workspaceFolder}",
+				"pipeProgram": "sh",
+				"pipeArgs": ["-c"],
+				"debuggerPath": "netcoredbg",
+				"debuggerArgs": ["--interpreter=vscode"],
+				"quoteArgs": true
+			}
+		},
+		{
+			"name": "mdtool build (dev container)",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "${workspaceFolder}/main/build/bin/mdtool.dll",
+			"args": ["build", "${workspaceFolder}/main/tests/linux-smoke/Smoke.sln"],
+			"cwd": "${workspaceFolder}",
+			"justMyCode": false,
+			"pipeTransport": {
+				"pipeCwd": "${workspaceFolder}",
+				"pipeProgram": "sh",
+				"pipeArgs": ["-c"],
+				"debuggerPath": "netcoredbg",
+				"debuggerArgs": ["--interpreter=vscode"],
+				"quoteArgs": true
+			}
+		},
+		{
+			"name": "Attach (dev container)",
+			"type": "coreclr",
+			"request": "attach",
+			"processId": "${command:pickRemoteProcess}",
+			"justMyCode": false,
+			"pipeTransport": {
+				"pipeCwd": "${workspaceFolder}",
+				"pipeProgram": "sh",
+				"pipeArgs": ["-c"],
+				"debuggerPath": "netcoredbg",
+				"debuggerArgs": ["--interpreter=vscode"],
+				"quoteArgs": true
+			}
+		},
+		{
+			"name": "IDE (host, scripts/pm)",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "${workspaceFolder}/main/build/bin/MonoDevelop.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}",
+			"env": {
+				"MONODEVELOP_LOCALE_PATH": "${workspaceFolder}/main/build/locale",
+				"WAYLAND_DISPLAY": "${env:WAYLAND_DISPLAY}",
+				"XDG_RUNTIME_DIR": "/tmp/xdg"
+			},
+			"justMyCode": false,
+			"pipeTransport": {
+				"pipeCwd": "${workspaceFolder}",
+				"pipeProgram": "${workspaceFolder}/scripts/pm",
+				"pipeArgs": [],
+				"pipeEnv": {
+					"PM_PODMAN_ARGS": "-v ${env:XDG_RUNTIME_DIR}/${env:WAYLAND_DISPLAY}:/tmp/xdg/${env:WAYLAND_DISPLAY}"
+				},
+				"debuggerPath": "netcoredbg",
+				"debuggerArgs": ["--interpreter=vscode"],
+				"quoteArgs": false
+			}
+		},
+		{
+			"name": "mdtool build (host, scripts/pm)",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "${workspaceFolder}/main/build/bin/mdtool.dll",
+			"args": ["build", "${workspaceFolder}/main/tests/linux-smoke/Smoke.sln"],
+			"cwd": "${workspaceFolder}",
+			"justMyCode": false,
+			"pipeTransport": {
+				"pipeCwd": "${workspaceFolder}",
+				"pipeProgram": "${workspaceFolder}/scripts/pm",
+				"pipeArgs": [],
+				"debuggerPath": "netcoredbg",
+				"debuggerArgs": ["--interpreter=vscode"],
+				"quoteArgs": false
+			}
+		}
+	]
+}

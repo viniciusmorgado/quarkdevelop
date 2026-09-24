@@ -295,3 +295,6 @@ main/tests/StressTest/bin
 # Python bytecode
 __pycache__/
 *.pyc
+
+# netcoredbg CLI history (scripts/debug.sh)
+.netcoredbg_hist

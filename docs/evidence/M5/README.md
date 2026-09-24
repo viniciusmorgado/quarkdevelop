@@ -302,3 +302,86 @@ Smoke test: exit code 1 (1 build errors) after 10.4 s
 ```
 
 ![Program.cs opened at the error line](T105-error-navigation.png)
+
+## T112–T114 — debugging with netcoredbg (M5c, US4)
+
+**T112.** New add-in `main/src/addins/MonoDevelop.Debugger.NetCoreDbg` (ADR 0016 amendment). It registers the
+engine `MonoDevelop.Debugger.NetCoreDbg` (".NET Debugger (netcoredbg)") on `/MonoDevelop/Debugging/DebuggerEngines`.
+The engine takes `dotnet <program>.dll` commands, which are the execution commands of .NET SDK projects.
+`NetCoreDbgSession : VSCodeDebuggerSession` starts `netcoredbg --interpreter=vscode`, found through the
+`MonoDevelop.Debugger.NetCoreDbg.Path` property or on `PATH`. Engine and session are based on the DotDevelop
+netcoredbg add-in (MIT). The DAP client needed four fixes:
+
+- breakpoints are sent before `configurationDone`;
+- the `process` event is recorded on the protocol thread, and the cached process list is reset (new
+  `DebuggerSession.ResetProcesses` in the vendored Mono.Debugging);
+- `entry` stops are handled;
+- the Debugger.VsCodeDebugProtocol add-in imports the protocol assembly. Without it, the IDE failed with
+  `FileNotFoundException: Microsoft.VisualStudio.Shared.VSCodeDebugProtocol` when the session was created.
+
+**T113.** `MonoDevelop.Debugger.Tests` is converted to SDK style and is in the solution (folder `tests`), so
+`scripts/test.sh` runs it. `NetCoreDbgTests` builds a net10.0 console fixture in a temporary directory once. Then it
+checks these steps over DAP:
+
+- the breakpoint is hit (same `Breakpoint` object, file, line);
+- locals `first=20`, `second=22`, `sum=0`;
+- step over reaches the next line, where `sum=42`;
+- continue ends with exit code 3, and the output contains `sum=42`;
+- an unhandled exception stops at the `throw` line.
+
+The other tests cover the engine's command parsing, the launch arguments, the `PATH` lookup, and
+`DebuggingService` listing the engine. `MonoDevelop.DotNetCore.Tests` gets `NetCoreDbgEngineTests`: it loads the
+`dotnetcore-sdk-console` sample, creates its `DotNetCoreExecutionCommand`, and checks that `DebuggingService`
+chooses the netcoredbg engine and that the program is `dotnetcore-sdk-console.dll`.
+
+```bash
+./scripts/pm bash -lc 'xvfb-run -a dotnet test main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests/MonoDevelop.Debugger.Tests.csproj --filter FullyQualifiedName~NetCoreDbg'
+  Passed EngineDebugsDotnetProgramCommands [9 ms]
+  Passed EngineIsListedByDebuggingService [85 ms]
+  Passed LocatorFindsTheAdapterOnPath [< 1 ms]
+  Passed SessionBreakpointLocalsStepOverAndExitCode [383 ms]
+  Passed SessionLaunchProperties [1 ms]
+  Passed SessionStopsOnUnhandledException [165 ms]
+Total tests: 6, Passed: 6, Total time: 16.1 s (including the fixture build and the test host start)
+./scripts/pm bash -lc 'xvfb-run -a dotnet test main/src/addins/MonoDevelop.DotNetCore/MonoDevelop.DotNetCore.Tests/MonoDevelop.DotNetCore.Tests.csproj --filter FullyQualifiedName~NetCoreDbg'
+  Passed SdkConsoleProjectIsDebuggedWithNetCoreDbgAsync [1 s]
+```
+
+Full `./scripts/pm ./scripts/test.sh --no-build` (2026-09-24, 8 min 9 s):
+
+- MonoDevelop.Debugger.Tests: 7 passed (the six above plus `VsCodeStackFrameTests`).
+- MonoDevelop.DotNetCore.Tests: 252 passed, 5 skipped.
+- Coverage ratchet: Core 64.82%, Ide 2.69%, total 17.90%. All are above the baseline.
+- `MonoDevelop.Ide.Gtk3.Tests`: its test host crashed once after 64 of its 66 tests had passed (GDK "losing last
+  reference to undestroyed window"). Three reruns passed 66/66. The crash is intermittent and does not come from
+  this change.
+
+`ObjectValueTreeViewControllerTests` is not compiled. Its fake nodes deliver their values through the IDE main loop
+and wait 8 s on timers.
+
+**T114.** `.vscode/launch.json` has five `coreclr` configurations. Each starts netcoredbg through `pipeTransport`:
+
+- IDE and mdtool, in the dev container and from the host through `scripts/pm`;
+- attach, in the dev container.
+
+`docs/linux/setup.md` section 5 documents `scripts/debug.sh ide|mdtool`, launch.json and Rider.
+`printf 'run\nquit\n' | ./scripts/pm ./scripts/debug.sh mdtool help` runs mdtool under netcoredbg's CLI
+(`stopped, reason: exited`). A DAP `initialize` request piped through `./scripts/pm netcoredbg --interpreter=vscode`
+gets netcoredbg's capabilities back, which is the transport the host configurations use.
+
+**GUI check (not complete, no screenshot).** `MD_SMOKE_DEBUG=1` makes `--smoke-test` do three things after a
+successful build: set a breakpoint on line 1 of the startup project's `Program.cs` (Toggle Breakpoint command), run
+the Debug command, and wait for the debugger to pause. The variable is off by default, and CI does not set it.
+
+On a copy of `main/tests/linux-smoke/Smoke.sln` under Xvfb, the IDE starts the netcoredbg engine for Hello and
+switches to the Debug layout. Then it crashes with SIGSEGV in GtkSharp's finalizer queue:
+`GLib.ToggleRef.PerformQueuedUnrefs` → `g_object_remove_toggle_ref` on the main loop, from the crash report
+(`DOTNET_EnableCrashReport=1`). This points to a GTK3 port problem in the debugger pads, which are created at that
+moment, and not to the session: the same session passes the DAP tests above.
+
+Open follow-up: fix the pad crash, then take the screenshot `T112-debugger.png`:
+
+```bash
+MD_SMOKE_DEBUG=1 MD_SMOKE_OUT=out/smoke-debug xvfb-run -a -s "-screen 0 1600x1000x24" \
+  dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect <copy of linux-smoke>/Smoke.sln
+```

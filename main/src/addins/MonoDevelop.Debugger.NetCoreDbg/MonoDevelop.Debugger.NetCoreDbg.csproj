@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    .NET debugger engine (ADR 0016, T112): NetCoreDbgSession drives netcoredbg (vscode interpreter) through the Debug
+    Adapter Protocol client of MonoDevelop.Debugger.VsCodeDebugProtocol. Engine and session are based on the DotDevelop
+    netcoredbg add-in (MIT, see the file headers).
+  -->
+  <PropertyGroup>
+    <AssemblyName>MonoDevelop.Debugger.NetCoreDbg</AssemblyName>
+    <RootNamespace>MonoDevelop.Debugger.NetCoreDbg</RootNamespace>
+    <AddinBuildDir>MonoDevelop.Debugger.NetCoreDbg</AddinBuildDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="AddinInfo.cs" />
+    <Compile Include="NetCoreDbgEngine.cs" />
+    <Compile Include="NetCoreDbgLocator.cs" />
+    <Compile Include="NetCoreDbgSession.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="MonoDevelop.Debugger.NetCoreDbg.addin.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="MonoDevelop.Debugger.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" Private="false" />
+    <ProjectReference Include="../../core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" Private="false" />
+    <ProjectReference Include="../MonoDevelop.Debugger/MonoDevelop.Debugger.csproj" Private="false" />
+    <ProjectReference Include="../MonoDevelop.Debugger.VSCodeDebugProtocol/MonoDevelop.Debugger.VsCodeDebugProtocol/MonoDevelop.Debugger.VsCodeDebugProtocol.csproj" Private="false" />
+    <ProjectReference Include="../../../vendor/debugger-libs/Mono.Debugging/Mono.Debugging.csproj" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Loaded from the Debugger.VsCodeDebugProtocol add-in (an add-in dependency) and the host. -->
+    <PackageReference Include="Microsoft.VisualStudio.Shared.VsCodeDebugProtocol" ExcludeAssets="runtime" />
+    <PackageReference Include="Newtonsoft.Json" ExcludeAssets="runtime" />
+    <PackageReference Include="Mono.Addins" ExcludeAssets="runtime" />
+  </ItemGroup>
+</Project>

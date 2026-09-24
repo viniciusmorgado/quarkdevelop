@@ -1,0 +1,15 @@
+<ExtensionModel>
+
+	<!--
+		netcoredbg (Samsung, MIT) over the Debug Adapter Protocol (ADR 0016). The engine debugs `dotnet <program>.dll`
+		commands, which is what .NET SDK projects run (DotNetCoreExecutionCommand).
+	-->
+	<Extension path="/MonoDevelop/Debugging/DebuggerEngines">
+		<DebuggerEngine
+			id="MonoDevelop.Debugger.NetCoreDbg"
+			name=".NET Debugger (netcoredbg)"
+			features="Breakpoints, Pause, Stepping, ConditionalBreakpoints, Tracepoints, Catchpoints, Attaching"
+			type="MonoDevelop.Debugger.NetCoreDbg.NetCoreDbgEngine" />
+	</Extension>
+
+</ExtensionModel>

@@ -62,7 +62,42 @@ relative to the checkout; from any other directory, give `scripts/pm` and `scrip
 paths (the repository is mounted at the same path inside the container). Append a solution path to
 open it at start-up.
 
-## 5. Editors
+## 5. Debugging
+
+MonoDevelop debugs .NET programs, and is debugged itself, with
+[netcoredbg](https://github.com/Samsung/netcoredbg) (Samsung, MIT; [ADR 0016](../adr/0016-netcoredbg-debugging.md)).
+The dev container installs a pinned release on `PATH`. Microsoft's vsdbg may only be used in Microsoft
+products, so VS Code OSS / VSCodium use netcoredbg as well.
+
+**Inside the IDE.** *Run > Start Debugging* on a .NET project uses the `.NET Debugger (netcoredbg)` engine.
+It finds netcoredbg on `PATH`, or at the path in the `MonoDevelop.Debugger.NetCoreDbg.Path` property.
+
+**Command line.** `scripts/debug.sh` starts the IDE or mdtool under netcoredbg's command-line interface
+(`break`, `run`, `bt`, `print`, `next`; `help` lists the commands):
+
+```bash
+./scripts/pm ./scripts/build.sh
+./scripts/pm ./scripts/debug.sh mdtool build main/tests/linux-smoke/Smoke.sln
+PM_PODMAN_ARGS="…display forwarding, see section 4…" ./scripts/pm ./scripts/debug.sh ide
+```
+
+**VS Code OSS / VSCodium.** `.vscode/launch.json` has `coreclr` configurations that start netcoredbg
+through `pipeTransport`. This needs the C# extension or one of its open-source forks that supports
+`pipeTransport`.
+
+| Configuration | Use |
+|---|---|
+| `IDE (dev container)`, `mdtool build (dev container)` | launch `main/build/bin/MonoDevelop.dll` / `mdtool.dll` when VS Code is attached to `.devcontainer/` |
+| `Attach (dev container)` | attach to a running .NET process in the container (process picker) |
+| `IDE (host, scripts/pm)`, `mdtool build (host, scripts/pm)` | VS Code on the host: `scripts/pm` runs netcoredbg and the program in the dev container. The repository has the same path there, so breakpoints bind as is. The IDE window is shown through Wayland. |
+
+Build first (`./scripts/pm ./scripts/build.sh`); the configurations use `${workspaceFolder}` paths.
+
+**Rider.** Rider uses its own .NET debugger. Add a *.NET Executable* run configuration (executable
+`main/build/bin/MonoDevelop.dll`, runtime `dotnet`), or attach to a running `dotnet MonoDevelop.dll`
+process. To use netcoredbg from Rider, run `scripts/debug.sh` in its terminal.
+
+## 6. Editors
 
 `.devcontainer/devcontainer.json` uses the same `Containerfile` (VS Code Dev Containers with
 `"dev.containers.dockerPath": "podman"`, or JetBrains Rider).

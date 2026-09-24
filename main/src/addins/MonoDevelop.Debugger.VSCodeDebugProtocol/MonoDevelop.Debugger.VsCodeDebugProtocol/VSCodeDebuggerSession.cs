@@ -109,7 +109,8 @@ namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 		List<ProcessInfo> processInfo = new List<ProcessInfo>();
 		protected override ProcessInfo [] OnGetProcesses ()
 		{
-			return processInfo.ToArray();
+			lock (processInfo)
+				return processInfo.ToArray();
 		}
 
 		protected override Backtrace OnGetThreadBacktrace (long processId, long threadId)
@@ -326,6 +327,9 @@ namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 			StartDebugAgent ();
 			var launchRequest = CreateLaunchRequest (startInfo);
 			protocolClient.SendRequestSync (launchRequest);
+			// DAP order: the breakpoints (inserted by OnStarted) are sent before configurationDone, which starts the
+			// program (netcoredbg); after the "process" event they could arrive after the line was executed.
+			OnStarted ();
 			protocolClient.SendRequestSync (new ConfigurationDoneRequest ());
 			UpdateExceptions ();
 		}
@@ -411,6 +415,14 @@ namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 
 		protected void HandleEvent (object sender, EventReceivedEventArgs obj)
 		{
+			if (obj.EventType == "process") {
+				// Recorded on the protocol thread, before the next events are read: a "stopped" event handled
+				// below needs the process. The session may have started (Launch) before the adapter reported it.
+				var processEvent = (ProcessEvent)obj.Body;
+				lock (processInfo)
+					processInfo.Add (new ProcessInfo (processEvent.SystemProcessId ?? 1, processEvent.Name));
+				ResetProcesses ();
+			}
 			Task.Run (() => {
 				switch (obj.EventType) {
 				case "initialized":
@@ -443,6 +455,7 @@ namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 						break;
 					case StoppedEvent.ReasonValue.Step:
 					case StoppedEvent.ReasonValue.Pause:
+					case StoppedEvent.ReasonValue.Entry:
 						args = new TargetEventArgs (TargetEventType.TargetStopped);
 						break;
 					case StoppedEvent.ReasonValue.Exception:
@@ -496,9 +509,9 @@ namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 					});
 					break;
 				case "process":
-					var processEvent = (ProcessEvent)obj.Body;
-					processInfo.Add(new ProcessInfo(processEvent.SystemProcessId ?? 1, processEvent.Name));
-					OnStarted();
+					// Launch and Attach already started the session (breakpoints inserted before configurationDone).
+					if (!IsConnected)
+						OnStarted();
 					break;
 				case "output":
 					var outputBody = (OutputEvent)obj.Body;

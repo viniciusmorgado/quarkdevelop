@@ -49,5 +49,8 @@ Listed per commit in `git log -- main/vendor/debugger-libs`; summary:
   `NotSupportedExpressionException` and `ImplicitEvaluationDisabledException` are removed.
 - **`SourceLocation` checksums:** `HashAlgorithm.Create (string)` (obsolete, SYSLIB0045) is replaced by
   the same lookup through `CryptoConfig.CreateFromName`.
+- **`DebuggerSession.ResetProcesses`** (protected, T112): drops the cached process list. The netcoredbg
+  session (Debug Adapter Protocol) starts before the adapter reports the debuggee process, so a list
+  read at start-up (TargetReady) was empty until the next target event.
 - **`BreakpointStore.realpath`:** the path is passed as NUL-terminated UTF-8 bytes (the Unix string
   marshalling, made explicit for CA2101).

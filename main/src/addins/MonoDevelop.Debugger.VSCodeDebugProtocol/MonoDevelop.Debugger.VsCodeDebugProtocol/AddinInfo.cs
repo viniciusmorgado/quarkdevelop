@@ -15,3 +15,7 @@ using Mono.Addins.Description;
 [assembly:AddinDependency ("Core", MonoDevelop.BuildInfo.Version)]
 [assembly: AddinDependency ("Ide", MonoDevelop.BuildInfo.Version)]
 [assembly: AddinDependency ("Debugger", MonoDevelop.BuildInfo.Version)]
+
+// The protocol assembly is copied next to the add-in (see the csproj): make it resolvable for the add-in and for
+// the add-ins that depend on it (Debugger.NetCoreDbg).
+[assembly: ImportAddinAssembly ("Microsoft.VisualStudio.Shared.VSCodeDebugProtocol.dll")]

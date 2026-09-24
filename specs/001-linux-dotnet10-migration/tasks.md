@@ -204,9 +204,9 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 
 - [x] T110 [US4] M5: vendor `Mono.Debugging` → `main/vendor/debugger-libs/Mono.Debugging/` + `UPSTREAM.md`, net10.0; submodule removed → builds
 - [x] T111 [US4] M5: `MonoDevelop.Debugger` + `MonoDevelop.Debugger.VSCodeDebugProtocol` (VsCodeDebugProtocol 17.x/18.x) → builds
-- [ ] T112 [US4] M5: `NetCoreDbgSession` (cherry-pick DotDevelop `379883b7c5`, MIT) + engine registration → debugger engine listed
-- [ ] T113 [US4] M5: `NetCoreDbgTests` in `main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests/` (breakpoint, locals, step, exit code) → `dotnet test … --filter FullyQualifiedName~NetCoreDbg` passes (SC-006)
-- [ ] T114 [US4] M5: `.vscode/launch.json` (coreclr attach/launch via netcoredbg) + `scripts/debug.sh` docs → `docs/linux/setup.md` section
+- [x] T112 [US4] M5: `NetCoreDbgSession` (cherry-pick DotDevelop `379883b7c5`, MIT) + engine registration → debugger engine listed
+- [x] T113 [US4] M5: `NetCoreDbgTests` in `main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests/` (breakpoint, locals, step, exit code) → `dotnet test … --filter FullyQualifiedName~NetCoreDbg` passes (SC-006)
+- [x] T114 [US4] M5: `.vscode/launch.json` (coreclr attach/launch via netcoredbg) + `scripts/debug.sh` docs → `docs/linux/setup.md` section
 
 ---
 
