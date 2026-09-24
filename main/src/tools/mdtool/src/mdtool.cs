@@ -123,10 +123,11 @@ class MonoDevelopProcessHost
 				return exitCode;
 			}
 
-			// Only log fatal errors unless verbosity is specified. Command line tools should already
-			// be providing feedback using the console.
+			// Only log fatal errors unless verbosity (or MD_LOG_LEVEL, ADR 0023) is specified. Command line tools
+			// should already be providing feedback using the console.
 			var logger = (ConsoleLogger)LoggingService.GetLogger ("ConsoleLogger");
-			logger.EnabledLevel = verbosity;
+			if (!LoggingService.ConsoleLevelFromEnvironment)
+				logger.EnabledLevel = verbosity;
 
 			Runtime.Initialize (regUpdate);
 

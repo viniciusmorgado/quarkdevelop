@@ -87,6 +87,8 @@ namespace MonoDevelop.Core
 			System.Text.Encoding.RegisterProvider (System.Text.CodePagesEncodingProvider.Instance);
 			InstallApplicationDirectoryResolver ();
 
+			LoggingService.LogStartupInformation ();
+
 			using var initTimer = Counters.RuntimeInitialization.BeginTiming ();
 			SetupInstrumentation ();
 

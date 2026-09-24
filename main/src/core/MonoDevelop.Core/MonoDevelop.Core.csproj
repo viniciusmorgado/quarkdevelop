@@ -68,6 +68,7 @@
     <Compile Include="MonoDevelop.Core/ICustomXmlSerializer.cs" />
     <Compile Include="MonoDevelop.Core.Logging/LogLevel.cs" />
     <Compile Include="MonoDevelop.Core.Logging/ILogger.cs" />
+    <Compile Include="MonoDevelop.Core.Logging/IStructuredLogger.cs" />
     <Compile Include="MonoDevelop.Core/LoggingService.cs" />
     <Compile Include="MonoDevelop.Core.Logging/ConsoleLogger.cs" />
     <Compile Include="MonoDevelop.Core.Logging/FileLogger.cs" />

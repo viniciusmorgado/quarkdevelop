@@ -27,20 +27,87 @@
 //
 
 using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
 
 namespace MonoDevelop.Core.Logging
 {
 	
-	public class ConsoleLogger : ILogger
+	public class ConsoleLogger : IStructuredLogger
 	{
 		EnabledLoggingLevel enabledLevel = EnabledLoggingLevel.UpToInfo;
 		bool useColour = false;
+		static readonly object writeLock = new object ();
+
+		/// <summary>Text (default) or one JSON object per line (<c>MD_LOG_FORMAT=json</c>, ADR 0023).</summary>
+		public LogFormat Format { get; set; }
 		
 		public ConsoleLogger ()
 		{
 		}
 
 		public void Log (LogLevel level, string message)
+		{
+			Log (level, message, null);
+		}
+
+		public void Log (LogLevel level, string message, IReadOnlyList<KeyValuePair<string, object>> properties)
+		{
+			if (Format == LogFormat.Json) {
+				string line = FormatJson (DateTimeOffset.UtcNow, level, message, properties);
+				lock (writeLock)
+					Console.Out.WriteLine (line);
+				return;
+			}
+			LogText (level, message);
+		}
+
+		/// <summary>
+		/// One JSON object: <c>timestamp</c> (ISO 8601, UTC), <c>level</c>, <c>message</c>, then the properties
+		/// (a property named like one of these three is skipped).
+		/// </summary>
+		internal static string FormatJson (DateTimeOffset timestamp, LogLevel level, string message, IReadOnlyList<KeyValuePair<string, object>> properties)
+		{
+			var buffer = new ArrayBufferWriter<byte> ();
+			using (var json = new Utf8JsonWriter (buffer)) {
+				json.WriteStartObject ();
+				json.WriteString ("timestamp", timestamp);
+				json.WriteString ("level", level.ToString ().ToLowerInvariant ());
+				json.WriteString ("message", message);
+				if (properties != null) {
+					foreach (var property in properties) {
+						if (property.Key == "timestamp" || property.Key == "level" || property.Key == "message")
+							continue;
+						switch (property.Value) {
+						case null:
+							json.WriteNull (property.Key);
+							break;
+						case bool b:
+							json.WriteBoolean (property.Key, b);
+							break;
+						case int i:
+							json.WriteNumber (property.Key, i);
+							break;
+						case long l:
+							json.WriteNumber (property.Key, l);
+							break;
+						case double d:
+							json.WriteNumber (property.Key, d);
+							break;
+						default:
+							json.WriteString (property.Key, property.Value.ToString ());
+							break;
+						}
+					}
+				}
+				json.WriteEndObject ();
+			}
+			return Encoding.UTF8.GetString (buffer.WrittenSpan);
+		}
+
+		void LogText (LogLevel level, string message)
 		{
 			string header;
 			

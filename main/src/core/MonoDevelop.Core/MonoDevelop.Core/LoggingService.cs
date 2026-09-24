@@ -38,6 +38,7 @@ using MonoDevelop.Core.Logging;
 using Mono.Unix.Native;
 using System.Text;
 using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 
 namespace MonoDevelop.Core
 {
@@ -84,6 +85,19 @@ namespace MonoDevelop.Core
 				}
 			}
 			
+			// ADR 0023: MD_LOG_LEVEL (fatal, error, warn, info, debug, none) wins over the legacy variable above;
+			// MD_LOG_FORMAT=json writes one JSON object per line.
+			string logLevelEnv = Environment.GetEnvironmentVariable ("MD_LOG_LEVEL");
+			if (!string.IsNullOrEmpty (logLevelEnv)) {
+				if (TryParseLevel (logLevelEnv, out var level))
+					consoleLogger.EnabledLevel = level;
+				else
+					LogError ("MD_LOG_LEVEL: unknown level '" + logLevelEnv + "'");
+			}
+			ConsoleLevelFromEnvironment = !string.IsNullOrEmpty (logLevelEnv) || !string.IsNullOrEmpty (consoleLogLevelEnv);
+			if (string.Equals (Environment.GetEnvironmentVariable ("MD_LOG_FORMAT"), "json", StringComparison.OrdinalIgnoreCase))
+				consoleLogger.Format = LogFormat.Json;
+
 			string consoleLogUseColourEnv = Environment.GetEnvironmentVariable ("MONODEVELOP_CONSOLE_LOG_USE_COLOUR");
 			if (!string.IsNullOrEmpty (consoleLogUseColourEnv) && consoleLogUseColourEnv.ToLower () == "false") {
 				consoleLogger.UseColour = false;
@@ -402,6 +416,72 @@ namespace MonoDevelop.Core
 			foreach (ILogger logger in loggers)
 				if ((logger.EnabledLevel & l) == l)
 					logger.Log (level, message);
+		}
+
+		/// <summary>
+		/// Logs a message with named values: structured loggers (the console logger with <c>MD_LOG_FORMAT=json</c>)
+		/// record them, the others get the message only (ADR 0023).
+		/// </summary>
+		public static void Log (LogLevel level, string message, IReadOnlyList<KeyValuePair<string, object>> properties)
+		{
+			var l = (EnabledLoggingLevel) level;
+			foreach (ILogger logger in loggers) {
+				if ((logger.EnabledLevel & l) != l)
+					continue;
+				if (logger is IStructuredLogger structured)
+					structured.Log (level, message, properties);
+				else
+					logger.Log (level, message);
+			}
+		}
+
+		/// <summary>True when MD_LOG_LEVEL or MONODEVELOP_CONSOLE_LOG_LEVEL set the console level (hosts keep it).</summary>
+		public static bool ConsoleLevelFromEnvironment { get; private set; }
+
+		/// <summary>Parses a level name (fatal, error, warn/warning, info, debug, none, all, or an <see cref="EnabledLoggingLevel"/> name).</summary>
+		public static bool TryParseLevel (string value, out EnabledLoggingLevel level)
+		{
+			switch (value?.Trim ().ToLowerInvariant ()) {
+			case "fatal": level = EnabledLoggingLevel.UpToFatal; return true;
+			case "error": level = EnabledLoggingLevel.UpToError; return true;
+			case "warn":
+			case "warning": level = EnabledLoggingLevel.UpToWarn; return true;
+			case "info": level = EnabledLoggingLevel.UpToInfo; return true;
+			case "debug":
+			case "all": level = EnabledLoggingLevel.UpToDebug; return true;
+			case "none": level = EnabledLoggingLevel.None; return true;
+			}
+			return Enum.TryParse (value, true, out level) && Enum.IsDefined (typeof (EnabledLoggingLevel), level);
+		}
+
+		/// <summary>
+		/// The start-up record every host logs from <see cref="Runtime.Initialize"/> (T125): host, product version,
+		/// .NET runtime, the .NET SDK whose MSBuild is registered, OS and architecture.
+		/// </summary>
+		internal static IReadOnlyList<KeyValuePair<string, object>> GetStartupProperties ()
+		{
+			string sdk = null;
+			var msbuildPath = MonoDevelop.Core.Assemblies.MSBuildRegistration.RegisteredMSBuildPath;
+			if (!string.IsNullOrEmpty (msbuildPath))
+				sdk = Path.GetFileName (msbuildPath.TrimEnd (Path.DirectorySeparatorChar));
+			return new [] {
+				new KeyValuePair<string, object> ("event", "startup"),
+				new KeyValuePair<string, object> ("host", System.Reflection.Assembly.GetEntryAssembly ()?.GetName ().Name),
+				new KeyValuePair<string, object> ("version", BuildInfo.Version),
+				new KeyValuePair<string, object> ("versionLabel", BuildInfo.VersionLabel),
+				new KeyValuePair<string, object> ("runtime", RuntimeInformation.FrameworkDescription),
+				new KeyValuePair<string, object> ("sdk", sdk),
+				new KeyValuePair<string, object> ("os", RuntimeInformation.OSDescription),
+				new KeyValuePair<string, object> ("architecture", RuntimeInformation.ProcessArchitecture.ToString ()),
+			};
+		}
+
+		internal static void LogStartupInformation ()
+		{
+			var properties = GetStartupProperties ();
+			string Get (string key) => properties.First (p => p.Key == key).Value as string;
+			Log (LogLevel.Info, string.Format ("{0} {1} on {2}, .NET SDK {3}, {4} {5}", Get ("host"), Get ("versionLabel"),
+				Get ("runtime"), Get ("sdk") ?? "not registered", Get ("os"), Get ("architecture")), properties);
 		}
 		
 #endregion
