@@ -27,16 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client.Interfaces;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Execution;
-using MonoDevelop.DotNetCore;
 using MonoDevelop.Projects;
-using System.Threading;
 
 namespace MonoDevelop.UnitTesting.VsTest
 {
@@ -45,8 +45,6 @@ namespace MonoDevelop.UnitTesting.VsTest
 		public VsTestRunAdapter ()
 		{
 		}
-
-		RunOrDebugJob runJobInProgress;
 
 		public static VsTestRunAdapter Instance { get; } = new VsTestRunAdapter ();
 
@@ -67,36 +65,6 @@ namespace MonoDevelop.UnitTesting.VsTest
 			}
 		}
 
-		protected override void ProcessMessage (Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.Message message)
-		{
-			switch (message.MessageType) {
-			case MessageType.TestMessage:
-				OnTestMessage (message);
-				break;
-			case MessageType.TestRunStatsChange:
-				OnTestRunChanged (message);
-				break;
-			case MessageType.ExecutionComplete:
-				OnTestRunComplete (message);
-				break;
-			case MessageType.CustomTestHostLaunch:
-				OnCustomTestLaunch (message);
-				break;
-			default:
-				base.ProcessMessage (message);
-				break;
-			}
-		}
-
-		void RunTests (Project project, IEnumerable<TestCase> testCases)
-		{
-			var message = new TestRunRequestPayload {
-				TestCases = testCases.ToList (),
-				RunSettings = GetRunSettings (project)
-			};
-			communicationManager.SendMessage (MessageType.TestRunSelectedTestCasesDefaultHost, message);
-		}
-
 		UnitTestResult ReportRunFailure (TestContext testContext, Exception exception)
 		{
 			testContext.Monitor.ReportRuntimeError (exception.Message, exception);
@@ -112,175 +80,199 @@ namespace MonoDevelop.UnitTesting.VsTest
 			return ReportRunFailure (testContext, exception);
 		}
 
-		void RunTests (Project project)
-		{
-			var message = new TestRunRequestPayload {
-				Sources = new List<string> (new [] { GetAssemblyFileName (project) }),
-				RunSettings = GetRunSettings (project)
-			};
-			communicationManager.SendMessage (MessageType.TestRunAllSourcesWithDefaultHost, message);
-		}
-
+		/// <summary>
+		/// Runs the tests of the provider (all the tests of the project when it has no test list). With an execution
+		/// handler (the IDE's run and debug modes) the test host is started by that handler (custom test host launch),
+		/// so its output goes to the IDE's console and a debugger can start it; otherwise vstest.console starts it.
+		/// </summary>
 		public async Task<UnitTestResult> RunTests (
 			UnitTest test,
 			TestContext testContext,
 			IVsTestTestProvider testProvider)
 		{
-			await Start ();
+			var runJob = new RunOrDebugJob (testContext, testProvider);
 			try {
-				runJobInProgress = new RunOrDebugJob (testContext, testProvider);
-				testContext.Monitor.CancellationToken.Register (CancelTestRun);
-				var tests = testProvider.GetTests ();
-				SendExtensionList (GetTestAdapters (runJobInProgress.Project).Split (';'));
-				if (testContext.ExecutionContext.ExecutionHandler != null) {
-					if (tests == null) {
-						GetProcessStartInfo (testProvider.Project);
-					} else {
-						GetProcessStartInfo (testProvider.Project, tests);
+				string testAssemblyPath = GetAssemblyFileName (testProvider.Project);
+				if (!File.Exists (testAssemblyPath))
+					return HandleMissingAssemblyOnRun (testContext, testAssemblyPath);
+
+				var tests = testProvider.GetTests ()?.ToList ();
+				var sources = new [] { testAssemblyPath };
+				var runSettings = GetRunSettings (testProvider.Project);
+				var handler = new RunEventsHandler (this, runJob);
+				ITestHostLauncher launcher = testContext.ExecutionContext?.ExecutionHandler != null ? new TestHostLauncher (this, runJob) : null;
+
+				await RunRequestAsync (console => {
+					using (testContext.Monitor.CancellationToken.Register (() => CancelTestRun (console, runJob))) {
+						testContext.Monitor.CancellationToken.ThrowIfCancellationRequested ();
+						if (launcher != null) {
+							if (tests == null)
+								console.RunTestsWithCustomTestHost (sources, runSettings, new TestPlatformOptions (), handler, launcher);
+							else
+								console.RunTestsWithCustomTestHost (tests, runSettings, new TestPlatformOptions (), handler, launcher);
+						} else {
+							if (tests == null)
+								console.RunTests (sources, runSettings, new TestPlatformOptions (), handler);
+							else
+								console.RunTests (tests, runSettings, new TestPlatformOptions (), handler);
+						}
 					}
-				} else {
-					if (tests == null) {
-						RunTests (testProvider.Project);
-					} else {
-						RunTests (testProvider.Project, tests);
-					}
-				}
-				return await runJobInProgress.TaskSource.Task;
+				}, testContext.Monitor.CancellationToken);
+
+				// An aborted run (e.g. the test host crashed) completes without results.
+				runJob.TaskSource.TrySetResult (runJob.TestResultBuilder.TestResult);
+				return await runJob.TaskSource.Task;
 			} catch (OperationCanceledException) {
-				return runJobInProgress.TestResultBuilder.TestResult;
+				return runJob.TestResultBuilder.TestResult;
 			} catch (Exception ex) {
 				testContext.Monitor.ReportRuntimeError (
 					GettextCatalog.GetString ("Failed to run tests."),
 					ex);
 
-				if (runJobInProgress.TestResultBuilder != null)
-					runJobInProgress.TestResultBuilder.CreateFailure (ex);
-				return runJobInProgress.TestResultBuilder.TestResult;
+				if (!runJob.TaskSource.Task.IsCompleted)
+					runJob.TestResultBuilder.CreateFailure (ex);
+				return runJob.TestResultBuilder.TestResult;
 			}
 		}
 
-		void OnTestMessage (Message message)
+		static void OnTestMessage (RunOrDebugJob runJob, string message)
 		{
-			var payload = dataSerializer.DeserializePayload<TestMessagePayload> (message);
-			runJobInProgress.TestContext.Monitor.WriteGlobalLog (payload.Message + Environment.NewLine);
+			runJob.TestContext.Monitor.WriteGlobalLog (message + Environment.NewLine);
 		}
 
-		void OnTestRunComplete (Message message)
+		void CancelTestRun (Microsoft.TestPlatform.VsTestConsole.TranslationLayer.Interfaces.IVsTestConsoleWrapper console, RunOrDebugJob runJob)
 		{
-			var testRunCompletePayload = dataSerializer.DeserializePayload<TestRunCompletePayload> (message);
-			runJobInProgress.TestResultBuilder.OnTestRunComplete (testRunCompletePayload);
-		}
-
-		void OnTestRunChanged (Message message)
-		{
-			var eventArgs = dataSerializer.DeserializePayload<TestRunChangedEventArgs> (message);
-			runJobInProgress.TestResultBuilder.OnTestRunChanged (eventArgs);
-		}
-
-		void CancelTestRun ()
-		{
-			runJobInProgress?.TaskSource?.TrySetCanceled ();
+			runJob.TaskSource.TrySetCanceled ();
 
 			try {
-				communicationManager.SendMessage (MessageType.CancelTestRun);
+				console.CancelTestRun ();
 			} catch (Exception ex) {
 				LoggingService.LogError ("CancelTestRun error.", ex);
 			}
 
 			try {
-				if (runJobInProgress?.ProcessOperation != null) {
-					if (!runJobInProgress.ProcessOperation.IsCompleted)
-						runJobInProgress.ProcessOperation.Cancel ();
-					runJobInProgress.ProcessOperation = null;
+				if (runJob.ProcessOperation != null) {
+					if (!runJob.ProcessOperation.IsCompleted)
+						runJob.ProcessOperation.Cancel ();
+					runJob.ProcessOperation = null;
 				}
 			} catch (Exception ex) {
 				LoggingService.LogError ("CancelTestRun error.", ex);
 			}
 		}
 
-		void GetProcessStartInfo (Project project, IEnumerable<TestCase> testCases)
+		int StartCustomTestHost (TestProcessStartInfo startInfo, RunOrDebugJob runJob)
 		{
-			var message = new TestRunRequestPayload {
-				TestCases = testCases.ToList (),
-				RunSettings = GetRunSettings (project)
-			};
-			communicationManager.SendMessage (MessageType.GetTestRunnerProcessStartInfoForRunSelected, message);
-		}
-
-		void GetProcessStartInfo (Project project)
-		{
-			var message = new TestRunRequestPayload {
-				Sources = new List<string> (new [] { GetAssemblyFileName (project) }),
-				RunSettings = GetRunSettings (project)
-			};
-			communicationManager.SendMessage (MessageType.GetTestRunnerProcessStartInfoForRunAll, message);
-		}
-
-		void OnCustomTestLaunch (Message message)
-		{
-			var launchAckPayload = new CustomHostLaunchAckPayload {
-				HostProcessId = -1
-			};
-
-			try {
-				var startInfo = dataSerializer.DeserializePayload<TestProcessStartInfo> (message);
-				launchAckPayload.HostProcessId = StartCustomTestHost (startInfo, runJobInProgress.TestContext);
-			} catch (Exception ex) {
-				LoggingService.LogError ("Unable to start custom test host.", ex);
-				launchAckPayload.ErrorMessage = ex.Message;
-				runJobInProgress.TestContext.Monitor.ReportRuntimeError (GettextCatalog.GetString ("Unable to start test host."), ex);
-			} finally {
-				communicationManager.SendMessage (MessageType.CustomTestHostLaunchCallback, launchAckPayload);
-			}
-		}
-
-		int StartCustomTestHost (TestProcessStartInfo startInfo, TestContext currentTestContext)
-		{
+			var currentTestContext = runJob.TestContext;
 			OperationConsole console = currentTestContext.ExecutionContext.ConsoleFactory.CreateConsole (
 				OperationConsoleFactory.CreateConsoleOptions.Default.WithTitle (GettextCatalog.GetString ("Unit Tests")));
-			ExecutionCommand command;
 
-			if (runJobInProgress.Project is DotNetProject dnp) {
-				if (dnp.HasFlavor<DotNetCoreProjectExtension> () && dnp.TargetFramework.IsNetCoreApp ()) {
-					command = new DotNetCoreExecutionCommand (
-						startInfo.WorkingDirectory,
-						startInfo.FileName,
-						startInfo.Arguments
-					) {
-						EnvironmentVariables = startInfo.EnvironmentVariables
-					};
-					((DotNetCoreExecutionCommand)command).Command = startInfo.FileName;
-					((DotNetCoreExecutionCommand)command).Arguments = startInfo.Arguments;
-				} else {
-					var portArgument = startInfo.Arguments.IndexOf (" --port", StringComparison.Ordinal);
-                    var assembly = startInfo.Arguments.Remove (portArgument - 1).Trim (new char[] { '"' });
-					var arguments = startInfo.Arguments.Substring (portArgument + 1);
-					command = new DotNetExecutionCommand (
-						assembly,
-						arguments,
-						startInfo.WorkingDirectory,
-						startInfo.EnvironmentVariables
-					);
-				}
-			} else {
-				command = new NativeExecutionCommand (
-						startInfo.WorkingDirectory,
-						startInfo.FileName,
-						startInfo.Arguments,
-						startInfo.EnvironmentVariables);
-			}
+			// The test host of a .NET test project is `dotnet exec ... testhost.dll`: a native command. The legacy add-in
+			// used the DotNetCore add-in's DotNetCoreExecutionCommand here (T099 not ported yet).
+			ExecutionCommand command = new NativeExecutionCommand (
+				startInfo.FileName,
+				startInfo.Arguments,
+				startInfo.WorkingDirectory,
+				startInfo.EnvironmentVariables);
 
-			runJobInProgress.ProcessOperation = currentTestContext.ExecutionContext.ExecutionHandler.Execute (command, console);
-			var eventProcessSet = new ManualResetEvent(false);
-			runJobInProgress.ProcessOperation.ProcessIdSet += delegate {
-				eventProcessSet.Set();
+			runJob.ProcessOperation = currentTestContext.ExecutionContext.ExecutionHandler.Execute (command, console);
+			var eventProcessSet = new ManualResetEvent (false);
+			runJob.ProcessOperation.ProcessIdSet += delegate {
+				eventProcessSet.Set ();
 			};
-			if (runJobInProgress.ProcessOperation.ProcessId == 0) {
-				if (!eventProcessSet.WaitOne(5000) && runJobInProgress.ProcessOperation.ProcessId == 0) {
-					throw new Exception("Timeout, process id not set.");
+			if (runJob.ProcessOperation.ProcessId == 0) {
+				if (!eventProcessSet.WaitOne (5000) && runJob.ProcessOperation.ProcessId == 0) {
+					throw new TimeoutException ("Timeout, process id not set.");
 				}
 			}
-			return runJobInProgress.ProcessOperation.ProcessId;
+			return runJob.ProcessOperation.ProcessId;
+		}
+
+		int LaunchTestHost (TestProcessStartInfo startInfo, RunOrDebugJob runJob)
+		{
+			try {
+				return StartCustomTestHost (startInfo, runJob);
+			} catch (Exception ex) {
+				LoggingService.LogError ("Unable to start custom test host.", ex);
+				runJob.TestContext.Monitor.ReportRuntimeError (GettextCatalog.GetString ("Unable to start test host."), ex);
+				throw;
+			}
+		}
+
+		class RunEventsHandler : ITestRunEventsHandler
+		{
+			readonly VsTestRunAdapter adapter;
+			readonly RunOrDebugJob runJob;
+
+			public RunEventsHandler (VsTestRunAdapter adapter, RunOrDebugJob runJob)
+			{
+				this.adapter = adapter;
+				this.runJob = runJob;
+			}
+
+			public void HandleTestRunStatsChange (TestRunChangedEventArgs testRunChangedArgs)
+			{
+				if (testRunChangedArgs != null)
+					runJob.TestResultBuilder.OnTestRunChanged (testRunChangedArgs);
+			}
+
+			public void HandleTestRunComplete (
+				TestRunCompleteEventArgs testRunCompleteArgs,
+				TestRunChangedEventArgs lastChunkArgs,
+				ICollection<AttachmentSet> runContextAttachments,
+				ICollection<string> executorUris)
+			{
+				if (testRunCompleteArgs.Error != null)
+					runJob.TestContext.Monitor.ReportRuntimeError (testRunCompleteArgs.Error.Message, testRunCompleteArgs.Error);
+				runJob.TestResultBuilder.OnTestRunComplete (new TestRunCompletePayload {
+					TestRunCompleteArgs = testRunCompleteArgs,
+					LastRunTests = lastChunkArgs,
+					RunAttachments = runContextAttachments,
+					ExecutorUris = executorUris
+				});
+			}
+
+			public int LaunchProcessWithDebuggerAttached (TestProcessStartInfo testProcessStartInfo)
+			{
+				return adapter.LaunchTestHost (testProcessStartInfo, runJob);
+			}
+
+			public void HandleLogMessage (TestMessageLevel level, string message)
+			{
+				OnTestMessage (runJob, message);
+			}
+
+			public void HandleRawMessage (string rawMessage)
+			{
+			}
+		}
+
+		/// <summary>
+		/// Starts the test host with the execution handler of the test context. Not a debug launcher: a debugging
+		/// execution handler starts the test host under the debugger itself.
+		/// </summary>
+		class TestHostLauncher : ITestHostLauncher
+		{
+			readonly VsTestRunAdapter adapter;
+			readonly RunOrDebugJob runJob;
+
+			public TestHostLauncher (VsTestRunAdapter adapter, RunOrDebugJob runJob)
+			{
+				this.adapter = adapter;
+				this.runJob = runJob;
+			}
+
+			public bool IsDebug => false;
+
+			public int LaunchTestHost (TestProcessStartInfo defaultTestHostStartInfo)
+			{
+				return adapter.LaunchTestHost (defaultTestHostStartInfo, runJob);
+			}
+
+			public int LaunchTestHost (TestProcessStartInfo defaultTestHostStartInfo, CancellationToken cancellationToken)
+			{
+				return adapter.LaunchTestHost (defaultTestHostStartInfo, runJob);
+			}
 		}
 	}
 }

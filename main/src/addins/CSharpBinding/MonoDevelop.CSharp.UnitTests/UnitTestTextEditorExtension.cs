@@ -35,12 +35,9 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using ICSharpCode.NRefactory6.CSharp;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.TypeSystem;
-using ICSharpCode.NRefactory.CSharp.Refactoring;
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace MonoDevelop.CSharp
 {

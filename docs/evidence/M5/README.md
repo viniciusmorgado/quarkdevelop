@@ -214,3 +214,36 @@ step passes except `gui-smoke`, which fails the same way on an unmodified build 
 build error for Smoke.sln with no message while `mdtool build` and `dotnet build` succeed).
 
 ![System.Console in the assembly browser](T093-assembly-browser.png)
+## T101 — Unit testing add-in on VSTest (M5c, FR-011)
+
+`MonoDevelop.UnitTesting` is an SDK-style net10.0 add-in on GTK 3. Its VSTest integration drives the
+`vstest.console.dll` of the .NET SDK the IDE uses (the one `dotnet test` runs) in design mode through the VSTest client
+(`Microsoft.TestPlatform.TranslationLayer` 18.10.1, `VsTestConsoleWrapper`, synchronous API on a worker thread): one
+vstest.console for discovery and one for runs; the test host is started by the IDE's execution handler (custom test
+host launch), so its output goes to the IDE console. The legacy add-in hosted the design-mode socket itself and ran the
+.NET Framework `vstest.console.exe` of the `Microsoft.TestPlatform` package with Mono. The legacy NUnit runner add-in
+(`MonoDevelop.UnitTesting.NUnit`: Mono runner processes; its NUnit test suites are not created for .NET Core projects)
+and the empty `MonoDevelop.UnitTesting.NUnit.Runners` project are not built; the NUnit, xUnit and MSTest editor test
+markers are in the UnitTesting manifest, and CSharpBinding's `UnitTestTextEditorExtension` and
+`CSharpNUnitSourceCodeLocationFinder` are compiled again.
+
+Commands (dev container):
+
+```bash
+./scripts/pm dotnet build main/MonoDevelop.Linux.sln
+./scripts/pm bash -lc 'xvfb-run -a -s "-screen 0 1600x1000x24" dotnet test \
+  main/src/addins/MonoDevelop.UnitTesting/MonoDevelop.UnitTesting.Tests/MonoDevelop.UnitTesting.Tests.csproj'
+```
+
+Tests: `MonoDevelop.UnitTesting.Tests` (NUnit 3) 19 passed. FR-011: `VsTestEndToEndTests` copies
+`tests/unittesting-samples` (NUnit 3.14, xUnit 2.9.3 and MSTest 4.4.1 projects, one passing and one failing test each),
+restores it with no package source (the packages come from the global packages folder, filled by the `PackageDownload`
+items of the test project during the solution restore), loads and builds it with the project model, creates the test
+tree with `UnitTestService.BuildTest` (the add-in's VSTest provider), discovers `AdditionPasses` / `AdditionFails` and
+runs the project (1 passed, 1 failed) and the failing test alone, per framework.
+
+In the IDE (Xvfb), the samples solution: Run all tests in the Unit Tests pad builds, discovers and runs the three
+projects; the Test Results pad lists 3 passed and 3 failed tests
+([T101-unittesting.png](T101-unittesting.png), [T101-test-results.png](T101-test-results.png)).
+
+![The Unit Tests pad after running the samples](T101-unittesting.png)

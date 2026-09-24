@@ -53,6 +53,9 @@ namespace MonoDevelop.UnitTesting.VsTest
 			TestSourceCodeDocumentId = string.IsNullOrEmpty (vsTestUnit.FixtureTypeNamespace) ? FixtureTypeName : vsTestUnit.FixtureTypeNamespace + "." + FixtureTypeName;
 			cts = new CancellationTokenSource ();
 			var token = cts.Token;
+			// The source location comes from the IDE's type system (not started without the workbench).
+			if (UnitTestingIde.TypeSystemService == null || Project == null)
+				return;
 			IdeApp.TypeSystemService.GetCompilationAsync (Project, token).ContinueWith ((t) => {
 				if (token.IsCancellationRequested)
 					return;

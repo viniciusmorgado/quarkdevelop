@@ -26,49 +26,58 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.Interfaces;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
-using MonoDevelop.Core;
-using MonoDevelop.Core.Execution;
-using MonoDevelop.UnitTesting;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
-using MonoDevelop.Projects;
-using MonoDevelop.DotNetCore;
-using MonoDevelop.Ide;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using MonoDevelop.PackageManagement;
 using System.Runtime.CompilerServices;
-using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.TestPlatform.VsTestConsole.TranslationLayer;
+using Microsoft.TestPlatform.VsTestConsole.TranslationLayer.Interfaces;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using MonoDevelop.Core;
+using MonoDevelop.Core.Assemblies;
+using MonoDevelop.PackageManagement;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.UnitTesting.VsTest
 {
-	abstract class VsTestAdapter
+	/// <summary>
+	/// A vstest.console process in design mode, the one `dotnet test` uses: the vstest.console.dll of the .NET SDK
+	/// whose MSBuild the IDE loaded, driven with the VSTest client (VsTestConsoleWrapper), which negotiates the protocol
+	/// version with it. The legacy add-in hosted the design mode socket itself and ran the .NET Framework
+	/// vstest.console.exe of the Microsoft.TestPlatform package with Mono (not on .NET).
+	/// One request at a time per process (the protocol has no request ids): the discovery and the run adapters have
+	/// their own process, so a long test run does not block test discovery. The requests use the synchronous API of
+	/// the client on a thread pool thread (its asynchronous API is obsolete: "The async APIs don't work").
+	/// </summary>
+	abstract class VsTestAdapter : IDisposable
 	{
-		protected IDataSerializer dataSerializer = JsonDataSerializer.Instance;
-		ProcessAsyncOperation vsTestConsoleExeProcess;
-		protected SocketCommunicationManager communicationManager;
-		int clientConnectionTimeOut = 15000;
-		Thread messageProcessingThread;
-		CancellationTokenSource restartTokenSource = new CancellationTokenSource ();
+		readonly SemaphoreSlim requestLock = new SemaphoreSlim (1, 1);
+		IVsTestConsoleWrapper vsTestConsole;
 
 		internal static string GetRunSettings (Project project)
 		{
+			// No TestAdaptersPaths: the test host loads the adapters the test project copies next to the test assembly
+			// (NUnit3.TestAdapter, xunit.runner.visualstudio, MSTest.TestAdapter), like `dotnet test`.
 			return "<RunSettings>" + new Microsoft.VisualStudio.TestPlatform.ObjectModel.RunConfiguration () {
 				TargetFramework = Framework.FromString ((project as DotNetProject)?.TargetFramework?.Id?.ToString ()),
 				DisableAppDomain = true,
 				ResultsDirectory = project.BaseIntermediateOutputPath.Combine (Constants.ResultsDirectoryName),
 				ShouldCollectSourceInformation = false,
-				TestAdaptersPaths = GetTestAdapters (project),
 				TestSessionTimeout = int.MaxValue
 			}.ToXml ().OuterXml + "</RunSettings>";
+		}
+
+		/// <summary>
+		/// Whether the project is a VSTest test project: SDK-style test projects set IsTestProject
+		/// (Microsoft.NET.Test.Sdk, MSTest.Sdk); otherwise, like the legacy add-in, a restored package that contains a
+		/// test adapter.
+		/// </summary>
+		public static bool IsTestProject (Project project)
+		{
+			if (project is DotNetProject && project.MSBuildProject?.EvaluatedProperties?.GetValue<bool> ("IsTestProject") == true)
+				return true;
+			return !string.IsNullOrEmpty (GetTestAdapters (project));
 		}
 
 		static ConditionalWeakTable<Project, Tuple<HashSet<string>, string>> projectTestAdapterListCache = new ConditionalWeakTable<Project, Tuple<HashSet<string>, string>> ();
@@ -107,177 +116,91 @@ namespace MonoDevelop.UnitTesting.VsTest
 			}
 		}
 
-		void Restart ()
+		/// <summary>The vstest.console.dll of the SDK whose MSBuild the IDE uses (ADR 0008).</summary>
+		internal static string GetVsTestConsolePath ()
 		{
-			startTask = null;
-
-			restartTokenSource.Cancel ();
-			restartTokenSource = new CancellationTokenSource ();
-
-			try {
-				if (communicationManager != null) {
-					communicationManager.StopServer ();
-					communicationManager = null;
-				}
-			} catch (Exception ex) {
-				LoggingService.LogError ("TestPlatformCommunicationManager stop error.", ex);
+			string sdkDirectory = MSBuildRegistration.RegisteredMSBuildPath;
+			if (string.IsNullOrEmpty (sdkDirectory)) {
+				var sdks = DotNetCoreSdkInfo.FindAll ();
+				sdkDirectory = sdks.Count > 0 ? sdks [0].MSBuildPath : null;
 			}
+			if (string.IsNullOrEmpty (sdkDirectory))
+				throw new InvalidOperationException (GettextCatalog.GetString ("No .NET SDK found: cannot run vstest.console."));
+			return Path.Combine (sdkDirectory, "vstest.console.dll");
+		}
 
+		/// <summary>
+		/// Runs one request against the vstest.console process, starting it first if needed. The process is restarted
+		/// for the next request when a request fails (e.g. vstest.console exited).
+		/// </summary>
+		protected async Task RunRequestAsync (Action<IVsTestConsoleWrapper> request, CancellationToken cancellationToken = default)
+		{
+			await requestLock.WaitAsync (cancellationToken).ConfigureAwait (false);
 			try {
-				if (vsTestConsoleExeProcess != null) {
-					if (!vsTestConsoleExeProcess.IsCompleted) {
-						vsTestConsoleExeProcess.Cancel ();
+				await Task.Run (() => {
+					var console = GetVsTestConsole ();
+					try {
+						request (console);
+					} catch (Exception ex) when (!(ex is OperationCanceledException)) {
+						LoggingService.LogError ("vstest.console request failed.", ex);
+						Restart ();
+						throw;
 					}
-					vsTestConsoleExeProcess = null;
-				}
-			} catch (Exception ex) {
-				LoggingService.LogError ("VSTest process dispose error.", ex);
+				}, cancellationToken).ConfigureAwait (false);
+			} finally {
+				requestLock.Release ();
 			}
 		}
 
-		Task startTask;
-		TaskCompletionSource<bool> startedSource;
-
-		protected Task Start ()
+		IVsTestConsoleWrapper GetVsTestConsole ()
 		{
-			if (startTask == null)
-				startTask = PrivateStart ();
-			return startTask;
-		}
+			if (vsTestConsole != null)
+				return vsTestConsole;
 
-		async Task PrivateStart ()
-		{
-			var token = restartTokenSource.Token;
-			startedSource = new TaskCompletionSource<bool> ();
-			communicationManager = new SocketCommunicationManager ();
-			var endPoint = communicationManager.HostServer(new IPEndPoint(IPAddress.Loopback, 0));
-			communicationManager.AcceptClientAsync ().Ignore ();
-			vsTestConsoleExeProcess = StartVsTestConsoleExe(endPoint.Port);
-			vsTestConsoleExeProcess.Task.ContinueWith(delegate {
-				VsTestProcessExited(vsTestConsoleExeProcess);
-			}).Ignore();
-			var sw = Stopwatch.StartNew ();
-			if (!await Task.Run (() => {
-				while (!token.IsCancellationRequested) {
-					if (communicationManager.WaitForClientConnection (100))
-						return true;
-					if (clientConnectionTimeOut < sw.ElapsedMilliseconds)
-						return false;
-				}
-				return false;
-			})) {
-				sw.Stop ();
-				throw new TimeoutException ("vstest.console failed to connect.");
-			}
-			sw.Stop ();
-			if (token.IsCancellationRequested)
-				return;
+			string vsTestConsolePath = GetVsTestConsolePath ();
+			if (!File.Exists (vsTestConsolePath))
+				throw new FileNotFoundException (GettextCatalog.GetString ("vstest.console not found: {0}", vsTestConsolePath), vsTestConsolePath);
 
-			messageProcessingThread =
-				new Thread (ReceiveMessages) {
-					IsBackground = true
-				};
-			messageProcessingThread.Start (token);
-			var timeoutDelay = Task.Delay (clientConnectionTimeOut);
-			if (await Task.WhenAny (startedSource.Task, timeoutDelay) == timeoutDelay)
-				throw new TimeoutException ("vstest.console failed to respond.");
-		}
-
-		TextWriter outW = new StringWriter ();
-		TextWriter errW = new StringWriter ();
-
-		class ProcessHostConsole : OperationConsole
-		{
-			public override TextReader In {
-				get { return Console.In; }
-			}
-
-			public override TextWriter Out {
-				get { return Console.Out; }
-			}
-
-			public override TextWriter Error {
-				get { return Console.Error; }
-			}
-
-			public override TextWriter Log {
-				get { return Out; }
-			}
-		}
-
-		ProcessAsyncOperation StartVsTestConsoleExe (int port)
-		{
-			string vsTestConsoleExeFolder = Path.Combine (Path.GetDirectoryName (typeof (VsTestAdapter).Assembly.Location), "VsTestConsole");
-			string vsTestConsoleExe = Path.Combine (vsTestConsoleExeFolder, "vstest.console.exe");
-			if (!File.Exists (vsTestConsoleExe))
-				LoggingService.LogError ("vstest.console.exe not found : " + vsTestConsoleExe);
-			var executionCommand = Runtime.ProcessService.CreateCommand (vsTestConsoleExe);
-			executionCommand.Arguments = GetVSTestArguments (vsTestConsoleExe, port);
-			executionCommand.WorkingDirectory = vsTestConsoleExeFolder;
-			//Workaround macOs "bug" where terminal path has dotnet added to path but gui apps path doesn't(IDE)
-			if (Platform.IsMac)
-				executionCommand.EnvironmentVariables ["PATH"] = Environment.GetEnvironmentVariable ("PATH") + Path.PathSeparator + "/usr/local/share/dotnet/";
-			return Runtime.ProcessService.DefaultExecutionHandler.Execute (executionCommand, new ProcessHostConsole());
-		}
-
-		string GetVSTestArguments (string vsTestConsoleExe, int port)
-		{
+			var parameters = new ConsoleParameters ();
 #if DIAGNOSTIC_LOGGING
 			LoggingService.CreateLogFile ("vstest", out var filename).Dispose ();
+			parameters.LogFilePath = filename;
 #endif
-			return $"/parentprocessid:{Process.GetCurrentProcess ().Id} /port:{port}"
-#if DIAGNOSTIC_LOGGING
-				+ $" /diag:{filename}"
-#endif
-			;
+			// A .dll path runs with the dotnet host (the one running MonoDevelop, or the first on PATH).
+			var console = new VsTestConsoleWrapper (vsTestConsolePath, parameters);
+			console.StartSession ();
+			vsTestConsole = console;
+			return console;
 		}
 
-		void VsTestProcessExited (ProcessAsyncOperation process)
+		void Restart ()
 		{
-			LoggingService.LogError ("vstest.console.exe exited. Exit code: {0}", process.ExitCode);
+			var console = vsTestConsole;
+			vsTestConsole = null;
+			try {
+				console?.EndSession ();
+			} catch (Exception ex) {
+				LoggingService.LogError ("vstest.console stop error.", ex);
+			}
+		}
+
+		public void Dispose ()
+		{
 			Restart ();
-		}
-
-		void ReceiveMessages (object obj)
-		{
-			var token = (CancellationToken)obj;
-			while (!token.IsCancellationRequested) {
-				try {
-					Message message = communicationManager.ReceiveMessage ();
-					ProcessMessage (message);
-				} catch (IOException) {
-					// Ignore.
-				} catch (Exception ex) {
-					LoggingService.LogError ("TestPlatformAdapter receive message error.", ex);
-				}
-			}
-		}
-
-		void OnSessionConnected ()
-		{
-			startedSource.SetResult (true);
-		}
-
-		protected void SendExtensionList (string [] extensions)
-		{
-			communicationManager.SendMessage (MessageType.ExtensionsInitialize, extensions);
-		}
-
-		protected virtual void ProcessMessage (Message message)
-		{
-			switch (message.MessageType) {
-			case MessageType.SessionConnected:
-				OnSessionConnected ();
-				break;
-			default:
-				LoggingService.LogWarning ($"Unprocessed vstest message {message}");
-				break;
-			}
+			requestLock.Dispose ();
 		}
 
 		public static string GetAssemblyFileName (Project project)
 		{
-			return project.GetOutputFileName (IdeApp.Workspace.ActiveConfiguration);
+			FilePath outputFile = project.GetOutputFileName (UnitTestingIde.ActiveConfiguration);
+			// .NET test projects are executables (Microsoft.NET.Test.Sdk sets OutputType=Exe) whose assembly is a .dll;
+			// without the DotNetCore add-in's project extension (T099) the project model names it .exe.
+			if (outputFile.HasExtension (".exe") && !File.Exists (outputFile)) {
+				FilePath dll = outputFile.ChangeExtension (".dll");
+				if (File.Exists (dll))
+					return dll;
+			}
+			return outputFile;
 		}
 	}
 }

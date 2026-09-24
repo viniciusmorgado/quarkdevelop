@@ -377,6 +377,11 @@
           "Microsoft.VisualStudio.Validation": "17.13.22"
         }
       },
+      "Microsoft.Web.Xdt": {
+        "type": "Transitive",
+        "resolved": "3.2.0",
+        "contentHash": "jxdgphbXQgdrd8hid3ndsM2PnyNeMAoluYnoJqvN2lex3uyF2o2cqwJOOWoYQ6ErwgPjH0HI2ig+970izoDOTQ=="
+      },
       "Nerdbank.MessagePack": {
         "type": "Transitive",
         "resolved": "1.2.4",
@@ -668,6 +673,7 @@
           "MonoDevelop.Ide": "[1.0.0, )",
           "MonoDevelop.Refactoring": "[1.0.0, )",
           "MonoDevelop.SourceEditor": "[1.0.0, )",
+          "MonoDevelop.UnitTesting": "[1.0.0, )",
           "Xwt": "[1.0.0, )",
           "Xwt.Gtk3": "[1.0.0, )"
         }
@@ -745,6 +751,19 @@
           "YamlDotNet": "[18.1.0, )"
         }
       },
+      "monodevelop.packagemanagement": {
+        "type": "Project",
+        "dependencies": {
+          "Mono.Addins": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.DesignerSupport": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "MonoDevelop.Refactoring": "[1.0.0, )",
+          "NuGet.PackageManagement": "[7.9.0, )",
+          "NuGet.Resolver": "[7.9.0, )",
+          "Xwt": "[1.0.0, )"
+        }
+      },
       "monodevelop.refactoring": {
         "type": "Project",
         "dependencies": {
@@ -784,6 +803,17 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Build.Locator": "[1.11.2, )"
+        }
+      },
+      "monodevelop.unittesting": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.TestPlatform.TranslationLayer": "[18.10.1, )",
+          "Mono.Addins": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "MonoDevelop.PackageManagement": "[1.0.0, )",
+          "Xwt": "[1.0.0, )"
         }
       },
       "MonoDevelop.Wpf.Primitives": {
@@ -929,6 +959,15 @@
           "Newtonsoft.Json": "13.0.3"
         }
       },
+      "Microsoft.TestPlatform.TranslationLayer": {
+        "type": "CentralTransitive",
+        "requested": "[18.10.1, )",
+        "resolved": "18.10.1",
+        "contentHash": "mq0LDPGl00dPI6Qd8HK29Yv31jb0eHR729tsNRyZl6rPJMJy6kJVFmhy05wW1IZdsDnFkWi5FkyFVpaLbkunFg==",
+        "dependencies": {
+          "Microsoft.TestPlatform.ObjectModel": "18.10.1"
+        }
+      },
       "Microsoft.VisualStudio.Composition": {
         "type": "CentralTransitive",
         "requested": "[17.13.41, )",
@@ -1015,6 +1054,27 @@
         "requested": "[0.6.7, )",
         "resolved": "0.6.7",
         "contentHash": "gT6bf5PVayvTuEIuM2XSNqthrtn9W+LlCX4RD//Nb4hrT3agohHvPdjpROgNGgyXDkjwE74F+EwDwqUgJCJG8A=="
+      },
+      "NuGet.PackageManagement": {
+        "type": "CentralTransitive",
+        "requested": "[7.9.0, )",
+        "resolved": "7.9.0",
+        "contentHash": "nqU1j+5EkwGnXEaOx3hvPRDJN7Fx+NKkAjBtDoiDtpSQGTQSxmwo+txfn2QQTvRlITTWdOMh0SE2mdmFryLmjg==",
+        "dependencies": {
+          "Microsoft.Web.Xdt": "3.2.0",
+          "NuGet.Commands": "7.9.0",
+          "NuGet.Resolver": "7.9.0",
+          "System.ComponentModel.Composition": "4.5.0"
+        }
+      },
+      "NuGet.Resolver": {
+        "type": "CentralTransitive",
+        "requested": "[7.9.0, )",
+        "resolved": "7.9.0",
+        "contentHash": "AeambHAB0Cq/BFR84mQvV92kPJAglFt8eVQTAYey58wEfgQaajk/RysHJVX3wP9Hr7/NfpDLIIsJdVH4Yub+og==",
+        "dependencies": {
+          "NuGet.Protocol": "7.9.0"
+        }
       },
       "SharpZipLib": {
         "type": "CentralTransitive",

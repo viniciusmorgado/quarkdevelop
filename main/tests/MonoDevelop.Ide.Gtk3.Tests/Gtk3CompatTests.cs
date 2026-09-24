@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using MonoDevelop.Components;
 using NUnit.Framework;
 
@@ -114,6 +115,39 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 				var source = (Cairo.SolidPattern)cr.GetSource ();
 				Assert.AreEqual (1, source.Color.R, 1e-9);
 				Assert.AreEqual (0, source.Color.B, 1e-9);
+			}
+		}
+
+		[System.Runtime.InteropServices.DllImport ("libgtk-3.so.0")]
+		static extern void gtk_cell_renderer_get_preferred_width (IntPtr cell, IntPtr widget, IntPtr minimum_size, out int natural_size);
+
+		[System.Runtime.InteropServices.DllImport ("libgtk-3.so.0")]
+		static extern void gtk_cell_renderer_get_preferred_height (IntPtr cell, IntPtr widget, out int minimum_size, IntPtr natural_size);
+
+		/// <summary>
+		/// GTK asks a cell renderer for one size only with a NULL pointer for the other (the Test Results pad of the unit
+		/// testing add-in terminated the IDE with a NullReferenceException in CellRendererImage.OnGetPreferredWidth).
+		/// </summary>
+		[Test]
+		public void CellRendererImageAcceptsNullSizePointers ()
+		{
+			GtkFixture.Require ();
+			var renderer = new FixedSizeCellRendererImage ();
+			var view = new Gtk.TreeView ();
+			gtk_cell_renderer_get_preferred_width (renderer.Handle, view.Handle, IntPtr.Zero, out int naturalWidth);
+			gtk_cell_renderer_get_preferred_height (renderer.Handle, view.Handle, out int minimumHeight, IntPtr.Zero);
+			Assert.AreEqual (16, naturalWidth);
+			Assert.AreEqual (12, minimumHeight);
+		}
+
+		/// <summary>A fixed size instead of an image (the image service needs the add-in engine).</summary>
+		sealed class FixedSizeCellRendererImage : CellRendererImage
+		{
+			protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+			{
+				x_offset = y_offset = 0;
+				width = 16;
+				height = 12;
 			}
 		}
 

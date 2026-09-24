@@ -38,7 +38,10 @@ Compared with MonoDevelop 8.6:
 | NuGet package authoring projects (`MonoDevelop.Packaging`) | deferred |
 | Deployment / packaging add-in (`Deployment`, `Deployment.Linux`) | deferred |
 | Connected Services (`MonoDevelop.ConnectedServices`) | removed |
-| NUnit 2/3 in-IDE runners (`MonoDevelop.UnitTesting.NUnit`) | replaced by VSTest-based test running |
+| NUnit 2/3 in-IDE runners (`MonoDevelop.UnitTesting.NUnit`: Mono runner processes, .NET Framework NUnit project templates, NUnit test class file template) | replaced by VSTest-based test running: NUnit, xUnit and MSTest projects run through their VSTest adapters and the `vstest.console` of the .NET SDK (T101) |
+| Test runs with the `vstest.console.exe` of the `Microsoft.TestPlatform` package (run with Mono) | replaced by the `vstest.console.dll` of the .NET SDK the IDE uses |
+| Test adapters taken from a test project's package folders (`TestAdaptersPaths`) | not passed; the test host loads the adapters next to the test assembly, as `dotnet test` does |
+| Debug Test / Debug All Tests | deferred: the test host is started as a native `dotnet exec` command until the .NET execution command of `MonoDevelop.DotNetCore` (T099) is back |
 | Add-in development tooling (`MonoDeveloperExtensions`) | deferred |
 | MonoDoc documentation browser and help tree | removed (no MonoDoc on .NET 10) |
 | WS-Trust (STS) authentication for package feeds | removed (no WCF/WIF on .NET 10) |
@@ -57,6 +60,7 @@ Compared with MonoDevelop 8.6:
 | Gettext: GtkSpell spell checking in the catalog editor | removed (it was already disabled upstream; GtkSpell 2 is GTK 2 only) |
 | Assembly browser: MonoDoc documentation of the browsed members | removed (no MonoDoc) |
 | Assembly browser decompiler | ICSharpCode.Decompiler 11 (was 5): the decompiled C# and IL follow the newer ILSpy output |
+| C# test markers in the editor and source locations of tests | back with the UnitTesting add-in (T101), for NUnit, xUnit and MSTest |
 
 ## Add-in authors
 

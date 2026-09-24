@@ -132,7 +132,7 @@
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.Completion.CSharpCompletionTextEditorExtension" />
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.Highlighting.HighlightUsagesExtension" />
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.PathedDocumentTextEditorExtension" />
-		<!-- Linux: MonoDevelop.CSharp.UnitTestTextEditorExtension returns with the UnitTesting add-in (T101). -->
+		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.UnitTestTextEditorExtension" />
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.ClassOutline.CSharpOutlineTextEditorExtension" />
 		<Class fileExtensions = ".cs" class = "MonoDevelop.CSharp.CSharpNavigationTextEditorExtension" />
 		<Class fileExtensions = ".json" class = "MonoDevelop.JSon.JSonTextEditorExtension" />
@@ -286,7 +286,9 @@
 		<Class class="MonoDevelop.CSharp.Refactoring.CSharpJumpToDeclarationHandler" />
 	</Extension>
 
-	<!-- Linux: the NUnit source code location finder returns with the UnitTesting add-in (T101). -->
+	<Extension path = "/MonoDevelop/UnitTesting/NUnitSourceCodeLocationFinder">
+		<Class class="MonoDevelop.CSharp.UnitTests.CSharpNUnitSourceCodeLocationFinder" />
+	</Extension>
 
 	<Extension path="/MonoDevelop/Ide/TypeService/MefHostServices">
 		<Assembly file="MonoDevelop.CSharpBinding.dll"/>

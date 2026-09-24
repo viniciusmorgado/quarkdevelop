@@ -25,7 +25,9 @@
 // THE SOFTWARE.
 
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+#if MD_NUNIT_ADDIN
 using MonoDevelop.UnitTesting.NUnit;
+#endif
 using MonoDevelop.UnitTesting.VsTest;
 using NUnit.Framework;
 using System;
@@ -126,6 +128,8 @@ namespace MonoDevelop.UnitTesting.Tests
 		}
 	}
 
+#if MD_NUNIT_ADDIN
+	// Linux: the legacy NUnit runner add-in (NUnitTestSuite) is not built; NUnit tests run through VSTest.
 	[TestFixture]
 	class NUnitTestUnitTestTests : TestBase
 	{
@@ -259,4 +263,5 @@ namespace MonoDevelop.UnitTesting.Tests
 			return namespaceInfo;
 		}
 	}
+#endif
 }

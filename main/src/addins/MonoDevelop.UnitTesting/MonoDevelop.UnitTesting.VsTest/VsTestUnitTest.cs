@@ -69,7 +69,8 @@ namespace MonoDevelop.UnitTesting.VsTest
 			var token = cts.Token;
 			if (!string.IsNullOrEmpty (test.CodeFilePath))
 				sourceCodeLocation = new SourceCodeLocation (test.CodeFilePath, test.LineNumber, 0);
-			else {
+			else if (UnitTestingIde.TypeSystemService != null) {
+				// The source location comes from the IDE's type system (not started without the workbench).
 				IdeApp.TypeSystemService.GetCompilationAsync (Project, token).ContinueWith ((t) => {
 					if (token.IsCancellationRequested)
 						return;

@@ -1,69 +1,82 @@
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\..\MonoDevelop.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); NUnit 3 (ADR 0015), VSTest (T101). -->
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CD31F051-9012-487B-B7E8-4CDDEA68B3AF}</ProjectGuid>
-    <TargetFrameworkVersion>$(MDFrameworkVersion)</TargetFrameworkVersion>
-    <TestRunnerCommand>..\..\..\..\build\bin\mdtool.exe</TestRunnerCommand>
-    <TestRunnerArgs>run-md-tests</TestRunnerArgs>
-    <OutputPath>..\..\..\..\build\tests</OutputPath>
-    <RARResolveFromOutputDirectory>true</RARResolveFromOutputDirectory>
+    <AssemblyName>MonoDevelop.UnitTesting.Tests</AssemblyName>
+    <RootNamespace>MonoDevelop.UnitTesting.Tests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml" />
+    <Compile Include="MonoDevelop.UnitTesting.Tests/TestResultBuilderTests.cs" />
+    <Compile Include="MonoDevelop.UnitTesting.Tests/TestProgressMonitor.cs" />
+    <Compile Include="MonoDevelop.UnitTesting.Tests/VsTestUnitTestTests.cs" />
+    <Compile Include="MonoDevelop.UnitTesting.Tests/UnitTestGroupTests.cs" />
+    <Compile Include="MonoDevelop.UnitTesting.Tests/UnitTestingTestSetUp.cs" />
+    <Compile Include="MonoDevelop.UnitTesting.Tests/VsTestEndToEndTests.cs" />
   </ItemGroup>
+
+  <!--
+    Not compiled: BasicTests.cs (discovery of the .NET Framework / .NET Core 1.x xUnit projects of
+    tests/test-projects/unit-testing-addin, restored with the nuget.exe of Mono from nuget.org; ignored upstream as
+    randomly failing). VsTestEndToEndTests covers discovery and runs of NUnit, xUnit and MSTest projects (FR-011).
+  -->
+
   <ItemGroup>
-    <Compile Include="BasicTests.cs" />
-    <Compile Include="MonoDevelop.UnitTesting.Tests\TestResultBuilderTests.cs" />
-    <Compile Include="MonoDevelop.UnitTesting.Tests\TestProgressMonitor.cs" />
-    <Compile Include="MonoDevelop.UnitTesting.Tests\VsTestUnitTestTests.cs" />
-    <Compile Include="MonoDevelop.UnitTesting.Tests\UnitTestGroupTests.cs" />
+    <ProjectReference Include="../../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" />
+    <ProjectReference Include="../../../core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" />
+    <!-- Brings the add-in and its dependencies (PackageManagement, Refactoring, DesignerSupport) into the test folder. -->
+    <ProjectReference Include="../MonoDevelop.UnitTesting.csproj" />
+    <!-- C# project support (the language binding add-in of the project model), registered from the test folder. -->
+    <ProjectReference Include="../../CSharpBinding/MonoDevelop.CSharpBinding.Core/MonoDevelop.CSharpBinding.Core.csproj" />
+    <!-- An add-in dependency of MonoDevelop.Refactoring (not a project reference of the add-ins). -->
+    <ProjectReference Include="../../MonoDevelop.RegexToolkit/MonoDevelop.RegexToolkit.csproj" />
+    <!-- UnitTests.TestHost initializes the MonoDevelop runtime (GuiUnit and mdtool run-md-tests did it before, ADR 0015). -->
+    <ProjectReference Include="../../../../tests/UnitTests/UnitTests.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\external\guiunit\src\framework\GuiUnit_NET_4_5.csproj">
-      <Project>{D12F0F7B-8DE3-43EC-BA49-41052D065A9B}</Project>
-      <Name>GuiUnit_NET_4_5</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\tests\UnitTests\UnitTests.csproj">
-      <Project>{1497D0A8-AFF1-4938-BC22-BE79B358BA5B}</Project>
-      <Name>UnitTests</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\core\MonoDevelop.Ide\MonoDevelop.Ide.csproj">
-      <Project>{27096E7F-C91C-4AC6-B289-6897A701DF21}</Project>
-      <Name>MonoDevelop.Ide</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\core\MonoDevelop.Core\MonoDevelop.Core.csproj">
-      <Project>{7525BB88-6142-4A26-93B9-A30C6983390A}</Project>
-      <Name>MonoDevelop.Core</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\MonoDevelop.UnitTesting.csproj">
-      <Project>{A7A4246D-CEC4-42DF-A3C1-C31B9F51C4EC}</Project>
-      <Name>MonoDevelop.UnitTesting</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\MonoDevelop.DotNetCore\MonoDevelop.DotNetCore.csproj">
-      <Project>{6868153E-41EA-43A4-A81A-C1E7256373F7}</Project>
-      <Name>MonoDevelop.DotNetCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\MonoDevelop.UnitTesting.NUnit\MonoDevelop.UnitTesting.NUnit.csproj">
-      <Project>{6224D87E-2AC1-4D9F-91ED-714F797297BF}</Project>
-      <Name>MonoDevelop.UnitTesting.NUnit</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="GtkSharp" />
+    <PackageReference Include="Mono.Addins" />
+    <!-- Mono.Addins scans the add-ins of the test folder with Cecil on .NET (UnitTestingTestSetUp). -->
+    <PackageReference Include="Mono.Addins.CecilReflector" />
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.StringTools" ExcludeAssets="runtime" PrivateAssets="all" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+
+  <!--
+    The packages of the FR-011 sample test projects (tests/unittesting-samples), with their dependencies: the solution
+    restore downloads them into the global packages folder, from which VsTestEndToEndTests restores the samples with no
+    package source (no network in tests). Keep in sync with the sample projects.
+  -->
+  <ItemGroup>
+    <PackageDownload Include="Microsoft.NET.Test.Sdk" Version="[18.10.1]" />
+    <PackageDownload Include="Microsoft.CodeCoverage" Version="[18.10.1]" />
+    <PackageDownload Include="Microsoft.TestPlatform.TestHost" Version="[18.10.1]" />
+    <PackageDownload Include="Microsoft.TestPlatform.ObjectModel" Version="[18.9.0];[18.10.1]" />
+    <PackageDownload Include="NUnit" Version="[3.14.0]" />
+    <PackageDownload Include="NUnit3TestAdapter" Version="[4.6.0]" />
+    <PackageDownload Include="NETStandard.Library" Version="[2.0.0]" />
+    <PackageDownload Include="Microsoft.NETCore.Platforms" Version="[1.1.0]" />
+    <PackageDownload Include="xunit" Version="[2.9.3]" />
+    <PackageDownload Include="xunit.abstractions" Version="[2.0.3]" />
+    <PackageDownload Include="xunit.analyzers" Version="[1.18.0]" />
+    <PackageDownload Include="xunit.assert" Version="[2.9.3]" />
+    <PackageDownload Include="xunit.core" Version="[2.9.3]" />
+    <PackageDownload Include="xunit.extensibility.core" Version="[2.9.3]" />
+    <PackageDownload Include="xunit.extensibility.execution" Version="[2.9.3]" />
+    <PackageDownload Include="xunit.runner.visualstudio" Version="[3.1.5]" />
+    <PackageDownload Include="MSTest.TestAdapter" Version="[4.4.1]" />
+    <PackageDownload Include="MSTest.TestFramework" Version="[4.4.1]" />
+    <PackageDownload Include="MSTest.Analyzers" Version="[4.4.1]" />
+    <PackageDownload Include="Microsoft.Testing.Platform" Version="[2.4.1]" />
+    <PackageDownload Include="Microsoft.Testing.Platform.MSBuild" Version="[2.4.1]" />
+    <PackageDownload Include="Microsoft.Testing.Extensions.Telemetry" Version="[2.4.1]" />
+    <PackageDownload Include="Microsoft.Testing.Extensions.TrxReport.Abstractions" Version="[2.4.1]" />
+    <PackageDownload Include="Microsoft.ApplicationInsights" Version="[2.23.0]" />
+  </ItemGroup>
 </Project>

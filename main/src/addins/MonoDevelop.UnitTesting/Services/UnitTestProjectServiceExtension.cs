@@ -46,20 +46,21 @@ namespace MonoDevelop.UnitTesting
 
 		protected override bool SupportsObject (WorkspaceObject item)
 		{
-			return IdeApp.IsInitialized && base.SupportsObject (item);
+			// Not IdeApp.IsInitialized: this extension is created for every project a host with the add-in loads.
+			return UnitTestingIde.IsInitialized && base.SupportsObject (item);
 		}
 
 		protected override void Initialize ()
 		{
 			base.Initialize ();
-			if (IdeApp.IsInitialized)
+			if (UnitTestingIde.IsInitialized)
 				UnitTestService.TestSuiteChanged += TestSuiteChanged;
 		}
 
 		public override void Dispose ()
 		{
 			base.Dispose ();
-			if (IdeApp.IsInitialized)
+			if (UnitTestingIde.IsInitialized)
 				UnitTestService.TestSuiteChanged -= TestSuiteChanged;
 		}
 

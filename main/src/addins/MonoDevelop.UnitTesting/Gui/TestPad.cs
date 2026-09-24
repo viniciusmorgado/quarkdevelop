@@ -145,11 +145,7 @@ namespace MonoDevelop.UnitTesting
 			header.PackEnd (hb, false, false, 0);
 			
 			header.Add (detailLabel);
-			Gdk.Color hcol = eb.Style.Background (StateType.Normal);
-			hcol.Red = (ushort) (((double)hcol.Red) * 0.9);
-			hcol.Green = (ushort) (((double)hcol.Green) * 0.9);
-			hcol.Blue = (ushort) (((double)hcol.Blue) * 0.9);
-		//	eb.ModifyBg (StateType.Normal, hcol);
+			// GTK 3: the darker header background (a GTK 2 style colour, already unused) is not computed.
 			
 			detailsPad.PackStart (eb, false, false, 0);
 			
@@ -958,7 +954,7 @@ namespace MonoDevelop.UnitTesting
 			GetNthPage (n).Hide ();
 		}
 		
-		protected override void OnSwitchPage (NotebookPage page, uint n)
+		protected override void OnSwitchPage (Widget page, uint n)
 		{
 			base.OnSwitchPage (page, n);
 			if (!loadedPages.Contains (Page))
@@ -983,7 +979,7 @@ namespace MonoDevelop.UnitTesting
 		
 		public HeaderLabel ()
 		{
-			WidgetFlags |= WidgetFlags.NoWindow;
+			HasWindow = false;
 			layout = new Pango.Layout (this.PangoContext);
 		}
 		
@@ -992,7 +988,7 @@ namespace MonoDevelop.UnitTesting
 			set {
 				text = value;
 				layout.SetMarkup (text);
-				QueueDraw ();
+				QueueResize ();
 			}
 		}
 		
@@ -1001,13 +997,26 @@ namespace MonoDevelop.UnitTesting
 			set { padding = value; }
 		}
 		
-		protected override bool OnExposeEvent (Gdk.EventExpose args)
+		// GTK 3: drawn with cairo in widget coordinates (no Gdk.GC), and sized to the text.
+		protected override bool OnDrawn (Cairo.Context gtk3cr)
 		{
-			using (Gdk.GC gc = new Gdk.GC (GdkWindow)) {
-				gc.ClipRectangle = Allocation;
-				GdkWindow.DrawLayout (gc, padding, padding, layout);
-			}
+			gtk3cr.SetSourceColor (this.GetStyleTextColor (StateType.Normal));
+			gtk3cr.MoveTo (padding, padding);
+			Pango.CairoHelper.ShowLayout (gtk3cr, layout);
 			return true;
+		}
+
+		protected override void OnGetPreferredWidth (out int minimumWidth, out int naturalWidth)
+		{
+			layout.GetPixelSize (out int width, out _);
+			minimumWidth = 0;
+			naturalWidth = width + padding * 2;
+		}
+
+		protected override void OnGetPreferredHeight (out int minimumHeight, out int naturalHeight)
+		{
+			layout.GetPixelSize (out _, out int height);
+			minimumHeight = naturalHeight = height + padding * 2;
 		}
 		protected override void OnDestroyed ()
 		{

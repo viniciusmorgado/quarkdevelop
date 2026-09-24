@@ -54,6 +54,12 @@ namespace MonoDevelop.UnitTesting
 
 		static UnitTestService ()
 		{
+			Mono.Addins.AddinManager.AddExtensionNodeHandler ("/MonoDevelop/UnitTesting/TestProviders", OnExtensionChange);
+
+			// Without the IDE's workspace (tests, headless hosts) there is nothing to follow: tests are built with BuildTest.
+			if (UnitTestingIde.Workspace == null)
+				return;
+
 			IdeApp.Workspace.WorkspaceItemOpened += OnWorkspaceChanged;
 			IdeApp.Workspace.WorkspaceItemClosed += OnWorkspaceChanged;
 			IdeApp.Workspace.ActiveConfigurationChanged += OnWorkspaceChanged;
@@ -71,8 +77,6 @@ namespace MonoDevelop.UnitTesting
 					PackageManagementServices.ProjectOperations.PackagesRestored += ProjectOperations_PackageReferencesModified;
 				}
 			};
-			
-			Mono.Addins.AddinManager.AddExtensionNodeHandler ("/MonoDevelop/UnitTesting/TestProviders", OnExtensionChange);
 
 			RebuildTests ();
 		}
@@ -429,6 +433,10 @@ namespace MonoDevelop.UnitTesting
 
 		public static string GetTestResultsDirectory (string baseDirectory)
 		{
+			// Without the workbench the type system service, which owns the cache directories, is not started.
+			if (UnitTestingIde.TypeSystemService == null)
+				return Path.Combine (baseDirectory, "obj", "test-results");
+
 			var newCache = IdeApp.TypeSystemService.GetCacheDirectory (baseDirectory, false);
 			if (newCache == null) {
 				newCache = IdeApp.TypeSystemService.GetCacheDirectory (baseDirectory, true);

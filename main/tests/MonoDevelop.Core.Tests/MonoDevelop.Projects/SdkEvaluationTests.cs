@@ -108,6 +108,26 @@ namespace MonoDevelop.Projects
 			project.Dispose ();
 		}
 
+		[Test]
+		public void VersionCompareToMatchesDotNetMSBuild ()
+		{
+			// Microsoft.CodeCoverage.targets (Microsoft.NET.Test.Sdk) compares the SDK version this way.
+			var file = Path.Combine (workDir, "Probe.proj");
+			File.WriteAllText (file, "<Project>\n  <PropertyGroup>\n" +
+				"    <MD_Older>$([System.Version]::Parse('10.0.401').CompareTo($([System.Version]::Parse('6.0.100'))))</MD_Older>\n" +
+				"    <MD_Newer>$([System.Version]::Parse('6.0.100').CompareTo($([System.Version]::Parse('10.0.401'))))</MD_Newer>\n" +
+				"  </PropertyGroup>\n  <Target Name=\"Build\" />\n</Project>\n");
+			var names = new[] { "MD_Older", "MD_Newer" };
+			var expected = QueryDotNetMSBuild (file, names, items: false).RootElement.GetProperty ("Properties");
+
+			var project = new MSBuildProject ();
+			project.Load (file);
+			project.Evaluate ();
+			foreach (var name in names)
+				Assert.AreEqual (expected.GetProperty (name).GetString (), project.EvaluatedProperties.GetValue (name) ?? "", name);
+			project.Dispose ();
+		}
+
 		[TestCase ("Hello/Hello.csproj")]
 		[TestCase ("Greeter/Greeter.csproj")]
 		public async Task EvaluationMatchesDotNetMSBuild (string relativePath)

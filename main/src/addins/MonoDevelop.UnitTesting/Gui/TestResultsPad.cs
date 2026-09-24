@@ -415,8 +415,9 @@ namespace MonoDevelop.UnitTesting
 			var stock = ImageService.GetIcon (Ide.Gui.Stock.Error, Gtk.IconSize.Menu);
 			TreeIter testRow = failuresStore.AppendValues (stock, msg, null, null, 0);
 			string name = error is RemoteUnhandledException ? ((RemoteUnhandledException)error).RemoteExceptionName : error.GetType ().Name;
-			failuresStore.AppendValues (testRow, null, Escape (name + ": " + error.Message), null);
-			TreeIter row = failuresStore.AppendValues (testRow, null, GettextCatalog.GetString ("Stack Trace"), null, null, 0);
+			// GTK 3: rows without an icon use NullImage (a GLib.Value cannot hold a null managed object).
+			failuresStore.AppendValues (testRow, CellRendererImage.NullImage, Escape (name + ": " + error.Message), null);
+			TreeIter row = failuresStore.AppendValues (testRow, CellRendererImage.NullImage, GettextCatalog.GetString ("Stack Trace"), null, null, 0);
 			AddStackTrace (row, error.StackTrace, null);
 		}
 
@@ -455,7 +456,7 @@ namespace MonoDevelop.UnitTesting
 				string fileName;
 				int lineNumber;
 				TryParseLocationFromStackTrace (line, out fileName, out lineNumber);
-				failuresStore.AppendValues (row, null, Escape (line), test, fileName, lineNumber, StackTrace);
+				failuresStore.AppendValues (row, CellRendererImage.NullImage, Escape (line), test, fileName, lineNumber, StackTrace);
 			}
 		}
 		
@@ -536,7 +537,7 @@ namespace MonoDevelop.UnitTesting
 				if (last == null)
 					return;
 
-				Gtk.TreeModel foo;
+				Gtk.ITreeModel foo;
 				Gtk.TreeIter iter;
 				if (!failuresTreeView.Selection.GetSelected (out foo, out iter))
 					return;
@@ -560,7 +561,7 @@ namespace MonoDevelop.UnitTesting
 					return;
 				var clipboard = Clipboard.Get (Gdk.Atom.Intern ("CLIPBOARD", false));
 
-				Gtk.TreeModel foo;
+				Gtk.ITreeModel foo;
 				Gtk.TreeIter iter;
 				if (!failuresTreeView.Selection.GetSelected (out foo, out iter))
 					return;
@@ -588,7 +589,7 @@ namespace MonoDevelop.UnitTesting
 			if (test != null) {
 				var last = test.GetLastResult ();
 
-				Gtk.TreeModel foo;
+				Gtk.ITreeModel foo;
 				Gtk.TreeIter iter;
 				if (!failuresTreeView.Selection.GetSelected (out foo, out iter)) {
 					info.Enabled = false;
@@ -671,7 +672,7 @@ namespace MonoDevelop.UnitTesting
 		
 		UnitTest GetSelectedTest ()
 		{
-			Gtk.TreeModel foo;
+			Gtk.ITreeModel foo;
 			Gtk.TreeIter iter;
 			if (!failuresTreeView.Selection.GetSelected (out foo, out iter))
 				return null;
@@ -767,13 +768,13 @@ namespace MonoDevelop.UnitTesting
 						sb.Append ("</span>");
 					}
 					sb.Append ("</span>");
-					failuresStore.AppendValues (testRow, null,StringBuilderCache.ReturnAndFree (sb), test, null, 0, ErrorMessage);
+					failuresStore.AppendValues (testRow, CellRendererImage.NullImage,StringBuilderCache.ReturnAndFree (sb), test, null, 0, ErrorMessage);
 				}
 
 				if (!string.IsNullOrEmpty (result.StackTrace)) {
 					TreeIter row = testRow;
 					if (hasMessage)
-						row = failuresStore.AppendValues (testRow, null, GettextCatalog.GetString ("Stack Trace"), test, null, 0, StackTrace);
+						row = failuresStore.AppendValues (testRow, CellRendererImage.NullImage, GettextCatalog.GetString ("Stack Trace"), test, null, 0, StackTrace);
 					AddStackTrace (row, result.StackTrace, test);
 				}
 				failuresTreeView.ScrollToCell (failuresStore.GetPath (testRow), null, false, 0, 0);
@@ -783,7 +784,7 @@ namespace MonoDevelop.UnitTesting
 					return;
 				TreeIter testRow = failuresStore.AppendValues (TestStatusIcon.NotRun, Escape (test.FullName), test);
 				if (result.Message != null)
-					failuresStore.AppendValues (testRow, null, Escape (result.Message), test);
+					failuresStore.AppendValues (testRow, CellRendererImage.NullImage, Escape (result.Message), test);
 				failuresTreeView.ScrollToCell (failuresStore.GetPath (testRow), null, false, 0, 0);
 			}
 			if (result.IsInconclusive) {
@@ -791,7 +792,7 @@ namespace MonoDevelop.UnitTesting
 					return;
 				TreeIter testRow = failuresStore.AppendValues (TestStatusIcon.Inconclusive, Escape (test.FullName), test);
 				if (result.Message != null)
-					failuresStore.AppendValues (testRow, null, Escape (result.Message), test);
+					failuresStore.AppendValues (testRow, CellRendererImage.NullImage, Escape (result.Message), test);
 				failuresTreeView.ScrollToCell (failuresStore.GetPath (testRow), null, false, 0, 0);
 			}
 			

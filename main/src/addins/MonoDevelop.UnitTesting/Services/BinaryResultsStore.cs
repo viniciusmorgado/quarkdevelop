@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using Newtonsoft.Json;
@@ -72,7 +73,8 @@ namespace MonoDevelop.UnitTesting
 			// no need for xml serialization because next time it will be
 			// deserialized from the binary format
 			string binaryFilePath = GetBinaryFilePath (xmlFilePath);
-			using var stream = File.OpenWrite (binaryFilePath);
+			// File.Create truncates: OpenWrite left the end of a longer previous record behind (invalid JSON).
+			using var stream = File.Create (binaryFilePath);
 			using var writer = new StreamWriter (stream);
 
 			jsonSerializer.Serialize (writer, testRecord);
@@ -91,7 +93,9 @@ namespace MonoDevelop.UnitTesting
 
 			// deserialize from xml if the file exists
 			if (File.Exists(xmlFilePath)) {
-				using (var reader = new StreamReader (xmlFilePath)) {
+				// No DTD processing and no resolver (CA5369).
+				var settings = new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null };
+				using (var reader = XmlReader.Create (xmlFilePath, settings)) {
 					return (TestRecord) XmlSerializer.Deserialize (reader);
 				}
 			}

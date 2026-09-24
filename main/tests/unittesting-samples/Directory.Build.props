@@ -1,0 +1,11 @@
+<Project>
+  <!--
+    The unit testing samples are *user* test projects that MonoDevelop.UnitTesting.Tests copies, restores, builds,
+    discovers and runs through the add-in (FR-011). They must not inherit the repository's build configuration
+    (main/Directory.Build.props), so this file intentionally stops the Directory.Build.* chain.
+  -->
+  <PropertyGroup>
+    <!-- Restored offline from the global packages folder (see MonoDevelop.UnitTesting.Tests.csproj). -->
+    <NuGetAudit>false</NuGetAudit>
+  </PropertyGroup>
+</Project>

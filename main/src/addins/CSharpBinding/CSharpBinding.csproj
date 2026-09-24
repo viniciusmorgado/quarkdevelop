@@ -143,6 +143,8 @@
     <Compile Include="MonoDevelop.CSharp.Formatting/OnTheFlyFormattingPanel.cs" />
     <Compile Include="MonoDevelop.CSharp.Debugger/DebuggerCompletionController.cs" />
     <Compile Include="MonoDevelop.CSharp.Debugger/CSharpBreakpointSpanResolver.cs" />
+    <Compile Include="MonoDevelop.CSharp.UnitTests/UnitTestTextEditorExtension.cs" />
+    <Compile Include="MonoDevelop.CSharp.UnitTests/CSharpNUnitSourceCodeLocationFinder.cs" />
   </ItemGroup>
 
   <!--
@@ -184,7 +186,6 @@
       compiled by MonoDevelop.CSharpBinding.Core (T053), which this add-in depends on.
     - MonoDevelop.CSharp/CSharpEnhancedCodeProvider.cs: CodeDOM provider on NRefactory (ADR 0019); CSharpBinding.Core
       registers System.CodeDom's CSharpCodeProvider for C#.
-    - MonoDevelop.CSharp.UnitTests/*: NUnit integration of MonoDevelop.UnitTesting (not ported yet); returns with T101.
   -->
 
   <ItemGroup>
@@ -220,8 +221,8 @@
 
   <ItemGroup>
     <!--
-      Not referenced on Linux: NRefactory 5 (removed, ADR 0019), the Cocoa/WPF MonoDevelop.TextEditor add-in (ADR 0012),
-      MonoDevelop.UnitTesting (not ported yet; its integration returns with T101) and the WPF assemblies (Windows only).
+      Not referenced on Linux: NRefactory 5 (removed, ADR 0019), the Cocoa/WPF MonoDevelop.TextEditor add-in (ADR 0012)
+      and the WPF assemblies (Windows only).
     -->
     <ProjectReference Include="../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" Private="false" />
     <ProjectReference Include="../../core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" Private="false" />
@@ -230,6 +231,7 @@
     <ProjectReference Include="../MonoDevelop.DesignerSupport/MonoDevelop.DesignerSupport.csproj" Private="false" />
     <ProjectReference Include="../MonoDevelop.Refactoring/MonoDevelop.Refactoring.csproj" Private="false" />
     <ProjectReference Include="../MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" Private="false" />
+    <ProjectReference Include="../MonoDevelop.UnitTesting/MonoDevelop.UnitTesting.csproj" Private="false" />
     <ProjectReference Include="../../../vendor/debugger-libs/Mono.Debugging/Mono.Debugging.csproj" Private="false" />
     <ProjectReference Include="../../../vendor/xwt/Xwt/Xwt.csproj" Private="false" />
     <ProjectReference Include="../../../vendor/xwt/Xwt.Gtk/Xwt.Gtk3.csproj" Private="false" />

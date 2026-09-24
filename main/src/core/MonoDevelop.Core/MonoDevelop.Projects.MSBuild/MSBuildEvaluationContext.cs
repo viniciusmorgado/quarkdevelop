@@ -1012,6 +1012,12 @@ namespace MonoDevelop.Projects.MSBuild
 			if (sval != null && parameterType == typeof (Version))
 				return Version.Parse (sval);
 
+			// As in MSBuild, System.Version's object parameters take a version: Microsoft.CodeCoverage (test projects)
+			// evaluates $([System.Version]::Parse (...).CompareTo ($([System.Version]::Parse (...)))), whose argument is a
+			// string here; CompareTo (object) threw "Object must be of type Version".
+			if (sval != null && method.DeclaringType == typeof (Version) && parameterType == typeof (object) && Version.TryParse (sval, out var version))
+				return version;
+
 			if (sval != null && Path.DirectorySeparatorChar != '\\')
 				value = sval.Replace ('\\', Path.DirectorySeparatorChar);
 			

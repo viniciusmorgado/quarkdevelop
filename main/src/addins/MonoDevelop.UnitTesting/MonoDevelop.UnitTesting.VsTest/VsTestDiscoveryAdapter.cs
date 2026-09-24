@@ -24,15 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using MonoDevelop.Ide;
 using MonoDevelop.Projects;
 using MonoDevelop.Core;
@@ -54,7 +52,8 @@ namespace MonoDevelop.UnitTesting.VsTest
 		/// </summary>
 		async Task CreateProgressMonitor ()
 		{
-			if (monitor != null)
+			// Without the workbench (tests, headless hosts) the messages go to the log.
+			if (monitor != null || !UnitTestingIde.IsInitialized)
 				return;
 
 			await Runtime.RunInMainThread (() => {
@@ -71,93 +70,70 @@ namespace MonoDevelop.UnitTesting.VsTest
 			});
 		}
 
-		ConcurrentQueue<DiscoveryJob> discoveryQueue = new ConcurrentQueue<DiscoveryJob> ();
-		DiscoveryJob discoveryJobInProgress;
-
 		public static VsTestDiscoveryAdapter Instance { get; } = new VsTestDiscoveryAdapter ();
 
-		class DiscoveryJob
-		{
-			public Project project;
-			public DiscoveredTests tests = new DiscoveredTests ();
-			public TaskCompletionSource<DiscoveredTests> taskSource = new TaskCompletionSource<DiscoveredTests> ();
-		}
-
-		protected override void ProcessMessage (Message message)
-		{
-			switch (message.MessageType) {
-			case MessageType.TestCasesFound:
-				OnTestCasesFound (message);
-				break;
-			case MessageType.DiscoveryComplete:
-				OnDiscoveryCompleted (message);
-				break;
-			case MessageType.TestMessage:
-				OnTestMessage (message);
-				break;
-			default:
-				base.ProcessMessage (message);
-				break;
-			}
-		}
-
+		/// <summary>
+		/// Discovers the tests of the project's output assembly. Requests are queued: vstest.console runs one at a time.
+		/// </summary>
 		public async Task<DiscoveredTests> DiscoverTestsAsync (Project project)
 		{
 			await CreateProgressMonitor ();
-			await Start ();
-			var job = new DiscoveryJob () { project = project };
-			discoveryQueue.Enqueue (job);
-			ProcessDiscoveryQueue ();
-			return await job.taskSource.Task;
+			var tests = new DiscoveredTests ();
+			var testAssemblyFile = GetAssemblyFileName (project);
+			if (!File.Exists (testAssemblyFile))
+				return tests;
+
+			var handler = new DiscoveryEventsHandler (this, tests);
+			var runSettings = GetRunSettings (project);
+			await RunRequestAsync (console => console.DiscoverTests (
+				new [] { testAssemblyFile },
+				runSettings,
+				new TestPlatformOptions (),
+				handler));
+			return tests;
 		}
 
-		void ProcessDiscoveryQueue ()
+		void OnTestMessage (TestMessageLevel level, string message)
 		{
-			if (discoveryQueue.IsEmpty)
-				return;
-			if (discoveryJobInProgress != null)
-				return;
-			if (!discoveryQueue.TryDequeue (out var newJob))
-				return;
-			discoveryJobInProgress = newJob;
-			var testAssemblyFile = discoveryJobInProgress.project.GetOutputFileName (IdeApp.Workspace.ActiveConfiguration);
-			if (!File.Exists (testAssemblyFile)) {
-				discoveryJobInProgress.taskSource.SetResult (discoveryJobInProgress.tests);
-				discoveryJobInProgress = null;
-				ProcessDiscoveryQueue ();
-				return;
-			}
-			SendExtensionList (GetTestAdapters (discoveryJobInProgress.project).Split (';'));
-			var message = new DiscoveryRequestPayload {
-				Sources = new string [] { testAssemblyFile },
-				RunSettings = GetRunSettings (discoveryJobInProgress.project)
-			};
-			communicationManager.SendMessage (MessageType.StartDiscovery, message);
-		}
-
-		void OnTestCasesFound (Message message)
-		{
-			var tests = dataSerializer.DeserializePayload<IEnumerable<TestCase>> (message);
-			if (tests.Any ()) {
-				discoveryJobInProgress.tests.Add (tests);
+			if (monitor != null) {
+				monitor.Log.WriteLine (message);
+			} else if (level == TestMessageLevel.Error) {
+				LoggingService.LogError ("Test discovery: {0}", message);
+			} else {
+				LoggingService.LogInfo ("Test discovery: {0}", message);
 			}
 		}
 
-		void OnDiscoveryCompleted (Message message)
+		class DiscoveryEventsHandler : ITestDiscoveryEventsHandler2
 		{
-			var discoveryCompletePayload = dataSerializer.DeserializePayload<DiscoveryCompletePayload> (message);
-			if (discoveryCompletePayload.LastDiscoveredTests != null && discoveryCompletePayload.LastDiscoveredTests.Any ()) {
-				discoveryJobInProgress.tests.Add (discoveryCompletePayload.LastDiscoveredTests);
-			}
-			discoveryJobInProgress.taskSource.SetResult (discoveryJobInProgress.tests);
-			discoveryJobInProgress = null;
-			ProcessDiscoveryQueue ();
-		}
+			readonly VsTestDiscoveryAdapter adapter;
+			readonly DiscoveredTests tests;
 
-		void OnTestMessage (Message message)
-		{
-			var payload = dataSerializer.DeserializePayload<TestMessagePayload> (message);
-			monitor.Log.WriteLine (payload.Message);
+			public DiscoveryEventsHandler (VsTestDiscoveryAdapter adapter, DiscoveredTests tests)
+			{
+				this.adapter = adapter;
+				this.tests = tests;
+			}
+
+			public void HandleDiscoveredTests (IEnumerable<TestCase> discoveredTestCases)
+			{
+				if (discoveredTestCases != null && discoveredTestCases.Any ())
+					tests.Add (discoveredTestCases);
+			}
+
+			public void HandleDiscoveryComplete (DiscoveryCompleteEventArgs discoveryCompleteEventArgs, IEnumerable<TestCase> lastChunk)
+			{
+				HandleDiscoveredTests (lastChunk);
+			}
+
+			public void HandleLogMessage (TestMessageLevel level, string message)
+			{
+				adapter.OnTestMessage (level, message);
+			}
+
+			public void HandleRawMessage (string rawMessage)
+			{
+			}
 		}
 	}
 }

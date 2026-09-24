@@ -17,5 +17,6 @@ using Mono.Addins.Description;
 [assembly:AddinDependency ("CSharpBinding.Core", MonoDevelop.BuildInfo.Version)]
 [assembly:AddinDependency ("Refactoring", MonoDevelop.BuildInfo.Version)]
 [assembly:AddinDependency ("SourceEditor2", MonoDevelop.BuildInfo.Version)]
-// Linux: no UnitTesting dependency until that add-in is ported (T101), and no Cocoa/WPF TextEditor add-in (ADR 0012).
+[assembly:AddinDependency ("UnitTesting", MonoDevelop.BuildInfo.Version)]
+// Linux: no Cocoa/WPF TextEditor add-in (ADR 0012).
 // The Autotools (removed) and ASP.NET (ADR 0017) modules are not built.

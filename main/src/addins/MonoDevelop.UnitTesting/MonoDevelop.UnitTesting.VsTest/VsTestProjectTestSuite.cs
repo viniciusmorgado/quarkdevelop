@@ -31,9 +31,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Core.Execution;
-using MonoDevelop.DotNetCore;
-using MonoDevelop.Ide;
 using MonoDevelop.Projects;
 using MonoDevelop.UnitTesting;
 
@@ -54,7 +53,9 @@ namespace MonoDevelop.UnitTesting.VsTest
 
 			CreateResultsStore ();
 
-			IdeApp.ProjectOperations.EndBuild += AfterBuild;
+			var projectOperations = UnitTestingIde.ProjectOperations;
+			if (projectOperations != null)
+				projectOperations.EndBuild += AfterBuild;
 		}
 
 		void CreateResultsStore ()
@@ -78,12 +79,9 @@ namespace MonoDevelop.UnitTesting.VsTest
 			FilePath assemblyFileName = GetAssemblyFileName ();
 			if (assemblyFileName.IsNull)
 				return false;
-			if (Project is DotNetProject dnp) {
-				if (Project.HasFlavor<DotNetCoreProjectExtension> () && dnp.TargetFramework.IsNetCoreApp())
-					return executionContext.CanExecute (new DotNetCoreExecutionCommand (Path.GetDirectoryName (assemblyFileName), assemblyFileName, ""));
-				else
-					return executionContext.CanExecute (new DotNetExecutionCommand ());
-			}
+			// The test host is started as a native `dotnet exec` command (VsTestRunAdapter).
+			if (Project is DotNetProject)
+				return executionContext.CanExecute (new NativeExecutionCommand (DotNetCoreSdkInfo.GetDotNetHostPath ()));
 			return true;
 		}
 
@@ -122,7 +120,7 @@ namespace MonoDevelop.UnitTesting.VsTest
 
 		string GetAssemblyFileName ()
 		{
-			return Project.GetOutputFileName (IdeApp.Workspace.ActiveConfiguration);
+			return Project.GetOutputFileName (UnitTestingIde.ActiveConfiguration);
 		}
 
 		void AddOldTests ()
@@ -136,7 +134,9 @@ namespace MonoDevelop.UnitTesting.VsTest
 
 		public override void Dispose ()
 		{
-			IdeApp.ProjectOperations.EndBuild -= AfterBuild;
+			var projectOperations = UnitTestingIde.ProjectOperations;
+			if (projectOperations != null)
+				projectOperations.EndBuild -= AfterBuild;
 			base.Dispose ();
 		}
 

@@ -91,6 +91,13 @@
     <!-- Version control (T102): nuget.org LibGit2Sharp with its native libgit2 (LibGit2Sharp.NativeBinaries) -->
     <PackageVersion Include="LibGit2Sharp" Version="0.32.0" />
 
+    <!--
+      Unit testing (T101, FR-011): the VSTest client (VsTestConsoleWrapper) that drives the vstest.console of the .NET
+      SDK in design mode. Same release as Microsoft.NET.Test.Sdk; the protocol version is negotiated with the SDK's
+      vstest.console, which may be older or newer.
+    -->
+    <PackageVersion Include="Microsoft.TestPlatform.TranslationLayer" Version="18.10.1" />
+
     <!-- Debugger: Debug Adapter Protocol client (ADR 0016); netstandard2.0, latest stable on nuget.org -->
     <PackageVersion Include="Microsoft.VisualStudio.Shared.VsCodeDebugProtocol" Version="18.0.10427.1" />
 

@@ -1,5 +1,16 @@
 ﻿<ExtensionModel>
 
+	<Runtime>
+		<Import assembly="MonoDevelop.UnitTesting.dll" />
+		<!-- The VSTest client (T101): it drives the vstest.console of the .NET SDK. -->
+		<Import assembly="Microsoft.TestPlatform.VsTestConsole.TranslationLayer.dll" />
+		<Import assembly="Microsoft.TestPlatform.CommunicationUtilities.dll" />
+		<Import assembly="Microsoft.VisualStudio.TestPlatform.Common.dll" />
+		<Import assembly="Microsoft.VisualStudio.TestPlatform.ObjectModel.dll" />
+		<Import assembly="Microsoft.TestPlatform.CoreUtilities.dll" />
+		<Import assembly="Microsoft.TestPlatform.PlatformAbstractions.dll" />
+	</Runtime>
+
 	<!-- Extension Points -->
 
 	<ExtensionPoint path = "/MonoDevelop/UnitTesting/TestProviders" name = "Test providers" defaultInsertBefore="VsTestProvider">
@@ -129,6 +140,31 @@
 
 	<Extension path = "/MonoDevelop/Core/StockIcons">
 		<StockIcon stockid = "nunit-pad-icon" resource = "pad-unit-test-16.png" size="Menu" />
+	</Extension>
+
+	<!--
+		Linux: the test markers of the C# editor for the frameworks VSTest runs (T101). The NUnit markers come from the
+		MonoDevelop.UnitTesting.NUnit add-in, which is not built (its legacy NUnit runner needs Mono).
+	-->
+	<Extension path = "/MonoDevelop/UnitTesting/UnitTestMarkers">
+		<TestMarkers
+				testMethodAttributeMarker="NUnit.Framework.TestAttribute"
+				testCaseMethodAttributeMarker="NUnit.Framework.TestCaseAttribute"
+				testCaseSourceMethodAttributeMarker="NUnit.Framework.TestCaseSourceAttribute"
+				ignoreTestMethodAttributeMarker="NUnit.Framework.IgnoreAttribute"
+				ignoreTestClassAttributeMarker="NUnit.Framework.IgnoreAttribute"
+			/>
+		<TestMarkers
+				testMethodAttributeMarker="Xunit.FactAttribute"
+				testCaseMethodAttributeMarker="Xunit.InlineDataAttribute"
+				testCaseSourceMethodAttributeMarker="Xunit.TheoryAttribute"
+			/>
+		<TestMarkers
+				testMethodAttributeMarker="Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute"
+				testCaseMethodAttributeMarker="Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute"
+				ignoreTestMethodAttributeMarker="Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute"
+				ignoreTestClassAttributeMarker="Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute"
+			/>
 	</Extension>
 
 	<Extension path = "/MonoDevelop/ProjectModel/ProjectModelExtensions">
