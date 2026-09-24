@@ -87,10 +87,8 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 
 		public static ISyntaxHighlightingDefinitionProvider CreateProvider (SyntaxHighlightingDefinitionFormat format, string name, string scope, IReadOnlyList<string> fileTypes, Func<IStreamProvider> getStreamProvider)
 		{
-			if (name == null)
-				throw new ArgumentNullException (nameof (name));
-			if (fileTypes == null)
-				throw new ArgumentNullException (nameof (fileTypes));
+			ArgumentNullException.ThrowIfNull (name);
+			ArgumentNullException.ThrowIfNull (fileTypes);
 
 			switch (format) {
 			case SyntaxHighlightingDefinitionFormat.TextMate:

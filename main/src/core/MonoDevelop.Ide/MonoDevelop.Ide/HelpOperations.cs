@@ -44,12 +44,12 @@ namespace MonoDevelop.Ide
 		TextWriter outWriter;
 		TextWriter errWriter;
 		bool firstCall = true;
-		bool useExternalMonodoc = false;
+		bool useExternalMonodoc;
 
 		ProcessStartInfo GetStartPlatformSpecificMonoDoc (string topic, params string[] extraArgs)
 		{
 			var builder = new ProcessArgumentBuilder ();
-			extraArgs = extraArgs ?? new string[0];
+			extraArgs = extraArgs ?? Array.Empty<string> ();
 
 			if (Platform.IsMac) {
 				var url = topic != null ? "monodoc://" + System.Web.HttpUtility.UrlEncode (topic) : null;

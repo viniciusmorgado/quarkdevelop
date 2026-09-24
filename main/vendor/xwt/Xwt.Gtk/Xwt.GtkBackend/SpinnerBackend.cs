@@ -56,7 +56,7 @@ namespace Xwt.GtkBackend
 		{
 			if (GetType () != typeof(Spinner))
 			{
-				this.CreateNativeObject (new string[0], new GLib.Value[0]);
+				this.CreateNativeObject (Array.Empty<string> (), Array.Empty<GLib.Value> ());
 				return;
 			}
 			this.Raw = Spinner.gtk_spinner_new ();

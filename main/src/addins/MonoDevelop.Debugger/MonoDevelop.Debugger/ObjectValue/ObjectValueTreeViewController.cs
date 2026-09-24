@@ -82,7 +82,6 @@ namespace MonoDevelop.Debugger
 
 		IObjectValueTreeView view;
 		IDebuggerService debuggerService;
-		bool allowWatchExpressions;
 		bool allowEditing;
 		bool allowExpanding = true;
 
@@ -315,7 +314,7 @@ namespace MonoDevelop.Debugger
 			}
 
 			UnregisterNode (node);
-			OnEvaluationCompleted (node, new ObjectValueNode[0]);
+			OnEvaluationCompleted (node, Array.Empty<ObjectValueNode> ());
 
 			if (AllowWatchExpressions && toplevel && index != -1)
 				ExpressionRemoved?.Invoke (this, new ExpressionRemovedEventArgs (index, node.Name));
@@ -445,7 +444,7 @@ namespace MonoDevelop.Debugger
 			UnregisterNode (node);
 			if (string.IsNullOrEmpty (newExpression)) {
 				// we want the expression removed from the tree
-				OnEvaluationCompleted (node, new ObjectValueNode[0]);
+				OnEvaluationCompleted (node, Array.Empty<ObjectValueNode> ());
 				ExpressionRemoved?.Invoke (this, new ExpressionRemovedEventArgs (index, oldExpression));
 				return true;
 			}
@@ -1097,7 +1096,7 @@ namespace MonoDevelop.Debugger
 			// and they are all children of the root, we can mimic a list of expressions by just grabbing the
 			// name property of the root children
 			if (controller.Root == null)
-				return new string[0];
+				return Array.Empty<string> ();
 
 			return controller.Root.Children.Select (c => c.Name).ToArray ();
 		}
@@ -1114,7 +1113,7 @@ namespace MonoDevelop.Debugger
 				// Truncate the string to stop the UI from hanging
 				// when calculating the size for very large amounts
 				// of text.
-				return node.DisplayValue.Substring (0, 1000) + "…";
+				return string.Concat (node.DisplayValue.AsSpan (0, 1000), "…");
 			}
 
 			return node.DisplayValue;

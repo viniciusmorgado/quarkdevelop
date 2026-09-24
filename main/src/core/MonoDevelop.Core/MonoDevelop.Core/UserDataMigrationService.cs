@@ -48,10 +48,8 @@ namespace MonoDevelop.Core
 		{
 			if (UserDataMigrationService.profile != null)
 				throw new InvalidOperationException ("Already set");
-			if (profile == null)
-				throw new ArgumentNullException ("profile");
-			if (version == null)
-				throw new ArgumentNullException ("version");
+			ArgumentNullException.ThrowIfNull (profile);
+			ArgumentNullException.ThrowIfNull (version);
 			
 			UserDataMigrationService.profile = profile;
 			UserDataMigrationService.version = version;

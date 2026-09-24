@@ -29,7 +29,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableReinstallNuGetPackageAction : ReinstallNuGetPackageAction
+	sealed class TestableReinstallNuGetPackageAction : ReinstallNuGetPackageAction
 	{
 		public FakeNuGetProjectContext ProjectContext;
 		public PackageManagementEvents PackageManagementEvents;

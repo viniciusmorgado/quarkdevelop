@@ -32,7 +32,7 @@ using System.Linq;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture]
-	class PointToLocationTests : TextEditorTestBase
+	sealed class PointToLocationTests : TextEditorTestBase
 	{
 		[Test]
 		public void TestBug674618 ()

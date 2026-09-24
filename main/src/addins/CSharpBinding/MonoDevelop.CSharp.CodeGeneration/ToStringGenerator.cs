@@ -101,7 +101,7 @@ namespace MonoDevelop.CodeGeneration
 			string GetFormatString (IEnumerable<object> includedMembers)
 			{
 				var format = StringBuilderCache.Allocate ();
-				format.Append ("[");
+				format.Append ('[');
 				format.Append (Options.EnclosingType.Name);
 				format.Append (": ");
 				int i = 0;
@@ -111,9 +111,9 @@ namespace MonoDevelop.CodeGeneration
 					format.Append (member.Name);
 					format.Append ("={");
 					format.Append (i++);
-					format.Append ("}");
+					format.Append ('}');
 				}
-				format.Append ("]");
+				format.Append (']');
 				return StringBuilderCache.ReturnAndFree (format);
 			}
 

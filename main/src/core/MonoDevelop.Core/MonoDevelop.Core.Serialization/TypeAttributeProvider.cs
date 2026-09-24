@@ -79,7 +79,7 @@ namespace MonoDevelop.Core.Serialization
 
 		public ItemMember[] GetItemMembers (Type type)
 		{
-			return new ItemMember [0];
+			return Array.Empty<ItemMember> ();
 		}
 	}
 }

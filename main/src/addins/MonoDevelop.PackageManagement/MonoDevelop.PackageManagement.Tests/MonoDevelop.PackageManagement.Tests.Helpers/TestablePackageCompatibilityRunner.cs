@@ -29,7 +29,7 @@ using MonoDevelop.Core;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestablePackageCompatibilityRunner : PackageCompatibilityRunner
+	sealed class TestablePackageCompatibilityRunner : PackageCompatibilityRunner
 	{
 		Action backgroundDispatcher;
 

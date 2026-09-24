@@ -373,8 +373,7 @@ namespace MonoDevelop.CSharp
 
 			public DataProvider (PathedDocumentTextEditorExtension ext, object tag)
 			{
-				if (ext == null)
-					throw new ArgumentNullException ("ext");
+				ArgumentNullException.ThrowIfNull (ext);
 				this.ext = ext;
 				this.tag = tag;
 				Reset ();
@@ -699,7 +698,7 @@ namespace MonoDevelop.CSharp
 		void ClearPath ()
 		{
 			var prev = CurrentPath;
-			CurrentPath = new PathEntry[0];
+			CurrentPath = Array.Empty<PathEntry> ();
 			OnPathChanged (new DocumentPathChangedEventArgs (prev));	
 		}
 

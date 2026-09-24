@@ -30,7 +30,7 @@ using UnitTests;
 namespace MonoDevelop.Ide.Editor
 {
 	[TestFixture]
-	class TestCSharpHighlighting : IdeTestBase
+	sealed class TestCSharpHighlighting : IdeTestBase
 	{
 		[Test]
 		public void TestComplexHighlighting ()

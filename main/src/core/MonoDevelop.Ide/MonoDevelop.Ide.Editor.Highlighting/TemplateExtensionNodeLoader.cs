@@ -33,7 +33,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 	[Obsolete ("Old editor")]
 	static class TemplateExtensionNodeLoader
 	{
-		static bool initialized = false;
+		static bool initialized;
 		
 		public static void Init ()
 		{

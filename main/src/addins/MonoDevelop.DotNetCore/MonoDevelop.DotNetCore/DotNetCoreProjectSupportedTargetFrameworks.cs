@@ -57,7 +57,7 @@ namespace MonoDevelop.DotNetCore
 				return GetNetFrameworkTargetFrameworks ();
 			}
 
-			return new TargetFramework [0];
+			return Array.Empty<TargetFramework> ();
 		}
 
 		static string [] supportedNetStandardVersions = {
@@ -91,7 +91,7 @@ namespace MonoDevelop.DotNetCore
 				return GetNetFrameworkTargetFrameworks ();
 			}
 
-			return new TargetFramework [0];
+			return Array.Empty<TargetFramework> ();
 		}
 
 		public static IEnumerable<TargetFramework> GetNetStandardTargetFrameworks ()

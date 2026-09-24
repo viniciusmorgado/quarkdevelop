@@ -12,10 +12,7 @@ namespace Microsoft.VisualStudio.UI.Text.Commanding.Implementation
 
         public SingleBufferResolver(ITextBuffer textBuffer)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
             _textBuffer = new ITextBuffer[] { textBuffer };
         }

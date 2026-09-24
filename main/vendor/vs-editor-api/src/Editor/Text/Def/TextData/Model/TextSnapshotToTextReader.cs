@@ -78,12 +78,9 @@ namespace Microsoft.VisualStudio.Text
         {
             if (_currentPosition == -1)
                 throw new ObjectDisposedException("TextSnapshotToTextReader");
-            if (buffer == null)
-                throw new ArgumentNullException(nameof(buffer));
-            if (index < 0)
-                throw new ArgumentOutOfRangeException(nameof(index));
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentNullException.ThrowIfNull(buffer);
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
+            ArgumentOutOfRangeException.ThrowIfNegative(count);
             if (((index + count) < 0) || ((index + count) > buffer.Length))
                 throw new ArgumentOutOfRangeException(nameof(count));
 
@@ -158,8 +155,7 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentNullException"><paramref name="textSnapshot"/> is null.</exception>
         public TextSnapshotToTextReader(ITextSnapshot textSnapshot)
         {
-            if (textSnapshot == null)
-                throw new ArgumentNullException(nameof(textSnapshot));
+            ArgumentNullException.ThrowIfNull(textSnapshot);
 
             _snapshot = textSnapshot;
         }

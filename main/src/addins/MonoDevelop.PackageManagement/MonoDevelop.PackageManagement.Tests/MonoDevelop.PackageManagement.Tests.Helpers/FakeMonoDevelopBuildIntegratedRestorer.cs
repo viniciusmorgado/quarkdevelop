@@ -31,7 +31,7 @@ using NuGet.ProjectManagement.Projects;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeMonoDevelopBuildIntegratedRestorer : IMonoDevelopBuildIntegratedRestorer
+	sealed class FakeMonoDevelopBuildIntegratedRestorer : IMonoDevelopBuildIntegratedRestorer
 	{
 		public bool LockFileChanged { get; set; }
 

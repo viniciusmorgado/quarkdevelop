@@ -39,10 +39,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
                 // of doing a reload (at which point the reload code will call SetChanges after computing the diff).
                 reiteratedVersionNumber = ((changes != null) && (changes.Count == 0)) ? this.ReiteratedVersionNumber : newVersionNumber;
             }
-            else if (reiteratedVersionNumber > newVersionNumber)
-            {
-                throw new ArgumentOutOfRangeException(nameof(reiteratedVersionNumber));
-            }
+            else ArgumentOutOfRangeException.ThrowIfGreaterThan(reiteratedVersionNumber, newVersionNumber);
 
             if (length == -1)
             {

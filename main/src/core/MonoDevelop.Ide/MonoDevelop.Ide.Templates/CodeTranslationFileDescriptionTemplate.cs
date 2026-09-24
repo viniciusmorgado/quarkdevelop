@@ -50,7 +50,7 @@ namespace MonoDevelop.Ide.Templates
 		string content;
 		CodeDomProvider parserProvider;
 		string tempSubstitutedContent;
-		bool showAutogenerationNotice = false;
+		bool showAutogenerationNotice;
 		string sourceLang;
 		
 		public override void Load (XmlElement filenode, FilePath baseDirectory)

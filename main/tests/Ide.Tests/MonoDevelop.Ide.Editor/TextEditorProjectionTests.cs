@@ -113,7 +113,7 @@ namespace MonoDevelop.Ide.Editor
 			}
 		}
 
-		class TestSemanticHighlighting : SemanticHighlighting
+		sealed class TestSemanticHighlighting : SemanticHighlighting
 		{
 			public TestSemanticHighlighting (MonoDevelop.Ide.Editor.TextEditor editor, MonoDevelop.Ide.Editor.DocumentContext documentContext) : base (editor, documentContext)
 			{
@@ -180,7 +180,7 @@ namespace MonoDevelop.Ide.Editor
 			}
 		}
 
-		class TestCompletionExtension : CompletionTextEditorExtension
+		sealed class TestCompletionExtension : CompletionTextEditorExtension
 		{
 			internal bool CompletionRun;
 
@@ -203,7 +203,7 @@ namespace MonoDevelop.Ide.Editor
 			}
 		}
 
-		class EmptyCompletionWidget : ICompletionWidget
+		sealed class EmptyCompletionWidget : ICompletionWidget
 		{
 			TextEditor editor;
 

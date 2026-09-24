@@ -136,16 +136,13 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
         public void MoveSessionToTop(IIntellisenseSession session)
         {
             // Make sure this session is actually in the stack.
-            if (session == null)
-            {
-                throw new ArgumentNullException("session");
-            }
+            ArgumentNullException.ThrowIfNull(session);
             int sessionIndex = _sessions.IndexOf(session);
             if (sessionIndex == -1)
             {
                 throw new ArgumentException
                     ("IIntellisenseSessionStack.MoveSessionToTop() must be called with a session already in the stack.",
-                     "session");
+                     nameof(session));
             }
 
             // Release the keyboard.  We'll give it back in a minute.
@@ -252,12 +249,12 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             IIntellisenseSession session = sender as IIntellisenseSession;
             if (session == null)
             {
-                throw new ArgumentException("Expected 'sender' to be of type IIntellisenseSession", "sender");
+                throw new ArgumentException("Expected 'sender' to be of type IIntellisenseSession", nameof(sender));
             }
 
             if (!_sessions.Contains(session))
             {
-                throw new ArgumentException("Expected session that is already on the stack", "sender");
+                throw new ArgumentException("Expected session that is already on the stack", nameof(sender));
             }
 
             // If it's the top session that was dismissed, our job is easy, we just have to pop() it off.
@@ -297,7 +294,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             IPopupIntellisensePresenter presenter = sender as IPopupIntellisensePresenter;
             if (presenter == null)
             {
-                throw new ArgumentException("Expected 'sender' to be of type IPopupIntellisensePresenter", "sender");
+                throw new ArgumentException("Expected 'sender' to be of type IPopupIntellisensePresenter", nameof(sender));
             }
 
             this.RehostPresenter(presenter);
@@ -308,7 +305,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             IPopupIntellisensePresenter presenter = sender as IPopupIntellisensePresenter;
             if (presenter == null)
             {
-                throw new ArgumentException("Expected 'sender' to be of type IPopupIntellisensePresenter", "sender");
+                throw new ArgumentException("Expected 'sender' to be of type IPopupIntellisensePresenter", nameof(sender));
             }
 
             this.RehostPresenter(presenter);
@@ -319,7 +316,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             IPopupIntellisensePresenter presenter = sender as IPopupIntellisensePresenter;
             if (presenter == null)
             {
-                throw new ArgumentException("Expected 'sender' to be of type IPopupIntellisensePresenter", "sender");
+                throw new ArgumentException("Expected 'sender' to be of type IPopupIntellisensePresenter", nameof(sender));
             }
 
             this.RehostPresenter(presenter);
@@ -333,7 +330,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             IIntellisenseSession session = sender as IIntellisenseSession;
             if (session == null)
             {
-                throw new ArgumentException("Expected 'sender' to be of type IIntellisenseSession", "sender");
+                throw new ArgumentException("Expected 'sender' to be of type IIntellisenseSession", nameof(sender));
             }
 
             // Since the presenter changed, we could have a new owner for the keyboard.  Figure it out.
@@ -449,7 +446,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             if (popupPresenter == null)
             {
                 throw new ArgumentException("Expected to rehost a session with presenter of type IPopupIntellisensePresenter",
-                    "session");
+                    nameof(session));
             }
 
             // If the Popup presenter doesn't have anything to draw, don't even bother.

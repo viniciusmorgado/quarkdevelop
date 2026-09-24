@@ -36,10 +36,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense
                    bool shouldFocusOnLoad = true
                    )
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             if (string.IsNullOrWhiteSpace(relationshipName))
             {

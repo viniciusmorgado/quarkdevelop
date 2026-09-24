@@ -199,7 +199,7 @@ namespace MonoDevelop.AssemblyBrowser
 				new RoslynFieldNodeBuilder (),
 				new RoslynMethodNodeBuilder (),
 				new RoslynPropertyNodeBuilder (),
-				}, new TreePadOption [0]);
+				}, Array.Empty<TreePadOption> ());
 			TreeView.PublicApiOnly = comboboxVisibilty.Active == 0;
 			TreeView.AllowsMultipleSelection = false;
 			TreeView.SelectionChanged += HandleCursorChanged;
@@ -607,7 +607,7 @@ namespace MonoDevelop.AssemblyBrowser
 			updater.Update ();
 		}
 
-		static bool preformat = false;
+		static bool preformat;
 		internal static string FormatText (string text)
 		{
 			if (preformat)
@@ -1207,8 +1207,7 @@ namespace MonoDevelop.AssemblyBrowser
 		
 		public void AddProject (Project project, bool selectReference = true)
 		{
-			if (project == null)
-				throw new ArgumentNullException ("project");
+			ArgumentNullException.ThrowIfNull (project);
 			if (TreeView == null)
 				return;
 

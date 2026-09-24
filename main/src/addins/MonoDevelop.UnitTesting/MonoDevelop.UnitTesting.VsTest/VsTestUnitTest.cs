@@ -74,7 +74,7 @@ namespace MonoDevelop.UnitTesting.VsTest
 				IdeApp.TypeSystemService.GetCompilationAsync (Project, token).ContinueWith ((t) => {
 					if (token.IsCancellationRequested)
 						return;
-					var dotIndex = test.FullyQualifiedName.LastIndexOf (".", StringComparison.Ordinal);
+					var dotIndex = test.FullyQualifiedName.LastIndexOf ('.');
 					var className = test.FullyQualifiedName.Remove (dotIndex);
 					var methodName = test.FullyQualifiedName.Substring (dotIndex + 1);
 					var bracketIndex = methodName.IndexOf ('(');

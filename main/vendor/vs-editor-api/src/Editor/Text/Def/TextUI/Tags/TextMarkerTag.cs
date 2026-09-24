@@ -18,8 +18,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is null.</exception>
         public TextMarkerTag(string type)
         {
-            if (type == null)
-                throw new ArgumentNullException(nameof(type));
+            ArgumentNullException.ThrowIfNull (type);
             
             Type = type;
         }

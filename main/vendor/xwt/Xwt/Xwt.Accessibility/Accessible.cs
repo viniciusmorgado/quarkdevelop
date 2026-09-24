@@ -40,7 +40,7 @@ namespace Xwt.Accessibility
 
 		Widget labelWidget;
 
-		class AccessibleBackendHost : BackendHost<Accessible, IAccessibleBackend>, IAccessibleEventSink
+		sealed class AccessibleBackendHost : BackendHost<Accessible, IAccessibleBackend>, IAccessibleEventSink
 		{
 			protected override IBackend OnCreateBackend ()
 			{
@@ -90,8 +90,7 @@ namespace Xwt.Accessibility
 
 		Accessible (XwtComponent parent)
 		{
-			if (parent == null)
-				throw new ArgumentNullException (nameof (parent));
+			ArgumentNullException.ThrowIfNull (parent);
 			parentComponent = parent;
 			backendHost = new AccessibleBackendHost ();
 			backendHost.Parent = this;
@@ -102,8 +101,7 @@ namespace Xwt.Accessibility
 
 		internal Accessible (object nativeParent)
 		{
-			if (nativeParent == null)
-				throw new ArgumentNullException (nameof (nativeParent));
+			ArgumentNullException.ThrowIfNull (nativeParent);
 			parentNativeObject = nativeParent;
 			backendHost = new AccessibleBackendHost ();
 			backendHost.Parent = this;
@@ -293,7 +291,7 @@ namespace Xwt.Accessibility
 		}
 	}
 
-	class DefaultNoOpAccessibleBackend : IAccessibleBackend
+	sealed class DefaultNoOpAccessibleBackend : IAccessibleBackend
 	{
 		public Rectangle Bounds { get; set; }
 

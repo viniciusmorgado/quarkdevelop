@@ -181,8 +181,7 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public TextChangeEventArgs (IReadOnlyList<TextChange> textChanges)
 		{
-			if (textChanges == null)
-				throw new ArgumentNullException (nameof (textChanges));
+			ArgumentNullException.ThrowIfNull (textChanges);
 			TextChanges = textChanges;
 		}
 

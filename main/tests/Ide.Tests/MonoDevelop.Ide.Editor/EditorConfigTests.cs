@@ -36,7 +36,7 @@ namespace MonoDevelop.Ide.Editor
 {
 	[TestFixture]
 	[RequireService(typeof(TextEditorService))]
-	class EditorConfigTests : IdeTestBase
+	sealed class EditorConfigTests : IdeTestBase
 	{
 
 		static async Task InvokeEditConfigTest (string editConfig, Action<TextEditor> test)

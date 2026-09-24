@@ -48,7 +48,7 @@ namespace MonoDevelop.Gettext
 		string fileName;
 		string originalNewLine = Environment.NewLine;
 		bool isDirty;
-		int nplurals = 0;
+		int nplurals;
 		TranslationProject parentProj;
 		
 		public bool IsDirty {
@@ -475,7 +475,7 @@ namespace MonoDevelop.Gettext
 		// Returns catalog item with key or null if such key is not available.
 		public CatalogEntry FindItem (string key)
 		{
-			return entriesDict.ContainsKey (key) ? this.entriesDict[key] : null;
+			return entriesDict.TryGetValue (key, out var value) ? value : null;
 		}
 		
 		// Adds an item to the catalog if it isn't already there
@@ -525,7 +525,7 @@ namespace MonoDevelop.Gettext
 						if (form.Substring (0, pos) == "nplurals")
 						{
 							int val;
-							if (Int32.TryParse (form.Substring (pos + 1), out val))
+							if (Int32.TryParse (form.AsSpan (pos + 1), out val))
 							{
 								nplurals = val;
 								return;
@@ -659,8 +659,7 @@ namespace MonoDevelop.Gettext
 		{
 			if (this.entriesDict.ContainsKey (data.String))
 				this.entriesDict.Remove (data.String);
-			if (this.entriesList.Contains (data))
-				this.entriesList.Remove (data);
+			this.entriesList.Remove (data);
 		}
 		
 		// Adds entry to the catalog (the catalog will take ownership of the object).
@@ -906,8 +905,8 @@ namespace MonoDevelop.Gettext
 		// Returns value of header or empty string if missing.
 		public string GetHeader (string key)
 		{
-			if (headerEntries.ContainsKey (key))
-				return headerEntries[key];
+			if (headerEntries.TryGetValue (key, out var value))
+				return value;
 			return String.Empty;
 		}
 		
@@ -959,7 +958,7 @@ namespace MonoDevelop.Gettext
 					else
 						first = false;
 					
-					if (line.StartsWith ("#"))
+					if (line.StartsWith ('#'))
 						sb.Append (line.Substring (1).TrimStart (' ', '\t'));
 					else
 						sb.Append (line.TrimStart (' ', '\t'));

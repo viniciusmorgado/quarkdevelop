@@ -39,7 +39,7 @@ namespace Mono.MHex.Data
 		byte[] GetBytes (long offset, int count);
 	}
 	
-	class ArrayBuffer : IBuffer
+	sealed class ArrayBuffer : IBuffer
 	{
 		byte[] content;
 
@@ -97,7 +97,7 @@ namespace Mono.MHex.Data
 		}
 	}
 	
-	class FileBuffer : IBuffer
+	sealed class FileBuffer : IBuffer
 	{
 		FileStream stream;
 		

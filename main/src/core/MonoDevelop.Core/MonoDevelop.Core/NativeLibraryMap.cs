@@ -79,8 +79,7 @@ namespace MonoDevelop.Core
 		/// </summary>
 		public static void Register (Assembly assembly)
 		{
-			if (assembly == null)
-				throw new ArgumentNullException (nameof (assembly));
+			ArgumentNullException.ThrowIfNull (assembly);
 			if (!OperatingSystem.IsLinux () || !registered.TryAdd (assembly, true))
 				return;
 			NativeLibrary.SetDllImportResolver (assembly, Resolve);

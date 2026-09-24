@@ -34,7 +34,7 @@ namespace MonoDevelop.Ide.Editor
 {
 
 	[TestFixture]
-	class SyntaxHighlightingTest_TextMate : IdeTestBase
+	sealed class SyntaxHighlightingTest_TextMate : IdeTestBase
 	{
 		[Test]
 		public void TestMatch ()

@@ -59,7 +59,7 @@ namespace MonoDevelop.Core.Assemblies
 		RuntimeAssemblyContext assemblyContext;
 		ComposedAssemblyContext composedAssemblyContext;
 		ITimeTracker timer;
-		TargetFramework[] customFrameworks = new TargetFramework[0];
+		TargetFramework[] customFrameworks = Array.Empty<TargetFramework> ();
 
 		static int internalIdCounter;
 

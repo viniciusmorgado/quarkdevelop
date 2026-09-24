@@ -44,8 +44,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 
 		public static EditorTheme LoadEditorTheme (Stream stream)
 		{
-			if (stream == null)
-				throw new ArgumentNullException (nameof (stream));
+			ArgumentNullException.ThrowIfNull (stream);
 			var dictionary = PDictionary.FromStream (stream);
 			var name = (PString)dictionary ["name"];
 			var contentArray = dictionary ["settings"] as PArray;
@@ -379,7 +378,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 						includesAndMatches.Add ("main");
 					} else if (incl == "$self") {
 						includesAndMatches.Add ("main");
-					} else if (incl.StartsWith ("#", StringComparison.Ordinal)) {
+					} else if (incl.StartsWith ('#')) {
 						includesAndMatches.Add (incl.TrimStart ('#'));
 					} else {
 						includesAndMatches.Add ("scope:" + incl);

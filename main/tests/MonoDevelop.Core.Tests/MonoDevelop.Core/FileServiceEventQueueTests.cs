@@ -399,7 +399,7 @@ namespace MonoDevelop.Core
 			};
 		}
 
-		class CallTrackingEventQueue : EventQueue
+		sealed class CallTrackingEventQueue : EventQueue
 		{
 			public List<WrappedFileEventArgs> Values = new List<WrappedFileEventArgs> ();
 
@@ -413,7 +413,7 @@ namespace MonoDevelop.Core
 			}
 		}
 
-		class WrappedFileEventArgs : EventArgs
+		sealed class WrappedFileEventArgs : EventArgs
 		{
 			public FileEventArgs Args { get; }
 			public EventDataKind Kind { get; }

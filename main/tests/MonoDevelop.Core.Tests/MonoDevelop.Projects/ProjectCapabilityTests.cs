@@ -210,7 +210,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class CustomCapabilityNode : SolutionItemExtensionNode
+	sealed class CustomCapabilityNode : SolutionItemExtensionNode
 	{
 		public CustomCapabilityNode ()
 		{
@@ -223,11 +223,11 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class CustomCapabilityExtension : ProjectExtension
+	sealed class CustomCapabilityExtension : ProjectExtension
 	{
 	}
 
-	class TestCapabilityNode : SolutionItemExtensionNode
+	sealed class TestCapabilityNode : SolutionItemExtensionNode
 	{
 		public TestCapabilityNode ()
 		{
@@ -240,7 +240,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class TestCapabilityExtension : ProjectExtension
+	sealed class TestCapabilityExtension : ProjectExtension
 	{
 		protected internal override ProjectFeatures OnGetSupportedFeatures ()
 		{

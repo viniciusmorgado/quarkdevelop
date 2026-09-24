@@ -55,10 +55,8 @@ namespace MonoDevelop.Ide.Editor.Extension
 
 		protected internal void Initialize (TextEditor editor, DocumentContext context)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
-			if (context == null)
-				throw new ArgumentNullException ("context");
+			ArgumentNullException.ThrowIfNull (editor);
+			ArgumentNullException.ThrowIfNull (context);
 			if (DocumentContext != null)
 				throw new InvalidOperationException ("Extension is already initialized.");
 			DocumentContext = context;

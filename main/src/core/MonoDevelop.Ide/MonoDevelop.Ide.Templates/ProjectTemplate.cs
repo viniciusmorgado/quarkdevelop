@@ -71,7 +71,7 @@ namespace MonoDevelop.Ide.Templates
 			get { return actions; }
 		}
 
-		private SolutionDescriptor solutionDescriptor = null;
+		private SolutionDescriptor solutionDescriptor;
 		public SolutionDescriptor SolutionDescriptor
 		{
 			get { return solutionDescriptor; }

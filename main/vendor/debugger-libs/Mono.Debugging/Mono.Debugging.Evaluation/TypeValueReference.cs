@@ -177,7 +177,7 @@ namespace Mono.Debugging.Evaluation
 				return list.ToArray ();
 			} catch (Exception ex) {
 				ctx.WriteDebuggerOutput (ex.Message);
-				return new ObjectValue [0];
+				return Array.Empty<ObjectValue> ();
 			}
 		}
 
@@ -200,7 +200,7 @@ namespace Mono.Debugging.Evaluation
 				return list;
 			} catch (Exception ex) {
 				ctx.WriteDebuggerOutput (ex.Message);
-				return new ValueReference[0];
+				return Array.Empty<ValueReference> ();
 			}
 		}
 	}

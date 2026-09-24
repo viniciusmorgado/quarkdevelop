@@ -60,7 +60,7 @@ namespace Mono.TextEditor
 			internal set;
 		}
 		
-		protected Gdk.Cursor cursor = null;
+		protected Gdk.Cursor cursor;
 		
 		public Gdk.Cursor MarginCursor {
 			get {

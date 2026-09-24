@@ -47,7 +47,7 @@ namespace MonoDevelop.Debugger
 
 		public virtual ProcessInfo[] GetAttachableProcesses ()
 		{
-			return new ProcessInfo[0];
+			return Array.Empty<ProcessInfo> ();
 		}
 
 		/// <summary>

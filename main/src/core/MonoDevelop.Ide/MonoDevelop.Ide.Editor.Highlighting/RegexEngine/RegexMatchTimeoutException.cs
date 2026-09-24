@@ -31,9 +31,9 @@ public class RegexMatchTimeoutException : TimeoutException {
 #endif
 
 
-	private string regexInput = null;
+	private string regexInput;
 
-    private string regexPattern = null;
+    private string regexPattern;
 
     private TimeSpan matchTimeout = TimeSpan.FromTicks(-1);
 

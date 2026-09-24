@@ -26,7 +26,7 @@
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableUpdateAllNuGetPackagesInProjectAction : UpdateAllNuGetPackagesInProjectAction
+	sealed class TestableUpdateAllNuGetPackagesInProjectAction : UpdateAllNuGetPackagesInProjectAction
 	{
 		public FakeNuGetProjectContext ProjectContext;
 		public FakeNuGetPackageManager PackageManager;

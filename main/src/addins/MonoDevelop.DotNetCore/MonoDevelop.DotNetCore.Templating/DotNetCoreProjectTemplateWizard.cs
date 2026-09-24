@@ -86,7 +86,7 @@ namespace MonoDevelop.DotNetCore.Templating
 				targetFrameworks = DotNetCoreProjectSupportedTargetFrameworks.GetNetStandardTargetFrameworks ().ToList ();
 
 				// Use 1.x target frameworks by default if none are available from the .NET Core sdk.
-				if (!targetFrameworks.Any ())
+				if (targetFrameworks.Count == 0)
 					targetFrameworks = DotNetCoreProjectSupportedTargetFrameworks.GetDefaultNetStandard1xTargetFrameworks ().ToList ();
 
 				if (IsSupportedParameter ("FSharpNetStandard")) {

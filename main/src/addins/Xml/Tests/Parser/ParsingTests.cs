@@ -244,14 +244,14 @@ namespace MonoDevelop.Xml.Tests.Parser
 			parser.AssertEmpty ();
 			var doc = (XDocument) parser.Nodes.Peek ();
 			var el = (XElement) doc.FirstChild;
-			Assert.AreEqual (3, el.Attributes.Count ());
+			Assert.AreEqual (3, el.Attributes.Count);
 			Assert.AreEqual ("foo", el.Attributes.ElementAt (0).Name.Prefix);
 			Assert.AreEqual ("bar", el.Attributes.ElementAt (0).Name.Name);
 			Assert.AreEqual ("foo", el.Attributes.ElementAt (1).Name.Prefix);
 			Assert.AreEqual ("bar:baz", el.Attributes.ElementAt (1).Name.Name);
 			Assert.IsNull (el.Attributes.ElementAt (2).Name.Prefix);
 			Assert.AreEqual ("foo", el.Attributes.ElementAt (2).Name.Name);
-			Assert.AreEqual (3, el.Attributes.Count ());
+			Assert.AreEqual (3, el.Attributes.Count);
 			parser.AssertErrorCount (1);
 			Assert.AreEqual (1, parser.Errors [0].Region.Begin.Line);
 			Assert.AreEqual (26, parser.Errors [0].Region.Begin.Column);

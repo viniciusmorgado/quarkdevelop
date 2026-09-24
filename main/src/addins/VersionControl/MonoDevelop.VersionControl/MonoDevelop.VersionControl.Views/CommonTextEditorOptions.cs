@@ -201,7 +201,7 @@ namespace MonoDevelop.VersionControl.Views
 			}
 		}
 
-		IWordFindStrategy wordFindStrategy = null;
+		IWordFindStrategy wordFindStrategy;
 		public override IWordFindStrategy WordFindStrategy {
 			get {
 				if (wordFindStrategy == null)

@@ -34,7 +34,7 @@ using UI = Gtk.Builder.ObjectAttribute;
 
 namespace Mono.Addins.GuiGtk3
 {
-	class ErrorDialog : Dialog
+	sealed class ErrorDialog : Dialog
 	{
 		//From UI File
 		[UI] Button okButton;
@@ -70,9 +70,9 @@ namespace Mono.Addins.GuiGtk3
 			get { return descriptionLabel.Text; }
 			set {
 				string message = value;
-				while (message.EndsWith ("\r") || message.EndsWith ("\n"))
+				while (message.EndsWith ('\r') || message.EndsWith ('\n'))
 					message = message.Substring (0, message.Length - 1);
-				if (!message.EndsWith (".")) message += ".";
+				if (!message.EndsWith ('.')) message += ".";
 				descriptionLabel.Text = message;
 			}
 		}

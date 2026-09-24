@@ -64,7 +64,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data
         private ImmutableArray<CompletionItem> _itemsWithoutHighlight;
         private ImmutableArray<CompletionItemWithHighlight> _itemsWithHighlight;
 
-        private IEnumerable<CompletionItem> _computedItems = null;
+        private IEnumerable<CompletionItem> _computedItems;
 
         /// <summary>
         /// <see cref="CompletionItem"/>s displayed in the completion UI

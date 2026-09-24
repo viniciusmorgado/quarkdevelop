@@ -29,7 +29,7 @@ namespace MonoDevelop.DotNetCore.Commands
 
 		bool IsDotNetCoreProject (Project project)
 		{
-			return project.MSBuildProject.GetReferencedSDKs ().Any ();
+			return project.MSBuildProject.GetReferencedSDKs ().Length != 0;
 		}
 	}
 

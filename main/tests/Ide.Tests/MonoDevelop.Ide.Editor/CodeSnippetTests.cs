@@ -94,7 +94,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 
-		class TestIndentTracker : IndentationTracker
+		sealed class TestIndentTracker : IndentationTracker
 		{
 			string indentString;
 			Dictionary<int, string> definedIndents = new Dictionary<int, string> ();

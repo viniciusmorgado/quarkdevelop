@@ -50,8 +50,8 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 		static readonly int iconVisibleCol = 6;
 		static readonly int visibleCol = 7;
 		
-		bool accelIncomplete = false;
-		bool accelComplete = false;
+		bool accelIncomplete;
+		bool accelComplete;
 		TreeStore keyStore;
 		string chord;
 		KeyBindingSet currentBindings;
@@ -678,7 +678,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			int i = -1;
 			// If it ends with | then we're matching something like Cmd-|
 			// and it's not being used as an 'or'.
-			if (!b1.EndsWith ("|"))
+			if (!b1.EndsWith ('|'))
 				i = b1.IndexOf ('|');
 			if (i == -1)
 				return b2.StartsWith (b1 + "|");
@@ -691,7 +691,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 			return true;
 		}
 		
-		public bool IsVisible ()
+		public new bool IsVisible ()
 		{
 			return true;
 		}
@@ -709,8 +709,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 
 			public KeyBindingSelectedEventArgs (IEnumerable<string> keys, int selectedKey, Command command, TreeIter iter)
 			{
-				if (command == null)
-					throw new ArgumentNullException (nameof (command));
+				ArgumentNullException.ThrowIfNull (command);
 				AllKeys = new List<string> (keys);
 				if (selectedKey < 0 || ((selectedKey != 0 && AllKeys.Count != 0) && selectedKey >= AllKeys.Count))
 					throw new ArgumentOutOfRangeException (nameof (selectedKey));
@@ -846,7 +845,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 							text += "\n\u2022 " + conflict.Category + " \u2013 " + conflict.DisplayName;
 						cmdDuplicates = cmdDuplicates.Except (acmdConflicts);
 					}
-					if (cmdDuplicates.Count () > 0) {
+					if (cmdDuplicates.Any ()) {
 						if (hasConflict)
 							text += "\n\n";
 						text += GettextCatalog.GetString ("Duplicates:");

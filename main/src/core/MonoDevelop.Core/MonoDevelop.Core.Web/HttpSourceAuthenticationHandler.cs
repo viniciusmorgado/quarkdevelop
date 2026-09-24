@@ -19,7 +19,6 @@ namespace MonoDevelop.Core.Web
 		readonly static SemaphoreSlim credentialPromptLock = new SemaphoreSlim (1, 1);
 
 		readonly Uri source;
-		readonly IHttpCredentialsHandler credentialsHandler;
 		readonly ICredentialService credentialService;
 
 		readonly SemaphoreSlim httpClientLock = new SemaphoreSlim (1, 1);

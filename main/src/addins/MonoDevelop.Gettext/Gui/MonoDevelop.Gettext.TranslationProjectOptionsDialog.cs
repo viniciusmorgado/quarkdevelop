@@ -125,7 +125,7 @@ namespace MonoDevelop.Gettext
 			this.radiobuttonRelPath.Name = "radiobuttonRelPath";
 			this.radiobuttonRelPath.DrawIndicator = true;
 			this.radiobuttonRelPath.UseUnderline = true;
-			this.radiobuttonRelPath.Group = new global::Gtk.RadioButton [0];
+			this.radiobuttonRelPath.Group = System.Array.Empty<Gtk.RadioButton> ();
 			this.table1.Add (this.radiobuttonRelPath);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.radiobuttonRelPath]));
 			w7.XOptions = ((global::Gtk.AttachOptions)(4));

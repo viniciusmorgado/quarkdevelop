@@ -165,7 +165,7 @@ namespace MonoDevelop.Ide.Desktop
 		{
 			//don't create the file since we're just reading
 			if (!File.Exists (filePath)) {
-				 return new RecentItem[0];
+				 return Array.Empty<RecentItem> ();
 			}
 
 			lock (cacheLock) {

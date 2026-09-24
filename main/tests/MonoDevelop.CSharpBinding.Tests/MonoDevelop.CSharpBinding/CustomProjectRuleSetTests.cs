@@ -37,7 +37,7 @@ using UnitTests;
 namespace MonoDevelop.CSharpBinding.Tests
 {
 	[TestFixture]
-	class CustomProjectRuleSetTests : IdeTestBase
+	sealed class CustomProjectRuleSetTests : IdeTestBase
 	{
 		FilePath globalRuleSetFileNameBackup;
 

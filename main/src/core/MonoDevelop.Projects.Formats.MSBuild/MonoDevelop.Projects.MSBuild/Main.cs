@@ -32,7 +32,7 @@ using MonoDevelop.Core.Execution;
 
 namespace MonoDevelop.Projects.MSBuild
 {
-	class MainClass
+	sealed class MainClass
 	{
 		public static void Main (string[] args)
 		{
@@ -50,7 +50,7 @@ namespace MonoDevelop.Projects.MSBuild
 		/// this listener registers it with Microsoft.Build.Locator (ADR 0008), then replaces itself
 		/// with the real BuildEngine.
 		/// </summary>
-		class MSBuildRegistration
+		sealed class MSBuildRegistration
 		{
 			readonly RemoteProcessServer server;
 

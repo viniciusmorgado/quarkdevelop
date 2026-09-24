@@ -157,7 +157,7 @@ namespace Xwt
 		public static void SetData<T> (T data)
 		{
 			if (data == null)
-				throw new ArgumentNullException ("data");
+				throw new ArgumentNullException (nameof (data));
 			SetData (TransferDataType.FromType (data.GetType ()), data);
 		}
 		

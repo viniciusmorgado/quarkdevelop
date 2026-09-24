@@ -37,7 +37,7 @@ namespace MonoDevelop.Ide.Tasks
 {
 	partial class CommentTasksProviderTests
 	{
-		class Controller
+		sealed class Controller
 		{
 			public static void BindTimeout<T> (TaskCompletionSource<T> tcs)
 			{
@@ -48,7 +48,7 @@ namespace MonoDevelop.Ide.Tasks
 				ct.Token.Register (() => tcs.TrySetCanceled (), useSynchronizationContext: false);
 			}
 
-			public class Options
+			public sealed class Options
 			{
 				readonly bool withToDos;
 				public string [] ExpectedFiles;

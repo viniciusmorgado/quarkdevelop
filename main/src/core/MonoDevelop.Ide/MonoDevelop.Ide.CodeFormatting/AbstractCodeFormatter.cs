@@ -57,8 +57,7 @@ namespace MonoDevelop.Ide.CodeFormatting
 
 		public ITextSource Format (PolicyContainer policyParent, string mimeType, ITextSource input)
 		{
-			if (input == null)
-				throw new ArgumentNullException (nameof (input));
+			ArgumentNullException.ThrowIfNull (input);
 			return Format (policyParent ?? PolicyService.DefaultPolicies, mimeType, input, 0, input.Length);
 		}
 
@@ -66,17 +65,14 @@ namespace MonoDevelop.Ide.CodeFormatting
 
 		public string FormatText (PolicyContainer policyParent, string mimeType, string input, int fromOffset, int toOffset)
 		{
-			if (input == null)
-				throw new ArgumentNullException (nameof (input));
-			if (mimeType == null)
-				throw new ArgumentNullException (nameof (mimeType));
+			ArgumentNullException.ThrowIfNull (input);
+			ArgumentNullException.ThrowIfNull (mimeType);
 			return FormatImplementation (policyParent ?? PolicyService.DefaultPolicies, mimeType, new StringTextSource (input), fromOffset, toOffset - fromOffset).Text;
 		}
 
 		public string FormatText (PolicyContainer policyParent, string mimeType, string input)
 		{
-			if (input == null)
-				throw new ArgumentNullException (nameof (input));
+			ArgumentNullException.ThrowIfNull (input);
 			return FormatText (policyParent ?? PolicyService.DefaultPolicies, mimeType, input, 0, input.Length);
 		}
 
@@ -89,10 +85,8 @@ namespace MonoDevelop.Ide.CodeFormatting
 
 		public virtual void OnTheFlyFormat (TextEditor editor, DocumentContext context, int startOffset, int length)
 		{
-			if (editor == null)
-				throw new ArgumentNullException (nameof (editor));
-			if (context == null)
-				throw new ArgumentNullException (nameof (context));
+			ArgumentNullException.ThrowIfNull (editor);
+			ArgumentNullException.ThrowIfNull (context);
 
 			if (startOffset < 0 || startOffset > editor.Length)
 				throw new ArgumentOutOfRangeException (nameof (startOffset), "should be >= 0 && < " + editor.Length + " was:" + startOffset);
@@ -119,10 +113,8 @@ namespace MonoDevelop.Ide.CodeFormatting
 
 		public void CorrectIndenting (PolicyContainer policyParent, TextEditor editor, int line)
 		{
-			if (policyParent == null)
-				throw new ArgumentNullException (nameof (policyParent));
-			if (editor == null)
-				throw new ArgumentNullException (nameof (editor));
+			ArgumentNullException.ThrowIfNull (policyParent);
+			ArgumentNullException.ThrowIfNull (editor);
 			if (line < 1 || line > editor.LineCount)
 				throw new ArgumentOutOfRangeException (nameof (line), "should be >= 1 && <= " + editor.LineCount + " was:" + line);
 			CorrectIndentingImplementation (policyParent, editor, line);
@@ -130,8 +122,7 @@ namespace MonoDevelop.Ide.CodeFormatting
 
 		public Task CorrectIndentingAsync (TextEditor editor, DocumentContext context, int startLine, int endLine, CancellationToken cancellationToken = default)
 		{
-			if (editor == null)
-				throw new ArgumentNullException (nameof (editor));
+			ArgumentNullException.ThrowIfNull (editor);
 			if (startLine < 1 || startLine > editor.LineCount)
 				throw new ArgumentOutOfRangeException (nameof (startLine), "should be >= 1 && <= " + editor.LineCount + " was:" + startLine);
 			if (endLine < 1 || endLine > editor.LineCount)

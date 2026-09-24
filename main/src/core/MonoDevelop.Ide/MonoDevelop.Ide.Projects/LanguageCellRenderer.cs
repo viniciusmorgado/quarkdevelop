@@ -84,7 +84,7 @@ namespace MonoDevelop.Ide.Projects
 
 		public bool RenderRecentTemplate { get; set; }
 
-		int textWidth = 0;
+		int textWidth;
 
 		public LanguageCellRenderer ()
 		{

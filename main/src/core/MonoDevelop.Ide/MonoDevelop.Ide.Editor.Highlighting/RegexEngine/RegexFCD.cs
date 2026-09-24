@@ -29,7 +29,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         private int        _fcDepth;
         private bool    _skipAllChildren;      // don't process any more children at the current level
         private bool    _skipchild;            // don't process the current child. 
-        private bool    _failed = false;
+        private bool    _failed;
         
         private const int BeforeChild = 64;
         private const int AfterChild = 128;

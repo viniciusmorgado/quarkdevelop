@@ -187,8 +187,7 @@ namespace MonoDevelop.Gettext
 		
 		public void RemoveReference (string reference)
 		{
-			if (references.Contains (reference))
-				references.Remove (reference);
+			references.Remove (reference);
 		}
 		
 		// Sets the string.

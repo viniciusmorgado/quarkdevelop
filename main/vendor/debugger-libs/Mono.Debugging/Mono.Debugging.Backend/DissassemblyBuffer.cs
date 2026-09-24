@@ -34,7 +34,7 @@ namespace Mono.Debugging.Backend
 	public abstract class DissassemblyBuffer
 	{
 		List<AssemblyLine> lines = new List<AssemblyLine> ();
-		int baseIndex = 0;
+		int baseIndex;
 		long baseAddress;
 		
 		const int AddrPerLine = 4;

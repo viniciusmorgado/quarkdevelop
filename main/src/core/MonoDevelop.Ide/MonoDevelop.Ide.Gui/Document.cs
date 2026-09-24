@@ -171,7 +171,6 @@ namespace MonoDevelop.Ide.Gui
 		}
 
 		ContentCallbackRegistry contentCallbackRegistry;
-		ContentCallbackRegistry contentActiveViewCallbackRegistry;
 
 		ContentCallbackRegistry GetCallbackRegistry ()
 		{
@@ -656,7 +655,6 @@ namespace MonoDevelop.Ide.Gui
 			window = null;
 
 			contentCallbackRegistry = null;
-			contentActiveViewCallbackRegistry = null;
 		}
 		#region document tasks
 		object lockObj = new object ();

@@ -58,8 +58,7 @@ namespace MonoDevelop.Core.Web
 			bool isRetry,
 			CancellationToken cancellationToken)
 		{
-			if (uri == null)
-				throw new ArgumentNullException (nameof (uri));
+			ArgumentNullException.ThrowIfNull (uri);
 
 			var cp = WebRequestHelper.CredentialProvider;
 			if (cp == null)

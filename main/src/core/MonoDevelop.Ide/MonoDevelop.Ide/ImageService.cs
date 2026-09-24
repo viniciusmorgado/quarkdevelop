@@ -75,14 +75,16 @@ namespace MonoDevelop.Ide
 				StockIconCodon iconCodon = (StockIconCodon)args.ExtensionNode;
 				switch (args.Change) {
 				case ExtensionChange.Add:
-					if (!iconStock.ContainsKey (iconCodon.StockId)) {
-						iconStock [iconCodon.StockId] = new List<StockIconCodon> ();
+					if (!iconStock.TryGetValue (iconCodon.StockId, out var value)) {
+						value = new List<StockIconCodon> ();
+						iconStock [iconCodon.StockId] = value;
 
 						foreach (var imageId in iconCodon.GetImageIds ()) {
 							imageIdToStockId[imageId] = iconCodon.StockId;
 						}
 					}
-					iconStock[iconCodon.StockId].Add (iconCodon);
+
+					value.Add (iconCodon);
 					break;
 				}
 			});
@@ -197,8 +199,7 @@ namespace MonoDevelop.Ide
 		{
 			if (Guid.Empty == imageId.Guid)
 				throw new ArgumentException (nameof (imageId));
-			if (icon == null)
-				throw new ArgumentNullException (nameof (icon));
+			ArgumentNullException.ThrowIfNull (icon);
 			var iconId = $"{imageId.Guid};{imageId.Id}";
 			imageIdToStockId.Add (imageId, iconId);
 			AddIcon (iconId, icon);
@@ -206,10 +207,8 @@ namespace MonoDevelop.Ide
 
 		public static void AddIcon (string iconId, Xwt.Drawing.Image icon)
 		{
-			if (iconId == null)
-				throw new ArgumentNullException (nameof (iconId));
-			if (icon == null)
-				throw new ArgumentNullException (nameof (icon));
+			ArgumentNullException.ThrowIfNull (iconId);
+			ArgumentNullException.ThrowIfNull (icon);
 			icons.Add (iconId, icon);
 		}
 

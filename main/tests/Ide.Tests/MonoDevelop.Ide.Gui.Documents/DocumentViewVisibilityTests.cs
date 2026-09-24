@@ -479,7 +479,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class DocumentViewTestsController: DocumentController
+	sealed class DocumentViewTestsController: DocumentController
 	{
 		public DocumentViewContent MainView = new DocumentViewContent (() => new DummyControl ());
 		public DocumentViewContent Attached1 = new DocumentViewContent (() => new DummyControl ());
@@ -502,7 +502,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class ContentVisibleEventWithContainerTestController : DocumentController
+	sealed class ContentVisibleEventWithContainerTestController : DocumentController
 	{
 		public DocumentViewContainer Container = new DocumentViewContainer ();
 		public DocumentViewContent View1 = new DocumentViewContent (() => new DummyControl ());
@@ -531,10 +531,10 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class ShowTestController : DocumentController
+	sealed class ShowTestController : DocumentController
 	{
-		public int Shown = 0;
-		public int Hidden = 0;
+		public int Shown;
+		public int Hidden;
 
 		protected override void OnContentShown ()
 		{
@@ -554,10 +554,10 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class ShowContainerTestController : DocumentController
+	sealed class ShowContainerTestController : DocumentController
 	{
-		public int Shown = 0;
-		public int Hidden = 0;
+		public int Shown;
+		public int Hidden;
 
 		public ShowTestController View1 = new ShowTestController ();
 		public ShowTestController View2 = new ShowTestController ();

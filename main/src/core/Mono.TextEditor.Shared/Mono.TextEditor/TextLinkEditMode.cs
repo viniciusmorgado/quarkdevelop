@@ -225,7 +225,7 @@ namespace Mono.TextEditor
 				handler (this, e);
 		}
 
-		TextLink closedLink = null, currentSelectedLink = null;
+		TextLink closedLink, currentSelectedLink;
 
 		void HandlePositionChanged (object sender, DocumentLocationEventArgs e)
 		{
@@ -338,8 +338,8 @@ namespace Mono.TextEditor
 			OnExited (EventArgs.Empty);
 		}
 
-		bool isExited = false;
-		bool wasReplaced = false;
+		bool isExited;
+		bool wasReplaced;
 
 		static readonly object _linkEditTag = new object();
 

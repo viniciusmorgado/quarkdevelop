@@ -144,14 +144,14 @@ namespace Mono.Addins.GuiGtk3
 				foreach (string s in m.Errors) {
 					sb.Append ("<b><span foreground=\"red\">" + s + "</span></b>\n");
 				}
-				sb.Append ("\n");
+				sb.Append ('\n');
 			}
 			
 			if (m.Warnings.Count != 0) {
 				foreach (string w in m.Warnings) {
 					sb.Append ("<b><span foreground=\"red\">" + w + "</span></b>\n");
 				}
-				sb.Append ("\n");
+				sb.Append ('\n');
 			}
 			
 			sb.Append ("<b>").Append (Catalog.GetString ("The following packages will be installed:")).Append ("</b>\n\n");
@@ -159,16 +159,16 @@ namespace Mono.Addins.GuiGtk3
 				sb.Append (p.Name);
 				if (!p.SharedInstall)
 					sb.Append (Catalog.GetString (" (in user directory)"));
-				sb.Append ("\n");
+				sb.Append ('\n');
 			}
-			sb.Append ("\n");
+			sb.Append ('\n');
 			
 			if (toUninstall.Count > 0) {
 				sb.Append ("<b>").Append (Catalog.GetString ("The following packages need to be uninstalled:")).Append ("</b>\n\n");
 				foreach (Package p in toUninstall) {
 					sb.Append (p.Name + "\n");
 				}
-				sb.Append ("\n");
+				sb.Append ('\n');
 			}
 			
 			if (unresolved.Count > 0) {
@@ -176,7 +176,7 @@ namespace Mono.Addins.GuiGtk3
 				foreach (Dependency p in unresolved) {
 					sb.Append (p.Name + "\n");
 				}
-				sb.Append ("\n");
+				sb.Append ('\n');
 			}
 			buttonOk.Sensitive = res;
 			ShowMessage (sb.ToString ());

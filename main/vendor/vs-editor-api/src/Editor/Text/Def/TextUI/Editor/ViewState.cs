@@ -60,8 +60,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// <param name="effectiveViewportHeight">The height of the view port for <paramref name="view"/>.</param>
         public ViewState(ITextView view, double effectiveViewportWidth, double effectiveViewportHeight)
         {
-            if (view == null)
-                throw new ArgumentNullException(nameof(view));
+            ArgumentNullException.ThrowIfNull(view);
 
             this.ViewportLeft = view.ViewportLeft;
             this.ViewportTop = view.ViewportTop;

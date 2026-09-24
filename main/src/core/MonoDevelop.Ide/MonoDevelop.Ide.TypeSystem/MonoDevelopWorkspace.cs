@@ -507,8 +507,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		void UnloadMonoProject (MonoDevelop.Projects.Project project)
 		{
-			if (project == null)
-				throw new ArgumentNullException (nameof (project));
+			ArgumentNullException.ThrowIfNull (project);
 			project.Modified -= OnProjectModified;
 		}
 

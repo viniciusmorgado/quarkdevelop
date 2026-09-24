@@ -263,12 +263,9 @@ namespace MonoDevelop.CSharp.Completion
 
 		internal void AddImportCompletionData (CSharpSyntaxContext ctx, CompletionDataList result, SemanticModel semanticModel, int position, CancellationToken cancellationToken = default (CancellationToken))
 		{
-			if (ctx == null) 
-				throw new ArgumentNullException (nameof (ctx));
-			if (result == null)
-				throw new ArgumentNullException (nameof (result));
-			if (semanticModel == null)
-				throw new ArgumentNullException (nameof (semanticModel));
+			ArgumentNullException.ThrowIfNull (ctx);
+			ArgumentNullException.ThrowIfNull (result);
+			ArgumentNullException.ThrowIfNull (semanticModel);
 			try {
 				if (result.Count == 0 || position < 0)
 					return;
@@ -679,8 +676,7 @@ namespace MonoDevelop.CSharp.Completion
 
 		public override Task<Ide.CodeCompletion.ParameterHintingResult> ParameterCompletionCommand (CodeCompletionContext completionContext)
 		{
-			if (completionContext == null)
-				throw new ArgumentNullException (nameof (completionContext));
+			ArgumentNullException.ThrowIfNull (completionContext);
 			char ch = completionContext.TriggerOffset > 0 ? Editor.GetCharAt (completionContext.TriggerOffset - 1) : '\0';
 			var info = new Ide.Editor.Extension.SignatureHelpTriggerInfo (Ide.Editor.Extension.SignatureHelpTriggerReason.InvokeSignatureHelpCommand, ch);
 			return InternalHandleParameterCompletionCommand (completionContext, info, default (CancellationToken));

@@ -48,12 +48,9 @@ namespace MonoDevelop.Refactoring
 		public static List<InsertionPoint> GetInsertionPoints (
 			IReadonlyTextDocument data, SemanticModel model, ITypeSymbol type, int position, CancellationToken token = default (CancellationToken))
 		{
-			if (data == null)
-				throw new ArgumentNullException (nameof (data));
-			if (model == null)
-				throw new ArgumentNullException (nameof (model));
-			if (type == null)
-				throw new ArgumentNullException (nameof (type));
+			ArgumentNullException.ThrowIfNull (data);
+			ArgumentNullException.ThrowIfNull (model);
+			ArgumentNullException.ThrowIfNull (type);
 			if (!type.IsDefinedInSource ())
 				throw new ArgumentException ("The given type needs to be defined in source code.", nameof (type));
 

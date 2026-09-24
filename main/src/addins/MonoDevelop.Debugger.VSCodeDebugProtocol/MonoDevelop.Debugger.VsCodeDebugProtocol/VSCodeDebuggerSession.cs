@@ -126,7 +126,7 @@ namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 				response = protocolClient.SendRequestSync (new ThreadsRequest ());
 			} catch (Exception ex) {
 				DebuggerLoggingService.LogError ("[VSCodeDebugger] Error getting threads", ex);
-				return new ThreadInfo[0];
+				return Array.Empty<ThreadInfo> ();
 			}
 
 			var threads = new ThreadInfo[response.Threads.Count];
@@ -207,8 +207,8 @@ namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 			return breakEventInfo;
 		}
 
-		bool currentExceptionState = false;
-		bool unhandleExceptionRegistered = false;
+		bool currentExceptionState;
+		bool unhandleExceptionRegistered;
 		void UpdateExceptions ()
 		{
 			//Disposed

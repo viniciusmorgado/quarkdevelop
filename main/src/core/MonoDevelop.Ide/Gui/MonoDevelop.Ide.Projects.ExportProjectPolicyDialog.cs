@@ -47,7 +47,7 @@ namespace MonoDevelop.Ide.Projects
 			this.radioCustom.Name = "radioCustom";
 			this.radioCustom.DrawIndicator = true;
 			this.radioCustom.UseUnderline = true;
-			this.radioCustom.Group = new global::Gtk.RadioButton [0];
+			this.radioCustom.Group = System.Array.Empty<Gtk.RadioButton> ();
 			this.vbox4.Add (this.radioCustom);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.radioCustom]));
 			w2.Position = 0;

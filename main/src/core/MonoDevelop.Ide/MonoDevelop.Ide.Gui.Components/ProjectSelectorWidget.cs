@@ -237,8 +237,7 @@ namespace MonoDevelop.Ide.Gui.Components
 			TreeIter iter;
 			store.GetIterFromString (out iter, args.Path);
 			var ob = (WorkspaceObject) store.GetValue (iter, 2);
-			if (activeItems.Contains (ob)) {
-				activeItems.Remove (ob);
+			if (activeItems.Remove (ob)) {
 				if (CascadeCheckboxSelection) {
 					foreach (var i in GetAllChildren (ob))
 						activeItems.Remove (i);
@@ -276,10 +275,10 @@ namespace MonoDevelop.Ide.Gui.Components
 			} else if (item is Workspace) {
 				return ((Workspace)item).Items;
 			} else
-				return new WorkspaceObject [0];
+				return Array.Empty<WorkspaceObject> ();
 		}
 		
-		protected bool IsVisible (WorkspaceObject item)
+		protected new bool IsVisible (WorkspaceObject item)
 		{
 			return true;
 		}

@@ -58,6 +58,6 @@ namespace Microsoft.VisualStudio.Text.UI.Utilities
             ProvisionalSelectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public bool UserIsDraggingSelection { get; set; } = false;
+        public bool UserIsDraggingSelection { get; set; }
     }
 }

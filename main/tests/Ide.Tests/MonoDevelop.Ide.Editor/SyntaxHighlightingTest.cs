@@ -38,7 +38,7 @@ using System.Threading;
 namespace MonoDevelop.Ide.Editor
 {
 	[TestFixture]
-	class SyntaxHighlightingTest : IdeTestBase
+	sealed class SyntaxHighlightingTest : IdeTestBase
 	{
 		[Test]
 		public void TestMatch ()

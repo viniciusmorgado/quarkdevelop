@@ -77,26 +77,23 @@ namespace MonoDevelop.Ide.Editor
 		/// <exception cref="ArgumentOutOfRangeException">offset or length is outside the valid range.</exception>
 		public static string GetTextAt(this IReadonlyTextDocument source, ISegment segment)
 		{
-			if (source == null)
-				throw new ArgumentNullException ("source");
+			ArgumentNullException.ThrowIfNull (source);
 			return source.GetTextAt (segment.Offset, segment.Length);
 		}
 
 		public static IEnumerable<IDocumentLine> GetLines (this IReadonlyTextDocument document)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			return document.GetLinesStartingAt (1);
 		}
 
 		public static IEnumerable<IDocumentLine> GetLinesBetween (this IReadonlyTextDocument document, int startLine, int endLine)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			if (startLine < 1 || startLine > document.LineCount)
-				throw new ArgumentOutOfRangeException ("startLine", startLine, string.Format ("value should be between 1 and {0}", document.LineCount));
+				throw new ArgumentOutOfRangeException (nameof (startLine), startLine, string.Format ("value should be between 1 and {0}", document.LineCount));
 			if (endLine < 1 || endLine > document.LineCount)
-				throw new ArgumentOutOfRangeException ("endLine", endLine, string.Format ("value should be between 1 and {0}", document.LineCount));
+				throw new ArgumentOutOfRangeException (nameof (endLine), endLine, string.Format ("value should be between 1 and {0}", document.LineCount));
 
 			var curLine = document.GetLine (startLine);
 			int count = endLine - startLine;
@@ -108,10 +105,9 @@ namespace MonoDevelop.Ide.Editor
 
 		public static IEnumerable<IDocumentLine> GetLinesStartingAt (this IReadonlyTextDocument document, int startLine)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			if (startLine < 1 || startLine > document.LineCount)
-				throw new ArgumentOutOfRangeException ("startLine", startLine, string.Format ("value should be between 1 and {0}", document.LineCount));
+				throw new ArgumentOutOfRangeException (nameof (startLine), startLine, string.Format ("value should be between 1 and {0}", document.LineCount));
 			var curLine = document.GetLine (startLine);
 			while (curLine != null) {
 				yield return curLine;
@@ -122,7 +118,7 @@ namespace MonoDevelop.Ide.Editor
 		public static IEnumerable<IDocumentLine> GetLinesReverseStartingAt (this IReadonlyTextDocument document, int startLine)
 		{
 			if (startLine < 1 || startLine > document.LineCount)
-				throw new ArgumentOutOfRangeException ("startLine", startLine, string.Format ("value should be between 1 and {0}", document.LineCount));
+				throw new ArgumentOutOfRangeException (nameof (startLine), startLine, string.Format ("value should be between 1 and {0}", document.LineCount));
 			var curLine = document.GetLine (startLine);
 			while (curLine != null) {
 				yield return curLine;
@@ -132,40 +128,33 @@ namespace MonoDevelop.Ide.Editor
 
 		public static string GetTextBetween (this IReadonlyTextDocument document, int startLine, int startColumn, int endLine, int endColumn)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			return document.GetTextBetween (new DocumentLocation (startLine, startColumn), new DocumentLocation (endLine, endColumn));
 		}
 
 		public static string GetLineIndent (this IReadonlyTextDocument document, int lineNumber)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			return document.GetLineIndent (document.GetLine (lineNumber));
 		}
 
 		public static string GetLineIndent (this IReadonlyTextDocument document, IDocumentLine segment)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (document);
+			ArgumentNullException.ThrowIfNull (segment);
 			return segment.GetIndentation (document);
 		}
 
 		public static string GetLineText (this IReadonlyTextDocument document, IDocumentLine line, bool includeDelimiter = false)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
-			if (line == null)
-				throw new ArgumentNullException ("line");
+			ArgumentNullException.ThrowIfNull (document);
+			ArgumentNullException.ThrowIfNull (line);
 			return document.GetTextAt (includeDelimiter ? line.SegmentIncludingDelimiter : line);
 		}
 
 		public static string GetLineText (this IReadonlyTextDocument document, int lineNumber, bool includeDelimiter = false)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			var line = document.GetLine (lineNumber);
 			return document.GetTextAt (includeDelimiter ? line.SegmentIncludingDelimiter : line);
 		}
@@ -190,10 +179,8 @@ namespace MonoDevelop.Ide.Editor
 
 		public static IEnumerable<DiffHunk> GetDiff (this IReadonlyTextDocument document, IReadonlyTextDocument changedDocument, bool includeEol = true)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
-			if (changedDocument == null)
-				throw new ArgumentNullException ("changedDocument");
+			ArgumentNullException.ThrowIfNull (document);
+			ArgumentNullException.ThrowIfNull (changedDocument);
 			var codeDictionary = new Dictionary<string, int> ();
 			int codeCounter = 0;
 			var options = new DiffOptions (includeEol);
@@ -203,10 +190,8 @@ namespace MonoDevelop.Ide.Editor
 
 		public static IEnumerable<DiffHunk> GetDiff (this IReadonlyTextDocument document, IReadonlyTextDocument changedDocument, DiffOptions options)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
-			if (changedDocument == null)
-				throw new ArgumentNullException ("changedDocument");
+			ArgumentNullException.ThrowIfNull (document);
+			ArgumentNullException.ThrowIfNull (changedDocument);
 			var codeDictionary = new Dictionary<string, int> ();
 			int codeCounter = 0;
 			return Diff.GetDiff<int> (GetDiffCodes (document, ref codeCounter, codeDictionary, options),
@@ -215,37 +200,32 @@ namespace MonoDevelop.Ide.Editor
 
 		public static string GetDiffAsString (this IReadonlyTextDocument document, IReadonlyTextDocument changedDocument, bool includeEol = true)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
-			if (changedDocument == null)
-				throw new ArgumentNullException ("changedDocument");
+			ArgumentNullException.ThrowIfNull (document);
+			ArgumentNullException.ThrowIfNull (changedDocument);
 			return Diff.GetDiffString (GetDiff (document, changedDocument, includeEol), document, changedDocument, document.FileName, changedDocument.FileName);
 		}
 
 		public static int OffsetToLineNumber (this IReadonlyTextDocument document, int offset)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			if (offset < 0 || offset > document.Length)
-				throw new ArgumentOutOfRangeException ("offset", string.Format ("offset should be between 0 and <={0} but was {1}.", document.Length, offset));
+				throw new ArgumentOutOfRangeException (nameof (offset), string.Format ("offset should be between 0 and <={0} but was {1}.", document.Length, offset));
 			return document.OffsetToLocation (offset).Line;
 		}
 
 		public static int LocationToOffset (this IReadonlyTextDocument document, DocumentLocation location)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			return document.LocationToOffset (location.Line, location.Column);
 		}
 
 		public static string GetTextBetween (this IReadonlyTextDocument document, int startOffset, int endOffset)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			if (startOffset < 0 || startOffset > document.Length)
-				throw new ArgumentNullException ("startOffset");
+				throw new ArgumentNullException (nameof (startOffset));
 			if (endOffset < 0 || endOffset > document.Length)
-				throw new ArgumentNullException ("endOffset");
+				throw new ArgumentNullException (nameof (endOffset));
 			if (startOffset > endOffset)
 				throw new InvalidOperationException ();
 			return document.GetTextAt (startOffset, endOffset - startOffset);
@@ -253,15 +233,13 @@ namespace MonoDevelop.Ide.Editor
 
 		public static string GetTextBetween (this IReadonlyTextDocument document, DocumentLocation start, DocumentLocation end)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			return document.GetTextBetween (document.LocationToOffset (start), document.LocationToOffset (end));
 		}
 
 		public static string GetEolMarker (this IReadonlyTextDocument document)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			string eol = null;
 			if (document.LineCount > 0) {
 				var line = document.GetLine (1);

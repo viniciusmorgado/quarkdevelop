@@ -72,7 +72,7 @@ namespace MonoDevelop.CodeGeneration
 		
 		CustomTreeView treeviewSelection = new CustomTreeView ();
 		CustomTreeView treeviewGenerateActions = new CustomTreeView ();
-		IGenerateAction curInitializeObject = null;
+		IGenerateAction curInitializeObject;
 		CodeGenerationOptions options;
 		
 		GenerateCodeWindow (CodeGenerationOptions options, MonoDevelop.Ide.CodeCompletion.CodeCompletionContext completionContext) : base(Gtk.WindowType.Toplevel)

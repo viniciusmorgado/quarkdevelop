@@ -229,7 +229,7 @@ namespace MonoDevelop.RegexToolkit
 			}
 		}
 		
-		class Options
+		sealed class Options
 		{
 			RegexOptions options;
 			string       name;

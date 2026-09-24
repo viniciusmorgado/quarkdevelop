@@ -55,8 +55,7 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public StringTextSource (string text, Encoding encoding = null)
 		{
-			if (text == null)
-				throw new ArgumentNullException ("text");
+			ArgumentNullException.ThrowIfNull (text);
 			this.text = text;
 			this.Encoding = encoding ?? Encoding.UTF8;
 		}
@@ -66,8 +65,7 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public StringTextSource (string text, ITextSourceVersion version, Encoding encoding = null)
 		{
-			if (text == null)
-				throw new ArgumentNullException ("text");
+			ArgumentNullException.ThrowIfNull (text);
 			this.text = text;
 			this.version = version;
 			this.Encoding = encoding ?? Encoding.UTF8;
@@ -170,16 +168,14 @@ namespace MonoDevelop.Core.Text
 		/// <inheritdoc/>
 		public void WriteTextTo (TextWriter writer)
 		{
-			if (writer == null)
-				throw new ArgumentNullException ("writer");
+			ArgumentNullException.ThrowIfNull (writer);
 			writer.Write (text);
 		}
 
 		/// <inheritdoc/>
 		public void WriteTextTo (TextWriter writer, int offset, int length)
 		{
-			if (writer == null)
-				throw new ArgumentNullException ("writer");
+			ArgumentNullException.ThrowIfNull (writer);
 			writer.Write (text.Substring (offset, length));
 		}
 

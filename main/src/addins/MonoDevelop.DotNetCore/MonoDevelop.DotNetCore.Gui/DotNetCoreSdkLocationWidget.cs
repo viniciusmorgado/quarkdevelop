@@ -96,7 +96,7 @@ namespace MonoDevelop.DotNetCore.Gui
 
 		void ShowDotNetCoreInformation ()
 		{
-			if (panel.DotNetCorePath?.Exists == true && panel.RuntimeVersions.Any ()) {
+			if (panel.DotNetCorePath?.Exists == true && panel.RuntimeVersions.Length != 0) {
 				commandLineFoundLabel.Text = GettextCatalog.GetString ("Found");
 				commandLineFoundIcon.Image = GetIcon (Gtk.Stock.Apply);
 				UpdateCommandLineIconAccessibility (true);
@@ -112,7 +112,7 @@ namespace MonoDevelop.DotNetCore.Gui
 				ShowNoSdkFound ();
 			}
 
-			if (panel.RuntimeVersions.Any ()) {
+			if (panel.RuntimeVersions.Length != 0) {
 				ShowRuntimes (panel.RuntimeVersions);
 			} else {
 				ShowNoRuntimesFound ();

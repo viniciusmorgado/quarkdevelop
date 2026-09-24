@@ -102,8 +102,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 		/// </param>
 		public void AddCategory (string categoryLabel, string categoryMarkup)
 		{
-			if (categoryMarkup == null)
-				throw new ArgumentNullException ("categoryMarkup");
+			ArgumentNullException.ThrowIfNull (categoryMarkup);
 			categories.Add (Tuple.Create (categoryLabel, categoryMarkup));
 		}
 	}

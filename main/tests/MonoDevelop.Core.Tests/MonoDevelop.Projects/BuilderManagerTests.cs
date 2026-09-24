@@ -447,8 +447,8 @@ namespace MonoDevelop.Projects
 								MSBuildVerbosity.Quiet,
 								null,
 								new [] { "ResolveAssemblyReferences" },
-								new string [0],
-								new string [0],
+								Array.Empty<string> (),
+								Array.Empty<string> (),
 								new System.Collections.Generic.Dictionary<string, string> (),
 								CancellationToken.None);
 						});

@@ -43,7 +43,7 @@ using MonoDevelop.Ide;
 namespace MonoDevelop.HexEditor
 {
 	[ExportFileDocumentController (MimeType = "*", CanUseAsDefault = false, Name = "Hex Editor", Role = DocumentControllerRole.Tool, InsertAfter = "AssemblyBrowser")]
-	class HexEditorView : FileDocumentController, IUndoHandler, IBookmarkBuffer, IZoomable
+	sealed class HexEditorView : FileDocumentController, IUndoHandler, IBookmarkBuffer, IZoomable
 	{
 		Mono.MHex.HexEditor hexEditor;
 		ScrollView window;
@@ -140,14 +140,13 @@ namespace MonoDevelop.HexEditor
 			hexEditor.HexEditorData.ByteBuffer.Redo ();
 		}
 		
-		class UndoGroup : IDisposable
+		sealed class UndoGroup : IDisposable
 		{
 			HexEditorData data;
 			
 			public UndoGroup (HexEditorData data)
 			{
-				if (data == null)
-					throw new ArgumentNullException ("data");
+				ArgumentNullException.ThrowIfNull (data);
 				this.data = data;
 				data.ByteBuffer.BeginAtomicUndo ();
 			}

@@ -172,7 +172,7 @@ namespace Mono.Debugging.Evaluation
 		public override ObjectValue[] GetChildren (ObjectPath path, int index, int count, EvaluationOptions options)
 		{
 			if (isVoidReturn)
-				return new ObjectValue[0];
+				return Array.Empty<ObjectValue> ();
 
 			return base.GetChildren (path, index, count, options);
 		}

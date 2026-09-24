@@ -68,14 +68,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentException">The spans in <paramref name="spans"/> extend beyond the end of <paramref name="snapshot"/>.</exception>
         public NormalizedSnapshotSpanCollection(ITextSnapshot snapshot, NormalizedSpanCollection spans)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
-            if (spans == null)
-            {
-                throw new ArgumentNullException(nameof(spans));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
+            ArgumentNullException.ThrowIfNull(spans);
             if (spans.Count > 0 && spans[spans.Count - 1].End > snapshot.Length)
             {
                 throw new ArgumentException(Strings.SpansBeyondEnd);
@@ -101,14 +95,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentException">The spans in <paramref name="spans"/> extend beyond the end of <paramref name="snapshot"/>.</exception>
         public NormalizedSnapshotSpanCollection(ITextSnapshot snapshot, IEnumerable<Span> spans)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
-            if (spans == null)
-            {
-                throw new ArgumentNullException(nameof(spans));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
+            ArgumentNullException.ThrowIfNull(spans);
 
             using (IEnumerator<Span> spanEnumerator = spans.GetEnumerator())
             {
@@ -151,14 +139,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentException">The spans in <paramref name="spans"/> extend beyond the end of <paramref name="snapshot"/>.</exception>
         public NormalizedSnapshotSpanCollection(ITextSnapshot snapshot, IList<Span> spans)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
-            if (spans == null)
-            {
-                throw new ArgumentNullException(nameof(spans));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
+            ArgumentNullException.ThrowIfNull(spans);
 
             if (spans.Count == 0)
             {
@@ -197,10 +179,7 @@ namespace Microsoft.VisualStudio.Text
         /// does not refer to the same <see cref="ITextSnapshot"/> as the other snapshot spans, or it refers to an uninitialized <see cref="ITextSnapshot"/>.</exception>
         public NormalizedSnapshotSpanCollection(IEnumerable<SnapshotSpan> snapshotSpans)
         {
-            if (snapshotSpans == null)
-            {
-                throw new ArgumentNullException(nameof(snapshotSpans));
-            }
+            ArgumentNullException.ThrowIfNull(snapshotSpans);
 
             using (IEnumerator<SnapshotSpan> spanEnumerator = snapshotSpans.GetEnumerator())
             {
@@ -265,10 +244,7 @@ namespace Microsoft.VisualStudio.Text
         public NormalizedSnapshotSpanCollection(IList<SnapshotSpan> snapshotSpans)
         {
             // TODO: possibly eliminate based on slight usage?
-            if (snapshotSpans == null)
-            {
-                throw new ArgumentNullException(nameof(snapshotSpans));
-            }
+            ArgumentNullException.ThrowIfNull(snapshotSpans);
 
             if (snapshotSpans.Count == 0)
             {
@@ -324,10 +300,7 @@ namespace Microsoft.VisualStudio.Text
 
         public NormalizedSnapshotSpanCollection(ITextSnapshot snapshot, Span span)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
 
             if (span.End > snapshot.Length)
             {
@@ -341,10 +314,7 @@ namespace Microsoft.VisualStudio.Text
 
         public NormalizedSnapshotSpanCollection CloneAndTrackTo(ITextSnapshot targetSnapshot, SpanTrackingMode mode)
         {
-            if (targetSnapshot == null)
-            {
-                throw new ArgumentNullException(nameof(targetSnapshot));
-            }
+            ArgumentNullException.ThrowIfNull(targetSnapshot);
             if (mode < SpanTrackingMode.EdgeExclusive || mode > SpanTrackingMode.Custom)
             {
                 throw new ArgumentOutOfRangeException(nameof(mode));
@@ -425,14 +395,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentException">The collections refer to different snapshots.</exception>
         public static NormalizedSnapshotSpanCollection Union(NormalizedSnapshotSpanCollection left, NormalizedSnapshotSpanCollection right)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             if (left.Count == 0)
             {
@@ -465,14 +429,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentException">The input collections refer to different snapshots.</exception>
         public static NormalizedSnapshotSpanCollection Overlap(NormalizedSnapshotSpanCollection left, NormalizedSnapshotSpanCollection right)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             if (left.Count == 0)
             {
@@ -504,14 +462,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentException">The collections refer to different snapshots.</exception>
         public static NormalizedSnapshotSpanCollection Intersection(NormalizedSnapshotSpanCollection left, NormalizedSnapshotSpanCollection right)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             if (left.Count == 0)
             {
@@ -543,14 +495,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentException">The input collections refer to different snapshots.</exception>
         public static NormalizedSnapshotSpanCollection Difference(NormalizedSnapshotSpanCollection left, NormalizedSnapshotSpanCollection right)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             if (left.Count == 0)
             {
@@ -809,10 +755,7 @@ namespace Microsoft.VisualStudio.Text
         /// or the number of spans in the collection is greater than the length of the array minus the array index.</exception>
         public void CopyTo(SnapshotSpan[] array, int arrayIndex)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
+            ArgumentNullException.ThrowIfNull(array);
             if (arrayIndex < 0 || arrayIndex > array.Length || this.Count > array.Length - arrayIndex)
             {
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex));
@@ -1063,10 +1006,7 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentException"><paramref name="array"/> is not one-dimensional.</exception>
         public void CopyTo(Array array, int index)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
+            ArgumentNullException.ThrowIfNull(array);
             if (index < 0 || index > array.Length || this.Count > array.Length - index)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));

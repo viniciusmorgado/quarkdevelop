@@ -10,7 +10,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation.AsyncCompl
         public JoinableTask<T> Operation { get; }
 
         private CancellationTokenSource CancellationSource { get; }
-        private bool _canceled = false;
+        private bool _canceled;
 
         /// <summary>
         /// Create instance of <see cref="DeferredBlockingOperation"/>, which wraps a blocking <paramref name="operation"/>

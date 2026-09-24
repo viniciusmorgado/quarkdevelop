@@ -75,12 +75,9 @@ namespace MonoDevelop.Ide.Editor
 		/// <param name="modeExitedAction">The action that is started after the exit mode ended.</param>
 		public InsertionModeOptions (string operation, IList<InsertionPoint> insertionPoints, Action<InsertionCursorEventArgs> modeExitedAction)
 		{
-			if (operation == null)
-				throw new ArgumentNullException ("operation");
-			if (insertionPoints == null)
-				throw new ArgumentNullException ("insertionPoints");
-			if (modeExitedAction == null)
-				throw new ArgumentNullException ("modeExitedAction");
+			ArgumentNullException.ThrowIfNull (operation);
+			ArgumentNullException.ThrowIfNull (insertionPoints);
+			ArgumentNullException.ThrowIfNull (modeExitedAction);
 			Operation = operation;
 			InsertionPoints = insertionPoints;
 			ModeExitedAction = modeExitedAction;

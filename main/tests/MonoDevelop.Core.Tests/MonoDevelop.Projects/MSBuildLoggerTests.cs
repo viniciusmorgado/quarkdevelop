@@ -141,7 +141,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class StringMonitor: ProgressMonitor
+	sealed class StringMonitor: ProgressMonitor
 	{
 		StringBuilder sb = new StringBuilder ();
 

@@ -203,8 +203,7 @@ namespace Mono.Options
 		{
 			if (c.Option == null)
 				throw new InvalidOperationException ("OptionContext.Option is null.");
-			if (index >= c.Option.MaxValueCount)
-				throw new ArgumentOutOfRangeException ("index");
+			ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual (index, c.Option.MaxValueCount);
 			if (c.Option.OptionValueType == OptionValueType.Required &&
 					index >= values.Count)
 				throw new OptionException (string.Format (
@@ -296,12 +295,10 @@ namespace Mono.Options
 
 		protected Option (string prototype, string description, int maxValueCount)
 		{
-			if (prototype == null)
-				throw new ArgumentNullException ("prototype");
+			ArgumentNullException.ThrowIfNull (prototype);
 			if (prototype.Length == 0)
-				throw new ArgumentException ("Cannot be the empty string.", "prototype");
-			if (maxValueCount < 0)
-				throw new ArgumentOutOfRangeException ("maxValueCount");
+				throw new ArgumentException ("Cannot be the empty string.", nameof (prototype));
+			ArgumentOutOfRangeException.ThrowIfNegative (maxValueCount);
 
 			this.prototype   = prototype;
 			this.names       = prototype.Split ('|');
@@ -313,17 +310,17 @@ namespace Mono.Options
 				throw new ArgumentException (
 						"Cannot provide maxValueCount of 0 for OptionValueType.Required or " +
 							"OptionValueType.Optional.",
-						"maxValueCount");
+						nameof (maxValueCount));
 			if (this.type == OptionValueType.None && maxValueCount > 1)
 				throw new ArgumentException (
 						string.Format ("Cannot provide maxValueCount of {0} for OptionValueType.None.", maxValueCount),
-						"maxValueCount");
+						nameof (maxValueCount));
 			if (Array.IndexOf (names, "<>") >= 0 && 
 					((names.Length == 1 && this.type != OptionValueType.None) ||
 					 (names.Length > 1 && this.MaxValueCount > 1)))
 				throw new ArgumentException (
 						"The default option handler '<>' cannot require values.",
-						"prototype");
+						nameof (prototype));
 		}
 
 		public string           Prototype       {get {return prototype;}}
@@ -339,7 +336,7 @@ namespace Mono.Options
 		public string[] GetValueSeparators ()
 		{
 			if (separators == null)
-				return new string [0];
+				return Array.Empty<string> ();
 			return (string[]) separators.Clone ();
 		}
 
@@ -541,8 +538,7 @@ namespace Mono.Options
 
 		private void AddImpl (Option option)
 		{
-			if (option == null)
-				throw new ArgumentNullException ("option");
+			ArgumentNullException.ThrowIfNull (option);
 			List<string> added = new List<string> (option.Names.Length);
 			try {
 				// KeyedCollection.InsertItem/SetItem handle the 0th name.
@@ -570,8 +566,7 @@ namespace Mono.Options
 			public ActionOption (string prototype, string description, int count, Action<OptionValueCollection> action)
 				: base (prototype, description, count)
 			{
-				if (action == null)
-					throw new ArgumentNullException ("action");
+				ArgumentNullException.ThrowIfNull (action);
 				this.action = action;
 			}
 
@@ -588,8 +583,7 @@ namespace Mono.Options
 
 		public OptionSet Add (string prototype, string description, Action<string> action)
 		{
-			if (action == null)
-				throw new ArgumentNullException ("action");
+			ArgumentNullException.ThrowIfNull (action);
 			Option p = new ActionOption (prototype, description, 1, 
 					delegate (OptionValueCollection v) { action (v [0]); });
 			base.Add (p);
@@ -603,8 +597,7 @@ namespace Mono.Options
 
 		public OptionSet Add (string prototype, string description, OptionAction<string, string> action)
 		{
-			if (action == null)
-				throw new ArgumentNullException ("action");
+			ArgumentNullException.ThrowIfNull (action);
 			Option p = new ActionOption (prototype, description, 2, 
 					delegate (OptionValueCollection v) {action (v [0], v [1]);});
 			base.Add (p);
@@ -617,8 +610,7 @@ namespace Mono.Options
 			public ActionOption (string prototype, string description, Action<T> action)
 				: base (prototype, description, 1)
 			{
-				if (action == null)
-					throw new ArgumentNullException ("action");
+				ArgumentNullException.ThrowIfNull (action);
 				this.action = action;
 			}
 
@@ -634,8 +626,7 @@ namespace Mono.Options
 			public ActionOption (string prototype, string description, OptionAction<TKey, TValue> action)
 				: base (prototype, description, 2)
 			{
-				if (action == null)
-					throw new ArgumentNullException ("action");
+				ArgumentNullException.ThrowIfNull (action);
 				this.action = action;
 			}
 
@@ -744,8 +735,7 @@ namespace Mono.Options
 
 		protected bool GetOptionParts (string argument, out string flag, out string name, out string sep, out string value)
 		{
-			if (argument == null)
-				throw new ArgumentNullException ("argument");
+			ArgumentNullException.ThrowIfNull (argument);
 
 			flag = name = sep = value = null;
 			Match m = ValueOption.Match (argument);
@@ -977,7 +967,7 @@ namespace Mono.Options
 				} while (start >= 0 && j != 0 ? description [j++ - 1] == '{' : false);
 				if (start == -1)
 					continue;
-				int end = description.IndexOf ("}", start);
+				int end = description.IndexOf ('}', start);
 				if (end == -1)
 					continue;
 				return description.Substring (start + nameStart [i].Length, end - start - nameStart [i].Length);
@@ -1006,7 +996,7 @@ namespace Mono.Options
 							if ((i+1) == description.Length || description [i+1] != '}')
 								throw new InvalidOperationException ("Invalid option description: " + description);
 							++i;
-							sb.Append ("}");
+							sb.Append ('}');
 						}
 						else {
 							sb.Append (description, start, i - start);

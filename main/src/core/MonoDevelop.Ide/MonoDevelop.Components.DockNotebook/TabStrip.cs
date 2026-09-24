@@ -146,8 +146,7 @@ namespace MonoDevelop.Components.DockNotebook
 
 		public TabStrip (DockNotebook notebook)
 		{
-			if (notebook == null)
-				throw new ArgumentNullException ("notebook");
+			ArgumentNullException.ThrowIfNull (notebook);
 
 			Accessible.SetCommonAttributes ("Document.Tabstrip",
 			                                Core.GettextCatalog.GetString ("Document Navigation Bar"),
@@ -701,7 +700,7 @@ namespace MonoDevelop.Components.DockNotebook
 			}
 		}
 
-		Widget currentFocus = null;
+		Widget currentFocus;
 		int currentFocusTab = -1;
 		bool currentFocusCloseButton;
 
@@ -1012,15 +1011,15 @@ namespace MonoDevelop.Components.DockNotebook
 		{
 			if (!tracker.Hovered) {
 				UpdateTabWidth (tabEndX - tabStartX);
-			} else if (closingTabs.ContainsKey (notebook.Tabs.Count)) {
-				UpdateTabWidth (closingTabs [notebook.Tabs.Count].Allocation.Right - tabStartX, true);
+			} else if (closingTabs.TryGetValue (notebook.Tabs.Count, out var value)) {
+				UpdateTabWidth (value.Allocation.Right - tabStartX, true);
 			}
 			QueueDraw ();
 		}
 
 		void UpdateTabWidth (int width, bool adjustLast = false)
 		{
-			if (notebook.Tabs.Any ())
+			if (notebook.Tabs.Count != 0)
 				TargetWidth = Clamp (width / notebook.Tabs.Count, 50, 200);
 
 			if (adjustLast) {
@@ -1066,8 +1065,7 @@ namespace MonoDevelop.Components.DockNotebook
 		Action<Context> DrawClosingTab (int index, Gdk.Rectangle region, out int width)
 		{
 			width = 0;
-			if (closingTabs.ContainsKey (index)) {
-				DockNotebookTab closingTab = closingTabs [index];
+			if (closingTabs.TryGetValue (index, out var closingTab)) {
 				width = (int)(closingTab.WidthModifier * TabWidth);
 				int tmp = width;
 				return c => DrawTab (c, closingTab, Allocation, new Gdk.Rectangle (region.X, region.Y, tmp, region.Height), false, false, false, CreateTabLayout (closingTab), false);
@@ -1076,7 +1074,7 @@ namespace MonoDevelop.Components.DockNotebook
 			};
 		}
 
-		void Draw (Context ctx)
+		new void Draw (Context ctx)
 		{
 			int tabArea = tabEndX - tabStartX;
 			int x = GetRenderOffset ();

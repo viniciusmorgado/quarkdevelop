@@ -252,7 +252,7 @@ namespace MonoDevelop.Core.Serialization
 			
 			// Member does not have attributes
 			if (list == null)
-				return new object [0];
+				return Array.Empty<object> ();
 			
 			ArrayList res = new ArrayList ();
 			foreach (object att in list)
@@ -289,7 +289,7 @@ namespace MonoDevelop.Core.Serialization
 		{
 			SerializationMap map;
 			if (!maps.TryGetValue (type, out map))
-				return new ItemMember [0];
+				return Array.Empty<ItemMember> ();
 			else
 				return map.ExtendedMembers.ToArray ();
 		}

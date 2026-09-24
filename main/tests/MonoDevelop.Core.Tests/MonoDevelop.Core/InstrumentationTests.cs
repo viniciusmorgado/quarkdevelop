@@ -41,7 +41,7 @@ namespace MonoDevelop.Core
 		static List<CounterValue> counterValues = new List<CounterValue> ();
 		TestInstrumentationConsumer testConsumer;
 
-		class CustomCounterMetadata: CounterMetadata
+		sealed class CustomCounterMetadata: CounterMetadata
 		{
 			public int SomeMeasure {
 				get => GetProperty<int> ();
@@ -49,7 +49,7 @@ namespace MonoDevelop.Core
 			}
 		}
 
-		class TestInstrumentationConsumer : InstrumentationConsumer
+		sealed class TestInstrumentationConsumer : InstrumentationConsumer
 		{
 			public TestInstrumentationConsumer ()
 			{
@@ -71,7 +71,7 @@ namespace MonoDevelop.Core
 			}
 		}
 
-		class TimerTrackerTest: IDisposable
+		sealed class TimerTrackerTest: IDisposable
 		{
 			public CounterValue Value;
 

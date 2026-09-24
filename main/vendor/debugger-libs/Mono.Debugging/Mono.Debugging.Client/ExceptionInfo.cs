@@ -154,10 +154,10 @@ namespace Mono.Debugging.Client
 				
 				var stackTrace = exception.GetChild ("StackTrace");
 				if (stackTrace == null || stackTrace.IsNull)
-					return frames = new ExceptionStackFrame [0];
+					return frames = Array.Empty<ExceptionStackFrame> ();
 				
 				if (stackTrace.IsEvaluating) {
-					frames = new ExceptionStackFrame [0];
+					frames = Array.Empty<ExceptionStackFrame> ();
 					stackTrace.ValueChanged += HandleExceptionValueChanged;
 					return frames;
 				}
@@ -167,7 +167,7 @@ namespace Mono.Debugging.Client
 				}
 
 				if (!stackTrace.IsArray) {
-					return frames = new ExceptionStackFrame [0];
+					return frames = Array.Empty<ExceptionStackFrame> ();
 				}
 
 				var list = new List<ExceptionStackFrame> ();

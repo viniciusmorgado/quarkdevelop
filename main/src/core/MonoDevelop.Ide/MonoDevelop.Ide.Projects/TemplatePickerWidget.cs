@@ -231,7 +231,7 @@ namespace MonoDevelop.Ide.Projects
 			
 			
 			if (installedTemplateCatView.GetSelection () == null)
-				installedTemplateCatView.SetSelection (new string[0]);
+				installedTemplateCatView.SetSelection (Array.Empty<string> ());
 			
 			if (installedSection.IsActive)
 				LoadTemplatesIntoView (installedTemplates);
@@ -248,7 +248,7 @@ namespace MonoDevelop.Ide.Projects
 			recentTemplateCatView.Load (recentTemplates);
 			
 			if (recentTemplateCatView.GetSelection () == null)
-				recentTemplateCatView.SetSelection (new string[0]);
+				recentTemplateCatView.SetSelection (Array.Empty<string> ());
 			
 			if (recentSection.IsActive)
 				LoadTemplatesIntoView (installedTemplates);
@@ -603,7 +603,7 @@ namespace MonoDevelop.Ide.Projects
 				if (!string.IsNullOrEmpty (template.Category))
 					this.Category = template.Category.Split (new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 				else
-					this.Category = new string[0];
+					this.Category = Array.Empty<string> ();
 			}
 			
 			public string Name { get; private set; }

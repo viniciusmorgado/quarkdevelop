@@ -12,8 +12,8 @@ namespace MonoDevelop.Core.Web
 	{
 		internal const int MaxAuthRetries = 4;
 
-		public bool IsBlocked { get; private set; } = false;
-		public int AuthenticationRetriesCount { get; private set; } = 0;
+		public bool IsBlocked { get; private set; }
+		public int AuthenticationRetriesCount { get; private set; }
 
 		public void Block ()
 		{

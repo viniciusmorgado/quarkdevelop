@@ -30,7 +30,7 @@ using NuGet.PackageManagement.UI;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableManagePackagesSearchResultViewModel : ManagePackagesSearchResultViewModel
+	sealed class TestableManagePackagesSearchResultViewModel : ManagePackagesSearchResultViewModel
 	{
 		public FakeDotNetProject Project;
 		public FakeSolutionManager SolutionManager;

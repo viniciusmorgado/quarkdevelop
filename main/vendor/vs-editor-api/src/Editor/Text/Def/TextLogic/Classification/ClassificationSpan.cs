@@ -27,10 +27,7 @@ namespace Microsoft.VisualStudio.Text.Classification
         /// <exception cref="ArgumentNullException"><paramref name="classification"/> is null.</exception>
         public ClassificationSpan(SnapshotSpan span, IClassificationType classification)
         {
-            if (classification == null)
-            {
-                throw new ArgumentNullException(nameof(classification));
-            }
+            ArgumentNullException.ThrowIfNull (classification);
             this.span = span;
             this.classification = classification;
         }

@@ -38,7 +38,7 @@ namespace MonoDevelop.Projects
 {
 	public class ItemConfiguration: IExtendedDataItem
 	{
-		string name = null;
+		string name;
 		
 		string platform;
 

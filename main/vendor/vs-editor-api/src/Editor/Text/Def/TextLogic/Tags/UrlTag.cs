@@ -19,8 +19,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="url" /> is <c>null</c></exception>
         public UrlTag(Uri url)
         {
-            if (url == null)
-                throw new ArgumentNullException(nameof(url));
+            ArgumentNullException.ThrowIfNull (url);
 
             Url = url;
         }

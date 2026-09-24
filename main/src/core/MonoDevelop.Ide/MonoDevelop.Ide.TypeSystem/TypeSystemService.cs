@@ -260,8 +260,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		[Obsolete ("Use the Visual Studio Editor APIs")]
 		public Task<ParsedDocument> ParseFile (ParseOptions options, string mimeType, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			if (options == null)
-				throw new ArgumentNullException (nameof(options));
+			ArgumentNullException.ThrowIfNull (options);
 			if (options.FileName == null)
 				throw new ArgumentNullException ("options.FileName");
 
@@ -316,8 +315,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		[Obsolete ("Use the Visual Studio Editor APIs")]
 		internal async Task<ParsedDocumentProjection> ParseProjection (ParseOptions options, string mimeType, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			if (options == null)
-				throw new ArgumentNullException (nameof(options));
+			ArgumentNullException.ThrowIfNull (options);
 			if (options.FileName == null)
 				throw new ArgumentNullException ("fileName");
 
@@ -471,8 +469,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		/// <param name="forceCreation">If set to <c>true</c> the creation is forced and the method doesn't return null.</param>
 		public string GetCacheDirectory (Project project, bool forceCreation = false)
 		{
-			if (project == null)
-				throw new ArgumentNullException (nameof(project));
+			ArgumentNullException.ThrowIfNull (project);
 			return GetCacheDirectory (project.FileName, forceCreation);
 		}
 
@@ -487,8 +484,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		/// <param name="forceCreation">If set to <c>true</c> the creation is forced and the method doesn't return null.</param>
 		public string GetCacheDirectory (string fileName, bool forceCreation = false)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException (nameof(fileName));
+			ArgumentNullException.ThrowIfNull (fileName);
 			object locker;
 			bool newLock;
 			lock (cacheLocker) {
@@ -700,8 +696,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public Microsoft.CodeAnalysis.ProjectId GetProjectId (MonoDevelop.Projects.Project project)
 		{
-			if (project == null)
-				throw new ArgumentNullException (nameof(project));
+			ArgumentNullException.ThrowIfNull (project);
 			foreach (var w in workspaces) {
 				var projectId = w.GetProjectId (project);
 				if (projectId != null) {
@@ -713,8 +708,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public Microsoft.CodeAnalysis.Document GetCodeAnalysisDocument (Microsoft.CodeAnalysis.DocumentId docId, CancellationToken cancellationToken = default (CancellationToken))
 		{
-			if (docId == null)
-				throw new ArgumentNullException (nameof(docId));
+			ArgumentNullException.ThrowIfNull (docId);
 			foreach (var w in workspaces) {
 				var documentId = w.GetDocument (docId, cancellationToken);
 				if (documentId != null) {
@@ -726,8 +720,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public MonoDevelop.Projects.Project GetMonoProject (Microsoft.CodeAnalysis.Project project)
 		{
-			if (project == null)
-				throw new ArgumentNullException (nameof(project));
+			ArgumentNullException.ThrowIfNull (project);
 			foreach (var w in workspaces) {
 				var documentId = w.GetMonoProject (project);
 				if (documentId != null) {
@@ -754,8 +747,8 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		object workspaceLoadLock = new object ();
 		TaskCompletionSource<bool> workspaceLoadTaskSource;
-		StatusBarIcon statusIcon = null;
-		int workspacesLoading = 0;
+		StatusBarIcon statusIcon;
+		int workspacesLoading;
 
 		public static Func<Task> FreezeLoad = () => Task.CompletedTask;
 

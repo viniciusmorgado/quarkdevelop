@@ -38,7 +38,7 @@ namespace MonoDevelop.Debugger
 		Mono.Debugging.Client.CompletionData currentCompletionData;
 		CodeCompletionContext ctx;
 		Gdk.ModifierType modifier;
-		bool keyHandled = false;
+		bool keyHandled;
 		uint keyValue;
 		char keyChar;
 		Gdk.Key key;

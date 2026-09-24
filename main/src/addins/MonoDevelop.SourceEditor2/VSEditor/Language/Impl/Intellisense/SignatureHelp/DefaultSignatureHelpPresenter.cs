@@ -22,11 +22,11 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
     internal sealed class DefaultSignatureHelpPresenter : IPopupIntellisensePresenter, IObscuringTip, IIntellisenseCommandTarget, IMultiSessionIntellisensePresenter<ISignatureHelpSession>
     {
         private ISignatureHelpSession _session;
-        private ITrackingSpan _presentationSpan = null;
+        private ITrackingSpan _presentationSpan;
         private DefaultSignatureHelpPresenterSurfaceElement _surfaceElement;
         private Widget wrappedXwtWidget;
         private EventHandler _surfaceElementChangedEvent;
-        private bool _isDisposed = false;
+        private bool _isDisposed;
         private SignatureHelpSessionView _sessionView;
         private PopupStyles _popupStyles = PopupStyles.None;
 

@@ -24,16 +24,13 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         private UndoTransactionState state;
         private List<ITextUndoPrimitive> primitives;
         private IMergeTextUndoTransactionPolicy mergePolicy;
-        internal bool _isDisposed = false;
+        internal bool _isDisposed;
 
         #endregion
 
         public UndoTransactionImpl(ITextUndoHistory history, ITextUndoTransaction parent, string description)
         {
-            if (history == null)
-            {
-                throw new ArgumentNullException(nameof(history));
-            }
+            ArgumentNullException.ThrowIfNull(history);
 
             if (string.IsNullOrEmpty(description))
             {
@@ -364,10 +361,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
             get { return this.mergePolicy; }
             set 
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+                ArgumentNullException.ThrowIfNull(value);
 
                 this.mergePolicy = value; 
             }

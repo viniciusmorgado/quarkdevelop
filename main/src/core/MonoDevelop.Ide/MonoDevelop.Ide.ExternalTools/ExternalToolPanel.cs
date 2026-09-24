@@ -72,8 +72,8 @@ namespace MonoDevelop.Ide.ExternalTools
 		Widget[] dependendControls;
 		 
 		// needed for treeview listbox
-		int toolListBoxItemCount = 0;
-		bool lockStoreValues = false;
+		int toolListBoxItemCount;
+		bool lockStoreValues;
 
 		EventBoxTooltip keyBindingInfoTooltip;
 
@@ -204,8 +204,8 @@ namespace MonoDevelop.Ide.ExternalTools
 			}
 		}
 
-		bool accelIncomplete = false;
-		bool accelComplete = false;
+		bool accelIncomplete;
+		bool accelComplete;
 		string chord;
 
 		string currentKey;

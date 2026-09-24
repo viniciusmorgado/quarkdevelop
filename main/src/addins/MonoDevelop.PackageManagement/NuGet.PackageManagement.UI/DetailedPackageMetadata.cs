@@ -31,7 +31,7 @@ namespace NuGet.PackageManagement.UI
 			Published = serverData.Published;
 			DependencySets = serverData.DependencySets?
 				.Select(e => new PackageDependencySetMetadata(e))
-				?? new PackageDependencySetMetadata[] { };
+				?? Array.Empty<PackageDependencySetMetadata>();
 			HasDependencies = DependencySets.Any(
 				dependencySet => dependencySet.Dependencies != null && dependencySet.Dependencies.Count > 0);
 		}

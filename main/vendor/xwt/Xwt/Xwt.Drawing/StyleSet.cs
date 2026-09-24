@@ -65,8 +65,7 @@ namespace Xwt.Drawing
 
 		public StyleSet Add (string style)
 		{
-			if (style == null)
-				throw new ArgumentNullException ("style");
+			ArgumentNullException.ThrowIfNull (style);
 			
 			if (styles != null && styles.Contains (style))
 				return this;
@@ -81,8 +80,7 @@ namespace Xwt.Drawing
 
 		public StyleSet Remove (string style)
 		{
-			if (style == null)
-				throw new ArgumentNullException ("style");
+			ArgumentNullException.ThrowIfNull (style);
 
 			if (styles == null)
 				return this;

@@ -31,7 +31,7 @@ using NuGet.ProjectManagement;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeNuGetAwareProject : DummyDotNetProject, INuGetAwareProject
+	sealed class FakeNuGetAwareProject : DummyDotNetProject, INuGetAwareProject
 	{
 		public FakeNuGetAwareProject ()
 		{

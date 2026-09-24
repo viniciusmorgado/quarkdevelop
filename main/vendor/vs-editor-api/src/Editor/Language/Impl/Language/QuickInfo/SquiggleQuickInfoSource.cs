@@ -14,7 +14,7 @@
 
     internal sealed class SquiggleQuickInfoSource : IAsyncQuickInfoSource
     {
-        private bool disposed = false;
+        private bool disposed;
         private SquiggleQuickInfoSourceProvider componentContext;
         private ITextBuffer textBuffer;
         private ITextView tagAggregatorTextView;

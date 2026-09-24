@@ -31,13 +31,13 @@ using NUnit.Framework;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture ()]
-	class InsertionModeTests : TextEditorTestBase
+	sealed class InsertionModeTests : TextEditorTestBase
 	{
 		string CreateInsertionPoint (string input, string text, NewLineInsertion before, NewLineInsertion after)
 		{
 			int idx = input.IndexOf ('$');
 			Assert.Greater (idx, -1);
-			TextEditorData data = new TextEditorData (new TextDocument (input.Substring (0, idx) + input.Substring (idx + 1)));
+			TextEditorData data = new TextEditorData (new TextDocument (string.Concat (input.AsSpan (0, idx), input.AsSpan (idx + 1))));
 			InsertionPoint point = new InsertionPoint (data.Document.OffsetToLocation (idx), before, after);
 			point.Insert (data, text);
 			return data.Document.Text;

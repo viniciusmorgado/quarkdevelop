@@ -73,8 +73,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public static TextLoader CreateFromText (string text)
 		{
-			if (text == null)
-				throw new System.ArgumentNullException ("text");
+			ArgumentNullException.ThrowIfNull (text);
 			return TextLoader.From (TextAndVersion.Create (SourceText.From (text), VersionStamp.Create ()));
 		}
 	}

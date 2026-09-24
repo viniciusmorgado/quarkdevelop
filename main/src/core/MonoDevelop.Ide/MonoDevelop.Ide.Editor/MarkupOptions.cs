@@ -28,7 +28,7 @@ namespace MonoDevelop.Ide.Editor
 {
 	public class MarkupOptions
 	{
-		public bool FitIdeStyle { get; set; } = false;
+		public bool FitIdeStyle { get; set; }
 		public MarkupFormat MarkupFormat { get; set; } = MarkupFormat.Pango;
 
 		public MarkupOptions (MarkupFormat markupFormat, bool fitIdeStyle = false)

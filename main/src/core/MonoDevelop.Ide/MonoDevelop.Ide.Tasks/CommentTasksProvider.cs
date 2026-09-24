@@ -39,7 +39,6 @@ namespace MonoDevelop.Ide.Tasks
 {
 	partial class CommentTasksProvider
 	{
-		TaskService taskService;
 
 		public static void Initialize ()
 		{

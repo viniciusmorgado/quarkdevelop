@@ -18,9 +18,7 @@ namespace NuGet.CommandLine
 
 		public SettingsCredentialProvider (Configuration.IPackageSourceProvider packageSourceProvider)
 		{
-			if (packageSourceProvider == null) {
-				throw new ArgumentNullException (nameof (packageSourceProvider));
-			}
+			ArgumentNullException.ThrowIfNull (packageSourceProvider);
 
 			_packageSourceProvider = packageSourceProvider;
 		}
@@ -38,9 +36,7 @@ namespace NuGet.CommandLine
 			bool nonInteractive, 
 			CancellationToken cancellationToken)
 		{
-			if (uri == null) {
-				throw new ArgumentNullException (nameof(uri));
-			}
+			ArgumentNullException.ThrowIfNull (uri);
 
 			cancellationToken.ThrowIfCancellationRequested ();
 

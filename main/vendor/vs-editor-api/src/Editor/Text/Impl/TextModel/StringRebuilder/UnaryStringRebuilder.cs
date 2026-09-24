@@ -18,7 +18,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         internal readonly ILineBreaks _lineBreaks;
 
         #if DEBUG
-        private static int _totalCreated = 0;
+        private static int _totalCreated;
         public static int TotalCreated { get { return _totalCreated; } }
         #endif
 
@@ -145,14 +145,10 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         protected void CopyTo(char[] content, int sourceIndex, char[] destination, int destinationIndex, int count)
         {
-            if (sourceIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(sourceIndex));
-            if (destination == null)
-                throw new ArgumentNullException(nameof(destination));
-            if (destinationIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(destinationIndex));
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentOutOfRangeException.ThrowIfNegative(sourceIndex);
+            ArgumentNullException.ThrowIfNull(destination);
+            ArgumentOutOfRangeException.ThrowIfNegative(destinationIndex);
+            ArgumentOutOfRangeException.ThrowIfNegative(count);
 
             if ((sourceIndex + count > this.Length) || (sourceIndex + count < 0))
                 throw new ArgumentOutOfRangeException(nameof(count));
@@ -169,8 +165,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         protected void Write(char[] content, TextWriter writer, Span span)
         {
-            if (writer == null)
-                throw new ArgumentNullException(nameof(writer));
+            ArgumentNullException.ThrowIfNull(writer);
             if (span.End > this.Length)
                 throw new ArgumentOutOfRangeException(nameof(span));
 

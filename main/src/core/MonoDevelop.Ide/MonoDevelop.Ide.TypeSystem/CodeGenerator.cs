@@ -147,15 +147,13 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public void AddGlobalNamespaceImport (MonoDevelop.Ide.Gui.Document doc, string nsName)
 		{
-			if (doc == null)
-				throw new ArgumentNullException ("doc");
+			ArgumentNullException.ThrowIfNull (doc);
 			AddGlobalNamespaceImport (doc.Editor, doc.DocumentContext, nsName);
 		}
 
 		public void AddLocalNamespaceImport (MonoDevelop.Ide.Gui.Document doc, string nsName, DocumentLocation caretLocation)
 		{
-			if (doc == null)
-				throw new ArgumentNullException ("doc");
+			ArgumentNullException.ThrowIfNull (doc);
 			AddLocalNamespaceImport (doc.Editor, doc.DocumentContext, nsName, caretLocation);
 		}
 
@@ -182,7 +180,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		public CodeGeneratorMemberResult (string code, IList<CodeGeneratorBodyRegion> bodyRegions)
 		{
 			this.Code = code;
-			this.BodyRegions = bodyRegions ?? new CodeGeneratorBodyRegion[0];
+			this.BodyRegions = bodyRegions ?? Array.Empty<CodeGeneratorBodyRegion> ();
 		}
 
 		public string Code { get; private set; }

@@ -37,7 +37,7 @@ namespace Xwt
 	{
 		IDataField[] fields;
 		
-		class ListStoreBackendHost: BackendHost<ListStore,IListStoreBackend>
+		sealed class ListStoreBackendHost: BackendHost<ListStore,IListStoreBackend>
 		{
 			protected override void OnBackendCreated ()
 			{

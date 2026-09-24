@@ -35,6 +35,7 @@ using NUnit.Framework;
 using Microsoft.VisualStudio.Platform;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using System;
 
 namespace MonoDevelop.CSharpBinding.Debugging
 {
@@ -89,10 +90,10 @@ namespace console61
 
 			int startOfStatement = text.IndexOf ('$');
 			if (startOfStatement >= 0)
-				text = text.Substring (0, startOfStatement) + text.Substring (startOfStatement + 1);
+				text = string.Concat (text.AsSpan (0, startOfStatement), text.AsSpan (startOfStatement + 1));
 			int endOfStatement = text.IndexOf ('$');
 			if (endOfStatement >= 0)
-				text = text.Substring (0, endOfStatement) + text.Substring (endOfStatement + 1);
+				text = string.Concat (text.AsSpan (0, endOfStatement), text.AsSpan (endOfStatement + 1));
 
 			var buffer = PlatformCatalog.Instance.TextBufferFactoryService.CreateTextBuffer (text, contentType);
 			var doc = GetAnalysisDocument (text);
@@ -163,10 +164,10 @@ namespace console61
 
 			int startOfStatement = text.IndexOf ('$');
 			if (startOfStatement >= 0)
-				text = text.Substring (0, startOfStatement) + text.Substring (startOfStatement + 1);
+				text = string.Concat (text.AsSpan (0, startOfStatement), text.AsSpan (startOfStatement + 1));
 			int endOfStatement = text.IndexOf ('$');
 			if (endOfStatement >= 0)
-				text = text.Substring (0, endOfStatement) + text.Substring (endOfStatement + 1);
+				text = string.Concat (text.AsSpan (0, endOfStatement), text.AsSpan (endOfStatement + 1));
 
 			var buffer = PlatformCatalog.Instance.TextBufferFactoryService.CreateTextBuffer (text, contentType);
 			var doc = GetAnalysisDocument (text);

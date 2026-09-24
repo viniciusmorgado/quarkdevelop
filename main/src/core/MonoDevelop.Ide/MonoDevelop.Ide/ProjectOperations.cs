@@ -68,7 +68,7 @@ namespace MonoDevelop.Ide
 		List<IBuildTarget> currentRunOperationOwners = new List<IBuildTarget> ();
 		RootWorkspace workspace;
 
-		SelectReferenceDialog selDialog = null;
+		SelectReferenceDialog selDialog;
 		
 		internal ProjectOperations ()
 		{
@@ -286,8 +286,7 @@ namespace MonoDevelop.Ide
 		
 		public void JumpToDeclaration (Microsoft.CodeAnalysis.ISymbol symbol, WorkspaceObject project = null, bool askIfMultipleLocations = true)
 		{
-			if (symbol == null)
-				throw new ArgumentNullException ("symbol");
+			ArgumentNullException.ThrowIfNull (symbol);
 			var locations = symbol.Locations;
 			
 			if (askIfMultipleLocations && locations.Length > 1) {
@@ -305,10 +304,8 @@ namespace MonoDevelop.Ide
 
 		public async void JumpToMetadata (string metadataDllName, string documentationCommentId, Project project = null, bool openInPublicOnlyMode = true)
 		{
-			if (metadataDllName == null)
-				throw new ArgumentNullException ("metadataDllName");
-			if (documentationCommentId == null)
-				throw new ArgumentNullException ("documentationCommentId");
+			ArgumentNullException.ThrowIfNull (metadataDllName);
+			ArgumentNullException.ThrowIfNull (documentationCommentId);
 			string fileName = metadataDllName;
 			if (metadataDllName == "CommonLanguageRuntimeLibrary")
 				metadataDllName = "corlib.dll";
@@ -362,9 +359,9 @@ namespace MonoDevelop.Ide
 				string oldChildName = child.FilePath.FileName;
 				string childNewName = null;
 				if (oldChildName.StartsWith (oldName, StringComparison.CurrentCultureIgnoreCase)) {
-					childNewName = newName + oldChildName.Substring (oldName.Length);
+					childNewName = string.Concat (newName, oldChildName.AsSpan (oldName.Length));
 				} else if (oldChildName.StartsWith (Path.GetFileNameWithoutExtension (oldName), StringComparison.CurrentCultureIgnoreCase)) {
-					childNewName = Path.GetFileNameWithoutExtension (newName) + oldChildName.Substring (Path.GetFileNameWithoutExtension (oldName).Length);
+					childNewName = string.Concat (Path.GetFileNameWithoutExtension (newName), oldChildName.AsSpan (Path.GetFileNameWithoutExtension (oldName).Length));
 				}
 
 				if (childNewName != null) {
@@ -2221,8 +2218,7 @@ namespace MonoDevelop.Ide
 			// For example, if sourcePath is /a1/a2/a3 and targetPath is /b1/b2, the
 			// new folder or file will be /b1/b2
 			
-			if (targetProject == null)
-				throw new ArgumentNullException ("targetProject");
+			ArgumentNullException.ThrowIfNull (targetProject);
 
 			if (!targetPath.IsChildPathOf (targetProject.BaseDirectory))
 				throw new ArgumentException ("Invalid project folder: " + targetPath);
@@ -2704,8 +2700,7 @@ namespace MonoDevelop.Ide
 		/// <param name="operation">The operation.</param>
 		public bool EditFile (FilePath filePath, Action<ITextDocument> operation)
 		{
-			if (operation == null)
-				throw new ArgumentNullException ("operation");
+			ArgumentNullException.ThrowIfNull (operation);
 			bool isOpen;
 			var data = GetTextEditorData (filePath, out isOpen);
 			operation (data);
@@ -2734,7 +2729,7 @@ namespace MonoDevelop.Ide
 		internal IReadonlyTextDocument GetReadOnlyTextEditorData (FilePath filePath, bool throwOnFileNotFound)
 		{
 			if (filePath.IsNullOrEmpty)
-				throw new ArgumentNullException ("filePath");
+				throw new ArgumentNullException (nameof (filePath));
 			foreach (var doc in IdeServices.DocumentManager.Documents) {
 				if (IsSearchedDocument (doc, filePath)) {
 					return doc.Editor;

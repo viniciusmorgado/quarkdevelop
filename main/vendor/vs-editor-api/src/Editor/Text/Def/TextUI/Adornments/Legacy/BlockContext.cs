@@ -28,14 +28,11 @@ namespace Microsoft.VisualStudio.Text.Adornments
         /// <param name="content">The content, including hiearchical parent statements, to be displayed in the tooltip.</param>
         public BlockContext(IBlockTag blockTag, ITextView view, object content)
         {
-            if (blockTag == null)
-                throw new ArgumentNullException(nameof(blockTag));
+            ArgumentNullException.ThrowIfNull(blockTag);
 
-            if (view == null)
-                throw new ArgumentNullException(nameof(view));
+            ArgumentNullException.ThrowIfNull(view);
 
-            if (content == null)
-                throw new ArgumentNullException(nameof(content));
+            ArgumentNullException.ThrowIfNull(content);
 
             _blockTag = blockTag;
             _view = view;

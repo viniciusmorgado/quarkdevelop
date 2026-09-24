@@ -37,10 +37,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         {
             get
             {
-                if (index != 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(index));
-                }
+                ArgumentOutOfRangeException.ThrowIfNotEqual(index, 0);
                 return this;
             }
             set
@@ -93,14 +90,8 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public void CopyTo(ITextChange[] array, int arrayIndex)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-            if (arrayIndex < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-            }
+            ArgumentNullException.ThrowIfNull(array);
+            ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
             if (array.Rank > 1 || arrayIndex >= array.Length)
             {
                 throw new ArgumentException("Bad arguments to CopyTo");

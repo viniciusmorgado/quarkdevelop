@@ -270,7 +270,6 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 			foreach (var folder in folders) {
 				var project = folder.Project;
 
-				AlertButton result;
 
 				if (project == null) {
 					break;

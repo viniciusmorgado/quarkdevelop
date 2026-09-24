@@ -25,8 +25,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// <exception cref="ArgumentException"><paramref name="marginContainer"/> is an empty string.</exception>
         public MarginContainerAttribute(string marginContainer)
         {
-            if (marginContainer == null)
-                throw new ArgumentNullException(nameof(marginContainer));
+            ArgumentNullException.ThrowIfNull(marginContainer);
             if (marginContainer.Length == 0)
                 throw new ArgumentException("marginContainer is an empty string.");
 

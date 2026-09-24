@@ -50,17 +50,14 @@ namespace MonoDevelop.Ide.Editor
 
 		public static bool TryGetValue (string contentName, out Settings settings)
 		{
-			if (contentName == null)
-				throw new ArgumentNullException ("contentName");
+			ArgumentNullException.ThrowIfNull (contentName);
 			return settingStore.TryGetValue (contentName, out settings);
 		}
 
 		public static void Store (string contentName, Settings settings)
 		{
-			if (contentName == null)
-				throw new ArgumentNullException ("contentName");
-			if (settings == null)
-				throw new ArgumentNullException ("settings");
+			ArgumentNullException.ThrowIfNull (contentName);
+			ArgumentNullException.ThrowIfNull (settings);
 			settingStore [contentName] = settings;
 		}
 

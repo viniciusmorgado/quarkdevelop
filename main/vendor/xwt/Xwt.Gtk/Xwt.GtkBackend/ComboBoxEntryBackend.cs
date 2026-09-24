@@ -31,7 +31,7 @@ namespace Xwt.GtkBackend
 	public class ComboBoxEntryBackend: ComboBoxBackend, IComboBoxEntryBackend
 	{
 		TextEntryBackend entryBackend;
-		int textColumn = 0;
+		int textColumn;
 		bool completes;
 
 		public bool Completes
@@ -116,12 +116,11 @@ namespace Xwt.GtkBackend
 		}
 	}
 	
-	class CustomComboEntryBackend: TextEntryBackend
+	sealed class CustomComboEntryBackend: TextEntryBackend
 	{
 		public CustomComboEntryBackend (Gtk.Entry entry)
 		{
-			if (entry == null)
-				throw new ArgumentNullException(nameof(entry));
+			ArgumentNullException.ThrowIfNull (entry);
 			Widget = entry;
 		}
 		

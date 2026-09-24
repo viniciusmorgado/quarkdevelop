@@ -56,29 +56,25 @@ namespace MonoDevelop.Ide.Editor
 
 		public static ITextDocument CreateNewDocument(string fileName, string mimeType = null)
 		{
-			if (fileName == null)
-				throw new System.ArgumentNullException(nameof(fileName));
+			ArgumentNullException.ThrowIfNull (fileName);
 			return currentFactory.CreateNewDocument(fileName, mimeType);
 		}
 
 		public static ITextDocument CreateNewDocument (ITextSource textSource, string fileName, string mimeType = null)
 		{
-			if (textSource == null)
-				throw new System.ArgumentNullException ("textSource");
+			ArgumentNullException.ThrowIfNull (textSource);
 			return currentFactory.CreateNewDocument (textSource, fileName, mimeType); 
 		}
 
 		public static ITextDocument LoadDocument (string fileName, string mimeType = null)
 		{
-			if (fileName == null)
-				throw new System.ArgumentNullException ("fileName");
+			ArgumentNullException.ThrowIfNull (fileName);
 			return currentFactory.CreateNewDocument (StringTextSource.ReadFrom (fileName), fileName, mimeType); 
 		}
 
 		public static IReadonlyTextDocument CreateNewReadonlyDocument (ITextSource textSource, string fileName, string mimeType = null)
 		{
-			if (textSource == null)
-				throw new System.ArgumentNullException ("textSource");
+			ArgumentNullException.ThrowIfNull (textSource);
 			return currentFactory.CreateNewDocument (textSource, fileName, mimeType); 
 		}
 
@@ -120,8 +116,7 @@ namespace MonoDevelop.Ide.Editor
 
 		public static TextEditor CreateNewEditor (IReadonlyTextDocument document, TextEditorType textEditorType = TextEditorType.Default)
 		{
-			if (document == null)
-				throw new System.ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			var result = new TextEditor (currentFactory.CreateNewEditor (document, textEditorType), textEditorType) {
 				ZoomLevel = ZoomLevel
 			};

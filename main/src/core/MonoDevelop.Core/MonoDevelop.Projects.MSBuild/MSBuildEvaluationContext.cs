@@ -389,7 +389,7 @@ namespace MonoDevelop.Projects.MSBuild
 		string ToMSBuildDir (string path)
 		{
 			path = path.Replace ('/','\\');
-			if (!path.EndsWith ("\\", StringComparison.Ordinal))
+			if (!path.EndsWith ('\\'))
 				path = path + '\\';
 			return path;
 		}
@@ -815,7 +815,7 @@ namespace MonoDevelop.Projects.MSBuild
 
 				if (arg.Length == 0 && foundListEnd && list.Count == 0) {
 					// Empty parameters list
-					parameters = new object [0];
+					parameters = Array.Empty<object> ();
 					i = j;
 					return true;
 				}

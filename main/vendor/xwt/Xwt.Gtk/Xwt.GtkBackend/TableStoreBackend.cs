@@ -84,7 +84,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 	
-	class ObjectWrapper
+	sealed class ObjectWrapper
 	{
 		public object Object;
 		

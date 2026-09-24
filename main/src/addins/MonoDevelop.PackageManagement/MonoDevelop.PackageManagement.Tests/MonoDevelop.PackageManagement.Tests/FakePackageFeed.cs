@@ -35,7 +35,7 @@ using NuGet.Versioning;
 
 namespace MonoDevelop.PackageManagement.Tests
 {
-	class FakePackageFeed : IPackageFeed
+	sealed class FakePackageFeed : IPackageFeed
 	{
 		public bool IsMultiSource {
 			get { return true; }

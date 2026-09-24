@@ -40,8 +40,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         public XPlatIntraTextAdornmentTag(object adornment, XPlatAdornmentRemovedCallback removalCallback,
             double? topSpace, double? baseline, double? textHeight, double? bottomSpace, PositionAffinity? affinity)
         {
-            if (adornment == null)
-                throw new ArgumentNullException(nameof(adornment));
+            ArgumentNullException.ThrowIfNull(adornment);
 
             Adornment = adornment;
             RemovalCallback = removalCallback;

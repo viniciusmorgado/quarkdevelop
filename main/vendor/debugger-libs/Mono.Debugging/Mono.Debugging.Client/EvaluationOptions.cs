@@ -113,18 +113,18 @@ namespace Mono.Debugging.Client
 	{
 		public bool Line { get; set; } = true;
 
-		public bool Module { get; set; } = false;
+		public bool Module { get; set; }
 
 		public bool ParameterNames { get; set; } = true;
 
 		public bool ParameterTypes { get; set; } = true;
 
-		public bool ParameterValues { get; set; } = false;
+		public bool ParameterValues { get; set; }
 
 		/// <summary>
 		/// Default is null. Which means do same as "ProjectAssembliesOnly" setting.
 		/// </summary>
-		public bool? ExternalCode { get; set; } = null;
+		public bool? ExternalCode { get; set; }
 
 		public StackFrameFormat ()
 		{

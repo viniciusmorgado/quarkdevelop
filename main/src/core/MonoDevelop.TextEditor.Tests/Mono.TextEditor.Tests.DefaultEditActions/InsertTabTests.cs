@@ -32,7 +32,7 @@ using NUnit.Framework;
 namespace Mono.TextEditor.Tests.Actions
 {
 	[TestFixture()]
-	class InsertTabTests : TextEditorTestBase
+	sealed class InsertTabTests : TextEditorTestBase
 	{
 		public static TextEditorData Create (string input, bool reverse)
 		{
@@ -42,7 +42,7 @@ namespace Mono.TextEditor.Tests.Actions
 			int offset2 = input.IndexOf (']');
 			var selection = new TextSegment (offset1, offset2 - offset1 - 1);
 
-			data.Text = input.Substring (0, offset1) + input.Substring (offset1 + 1, (offset2 - offset1) - 1) + input.Substring (offset2 + 1);
+			data.Text = string.Concat (input.AsSpan (0, offset1), input.AsSpan (offset1 + 1, (offset2 - offset1) - 1), input.AsSpan (offset2 + 1));
 			if (reverse) {
 				data.Caret.Offset = selection.Offset;
 				data.SelectionAnchor = selection.EndOffset;
@@ -59,7 +59,7 @@ namespace Mono.TextEditor.Tests.Actions
 		{
 			int offset1 = output.IndexOf ('[');
 			int offset2 = output.IndexOf (']');
-			string expected = output.Substring (0, offset1) + output.Substring (offset1 + 1, (offset2 - offset1) - 1) + output.Substring (offset2 + 1);
+			string expected = string.Concat (output.AsSpan (0, offset1), output.AsSpan (offset1 + 1, (offset2 - offset1) - 1), output.AsSpan (offset2 + 1));
 			offset2--;
 			Assert.AreEqual (expected, data.Text);
 			Assert.AreEqual (data.OffsetToLocation (reverse ? offset2 : offset1), data.MainSelection.Anchor);

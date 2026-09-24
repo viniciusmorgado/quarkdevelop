@@ -19,10 +19,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public TrackingSpan(ITextVersion version, Span span, SpanTrackingMode trackingMode)
         {
-            if (version == null)
-            {
-                throw new ArgumentNullException(nameof(version));
-            }
+            ArgumentNullException.ThrowIfNull(version);
             if (span.End > version.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(span));
@@ -48,10 +45,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public Span GetSpan(ITextVersion version)
         {
-            if (version == null)
-            {
-                throw new ArgumentNullException(nameof(version));
-            }
+            ArgumentNullException.ThrowIfNull(version);
             if (version.TextBuffer != this.TextBuffer)
             {
                 throw new ArgumentException(Strings.InvalidVersion);
@@ -61,10 +55,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public SnapshotSpan GetSpan(ITextSnapshot snapshot)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
             if (snapshot.TextBuffer != this.TextBuffer)
             {
                 throw new ArgumentException(Strings.InvalidSnapshot);

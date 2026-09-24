@@ -32,7 +32,7 @@ using NUnit.Framework;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture]
-	class TextEditorKeyPressTimingsTests : TextEditorTestBase
+	sealed class TextEditorKeyPressTimingsTests : TextEditorTestBase
 	{
 		const double TicksPerMillisecond = 1e4;
 

@@ -43,12 +43,12 @@ namespace MonoDevelop.Ide.Editor
 			CycleThroughFoundWords
 		}
 		
-		static TextEditor       lastView = null;
-		static string           lastAbbrev = null;
-		static int              lastTriggerOffset = 0;
-		static int              lastInsertPos = 0;
+		static TextEditor       lastView;
+		static string           lastAbbrev;
+		static int              lastTriggerOffset;
+		static int              lastInsertPos;
 		static List<string>     foundWords = new List<string> ();
-		static int              lastStartOffset = 0;
+		static int              lastStartOffset;
 		static AbbrevState      curState;
 		
 		protected override void Run (object data)

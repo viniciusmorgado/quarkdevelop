@@ -155,7 +155,7 @@ namespace MonoDevelop.Core.Serialization
 				else if (member != null)
 					return member.GetCustomAttributes (true);
 				else
-					return new object [0];
+					return Array.Empty<object> ();
 			}
 			set {
 				customAttributes = value;

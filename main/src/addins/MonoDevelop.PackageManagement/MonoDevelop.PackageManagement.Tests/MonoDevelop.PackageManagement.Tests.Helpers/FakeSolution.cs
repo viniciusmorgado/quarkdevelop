@@ -32,7 +32,7 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeSolution : ISolution
+	sealed class FakeSolution : ISolution
 	{
 		public FilePath BaseDirectory { get; set; }
 		public FilePath FileName { get; set; }

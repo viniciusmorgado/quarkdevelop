@@ -16,9 +16,9 @@ namespace Mono.TextEditor
 		internal IList<MouseHoverEventData> _mouseHoverEvents = new List<MouseHoverEventData> ();
 
 		internal Timer _mouseHoverTimer;
-		internal int _millisecondsSinceMouseMove = 0;
+		internal int _millisecondsSinceMouseMove;
 
-		internal int? _lastHoverPosition = null;
+		internal int? _lastHoverPosition;
 
 		private void InitializeMouse ()
 		{

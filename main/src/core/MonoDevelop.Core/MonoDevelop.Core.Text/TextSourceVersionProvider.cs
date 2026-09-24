@@ -57,8 +57,7 @@ namespace MonoDevelop.Core.Text
 		/// <param name="change">Change from current version to new version</param>
 		public void AppendChange (TextChangeEventArgs change)
 		{
-			if (change == null)
-				throw new ArgumentNullException ("change");
+			ArgumentNullException.ThrowIfNull (change);
 			currentVersion.change = change;
 			currentVersion.next = new Version (currentVersion);
 			currentVersion = currentVersion.next;
@@ -96,8 +95,7 @@ namespace MonoDevelop.Core.Text
 
 			public int CompareAge (ITextSourceVersion other)
 			{
-				if (other == null)
-					throw new ArgumentNullException ("other");
+				ArgumentNullException.ThrowIfNull (other);
 				var o = other as Version;
 				if (o == null || provider != o.provider)
 					throw new ArgumentException ("Versions do not belong to the same document.");

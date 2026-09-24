@@ -132,7 +132,7 @@ namespace MonoDevelop.Projects
 				analyzerFiles = await project.GetAnalyzerFilesAsync (project.Configurations [0].Selector);
 
 				Assert.IsFalse (analyzerFiles.Any (f => f.FileName == "GeneratedAnalyzer.g.dll"));
-				Assert.AreEqual (0, analyzerFiles.Count ());
+				Assert.AreEqual (0, analyzerFiles.Length);
 			}
 		}
 

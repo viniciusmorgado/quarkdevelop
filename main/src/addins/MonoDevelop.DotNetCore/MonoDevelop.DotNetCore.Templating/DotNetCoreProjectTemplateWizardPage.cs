@@ -51,7 +51,7 @@ namespace MonoDevelop.DotNetCore.Templating
 
 			SupportedAuthentications = supportedAuthentications;
 
-			if (targetFrameworks.Any ())
+			if (targetFrameworks.Count != 0)
 				SelectedTargetFrameworkIndex = 0;
 			else
 				CanMoveToNextPage = false;

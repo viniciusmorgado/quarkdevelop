@@ -31,7 +31,7 @@ using Mono.Debugging.Client;
 
 namespace Mono.Debugging.Evaluation
 {
-	class RemoteRawValue: RemoteFrameObject, IRawValue
+	sealed class RemoteRawValue: RemoteFrameObject, IRawValue
 	{
 		readonly EvaluationContext ctx;
 		readonly IObjectSource source;
@@ -118,7 +118,7 @@ namespace Mono.Debugging.Evaluation
 		#endregion
 	}
 	
-	class RemoteRawValueArray: RemoteFrameObject, IRawValueArray
+	sealed class RemoteRawValueArray: RemoteFrameObject, IRawValueArray
 	{
 		readonly ICollectionAdaptor targetArray;
 		readonly EvaluationContext ctx;
@@ -209,7 +209,7 @@ namespace Mono.Debugging.Evaluation
 		}
 	}
 	
-	class RemoteRawValueString: RemoteFrameObject, IRawValueString
+	sealed class RemoteRawValueString: RemoteFrameObject, IRawValueString
 	{
 		readonly IStringAdaptor targetString;
 		readonly object targetObject;

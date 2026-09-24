@@ -28,10 +28,7 @@ namespace Microsoft.VisualStudio.Text.Operations
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="searchPattern"/> is an empty string.</exception>
         public FindData(string searchPattern, ITextSnapshot textSnapshot, FindOptions findOptions, ITextStructureNavigator textStructureNavigator)
         {
-            if (searchPattern == null)
-            {
-                throw new ArgumentNullException(nameof(searchPattern));
-            }
+            ArgumentNullException.ThrowIfNull(searchPattern);
             if (searchPattern.Length == 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(searchPattern));
@@ -72,10 +69,7 @@ namespace Microsoft.VisualStudio.Text.Operations
             get { return _searchString; }
             set 
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+                ArgumentNullException.ThrowIfNull(value);
                 if (value.Length == 0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value));

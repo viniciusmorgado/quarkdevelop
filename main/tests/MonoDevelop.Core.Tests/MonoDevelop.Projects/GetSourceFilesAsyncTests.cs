@@ -188,8 +188,8 @@ namespace MonoDevelop.Projects
 			var projectFiles = project.Files.Where (f => f.Subtype != Subtype.Directory).ToList ();
 			var sourceFiles = await project.GetSourceFilesAsync (project.Configurations[0].Selector);
 
-			Assert.AreEqual (projectFiles.Count, sourceFiles.Count ());
-			Assert.AreEqual (0, sourceFiles.Count ());
+			Assert.AreEqual (projectFiles.Count, sourceFiles.Length);
+			Assert.AreEqual (0, sourceFiles.Length);
 
 			string modifiedHint = null;
 			project.Modified += (sender, args) => modifiedHint = args.First ().Hint;
@@ -212,7 +212,7 @@ namespace MonoDevelop.Projects
 			sourceFiles = await project.GetSourceFilesAsync (project.Configurations[0].Selector);
 
 			Assert.IsFalse (sourceFiles.Any (f => f.FilePath.FileName == "GeneratedFile.g.cs"));
-			Assert.AreEqual (0, sourceFiles.Count ());
+			Assert.AreEqual (0, sourceFiles.Length);
 
 			project.Dispose ();
 		}

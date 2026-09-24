@@ -110,7 +110,7 @@ namespace MonoDevelop.Projects
 		public IEnumerable<IMetadataProperty> GetProperties ()
 		{
 			if (propertyList == null)
-				return new IMetadataProperty [0];
+				return Array.Empty<IMetadataProperty> ();
 			return propertyList.Where (p => !p.Overwritten);
 		}
 

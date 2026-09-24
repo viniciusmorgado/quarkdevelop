@@ -22,7 +22,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
         private DefaultSignatureHelpPresenterProvider _componentContext;
         private ISignatureHelpSession _session;
         private string _pagerText;
-        private bool _pagerVisibility = false;
+        private bool _pagerVisibility;
         private ITextBuffer _signatureTextBuffer;
         private MonoDevelop.Components.FixedWidthWrapLabel _signatureWpfTextView;
         private string _signatureDocumentation;
@@ -56,7 +56,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             private set
             {
                 _pagerText = value;
-                this.RaisePropertyChanged("PagerText");
+                this.RaisePropertyChanged(nameof(PagerText));
             }
         }
 
@@ -66,7 +66,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             private set
             {
                 _pagerVisibility = value;
-                this.RaisePropertyChanged("PagerVisibility");
+                this.RaisePropertyChanged(nameof(PagerVisibility));
             }
         }
 
@@ -78,7 +78,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             private set
             {
                 _signatureDocumentation = value;
-                this.RaisePropertyChanged("SignatureDocumentation");
+                this.RaisePropertyChanged(nameof(SignatureDocumentation));
             }
         }
 
@@ -88,7 +88,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             private set
             {
                 _signatureDocumentationVisibility = value;
-                this.RaisePropertyChanged("SignatureDocumentationVisibility");
+                this.RaisePropertyChanged(nameof(SignatureDocumentationVisibility));
             }
         }
 
@@ -98,7 +98,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             private set
             {
                 _currentParameterName = value;
-                this.RaisePropertyChanged("CurrentParameterName");
+                this.RaisePropertyChanged(nameof(CurrentParameterName));
             }
         }
 
@@ -108,7 +108,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             private set
             {
                 _currentParameterDocumentation = value;
-                this.RaisePropertyChanged("CurrentParameterDocumentation");
+                this.RaisePropertyChanged(nameof(CurrentParameterDocumentation));
             }
         }
 
@@ -118,7 +118,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             private set
             {
                 _currentParameterVisibility = value;
-                this.RaisePropertyChanged("CurrentParameterVisibility");
+                this.RaisePropertyChanged(nameof(CurrentParameterVisibility));
             }
         }
 

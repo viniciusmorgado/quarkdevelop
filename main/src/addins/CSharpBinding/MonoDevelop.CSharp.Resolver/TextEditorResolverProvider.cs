@@ -64,7 +64,7 @@ namespace MonoDevelop.CSharp.Resolver
 			if (model == null)
 				return null;
 
-			int index = identifier.LastIndexOf ("`", System.StringComparison.Ordinal);
+			int index = identifier.LastIndexOf ('`');
 			int arity = 0;
 			if (index != -1) {
 				try {

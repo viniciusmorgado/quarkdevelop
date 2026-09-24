@@ -108,10 +108,8 @@ namespace MonoDevelop.SourceEditor
     {
         public void PushTip(ITextView view, IObscuringTip tip)
         {
-            if (view == null)
-                throw new ArgumentNullException(nameof(view));
-            if (tip == null)
-                throw new ArgumentNullException(nameof(tip));
+            ArgumentNullException.ThrowIfNull(view);
+            ArgumentNullException.ThrowIfNull(tip);
             var tips = GetTips(view);
             tips.Remove(tip);
             tips.Add(tip);
@@ -119,8 +117,7 @@ namespace MonoDevelop.SourceEditor
 
         public void RemoveTip(ITextView view, IObscuringTip tip)
         {
-            if (view == null)
-                throw new ArgumentNullException(nameof(view));
+            ArgumentNullException.ThrowIfNull(view);
             GetTips(view).Remove(tip);
         }
 

@@ -30,7 +30,7 @@ using Gtk;
 
 namespace Mono.Addins.GuiGtk3
 {
-	class HeaderBox: Bin
+	sealed class HeaderBox: Bin
 	{
 		Gtk.Widget child;
 		int topMargin;
@@ -109,7 +109,7 @@ namespace Mono.Addins.GuiGtk3
 //			}
 //		}
 
-		public new void GetPreferredWidth (out int width) 
+		public void GetPreferredWidth (out int width) 
 		{
 			if (child != null) {
 				Requisition req = child.SizeRequest ();
@@ -120,7 +120,7 @@ namespace Mono.Addins.GuiGtk3
 			}
 		}
 
-		public new void GetPreferredHeight (out int height) 
+		public void GetPreferredHeight (out int height) 
 		{
 			if (child != null) {
 				Requisition req = child.SizeRequest ();

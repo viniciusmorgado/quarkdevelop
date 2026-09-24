@@ -1183,9 +1183,9 @@ namespace MonoDevelop.Projects
 				var references = (await project.GetReferencedAssemblies (ConfigurationSelector.Default)).ToArray ();
 				var packageDependencies = (await project.GetPackageDependencies (ConfigurationSelector.Default, CancellationToken.None)).ToArray ();
 
-				Assert.IsTrue (references.Any ());
+				Assert.IsTrue (references.Length != 0);
 				Assert.IsTrue (references.Any (r => r.FilePath.FileName == "Newtonsoft.Json.dll"));
-				Assert.IsTrue (packageDependencies.Any ());
+				Assert.IsTrue (packageDependencies.Length != 0);
 				Assert.IsTrue (packageDependencies.Any (p => p.Name == "Newtonsoft.Json"));
 			}
 		}
@@ -1255,7 +1255,7 @@ namespace MonoDevelop.Projects
 			}
 		}
 
-		class TestModifiedProjectExtension : DotNetProjectExtension
+		sealed class TestModifiedProjectExtension : DotNetProjectExtension
 		{
 			public static List<SolutionItemModifiedEventArgs> ModifiedEventArgs = new List<SolutionItemModifiedEventArgs> ();
 
@@ -1395,7 +1395,7 @@ namespace MonoDevelop.Projects
 			p.Dispose ();
 		}
 
-		class TestGetReferencesProjectExtension : DotNetProjectExtension
+		sealed class TestGetReferencesProjectExtension : DotNetProjectExtension
 		{
 			protected internal override Task<List<AssemblyReference>> OnGetReferences (ConfigurationSelector configuration, CancellationToken token)
 			{

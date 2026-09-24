@@ -42,9 +42,9 @@ namespace MonoDevelop.Components
 		Gdk.Window inputWindow;
 		Pango.Layout layout;
 		int headerHeight = 20;
-		int activeIndex = 0;
+		int activeIndex;
 		int hoverIndex = -1;
-		bool trackingHover = false;
+		bool trackingHover;
 		
 		public int ActiveIndex {
 			get { return activeIndex; }

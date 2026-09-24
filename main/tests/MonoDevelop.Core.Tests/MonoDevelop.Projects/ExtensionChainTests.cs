@@ -536,7 +536,7 @@ namespace MonoDevelop.Projects
 			public override string GetShapeName () => "Rectangle";
 		}
 
-		class SquareChainedExtension : RectangleChainedExtension
+		sealed class SquareChainedExtension : RectangleChainedExtension
 		{
 			public override string GetShapeName () => "Square";
 		}
@@ -546,7 +546,7 @@ namespace MonoDevelop.Projects
 			public virtual string GetColorName () => "None";
 		}
 
-		class GreenChainedExtension : ColorChainedExtension
+		sealed class GreenChainedExtension : ColorChainedExtension
 		{
 			public override string GetColorName () => "Green";
 		}

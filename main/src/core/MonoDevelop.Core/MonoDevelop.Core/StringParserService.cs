@@ -113,8 +113,8 @@ namespace MonoDevelop.Core
 			if (val != null)
 				return FormatValue (val, tformat);
 			
-			if (properties.ContainsKey (tname))
-				return FormatValue (properties [tname], tformat);
+			if (properties.TryGetValue (tname, out var value))
+				return FormatValue (value, tformat);
 		
 			GenerateString genString;
 

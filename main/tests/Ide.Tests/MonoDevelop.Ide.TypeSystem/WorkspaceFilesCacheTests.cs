@@ -596,7 +596,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			File.WriteAllText (fileName, xml);
 		}
 
-		class CustomItemNode<T> : SolutionItemExtensionNode where T : new()
+		sealed class CustomItemNode<T> : SolutionItemExtensionNode where T : new()
 		{
 			public override object CreateInstance ()
 			{
@@ -604,7 +604,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		class DelayGetReferencesProjectExtension : DotNetProjectExtension
+		sealed class DelayGetReferencesProjectExtension : DotNetProjectExtension
 		{
 			public TaskCompletionSource<bool> TaskCompletionSource = new TaskCompletionSource<bool> ();
 

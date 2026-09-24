@@ -116,8 +116,7 @@ namespace Xwt
 		/// </summary>
 		public Task InvokeAsync(Action action)
 		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
+			ArgumentNullException.ThrowIfNull (action);
 			var dispatcher = backendHost.Backend as IDispatcherBackend;
 			if (dispatcher != null)
 				return dispatcher.InvokeAsync(() => backendHost.ToolkitEngine.InvokeAndThrow(action));
@@ -129,8 +128,7 @@ namespace Xwt
 		/// </summary>
 		public Task<T> InvokeAsync<T>(Func<T> func)
 		{
-			if (func == null)
-				throw new ArgumentNullException(nameof(func));
+			ArgumentNullException.ThrowIfNull (func);
 			Func<T> funcCall = () =>
 					{
 						T result = default(T);
@@ -179,7 +177,7 @@ namespace Xwt
 
 		#endregion
 
-		public bool IsDisposed { get; private set; } = false;
+		public bool IsDisposed { get; private set; }
 
 		protected override void Dispose (bool release_all)
 		{
@@ -188,7 +186,7 @@ namespace Xwt
 		}
 	}
 
-	class AsyncInvokeResult : IAsyncResult
+	sealed class AsyncInvokeResult : IAsyncResult
 	{
 		ManualResetEventSlim asyncResetEvent = new ManualResetEventSlim (false);
 		IDispatcherBackend dispatcher;

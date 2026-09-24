@@ -157,7 +157,7 @@ namespace MonoDevelop.SourceEditor
 				//doesn't need all that much anyway
 				var txt = Text;
 				if (txt.Length > 4096) {
-					txt = txt.Substring (0, 4096) + "...";
+					txt = string.Concat (txt.AsSpan (0, 4096), "...");
 				}
 
 				var w = parent.GetNativeWidget<Widget> ()?.GdkWindow;

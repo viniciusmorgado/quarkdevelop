@@ -50,7 +50,7 @@ namespace MonoDevelop.Core
 			"8.0"
 		};
 
-		bool createFolders = false;
+		bool createFolders;
 
 		static UserProfile ()
 		{

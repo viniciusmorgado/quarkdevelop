@@ -30,7 +30,7 @@ using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
-	class HeaderBox: HeaderBoxGtk
+	sealed class HeaderBox: HeaderBoxGtk
 	{
 		Gtk.Widget child;
 		int topMargin;

@@ -42,10 +42,8 @@ namespace MonoDevelop.Ide.TypeSystem
 	{
 		public CodeActionOperation CreateAddMetadataReferenceOperation (ProjectId projectId, AssemblyIdentity assemblyIdentity)
 		{
-			if (projectId == null)
-				throw new ArgumentNullException (nameof (projectId));
-			if (assemblyIdentity == null)
-				throw new ArgumentNullException (nameof (assemblyIdentity));
+			ArgumentNullException.ThrowIfNull (projectId);
+			ArgumentNullException.ThrowIfNull (assemblyIdentity);
 			return new AddMetadataReferenceOperation (projectId, assemblyIdentity);
 		}
 

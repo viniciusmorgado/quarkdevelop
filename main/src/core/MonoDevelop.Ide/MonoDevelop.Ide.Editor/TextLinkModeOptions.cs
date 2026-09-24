@@ -65,8 +65,7 @@ namespace MonoDevelop.Ide.Editor
 		/// <param name="modeExitedAction">That's the action that is started after the text link mode ended.</param>
 		public TextLinkModeOptions (IList<TextLink> links, Action<TextLinkModeEventArgs> modeExitedAction = null)
 		{
-			if (links == null)
-				throw new ArgumentNullException ("links");
+			ArgumentNullException.ThrowIfNull (links);
 			Links = links;
 			ModeExitedAction = modeExitedAction;
 		}

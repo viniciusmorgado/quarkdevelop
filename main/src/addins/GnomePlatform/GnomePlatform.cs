@@ -401,7 +401,7 @@ namespace MonoDevelop.Platform
 		}
 	}
 	
-	class GnomeDesktopApplication : DesktopApplication
+	sealed class GnomeDesktopApplication : DesktopApplication
 	{
 		public GnomeDesktopApplication (string command, string displayName, bool isDefault) : base (command, displayName, isDefault)
 		{

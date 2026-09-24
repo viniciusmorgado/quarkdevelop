@@ -48,23 +48,23 @@ namespace Mono.TextEditor
 			}
 		}
 		
-		bool overrideDocumentEolMarker = false;
+		bool overrideDocumentEolMarker;
 		string defaultEolMarker = Environment.NewLine;
 		
 		int indentationSize = 4;
 		int  tabSize = 4;
-		bool tabsToSpaces = false;
+		bool tabsToSpaces;
 		bool showIconMargin = true;
 		bool showLineNumberMargin = true;
 		bool showFoldMargin = true;
 		IndentStyle indentStyle = IndentStyle.Virtual;
 		
 		int  rulerColumn = 80;
-		bool showRuler = false;
+		bool showRuler;
 		
 		bool enableSyntaxHighlighting = true;
 		bool highlightMatchingBracket = true;
-		bool highlightCaretLine = false;
+		bool highlightCaretLine;
 		bool removeTrailingWhitespaces = true;
 		bool allowTabsAfterNonTabs = true;
 		string fontName = DEFAULT_FONT;
@@ -479,7 +479,7 @@ namespace Mono.TextEditor
 			}
 		}
 		
-		bool drawIndentationMarkers = false;
+		bool drawIndentationMarkers;
 		public virtual bool DrawIndentationMarkers {
 			get {
 				return drawIndentationMarkers;
@@ -518,7 +518,7 @@ namespace Mono.TextEditor
 			}
 		}
 
-		bool wrapLines = false;
+		bool wrapLines;
 		public virtual bool WrapLines {
 			get {
 				return false;

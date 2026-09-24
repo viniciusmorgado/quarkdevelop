@@ -125,7 +125,7 @@ namespace MonoDevelop.UnitTesting.Tests
 			return testContext;
 		}
 
-		class MockTestGroup : UnitTestGroup
+		sealed class MockTestGroup : UnitTestGroup
 		{
 			public int ReadyUpdateCount { get; private set; }
 			public int PassCount { get; }
@@ -146,7 +146,7 @@ namespace MonoDevelop.UnitTesting.Tests
 			}
 		}
 
-		class MockTest : UnitTest
+		sealed class MockTest : UnitTest
 		{
 			public int ReadyUpdateCount { get; private set; }
 			public ResultStatus Result { get; }
@@ -174,7 +174,7 @@ namespace MonoDevelop.UnitTesting.Tests
 			}
 		}
 
-		class MockResultStore : IResultsStore
+		sealed class MockResultStore : IResultsStore
 		{
 			public static MockResultStore Instance { get; } = new MockResultStore ();
 

@@ -47,7 +47,7 @@ namespace MonoDevelop.Components.Theming
 	{
 		private Cairo.Color[] gtk_colors;
 		private Widget widget;
-		private bool refreshing = false;
+		private bool refreshing;
 
 		public event EventHandler Refreshed;
 

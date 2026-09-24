@@ -36,7 +36,7 @@ using NUnit.Framework;
 namespace MonoDevelop.PackageManagement.Tests
 {
 	[TestFixture]
-	class ProjectSystemReferencesReaderTests
+	sealed class ProjectSystemReferencesReaderTests
 	{
 		ProjectSystemReferencesReader reader;
 		PackageManagementEvents packageManagementEvents;

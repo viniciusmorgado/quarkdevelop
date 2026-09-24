@@ -66,7 +66,7 @@ namespace MonoDevelop.Components.MainToolbar
 		int ignoreConfigurationChangedCount, ignoreRuntimeChangedCount;
 		Solution currentSolution;
 		bool settingGlobalConfig;
-		Tuple<SolutionItem, SolutionItemRunConfiguration> [] startupProjects = new Tuple<SolutionItem, SolutionItemRunConfiguration> [0];
+		Tuple<SolutionItem, SolutionItemRunConfiguration> [] startupProjects = Array.Empty<Tuple<SolutionItem, SolutionItemRunConfiguration>> ();
 		EventHandler executionTargetsChanged;
 
 		public MainToolbarController (IMainToolbarView toolbarView)
@@ -190,7 +190,7 @@ namespace MonoDevelop.Components.MainToolbar
 						.Select (conf => new ConfigurationModel (conf));
 				else
 					ToolbarView.ConfigurationModel = currentSolution?.Configurations.OfType<SolutionConfiguration> ()
-						.Select (conf => new ConfigurationModel (conf.Id)) ?? new ConfigurationModel [0];
+						.Select (conf => new ConfigurationModel (conf.Id)) ?? Array.Empty<ConfigurationModel> ();
 				
 			} finally {
 				ignoreConfigurationChangedCount--;
@@ -604,7 +604,7 @@ namespace MonoDevelop.Components.MainToolbar
 				projects = new Tuple<SolutionItem, SolutionItemRunConfiguration> []{ new Tuple<SolutionItem, SolutionItemRunConfiguration> (
 					singleRunConfig.Item, singleRunConfig.RunConfiguration)};
 			} else {
-				projects = new Tuple<SolutionItem, SolutionItemRunConfiguration> [0];
+				projects = Array.Empty<Tuple<SolutionItem, SolutionItemRunConfiguration>> ();
 			}
 			if (!startupProjects.SequenceEqual (projects)) {
 				foreach (var item in startupProjects)
@@ -656,7 +656,7 @@ namespace MonoDevelop.Components.MainToolbar
 				GettextCatalog.GetString ("Search solution");
 		}
 
-		SearchPopupWindow popup = null;
+		SearchPopupWindow popup;
 		static readonly SearchPopupSearchPattern emptyColonPattern = SearchPopupSearchPattern.ParsePattern (":");
 		void PositionPopup ()
 		{
@@ -1003,7 +1003,7 @@ namespace MonoDevelop.Components.MainToolbar
 			List<IRuntimeModel> children = new List<IRuntimeModel> ();
 			public object Command { get; private set; }
 			public ExecutionTarget ExecutionTarget { get; private set; }
-			string DisplayText = null;
+			string DisplayText;
 			string image, tooltip;
 			bool fullText;
 
@@ -1026,8 +1026,7 @@ namespace MonoDevelop.Components.MainToolbar
 
 			public RuntimeModel (MainToolbarController controller, ExecutionTarget target, bool fullText, SolutionItem project) : this (controller)
 			{
-				if (target == null)
-					throw new ArgumentNullException (nameof (target));
+				ArgumentNullException.ThrowIfNull (target);
 				
 				ExecutionTarget = target;
 				image = target.Image;

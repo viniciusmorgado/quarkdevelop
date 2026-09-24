@@ -31,7 +31,7 @@ using System;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class DotNetCoreProjectSupportedTargetFrameworksTests : DotNetCoreVersionsRestorerTestBase
+	sealed class DotNetCoreProjectSupportedTargetFrameworksTests : DotNetCoreVersionsRestorerTestBase
 	{
 		static string[] netStandardVersions = { "2.0", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0" };
 

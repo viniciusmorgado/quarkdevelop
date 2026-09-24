@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace MonoDevelop.Ide.Templates
 {
-	class TestableProjectTemplateCategorizer : ProjectTemplateCategorizer
+	sealed class TestableProjectTemplateCategorizer : ProjectTemplateCategorizer
 	{
 		public TestableProjectTemplateCategorizer (IEnumerable<TemplateCategory> categories)
 			: this (categories, solutionTemplate => true)

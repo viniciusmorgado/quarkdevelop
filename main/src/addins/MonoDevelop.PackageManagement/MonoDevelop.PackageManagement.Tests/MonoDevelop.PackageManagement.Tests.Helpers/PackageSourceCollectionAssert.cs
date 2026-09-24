@@ -30,7 +30,7 @@ using NuGet.Configuration;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class PackageSourceCollectionAssert
+	sealed class PackageSourceCollectionAssert
 	{
 		public static void AreEqual (IEnumerable<PackageSource> expectedSources, IEnumerable<PackageSourceViewModel> actualViewModels)
 		{

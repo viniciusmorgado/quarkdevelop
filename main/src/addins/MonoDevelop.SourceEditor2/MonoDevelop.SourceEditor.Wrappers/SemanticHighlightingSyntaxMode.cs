@@ -84,12 +84,9 @@ namespace MonoDevelop.SourceEditor.Wrappers
 
 		public SemanticHighlightingSyntaxMode (ExtensibleTextEditor editor, ISyntaxHighlighting syntaxMode, SemanticHighlighting semanticHighlighting)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
-			if (syntaxMode == null)
-				throw new ArgumentNullException ("syntaxMode");
-			if (semanticHighlighting == null)
-				throw new ArgumentNullException ("semanticHighlighting");
+			ArgumentNullException.ThrowIfNull (editor);
+			ArgumentNullException.ThrowIfNull (syntaxMode);
+			ArgumentNullException.ThrowIfNull (semanticHighlighting);
 			this.editor = editor;
 			this.semanticHighlighting = semanticHighlighting;
 			this.syntaxMode = syntaxMode;
@@ -133,8 +130,7 @@ namespace MonoDevelop.SourceEditor.Wrappers
 
 		async Task<HighlightedLine> ISyntaxHighlighting.GetHighlightedLineAsync (IDocumentLine line, CancellationToken cancellationToken)
 		{
-			if (line == null)
-				throw new ArgumentNullException (nameof (line));
+			ArgumentNullException.ThrowIfNull (line);
 
 			if (!DefaultSourceEditorOptions.Instance.EnableSemanticHighlighting) {
 				return await syntaxMode.GetHighlightedLineAsync (line, cancellationToken);

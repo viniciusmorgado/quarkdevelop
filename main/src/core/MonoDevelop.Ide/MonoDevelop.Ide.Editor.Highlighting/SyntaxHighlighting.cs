@@ -128,8 +128,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 
 			public static HighlightState CreateNewState (SyntaxHighlighting highlighting)
 			{
-				if (highlighting == null)
-					throw new ArgumentNullException (nameof (highlighting));
+				ArgumentNullException.ThrowIfNull (highlighting);
 				var definition = highlighting.definition;
 				if (definition == null)
 					throw new NullReferenceException ("HighlightState.CreateNewState null reference exception highlighting.definition == null.");

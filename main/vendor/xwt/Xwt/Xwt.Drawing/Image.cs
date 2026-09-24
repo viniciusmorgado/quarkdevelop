@@ -129,8 +129,7 @@ namespace Xwt.Drawing
 		/// </remarks>
 		public static Image FromResource (string resource)
 		{
-			if (resource == null)
-				throw new ArgumentNullException ("resource");
+			ArgumentNullException.ThrowIfNull (resource);
 
 			return FromResource (Assembly.GetCallingAssembly (), resource);
 		}
@@ -149,10 +148,8 @@ namespace Xwt.Drawing
 		/// </remarks>
 		public static Image FromResource (Type type, string resource)
 		{
-			if (type == null)
-				throw new ArgumentNullException ("type");
-			if (resource == null)
-				throw new ArgumentNullException ("resource");
+			ArgumentNullException.ThrowIfNull (type);
+			ArgumentNullException.ThrowIfNull (resource);
 
 			return FromResource (type.Assembly, resource);
 		}
@@ -176,10 +173,8 @@ namespace Xwt.Drawing
 
 		internal static Image FromResource (Assembly assembly, string resource, ImageTagSet tagFilter)
 		{
-			if (assembly == null)
-				throw new ArgumentNullException ("assembly");
-			if (resource == null)
-				throw new ArgumentNullException ("resource");
+			ArgumentNullException.ThrowIfNull (assembly);
+			ArgumentNullException.ThrowIfNull (resource);
 
 			var toolkit = Toolkit.CurrentEngine;
 			if (toolkit == null)
@@ -264,7 +259,7 @@ namespace Xwt.Drawing
 				var i2 = fileName.IndexOf ('@', i);
 				if (i2 != -1) {
 					int i3 = fileName.IndexOf ('x', i2 + 2);
-					if (i3 == -1 || !int.TryParse (fileName.Substring (i2 + 1, i3 - i2 - 1), out scale))
+					if (i3 == -1 || !int.TryParse (fileName.AsSpan (i2 + 1, i3 - i2 - 1), out scale))
 						return false;
 				} else
 					i2 = fileName.Length;
@@ -381,7 +376,7 @@ namespace Xwt.Drawing
 					scaleFactor = 1;
 				else {
 					int j = fi.Item1.IndexOf ('x', ++i);
-					if (!double.TryParse (fi.Item1.Substring (i, j - i), out scaleFactor)) {
+					if (!double.TryParse (fi.Item1.AsSpan (i, j - i), out scaleFactor)) {
 						toolkit.ImageBackendHandler.Dispose (fi.Item4);
 						continue;
 					}
@@ -564,7 +559,7 @@ namespace Xwt.Drawing
 			case IconSize.Small: s = new Size (16, 16); break;
 			case IconSize.Medium: s = new Size (24, 24); break;
 			case IconSize.Large: s = new Size (32, 32); break;
-			default: throw new ArgumentOutOfRangeException ("size");
+			default: throw new ArgumentOutOfRangeException (nameof (size));
 			}
 
 			return new Image (this) {
@@ -757,7 +752,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	class NativeImageRef
+	sealed class NativeImageRef
 	{
 		object backend;
 		int referenceCount = 1;
@@ -967,12 +962,12 @@ namespace Xwt.Drawing
 		public NativeImageRef NextRef { get; set; }
 	}
 
-	class ImageTagSet
+	sealed class ImageTagSet
 	{
 		string tags;
 		string[] tagsArray;
 
-		public static readonly ImageTagSet Empty = new ImageTagSet (new string[0]);
+		public static readonly ImageTagSet Empty = new ImageTagSet (Array.Empty<string> ());
 
 		public ImageTagSet (string [] tagsArray)
 		{
@@ -1035,7 +1030,7 @@ namespace Xwt.Drawing
 		public abstract Image WrapImage (string fileName, ImageTagSet tags, object img, Size reqSize);
 	}
 
-	class ResourceImageLoader : ImageLoader
+	sealed class ResourceImageLoader : ImageLoader
 	{
 		Assembly assembly;
 		Toolkit toolkit;
@@ -1071,7 +1066,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	class FileImageLoader : ImageLoader
+	sealed class FileImageLoader : ImageLoader
 	{
 		Toolkit toolkit;
 
@@ -1113,7 +1108,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	class StreamImageLoader : ImageLoader
+	sealed class StreamImageLoader : ImageLoader
 	{
 		IImageLoader loader;
 		Toolkit toolkit;

@@ -56,7 +56,7 @@ namespace MonoDevelop.Projects.MSBuild
 
 		static RemoteProcessServer server;
 
-		public class LogWriter: IEngineLogWriter
+		public sealed class LogWriter: IEngineLogWriter
 		{
 			int id;
 
@@ -74,7 +74,7 @@ namespace MonoDevelop.Projects.MSBuild
 			public MSBuildEvent RequiredEvents { get; private set; }
 		}
 
-		public class NullLogWriter: IEngineLogWriter
+		public sealed class NullLogWriter: IEngineLogWriter
 		{
 			public void Write (string text, LogEvent [] events)
 			{

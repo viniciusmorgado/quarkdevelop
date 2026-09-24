@@ -103,7 +103,7 @@ namespace MonoDevelop.DotNetCore.NodeBuilders
 			var frameworkNodes = GetTargetFrameworkNodes ().ToList ();
 			if (frameworkNodes.Count > 1) {
 				return frameworkNodes;
-			} else if (frameworkNodes.Any ()) {
+			} else if (frameworkNodes.Count != 0) {
 				return GetChildNodes (frameworkNodes [0]);
 			} else {
 				return GetDefaultChildNodes ();

@@ -50,7 +50,7 @@ using MonoDevelop.Ide;
 namespace MonoDevelop.CSharp.Refactoring
 {
 	[TestFixture]
-	class CSharpFindReferencesProviderTests : TextEditorExtensionTestBase
+	sealed class CSharpFindReferencesProviderTests : TextEditorExtensionTestBase
 	{
 		protected override EditorExtensionTestData GetContentData () => EditorExtensionTestData.CSharp;
 
@@ -64,7 +64,7 @@ namespace MonoDevelop.CSharp.Refactoring
 			}
 		}
 
-		class MockSearchProgressMonitor : SearchProgressMonitor
+		sealed class MockSearchProgressMonitor : SearchProgressMonitor
 		{
 			internal ConcurrentBag<SearchResult> Results = new ConcurrentBag<SearchResult> ();
 			protected override void OnReportResults (IEnumerable<SearchResult> results)

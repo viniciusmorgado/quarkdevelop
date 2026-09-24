@@ -38,14 +38,8 @@ namespace Microsoft.VisualStudio.Text.Projection
                                                      object editTag)
           : base(beforeSnapshot, afterSnapshot, options, editTag)
         {
-            if (insertedSpans == null)
-            {
-                throw new ArgumentNullException(nameof(insertedSpans));
-            }
-            if (deletedSpans == null)
-            {
-                throw new ArgumentNullException(nameof(deletedSpans));
-            }
+            ArgumentNullException.ThrowIfNull(insertedSpans);
+            ArgumentNullException.ThrowIfNull(deletedSpans);
             this.insertedSpans = new ReadOnlyCollection<ITrackingSpan>(insertedSpans);
             this.deletedSpans = new ReadOnlyCollection<ITrackingSpan>(deletedSpans);
             this.spanPosition = spanPosition;

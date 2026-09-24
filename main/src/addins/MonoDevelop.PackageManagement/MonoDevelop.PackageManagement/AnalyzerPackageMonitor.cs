@@ -93,7 +93,7 @@ namespace MonoDevelop.PackageManagement
 		IEnumerable<string> GetFiles (PackageManagementEventArgs e)
 		{
 			if (String.IsNullOrEmpty (e.PackageFilePath))
-				return new string[0];
+				return Array.Empty<string> ();
 
 			using (var packageStream = File.OpenRead (e.PackageFilePath)) {
 				var zipArchive = new ZipArchive (packageStream); 

@@ -112,7 +112,7 @@ namespace ICSharpCode.NRefactory6
 			return CreateCompilation(source, refs, compOptions, assemblyName);
 		}
 
-		internal class TestWorkspace : Workspace
+		internal sealed class TestWorkspace : Workspace
 		{
 			public TestWorkspace () : base (CompositionManager.Instance.HostServices, ServiceLayer.Default)
 			{
@@ -158,7 +158,7 @@ namespace ICSharpCode.NRefactory6
 				var actions = new List<CodeAction>();
 				var context = new CodeFixContext(document, diagnostic, (fix, diags) => actions.Add(fix), default(CancellationToken));
 				provider.RegisterCodeFixesAsync(context).Wait();
-				if (!actions.Any()) {
+				if (actions.Count == 0) {
 					Assert.Fail("Provider has no fix for " + diagnostic.Id + " at " + diagnostic.Location.SourceSpan);
 					return;
 				}
@@ -197,7 +197,7 @@ namespace ICSharpCode.NRefactory6
 			Assert.Fail("Use AnalyzeWithRule"); 
 		}
 
-		class TestDiagnosticAnalyzer<T> : DiagnosticAnalyzer
+		sealed class TestDiagnosticAnalyzer<T> : DiagnosticAnalyzer
 		{
 			readonly DiagnosticAnalyzer t;
 

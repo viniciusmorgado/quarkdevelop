@@ -32,7 +32,7 @@ using NUnit.Framework;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class TargetFrameworkTests : DotNetCoreTestBase
+	sealed class TargetFrameworkTests : DotNetCoreTestBase
 	{
 		[TestCase ("1.0", "1.0", "1.1", "2.0", "2.1", "2.2", "3.0", "3.1")]
 		[TestCase ("1.1", "1.1", "2.0", "2.1", "2.2", "3.0", "3.1")]

@@ -180,7 +180,7 @@ namespace MonoDevelop.Ide.Projects.FileNesting
 			Project.ParentSolution.UserProperties.Changed += OnUserPropertiesChanged;
 		}
 
-		bool initialized = false;
+		bool initialized;
 		void EnsureInitialized ()
 		{
 			if (!initialized) {

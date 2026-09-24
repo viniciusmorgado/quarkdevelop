@@ -36,7 +36,7 @@ using UnitTests;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class FrameworkReferenceTests : DotNetCoreTestBase
+	sealed class FrameworkReferenceTests : DotNetCoreTestBase
 	{
 		static bool IsDotNetCoreSdk30OrLaterInstalled ()
 		{
@@ -62,7 +62,7 @@ namespace MonoDevelop.DotNetCore.Tests
 				var project = sol.GetAllProjects ().Single () as DotNetProject;
 				var references = (await project.GetFrameworkReferences (ConfigurationSelector.Default, CancellationToken.None)).ToArray ();
 
-				Assert.IsTrue (references.Any ());
+				Assert.IsTrue (references.Length != 0);
 				Assert.IsTrue (references.Any (r => r.Include == "NETStandard.Library"));
 			}
 		}

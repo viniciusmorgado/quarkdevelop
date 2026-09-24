@@ -222,7 +222,7 @@ namespace MonoDevelop.Components
 		}
 
 		
-		DropDownBoxListWindow window = null;
+		DropDownBoxListWindow window;
 		internal void DestroyWindow ()
 		{
 			if (window != null) {

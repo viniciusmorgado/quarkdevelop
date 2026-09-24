@@ -108,7 +108,7 @@ namespace MonoDevelop.DotNetCore
 		[ItemProperty (DefaultValue = null)]
 		public string Program { get; set; }
 		[ItemProperty (SkipEmpty = true)]
-		public string [] Arguments { get; set; } = new string [0];
+		public string [] Arguments { get; set; } = Array.Empty<string> ();
 		[ItemProperty (DefaultValue = null)]
 		public string DebuggerPath { get; set; }
 		[ItemProperty (SkipEmpty = true, WrapObject = false)]

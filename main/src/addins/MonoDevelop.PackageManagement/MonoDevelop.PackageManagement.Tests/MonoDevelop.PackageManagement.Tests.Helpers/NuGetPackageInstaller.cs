@@ -42,7 +42,7 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 				return installer.CreateInstallPackageActions (solution, packages);
 			});
 
-			if (!actions.Any ())
+			if (actions.Count == 0)
 				return;
 
 			await Task.Run (() => {

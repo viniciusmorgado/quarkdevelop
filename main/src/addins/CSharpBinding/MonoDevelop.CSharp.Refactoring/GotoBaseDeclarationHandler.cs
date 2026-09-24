@@ -37,8 +37,7 @@ namespace MonoDevelop.CSharp.Refactoring
 	{
 		public static string GetDescription (ISymbol symbol)
 		{
-			if (symbol == null)
-				throw new ArgumentNullException ("symbol");
+			ArgumentNullException.ThrowIfNull (symbol);
 			switch (symbol.Kind) {
 			case SymbolKind.NamedType:
 				return GettextCatalog.GetString ("Go to _Base Type");
@@ -77,10 +76,8 @@ namespace MonoDevelop.CSharp.Refactoring
 
 		public static async Task GotoBase (MonoDevelop.Ide.Gui.Document doc, ISymbol symbol)
 		{
-			if (doc == null)
-				throw new ArgumentNullException ("doc");
-			if (symbol == null)
-				throw new ArgumentNullException ("symbol");
+			ArgumentNullException.ThrowIfNull (doc);
+			ArgumentNullException.ThrowIfNull (symbol);
 
 			var metadata = Navigation.Counters.CreateNavigateToMetadata ("Base");
 			using (var timer = Navigation.Counters.NavigateTo.BeginTiming (metadata)) {

@@ -137,7 +137,7 @@ namespace Xwt.GtkBackend
 		{
 			var buf = buffer as RichTextBuffer;
 			if (buf == null)
-				throw new ArgumentException ("Passed buffer is of incorrect type", "buffer");
+				throw new ArgumentException ("Passed buffer is of incorrect type", nameof (buffer));
 
 			Widget.Buffer = buf;
 		}
@@ -221,13 +221,13 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		class Link {
+		sealed class Link {
 			public string Title;
 			public Uri Href;
 			public Gtk.TextMark StartMark;
 		}
 
-		class RichTextBuffer : Gtk.TextBuffer, IRichTextBuffer
+		sealed class RichTextBuffer : Gtk.TextBuffer, IRichTextBuffer
 		{
 			const string NewLine = "\n";
 
@@ -454,7 +454,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		class GtkTextView : Gtk.TextView
+		sealed class GtkTextView : Gtk.TextView
 		{
 			bool selectable = true;
 			Link activeLink;

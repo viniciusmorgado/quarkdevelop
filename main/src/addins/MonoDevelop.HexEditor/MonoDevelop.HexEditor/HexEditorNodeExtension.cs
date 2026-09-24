@@ -36,7 +36,7 @@ namespace MonoDevelop.HexEditor
 		ShowHexEditor
 	}
 	
-	class HexEditorNodeExtension : NodeBuilderExtension
+	sealed class HexEditorNodeExtension : NodeBuilderExtension
 	{
 		public override Type CommandHandlerType {
 			get { return typeof(HexEditorCommandHandler); }

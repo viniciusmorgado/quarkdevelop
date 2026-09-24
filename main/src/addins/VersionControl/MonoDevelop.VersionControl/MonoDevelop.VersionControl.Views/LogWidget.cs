@@ -701,8 +701,8 @@ namespace MonoDevelop.VersionControl.Views
 			string author = rev.Author;
 			if (string.IsNullOrEmpty (author))
 				return;
-			int idx = author.IndexOf ("<", StringComparison.Ordinal);
-			if (idx >= 0 && idx < author.IndexOf (">", StringComparison.Ordinal))
+			int idx = author.IndexOf ('<');
+			if (idx >= 0 && idx < author.IndexOf ('>'))
 				author = author.Substring (0, idx).Trim ();
 			if (string.IsNullOrEmpty (filter))
 				renderer.Text = author;
@@ -909,7 +909,7 @@ namespace MonoDevelop.VersionControl.Views
 				i = txt.IndexOf (filter, last, StringComparison.CurrentCultureIgnoreCase);
 			}
 			if (last < txt.Length)
-				sb.Append (GLib.Markup.EscapeText (txt.Substring (last, txt.Length - last)));
+				sb.Append (GLib.Markup.EscapeText (txt.Substring (last)));
 			return sb.ToString ();
 		}
 

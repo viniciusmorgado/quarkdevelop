@@ -40,7 +40,7 @@ namespace MonoDevelop.DocFood
 		DocumentBuffer
 	}
 	
-	class DocumentThisHandler : CommandHandler
+	sealed class DocumentThisHandler : CommandHandler
 	{
 		protected override void Update (CommandInfo info)
 		{
@@ -56,7 +56,7 @@ namespace MonoDevelop.DocFood
 		}
 	}
 	
-	class DocumentBufferHandler : CommandHandler
+	sealed class DocumentBufferHandler : CommandHandler
 	{
 		protected override void Update (CommandInfo info)
 		{
@@ -141,21 +141,21 @@ namespace MonoDevelop.DocFood
 				if (first) {
 					result.Append (indent);
 					result.Append (prefix);
-					result.Append ("<");
+					result.Append ('<');
 					first = false;
 				} else {
 					result.AppendLine ();
 					result.Append (indent);
 					result.Append (prefix);
-					result.Append ("<");
+					result.Append ('<');
 				}
 				result.Append (section.Name);
 				foreach (var attr in section.Attributes) {
-					result.Append (" ");
+					result.Append (' ');
 					result.Append (attr.Key);
 					result.Append ("=\"");
 					result.Append (attr.Value);
-					result.Append ("\"");
+					result.Append ('"');
 				}
 				if (section.Name == "summary")
 				{
@@ -165,7 +165,7 @@ namespace MonoDevelop.DocFood
 				}
 				else
 				{
-					result.Append (">");
+					result.Append ('>');
 				}
 				bool inTag = false;
 				int column = indent.Length + prefix.Length;
@@ -177,7 +177,7 @@ namespace MonoDevelop.DocFood
 						inTag = false;
 
 					if (ch =='\n') {
-						result.Append (curWord.ToString ());
+						result.Append (curWord);
 						curWord.Length = 0;
 
 						result.AppendLine ();
@@ -192,7 +192,7 @@ namespace MonoDevelop.DocFood
 							result.Append (prefix);
 							column = indent.Length + prefix .Length;
 						}
-						result.Append (curWord.ToString ());
+						result.Append (curWord);
 						result.Append (ch);
 						column += curWord.Length + 1;
 						curWord.Length = 0;
@@ -208,12 +208,12 @@ namespace MonoDevelop.DocFood
 				}
 				else
 				{
-					result.Append(curWord.ToString ());
+					result.Append(curWord);
 				}
 
 				result.Append ("</");
 				result.Append (section.Name);
-				result.Append (">");
+				result.Append ('>');
 				StringBuilderCache.ReturnAndFree (curWord);
 			}
 			result.AppendLine ();
@@ -240,11 +240,11 @@ namespace MonoDevelop.DocFood
 				}
 				result.Append (section.Name);
 				foreach (var attr in section.Attributes) {
-					result.Append (" ");
+					result.Append (' ');
 					result.Append (attr.Key);
 					result.Append ("=\"");
 					result.Append (attr.Value);
-					result.Append ("\"");
+					result.Append ('"');
 				}
 				if (section.Name == "summary")
 				{
@@ -257,7 +257,7 @@ namespace MonoDevelop.DocFood
 				}
 				else
 				{
-					result.Append (">");
+					result.Append ('>');
 				}
 
 //				bool inTag = false;
@@ -265,7 +265,7 @@ namespace MonoDevelop.DocFood
 
 				result.Append ("</");
 				result.Append (section.Name);
-				result.Append (">");
+				result.Append ('>');
 			}
 			result.AppendLine ();
 			return StringBuilderCache.ReturnAndFree (result);

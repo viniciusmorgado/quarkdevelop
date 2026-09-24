@@ -29,7 +29,7 @@ using ICSharpCode.NRefactory6.CSharp;
 namespace ICSharpCode.NRefactory6.IndentationTests
 {
 	[TestFixture]
-	class AlignmentTests
+	sealed class AlignmentTests
 	{
 		[Ignore("Not supported anymore")]
 		[Test]

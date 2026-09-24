@@ -161,8 +161,8 @@ namespace Mono.TextEditor
 			editor.RedrawMargin (this);
 		}
 
-		Dictionary<FoldSegment, FoldingAccessible> accessibles = null;
-		uint updateAccessibilityId = 0;
+		Dictionary<FoldSegment, FoldingAccessible> accessibles;
+		uint updateAccessibilityId;
 		void UpdateAccessibility ()
 		{
 			if (!IdeTheme.AccessibilityEnabled) {

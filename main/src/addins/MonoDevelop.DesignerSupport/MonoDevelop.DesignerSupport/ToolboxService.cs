@@ -318,7 +318,7 @@ namespace MonoDevelop.DesignerSupport
 			if (CurrentConsumer != null)
 				return CurrentConsumer.DragTargets;
 			else
-				return new Gtk.TargetEntry [0];
+				return Array.Empty<Gtk.TargetEntry> ();
 		}
 		
 		
@@ -411,8 +411,8 @@ namespace MonoDevelop.DesignerSupport
 		
 		#region Change notification
 		
-		Document oldActiveDoc =  null;
-		SolutionFolderItem oldProject = null;
+		Document oldActiveDoc;
+		SolutionFolderItem oldProject;
 		bool configChanged;
 		List<IToolboxDynamicProvider> viewProviders = new List<IToolboxDynamicProvider> ();
 		

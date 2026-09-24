@@ -37,7 +37,7 @@ using MonoDevelop.Core;
 
 namespace MonoDevelop.DocFood
 {
-	class DocFoodTextEditorExtension : TextEditorExtension
+	sealed class DocFoodTextEditorExtension : TextEditorExtension
 	{
 		string GenerateDocumentation (ISymbol member, string indent)
 		{

@@ -29,7 +29,7 @@ using UnitTests;
 namespace MonoDevelop.Ide.Editor
 {
 	[TestFixture]
-	class DiffTests : IdeTestBase
+	sealed class DiffTests : IdeTestBase
 	{
 		[Test]
 		public void EmptyTreeList ()

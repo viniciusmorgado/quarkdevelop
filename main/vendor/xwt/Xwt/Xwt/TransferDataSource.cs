@@ -65,8 +65,7 @@ namespace Xwt
 		/// </param>
 		public void AddValue<T> (T value) where T : class
 		{
-			if (value == null)
-				throw new ArgumentNullException ("value");
+			ArgumentNullException.ThrowIfNull (value);
 			data [TransferDataType.FromType (typeof (T))] = value;
 		}
 		

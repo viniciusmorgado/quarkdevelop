@@ -42,7 +42,7 @@ namespace Mono.TextEditor.Tests
 			foreach (string v in list) {
 				Assert.Fail();
 			}
-			string[] arr = new string[0];
+			string[] arr = Array.Empty<string>();
 			list.CopyTo(arr, 0);
 		}
 

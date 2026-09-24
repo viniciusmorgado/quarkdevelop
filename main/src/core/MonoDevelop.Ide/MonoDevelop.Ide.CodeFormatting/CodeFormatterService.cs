@@ -73,12 +73,9 @@ namespace MonoDevelop.Ide.CodeFormatting
 
 		public static void Format (TextEditor editor, DocumentContext ctx, ISegment segment)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
-			if (ctx == null)
-				throw new ArgumentNullException ("ctx");
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (editor);
+			ArgumentNullException.ThrowIfNull (ctx);
+			ArgumentNullException.ThrowIfNull (segment);
 			var fmt = GetFormatter (editor.MimeType);
 			if (fmt == null)
 				return;

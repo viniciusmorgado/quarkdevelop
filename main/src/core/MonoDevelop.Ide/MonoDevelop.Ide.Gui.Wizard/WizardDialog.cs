@@ -370,7 +370,7 @@ namespace MonoDevelop.Ide.Gui.Wizard
 			return cmd == Command.Ok;
 		}
 
-		bool disposed = false;
+		bool disposed;
 		public void Dispose ()
 		{
 			if (!disposed) {

@@ -40,7 +40,7 @@ using NuGet.Versioning;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakePackageRestoreManager : IPackageRestoreManager
+	sealed class FakePackageRestoreManager : IPackageRestoreManager
 	{
 		public bool IsCurrentSolutionEnabledForRestore {
 			get {
@@ -145,7 +145,7 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 		public CancellationToken RestoreMissingPackagesCancellationToken;
 		public List<PackageRestoreData> PackagesToBeRestored;
 
-		public PackageRestoreResult RestoreResult = new PackageRestoreResult (true, new PackageIdentity[0]);
+		public PackageRestoreResult RestoreResult = new PackageRestoreResult (true, Array.Empty<PackageIdentity> ());
 
 		public Action BeforeRestoreMissingPackagesAsync = () => { };
 

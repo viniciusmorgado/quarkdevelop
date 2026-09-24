@@ -30,7 +30,7 @@ using MonoDevelop.Core;
 
 namespace MonoDevelop.Projects
 {
-	class TestLanguageTypeNode : ProjectTypeNode
+	sealed class TestLanguageTypeNode : ProjectTypeNode
 	{
 		public TestLanguageTypeNode()
 		{

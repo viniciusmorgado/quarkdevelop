@@ -30,10 +30,7 @@ namespace Microsoft.VisualStudio.Text.BufferUndoManager.Implementation
         public ITextBufferUndoManager GetTextBufferUndoManager(ITextBuffer textBuffer)
         {
             // Validate
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
             // See if there was already a TextBufferUndoManager created for the given textBuffer, we only ever want to create one
             ITextBufferUndoManager cachedBufferUndoManager;
@@ -56,10 +53,7 @@ namespace Microsoft.VisualStudio.Text.BufferUndoManager.Implementation
         public void RemoveTextBufferUndoManager(ITextBuffer textBuffer)
         {
             // Validate
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
             ITextBufferUndoManager cachedBufferUndoManager;
             if (textBuffer.Properties.TryGetProperty<ITextBufferUndoManager>(typeof(ITextBufferUndoManager), out cachedBufferUndoManager))

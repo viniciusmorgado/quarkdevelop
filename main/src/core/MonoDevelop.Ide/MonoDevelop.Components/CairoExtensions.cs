@@ -513,7 +513,7 @@ namespace MonoDevelop.Components
 
 		public static Cairo.Color ParseColor (string s, double alpha = 1)
 		{
-			if (s.StartsWith ("#"))
+			if (s.StartsWith ('#'))
 				s = s.Substring (1);
 			if (s.Length == 3)
 				s = "" + s[0]+s[0]+s[1]+s[1]+s[2]+s[2];

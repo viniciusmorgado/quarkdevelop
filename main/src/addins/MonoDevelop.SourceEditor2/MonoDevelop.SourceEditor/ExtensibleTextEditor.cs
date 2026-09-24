@@ -115,8 +115,7 @@ namespace MonoDevelop.SourceEditor
 			readonly ExtensibleTextEditor ext;
 			public LastEditorExtension (ExtensibleTextEditor ext)
 			{
-				if (ext == null)
-					throw new ArgumentNullException ("ext");
+				ArgumentNullException.ThrowIfNull (ext);
 				this.ext = ext;
 			}
 			
@@ -174,7 +173,7 @@ namespace MonoDevelop.SourceEditor
 			this.DoPopupMenu = ShowPopup;
 		}
 
-		static bool? testNewViMode = null;
+		static bool? testNewViMode;
 		static bool TestNewViMode {
 			get {
 				if (!testNewViMode.HasValue)
@@ -242,7 +241,7 @@ namespace MonoDevelop.SourceEditor
 			return scheme.Name;
 		}
 		
-		bool isInKeyStroke = false;
+		bool isInKeyStroke;
 		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
 		{
 			isInKeyStroke = true;

@@ -24,14 +24,8 @@ namespace Microsoft.VisualStudio.Text.Projection
         /// is null.</exception>
         public GraphBuffersChangedEventArgs(IList<ITextBuffer> addedBuffers, IList<ITextBuffer> removedBuffers)
         {
-            if (addedBuffers == null)
-            {
-                throw new ArgumentNullException(nameof(addedBuffers));
-            }
-            if (removedBuffers == null)
-            {
-                throw new ArgumentNullException(nameof(removedBuffers));
-            }
+            ArgumentNullException.ThrowIfNull(addedBuffers);
+            ArgumentNullException.ThrowIfNull(removedBuffers);
             this.addedBuffers = new ReadOnlyCollection<ITextBuffer>(addedBuffers);
             this.removedBuffers = new ReadOnlyCollection<ITextBuffer>(removedBuffers);
         }

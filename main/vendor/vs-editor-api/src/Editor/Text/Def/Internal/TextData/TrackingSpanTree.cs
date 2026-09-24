@@ -39,7 +39,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public int Count { get; private set; }
 
-        private int advanceVersion = 0;
+        private int advanceVersion;
 
         /// <summary>
         /// Create a tracking span tree for the given buffer.
@@ -49,8 +49,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         /// to old versions, at the expense of walking the tree on every text change.</param>
         public TrackingSpanTree(ITextBuffer buffer, bool keepTrackingCurrent)
         {
-            if (buffer == null)
-                throw new ArgumentNullException(nameof(buffer));
+            ArgumentNullException.ThrowIfNull(buffer);
 
             Buffer = buffer;
             Count = 0;
@@ -76,8 +75,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         /// <exception cref="ArgumentException">If the tracking mode of <paramref name="trackingSpan"/> is not <see cref="SpanTrackingMode.EdgeExclusive"/>.</exception>
         public TrackingSpanNode<T> TryAddItem(T item, ITrackingSpan trackingSpan)
         {
-            if (trackingSpan == null)
-                throw new ArgumentNullException(nameof(trackingSpan));
+            ArgumentNullException.ThrowIfNull(trackingSpan);
 
             if (trackingSpan.TrackingMode != SpanTrackingMode.EdgeExclusive)
                 throw new ArgumentException("The tracking mode of the given tracking span must be SpanTrackingMode.EdgeExclusive", nameof(trackingSpan));
@@ -100,8 +98,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         /// <returns><c>true</c> if the item was removed, <c>false</c> if it wasn't found.</returns>
         public bool RemoveItem(T item, ITrackingSpan trackingSpan)
         {
-            if (trackingSpan == null)
-                throw new ArgumentNullException(nameof(trackingSpan));
+            ArgumentNullException.ThrowIfNull(trackingSpan);
 
             SnapshotSpan spanToRemove = trackingSpan.GetSpan(Buffer.CurrentSnapshot);
 
@@ -226,10 +223,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public void Advance(ITextVersion toVersion)
         {
-            if (toVersion == null)
-            {
-                throw new ArgumentNullException(nameof(toVersion));
-            }
+            ArgumentNullException.ThrowIfNull(toVersion);
 
             if (toVersion.VersionNumber > this.advanceVersion)
             {

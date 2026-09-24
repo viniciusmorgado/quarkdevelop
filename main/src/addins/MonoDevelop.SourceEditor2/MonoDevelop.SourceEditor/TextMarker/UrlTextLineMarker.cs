@@ -33,8 +33,7 @@ namespace MonoDevelop.SourceEditor
     {
 		public UrlTextLineMarker (TextDocument doc,string url, Mono.TextEditor.UrlType urlType, string style, int startColumn, int endColumn) : base (doc, url, urlType, style, startColumn, endColumn)
 		{
-			if (doc == null)
-				throw new ArgumentNullException ("doc");
+			ArgumentNullException.ThrowIfNull (doc);
 		}
 		
 		MonoDevelop.Ide.Editor.UrlType IUrlTextLineMarker.UrlType {

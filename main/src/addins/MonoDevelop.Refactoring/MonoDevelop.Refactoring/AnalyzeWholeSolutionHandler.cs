@@ -164,7 +164,7 @@ namespace MonoDevelop.Refactoring
 			}));
 
 			monitor.EndTask ();
-			if (!allDiagnostics.Any ())
+			if (allDiagnostics.Count == 0)
 				monitor.ReportSuccess (GettextCatalog.GetString ("Analysis successful."));
 			else
 				ShowAnalyzationResults ();

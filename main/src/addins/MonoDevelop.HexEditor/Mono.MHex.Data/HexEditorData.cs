@@ -214,7 +214,7 @@ namespace Mono.MHex.Data
 			}
 		}
 
-		Selection mainSelection = null;
+		Selection mainSelection;
 		public Selection MainSelection {
 			get {
 				return mainSelection;

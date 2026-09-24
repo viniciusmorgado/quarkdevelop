@@ -42,10 +42,7 @@ namespace NuGet.PackageManagement.UI
 
 			public PackageFeedSearchState(SearchResult<IPackageSearchMetadata> results)
 			{
-				if (results == null)
-				{
-					throw new ArgumentNullException(nameof(results));
-				}
+				ArgumentNullException.ThrowIfNull(results);
 				_results = results;
 			}
 
@@ -126,16 +123,10 @@ namespace NuGet.PackageManagement.UI
 			string searchText = null,
 			bool includePrerelease = true)
 		{
-			if (context == null)
-			{
-				throw new ArgumentNullException(nameof(context));
-			}
+			ArgumentNullException.ThrowIfNull(context);
 			_context = context;
 
-			if (packageFeed == null)
-			{
-				throw new ArgumentNullException(nameof(packageFeed));
-			}
+			ArgumentNullException.ThrowIfNull(packageFeed);
 			_packageFeed = packageFeed;
 
 			_searchText = searchText ?? string.Empty;
@@ -156,7 +147,7 @@ namespace NuGet.PackageManagement.UI
 				{
 					searchResult = await _packageFeed.RefreshSearchAsync(searchResult.RefreshToken, cancellationToken);
 				}
-				totalCount += searchResult.Items?.Count() ?? 0;
+				totalCount += searchResult.Items?.Count ?? 0;
 				nextToken = searchResult.NextToken;
 			} while (nextToken != null && totalCount <= maxCount);
 

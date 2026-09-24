@@ -454,12 +454,12 @@ namespace Mono.Debugging.Evaluation
 
 		public virtual string[] GetImportedNamespaces (EvaluationContext ctx)
 		{
-			return new string[0];
+			return Array.Empty<string> ();
 		}
 
 		public virtual void GetNamespaceContents (EvaluationContext ctx, string namspace, out string[] childNamespaces, out string[] childTypes)
 		{
-			childTypes = childNamespaces = new string[0];
+			childTypes = childNamespaces = Array.Empty<string> ();
 		}
 
 		protected virtual ObjectValue CreateObjectValueImpl (EvaluationContext ctx, IObjectValueSource source, ObjectPath path, object obj, ObjectValueFlags flags)
@@ -540,7 +540,7 @@ namespace Mono.Debugging.Evaluation
 		public virtual ObjectValue[] GetObjectValueChildren (EvaluationContext ctx, IObjectSource objectSource, object type, object obj, int firstItemIndex, int count, bool dereferenceProxy)
 		{
 			if (obj is EvaluationResult)
-				return new ObjectValue[0];
+				return Array.Empty<ObjectValue> ();
 			
 			if (IsArray (ctx, obj)) {
 				var agroup = new ArrayElementGroup (ctx, CreateArrayAdaptor (ctx, obj));
@@ -548,7 +548,7 @@ namespace Mono.Debugging.Evaluation
 			}
 
 			if (IsPrimitive (ctx, obj))
-				return new ObjectValue[0];
+				return Array.Empty<ObjectValue> ();
 
 			if (IsNullableType (ctx, type)) {
 				if (NullableHasValue (ctx, type, obj)) {
@@ -557,7 +557,7 @@ namespace Mono.Debugging.Evaluation
 					return GetObjectValueChildren (ctx, objectSource, value.Type, value.Value, firstItemIndex, count, dereferenceProxy);
 				}
 
-				return new ObjectValue[0];
+				return Array.Empty<ObjectValue> ();
 			}
 
 			bool showRawView = false;
@@ -684,7 +684,7 @@ namespace Mono.Debugging.Evaluation
 			return values;
 		}
 		
-		class ExpData
+		sealed class ExpData
 		{
 			readonly ObjectValueAdaptor adaptor;
 			readonly EvaluationContext ctx;
@@ -981,7 +981,7 @@ namespace Mono.Debugging.Evaluation
 		public virtual object CreateArray (EvaluationContext ctx, object type, object[] values)
 		{
 			var arrType = GetType (ctx, "System.Collections.ArrayList");
-			var arrayList = CreateValue (ctx, arrType, new object[0]);
+			var arrayList = CreateValue (ctx, arrType, Array.Empty<object> ());
 			object[] objTypes = { GetType (ctx, "System.Object") };
 
 			foreach (object value in values)
@@ -1103,7 +1103,7 @@ namespace Mono.Debugging.Evaluation
 					tn.Append (dims[n]);
 				}
 
-				tn.Append ("]");
+				tn.Append (']');
 
 				int i = ename.LastIndexOf ('>');
 				if (i == -1)
@@ -1360,7 +1360,7 @@ namespace Mono.Debugging.Evaluation
 					} else {
 						var methodName = props [k].TrimEnd ('(', ')', ' ');
 						if (HasMethod (ctx, GetValueType (ctx, val), methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
-							val = RuntimeInvoke (ctx, GetValueType (ctx, val), val, methodName, new object[0], new object[0]);
+							val = RuntimeInvoke (ctx, GetValueType (ctx, val), val, methodName, Array.Empty<object> (), Array.Empty<object> ());
 						} else {
 							val = null;
 							break;
@@ -1530,7 +1530,7 @@ namespace Mono.Debugging.Evaluation
 		}
 	}
 	
-	class ObjectValueNameTracker
+	sealed class ObjectValueNameTracker
 	{
 		readonly Dictionary<string,KeyValuePair<ObjectValue, ValueReference>> names = new Dictionary<string,KeyValuePair<ObjectValue, ValueReference>> ();
 		readonly EvaluationContext ctx;
@@ -1558,7 +1558,7 @@ namespace Mono.Debugging.Evaluation
 				
 				if (tn != null)
 					oval.Name += " (" + ctx.Adapter.GetDisplayTypeName (ctx, tn) + ")";
-				if (!other.Key.Name.EndsWith (")", StringComparison.Ordinal)) {
+				if (!other.Key.Name.EndsWith (')')) {
 					tn = other.Value.DeclaringType;
 					if (tn != null)
 						other.Key.Name += " (" + ctx.Adapter.GetDisplayTypeName (ctx, tn) + ")";

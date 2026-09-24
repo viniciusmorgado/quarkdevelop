@@ -56,8 +56,7 @@ namespace Microsoft.VisualStudio.Text.Tagging.Implementation
 
         public ITagAggregator<T> CreateTagAggregator<T>(ITextBuffer textBuffer, TagAggregatorOptions options) where T : ITag
         {
-            if (textBuffer == null)
-                throw new ArgumentNullException(nameof(textBuffer));
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
             return new TagAggregator<T>(this, null, this.BufferGraphFactoryService.CreateBufferGraph(textBuffer), options);
 
@@ -74,8 +73,7 @@ namespace Microsoft.VisualStudio.Text.Tagging.Implementation
 
         public ITagAggregator<T> CreateTagAggregator<T>(ITextView textView, TagAggregatorOptions options) where T : ITag
         {
-            if (textView == null)
-                throw new ArgumentNullException(nameof(textView));
+            ArgumentNullException.ThrowIfNull(textView);
 
             return new TagAggregator<T>(this, textView, textView.BufferGraph, options);
         }

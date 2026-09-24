@@ -21,20 +21,19 @@ namespace Microsoft.VisualStudio.Text.Implementation
         public readonly static StringRebuilder Empty = new StringRebuilderForString();
 
 #if DEBUG
-        protected static int _totalCharactersScanned = 0;
+        protected static int _totalCharactersScanned;
         public static int TotalCharactersScanned { get { return _totalCharactersScanned; } }
 
-        protected static int _totalCharactersReturned = 0;
+        protected static int _totalCharactersReturned;
         public static int TotalCharactersReturned { get { return _totalCharactersReturned; } }
 
-        protected static int _totalCharactersCopied = 0;
+        protected static int _totalCharactersCopied;
         public static int TotalCharactersCopied { get { return _totalCharactersCopied; } }
 #endif
 
         public static StringRebuilder Create(string text)
         {
-            if (text == null)
-                throw new ArgumentNullException(nameof(text));
+            ArgumentNullException.ThrowIfNull(text);
 #if DEBUG
             Interlocked.Add(ref _totalCharactersScanned, text.Length);
 #endif
@@ -46,8 +45,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public static StringRebuilder Create(ITextImage image)
         {
-            if (image == null)
-                throw new ArgumentNullException(nameof(image));
+            ArgumentNullException.ThrowIfNull(image);
 
             var cti = image as CachingTextImage;
             if (cti != null)
@@ -257,8 +255,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than zero or <paramref name="startIndex"/> + <paramref name="length"/> is greater than <see cref="Length"/>.</exception>
         public char[] ToCharArray(int startIndex, int length)
         {
-            if (startIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            ArgumentOutOfRangeException.ThrowIfNegative(startIndex);
 
             if ((length < 0) || (startIndex + length > this.Length) || (startIndex + length < 0))
                 throw new ArgumentOutOfRangeException(nameof(length));
@@ -332,8 +329,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         {
             if ((position < 0) || (position > this.Length))
                 throw new ArgumentOutOfRangeException(nameof(position));
-            if (text == null)
-                throw new ArgumentNullException(nameof(text));
+            ArgumentNullException.ThrowIfNull(text);
 
             return this.Assemble(Span.FromBounds(0, position), text, Span.FromBounds(position, this.Length));
         }
@@ -403,8 +399,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         {
             if (span.End > this.Length)
                 throw new ArgumentOutOfRangeException(nameof(span));
-            if (text == null)
-                throw new ArgumentNullException(nameof(text));
+            ArgumentNullException.ThrowIfNull(text);
 
             return this.Assemble(Span.FromBounds(0, span.Start), text, Span.FromBounds(span.End, this.Length));
         }

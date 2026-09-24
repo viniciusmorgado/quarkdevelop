@@ -48,7 +48,7 @@ namespace MonoDevelop.Core.Execution
 		#if DEBUG_MESSAGES
 		internal static bool DebugMode = true;
 		#else
-		internal static bool DebugMode = false;
+		internal static bool DebugMode;
 		#endif
 
 		TcpListener listener;

@@ -30,7 +30,7 @@ using NuGet.PackageManagement;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeNuGetPackageAction : INuGetPackageAction, INuGetProjectActionsProvider
+	sealed class FakeNuGetPackageAction : INuGetPackageAction, INuGetProjectActionsProvider
 	{
 		public FakeNuGetPackageAction ()
 		{

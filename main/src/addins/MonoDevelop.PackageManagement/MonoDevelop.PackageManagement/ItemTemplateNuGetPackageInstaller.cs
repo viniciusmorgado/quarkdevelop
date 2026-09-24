@@ -59,7 +59,7 @@ namespace MonoDevelop.PackageManagement
 				return;
 
 			var installPackageActions = await CreatePackageActions (dotNetProject, packageReferences);
-			if (!installPackageActions.Any ())
+			if (installPackageActions.Count == 0)
 				return;
 
 			var progressMessage = GetProgressMonitorStatusMessage (installPackageActions);

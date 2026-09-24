@@ -393,7 +393,7 @@ namespace MonoDevelop.Core.Execution
 			throw new NotSupportedException ("code: " + t);
 		}
 
-		internal class MultiDimensionalIterator
+		internal sealed class MultiDimensionalIterator
 		{
 			Array arr;
 			readonly int [] indices, lengths;
@@ -613,7 +613,7 @@ namespace MonoDevelop.Core.Execution
 			foreach (var ar in args) {
 				if (sb.Length > 0)
 					sb.Append (", ");
-				sb.Append (ar.Name).Append (":");
+				sb.Append (ar.Name).Append (':');
 				AppendArg (sb, ar.Value);
 			}
 			return string.Format ("({3}) [{0} Target={1}, Args=[{2}]]", Name, Target, sb, Id);
@@ -624,24 +624,24 @@ namespace MonoDevelop.Core.Execution
 			if (arg == null)
 				sb.Append ("(null)");
 			else if (arg is IDictionary) {
-				sb.Append ("{");
+				sb.Append ('{');
 				foreach (DictionaryEntry e in (IDictionary)arg) {
 					if (sb.Length > 0)
 						sb.Append (", ");
-					sb.Append (e.Key).Append (":");
+					sb.Append (e.Key).Append (':');
 					AppendArg (sb, e.Value);
 				}
-				sb.Append ("}");
+				sb.Append ('}');
 			} else if (arg is byte[])
-				sb.Append ("byte[").Append (((byte[])arg).Length).Append ("]");
+				sb.Append ("byte[").Append (((byte[])arg).Length).Append (']');
 			else if (arg is Array) {
-				sb.Append ("[");
+				sb.Append ('[');
 				foreach (object e in (Array)arg) {
 					if (sb.Length > 0)
 						sb.Append (", ");
 					AppendArg (sb, e);
 				}
-				sb.Append ("]");
+				sb.Append (']');
 			}
 			else
 				sb.Append (arg);
@@ -780,7 +780,7 @@ namespace MonoDevelop.Core.Execution
 			return data;
 		}
 
-		class TypeMap: Dictionary<string,MemberInfo>
+		sealed class TypeMap: Dictionary<string,MemberInfo>
 		{
 		}
 	}
@@ -874,7 +874,7 @@ namespace MonoDevelop.Core.Execution
 		}
 	}
 
-	class RemoteProcessException: Exception
+	sealed class RemoteProcessException: Exception
 	{
 		public string ExtendedDetails { get; set; }
 

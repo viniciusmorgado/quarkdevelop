@@ -43,7 +43,6 @@ namespace MonoDevelop.Ide.Gui.Shell
 		CancellationTokenSource cancellationTokenSource = new CancellationTokenSource ();
 		object delegatedCommandTarget;
 		Task loadTask;
-		bool subscribedWindowsEvents;
 		bool destroyed;
 
 		public GtkShellDocumentViewItem ()

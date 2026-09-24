@@ -283,7 +283,7 @@ namespace MonoDevelop.Core.Assemblies
 		public SystemPackage GetPackageFromPath (string path)
 		{
 			Initialize ();
-			return assemblyPathToPackage.ContainsKey (path) ? assemblyPathToPackage [path] : null;
+			return assemblyPathToPackage.TryGetValue (path, out var value) ? value : null;
 		}
 		
 		public static string NormalizeAsmName (string name)
@@ -488,7 +488,7 @@ namespace MonoDevelop.Core.Assemblies
 			var fxAsms = asm.AllSameName ().Where (a => a.Package.IsFrameworkPackage).ToList ();
 			
 			//if the asm is not a framework asm, we don't upgrade it automatically
-			if (!fxAsms.Any ()) {
+			if (fxAsms.Count == 0) {
 				// Return null if the package is not compatible with the requested version
 				if (fx.CanReferenceAssembliesTargetingFramework (asm.Package.TargetFramework))
 					return asm;

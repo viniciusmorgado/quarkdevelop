@@ -78,8 +78,7 @@ namespace MonoDevelop.Ide.Gui.Content
 
 		public static ISymbol GetLanguageItem (this Document document, int offset, out DocumentRegion expressionRegion)
 		{
-			if (document == null)
-				throw new System.ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 
 			var textEditorResolver = TextEditorResolverService.GetProvider (document.Editor.MimeType);
 			if (textEditorResolver != null) {

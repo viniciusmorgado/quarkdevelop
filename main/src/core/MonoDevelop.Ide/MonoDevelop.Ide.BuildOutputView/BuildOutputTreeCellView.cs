@@ -184,9 +184,9 @@ namespace MonoDevelop.Ide.BuildOutputView
 			public Rectangle LastRenderExpanderBounds = Rectangle.Zero;
 			public double CollapsedRowHeight = -1;
 			public double CollapsedLayoutHeight = -1;
-			public double LayoutYPadding = 0;
-			public double ExpanderYPadding = 0;
-			public double IconYPadding = 0;
+			public double LayoutYPadding;
+			public double ExpanderYPadding;
+			public double IconYPadding;
 
 			public int NewLineCharIndex = -1;
 
@@ -287,8 +287,7 @@ namespace MonoDevelop.Ide.BuildOutputView
 
 			public ViewStatus (BuildOutputNode node)
 			{
-				if (node == null)
-					throw new ArgumentNullException (nameof (node));
+				ArgumentNullException.ThrowIfNull (node);
 				Node = node;
 				Icon = Node.GetImage ();
 				layout.Font = GetFont (node);

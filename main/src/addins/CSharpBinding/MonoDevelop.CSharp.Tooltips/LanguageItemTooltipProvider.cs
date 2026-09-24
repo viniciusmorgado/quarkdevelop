@@ -94,7 +94,7 @@ namespace MonoDevelop.SourceEditor
 			return node;
 		}
 
-		static TooltipInformationWindow lastWindow = null;
+		static TooltipInformationWindow lastWindow;
 
 		static void DestroyLastTooltipWindow ()
 		{

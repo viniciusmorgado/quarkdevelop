@@ -248,16 +248,17 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 		{
 			foreach (ItemToolboxNode itbn in nodes) {
 				var newItem = new ToolboxWidgetItem (itbn);
-				if (!categories.ContainsKey (itbn.Category)) {
+				if (!categories.TryGetValue (itbn.Category, out var value)) {
 					var cat = new ToolboxWidgetCategory (itbn.Category);
 					int prio;
 					if (!categoryPriorities.TryGetValue (itbn.Category, out prio))
 						prio = -1;
 					cat.Priority = prio;
-					categories[itbn.Category] = cat;
+					value = cat;
+					categories[itbn.Category] = value;
 				}
 				if (newItem.Text != null)
-					categories[itbn.Category].Add (newItem);
+					value.Add (newItem);
 			}
 		}
 		

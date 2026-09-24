@@ -117,7 +117,7 @@ namespace MonoDevelop.VersionControl
 			repositoryServerEntry.Text = userAndHost [1];
 			repositoryPortSpin.Value = 22;
 			string path = tokens [1];
-			if (!path.StartsWith ("/", StringComparison.Ordinal)) {
+			if (!path.StartsWith ('/')) {
 				path = "/" + path;
 			}
 			repositoryPathEntry.Text = path;

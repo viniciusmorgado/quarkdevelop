@@ -124,20 +124,11 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
 
         public CollapsedMoveUndoPrimitive(IOutliningManager outliningManager, ITextView textView, IEnumerable<Tuple<Span, IOutliningRegionTag>> collaspedSpans)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
-            if (outliningManager == null)
-            {
-                throw new ArgumentNullException(nameof(outliningManager));
-            }
+            ArgumentNullException.ThrowIfNull(outliningManager);
 
-            if (collaspedSpans == null)
-            {
-                throw new ArgumentNullException(nameof(collaspedSpans));
-            }
+            ArgumentNullException.ThrowIfNull(collaspedSpans);
 
             _outliningManager = outliningManager;
             _textView = textView;

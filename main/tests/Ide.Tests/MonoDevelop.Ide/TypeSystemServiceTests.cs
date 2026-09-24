@@ -54,9 +54,9 @@ namespace MonoDevelop.Ide
 	[TestFixture]
 	[RequireService(typeof(RootWorkspace))]
 	[RequireService(typeof(TypeSystemService))]
-	class TypeSystemServiceTests : IdeTestBase
+	sealed class TypeSystemServiceTests : IdeTestBase
 	{
-		class TrackTestProject : DotNetProject
+		sealed class TrackTestProject : DotNetProject
 		{
 			readonly string type;
 			protected override void OnGetTypeTags (HashSet<string> types)
@@ -567,7 +567,7 @@ namespace MonoDevelop.Ide
 			}
 		}
 
-		class ProjectionParser : TypeSystemParser
+		sealed class ProjectionParser : TypeSystemParser
 		{
 			public override Task<ParsedDocument> Parse (ParseOptions options, CancellationToken cancellationToken = default)
 			{
@@ -594,7 +594,7 @@ namespace MonoDevelop.Ide
 			}
 		}
 
-		class ModifyReferencesDuringGetSourceFilesDotNetProject : DotNetProject
+		sealed class ModifyReferencesDuringGetSourceFilesDotNetProject : DotNetProject
 		{
 			public ModifyReferencesDuringGetSourceFilesDotNetProject ()
 				: base ("C#")

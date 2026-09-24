@@ -156,7 +156,7 @@ namespace MonoDevelop.Core
 			Assert.That (properties.ContainsKey ("host"), Is.True);
 		}
 
-		class RecordingLogger : IStructuredLogger
+		sealed class RecordingLogger : IStructuredLogger
 		{
 			public RecordingLogger (string name) => Name = name;
 
@@ -175,7 +175,7 @@ namespace MonoDevelop.Core
 			}
 		}
 
-		class PlainLogger : ILogger
+		sealed class PlainLogger : ILogger
 		{
 			public List<string> Messages { get; } = new ();
 

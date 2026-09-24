@@ -17,7 +17,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
 
         private BulkObservableCollection<ISignature> _activeSignatures = new BulkObservableCollection<ISignature>();
         private ReadOnlyObservableCollection<ISignature> _readOnlySignatures;
-        private bool _isDismissed = false;
+        private bool _isDismissed;
         private ISignature _selectedSignature;
 
 

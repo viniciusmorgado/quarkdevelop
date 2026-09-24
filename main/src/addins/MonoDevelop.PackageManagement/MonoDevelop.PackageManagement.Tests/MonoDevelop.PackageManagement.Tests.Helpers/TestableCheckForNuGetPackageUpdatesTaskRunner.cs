@@ -32,7 +32,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableCheckForNuGetPackageUpdatesTaskRunner : CheckForNuGetPackageUpdatesTaskRunner
+	sealed class TestableCheckForNuGetPackageUpdatesTaskRunner : CheckForNuGetPackageUpdatesTaskRunner
 	{
 		public TestableCheckForNuGetPackageUpdatesTaskRunner (
 			UpdatedNuGetPackagesInWorkspace updatedPackagesInWorkspace)

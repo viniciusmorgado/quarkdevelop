@@ -32,13 +32,11 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="position"/> is negative or greater than the length of the view's buffer.</exception>
         public MouseHoverEventArgs(ITextView view, int position, IMappingPoint textPosition)
         {
-            if (view == null)
-                throw new ArgumentNullException(nameof(view));
+            ArgumentNullException.ThrowIfNull(view);
 #pragma warning suppress 56506 // ToDo: Add a comment on why it is not necessary to check view.TextSnapshot
             if ((position < 0) || (position > view.TextSnapshot.Length)) // Allow positions at the end of the file
                 throw new ArgumentOutOfRangeException(nameof(position));
-            if (textPosition == null)
-                throw new ArgumentNullException(nameof(textPosition));
+            ArgumentNullException.ThrowIfNull(textPosition);
             // we could be very paranoid and check:
             //if (textPosition.AnchorBuffer != view.TextBuffer)
             //    throw new ArgumentException();

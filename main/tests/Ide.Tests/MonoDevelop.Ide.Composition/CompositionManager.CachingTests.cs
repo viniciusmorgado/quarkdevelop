@@ -42,7 +42,7 @@ namespace MonoDevelop.Ide.Composition
 	[TestFixture]
 	public class CompositionManagerCachingTests
 	{
-		internal class LocationCachingFaultInjector : CompositionManager.ICachingFaultInjector
+		internal sealed class LocationCachingFaultInjector : CompositionManager.ICachingFaultInjector
 		{
 			public void FaultAssemblyInfo (CompositionManager.MefControlCacheAssemblyInfo info)
 			{
@@ -55,7 +55,7 @@ namespace MonoDevelop.Ide.Composition
 			}
 		}
 
-		internal class ModuleVersionIdCachingFaultInjector : CompositionManager.ICachingFaultInjector
+		internal sealed class ModuleVersionIdCachingFaultInjector : CompositionManager.ICachingFaultInjector
 		{
 			public void FaultAssemblyInfo (CompositionManager.MefControlCacheAssemblyInfo info)
 			{
@@ -68,7 +68,7 @@ namespace MonoDevelop.Ide.Composition
 			}
 		}
 
-		internal class CacheWritingFaultInjector : CompositionManager.ICachingFaultInjector
+		internal sealed class CacheWritingFaultInjector : CompositionManager.ICachingFaultInjector
 		{
 			public void FaultAssemblyInfo (CompositionManager.MefControlCacheAssemblyInfo info)
 			{

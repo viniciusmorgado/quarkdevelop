@@ -19,10 +19,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         protected TrackingPoint(ITextVersion version, int position, PointTrackingMode trackingMode)
         {
-            if (version == null)
-            {
-                throw new ArgumentNullException(nameof(version));
-            }
+            ArgumentNullException.ThrowIfNull(version);
             if (position < 0 | position > version.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(position));
@@ -48,10 +45,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public int GetPosition(ITextVersion version)
         {
-            if (version == null)
-            {
-                throw new ArgumentNullException(nameof(version));
-            }
+            ArgumentNullException.ThrowIfNull(version);
             if (version.TextBuffer != this.TextBuffer)
             {
                 throw new ArgumentException(Strings.InvalidVersion);
@@ -61,10 +55,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public int GetPosition(ITextSnapshot snapshot)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
             if (snapshot.TextBuffer != this.TextBuffer)
             {
                 throw new ArgumentException(Strings.InvalidSnapshot);

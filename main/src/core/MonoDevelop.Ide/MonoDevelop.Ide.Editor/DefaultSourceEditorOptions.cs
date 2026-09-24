@@ -268,7 +268,7 @@ namespace MonoDevelop.Ide.Editor
 
 		DefaultSourceEditorOptions (TextStylePolicy currentPolicy)
 		{
-			wordNavigationStyle = ConfigurationProperty.Create ("WordNavigationStyle", WordNavigationStyle.Windows);
+			wordNavigationStyle = ConfigurationProperty.Create (nameof (WordNavigationStyle), WordNavigationStyle.Windows);
 			
 			UpdateStylePolicy (currentPolicy);
 			Runtime.ServiceProvider.WhenServiceInitialized<FontService> (s => {
@@ -311,8 +311,7 @@ namespace MonoDevelop.Ide.Editor
 
 		public DefaultSourceEditorOptions WithTextStyle (TextStylePolicy policy)
 		{
-			if (policy == null)
-				throw new ArgumentNullException (nameof (policy));
+			ArgumentNullException.ThrowIfNull (policy);
 			var result = (DefaultSourceEditorOptions)MemberwiseClone ();
 			result.UpdateStylePolicy (policy);
 			result.Changed = null;
@@ -379,7 +378,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<bool> defaultRegionsFolding = ConfigurationProperty.Create ("DefaultRegionsFolding", false);
+		ConfigurationProperty<bool> defaultRegionsFolding = ConfigurationProperty.Create (nameof (DefaultRegionsFolding), false);
 		public bool DefaultRegionsFolding {
 			get {
 				return defaultRegionsFolding;
@@ -391,7 +390,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<bool> defaultCommentFolding = ConfigurationProperty.Create ("DefaultCommentFolding", true);
+		ConfigurationProperty<bool> defaultCommentFolding = ConfigurationProperty.Create (nameof (DefaultCommentFolding), true);
 		public bool DefaultCommentFolding {
 			get {
 				return defaultCommentFolding;
@@ -403,7 +402,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<bool> enableSemanticHighlighting = ConfigurationProperty.Create ("EnableSemanticHighlighting", true);
+		ConfigurationProperty<bool> enableSemanticHighlighting = ConfigurationProperty.Create (nameof (EnableSemanticHighlighting), true);
 		public bool EnableSemanticHighlighting {
 			get {
 				return enableSemanticHighlighting;
@@ -416,7 +415,7 @@ namespace MonoDevelop.Ide.Editor
 
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<bool> tabIsReindent = ConfigurationProperty.Create ("TabIsReindent", false);
+		ConfigurationProperty<bool> tabIsReindent = ConfigurationProperty.Create (nameof (TabIsReindent), false);
 		public bool TabIsReindent {
 			get {
 				return tabIsReindent;
@@ -439,7 +438,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<bool> smartSemicolonPlacement = ConfigurationProperty.Create ("SmartSemicolonPlacement", false);
+		ConfigurationProperty<bool> smartSemicolonPlacement = ConfigurationProperty.Create (nameof (SmartSemicolonPlacement), false);
 		public bool SmartSemicolonPlacement {
 			get {
 				return smartSemicolonPlacement;
@@ -451,7 +450,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<IndentStyle> indentStyle = ConfigurationProperty.Create ("IndentStyle", IndentStyle.Smart);
+		ConfigurationProperty<IndentStyle> indentStyle = ConfigurationProperty.Create (nameof (IndentStyle), IndentStyle.Smart);
 		public IndentStyle IndentStyle {
 			get {
 				return indentStyle;
@@ -463,7 +462,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<bool> enableHighlightUsages = ConfigurationProperty.Create ("EnableHighlightUsages", true);
+		ConfigurationProperty<bool> enableHighlightUsages = ConfigurationProperty.Create (nameof (EnableHighlightUsages), true);
 		public bool EnableHighlightUsages {
 			get {
 				return enableHighlightUsages;
@@ -475,7 +474,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<LineEndingConversion> lineEndingConversion = ConfigurationProperty.Create ("LineEndingConversion", LineEndingConversion.LeaveAsIs);
+		ConfigurationProperty<LineEndingConversion> lineEndingConversion = ConfigurationProperty.Create (nameof (LineEndingConversion), LineEndingConversion.LeaveAsIs);
 		public LineEndingConversion LineEndingConversion {
 			get {
 				return lineEndingConversion;
@@ -487,7 +486,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<bool> showProcedureLineSeparators = ConfigurationProperty.Create ("ShowProcedureLineSeparators", false);
+		ConfigurationProperty<bool> showProcedureLineSeparators = ConfigurationProperty.Create (nameof (ShowProcedureLineSeparators), false);
 		public bool ShowProcedureLineSeparators {
 			get {
 				return showProcedureLineSeparators;
@@ -512,8 +511,8 @@ namespace MonoDevelop.Ide.Editor
 
 		#region ITextEditorOptions
 		ConfigurationProperty<string> defaultEolMarker = IdeApp.Preferences.Editor.NewLineCharacter;
-		string defaultEolMarkerFromContext = null;
-		string overrridenDefaultEolMarker = null;
+		string defaultEolMarkerFromContext;
+		string overrridenDefaultEolMarker;
 
 		// TODO: This isn't surfaced in properties, only policies. We have no UI for it.
 		public string DefaultEolMarker {
@@ -706,7 +705,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<bool> enableSyntaxHighlighting = ConfigurationProperty.Create ("EnableSyntaxHighlighting", true);
+		ConfigurationProperty<bool> enableSyntaxHighlighting = ConfigurationProperty.Create (nameof (EnableSyntaxHighlighting), true);
 		public bool EnableSyntaxHighlighting {
 			get {
 				return enableSyntaxHighlighting;
@@ -747,7 +746,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: VS equivalent?
-		ConfigurationProperty<bool> showRuler = ConfigurationProperty.Create ("ShowRuler", true);
+		ConfigurationProperty<bool> showRuler = ConfigurationProperty.Create (nameof (ShowRuler), true);
 		bool? showRulerFromContext;
 		public bool ShowRuler {
 			get {
@@ -760,7 +759,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: ???
-		ConfigurationProperty<bool> enableAnimations = ConfigurationProperty.Create ("EnableAnimations", true);
+		ConfigurationProperty<bool> enableAnimations = ConfigurationProperty.Create (nameof (EnableAnimations), true);
 		public bool EnableAnimations {
 			get { 
 				return enableAnimations; 
@@ -863,7 +862,7 @@ namespace MonoDevelop.Ide.Editor
 			}
 		}
 
-		ConfigurationProperty<bool> enableSelectionWrappingKeys = ConfigurationProperty.Create ("EnableSelectionWrappingKeys", false);
+		ConfigurationProperty<bool> enableSelectionWrappingKeys = ConfigurationProperty.Create (nameof (EnableSelectionWrappingKeys), false);
 		public bool EnableSelectionWrappingKeys {
 			get {
 				return enableSelectionWrappingKeys;
@@ -874,7 +873,7 @@ namespace MonoDevelop.Ide.Editor
 			}
 		}
 
-		bool overrideDocumentEolMarker = false;
+		bool overrideDocumentEolMarker;
 		public bool OverrideDocumentEolMarker {
 			get {
 				return overrideDocumentEolMarker;
@@ -916,7 +915,7 @@ namespace MonoDevelop.Ide.Editor
 		}
 
 		// TODO: Windows equivalent?
-		ConfigurationProperty<bool> smartBackspace = ConfigurationProperty.Create ("SmartBackspace", true);
+		ConfigurationProperty<bool> smartBackspace = ConfigurationProperty.Create (nameof (SmartBackspace), true);
 		public bool SmartBackspace{
 			get {
 				return smartBackspace;

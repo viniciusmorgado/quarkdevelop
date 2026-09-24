@@ -46,8 +46,7 @@ namespace MonoDevelop.SourceEditor.Wrappers
 
 		public TooltipProviderWrapper (MonoDevelop.Ide.Editor.TooltipProvider provider)
 		{
-			if (provider == null)
-				throw new ArgumentNullException (nameof (provider));
+			ArgumentNullException.ThrowIfNull (provider);
 			this.provider = provider;
 		}
 

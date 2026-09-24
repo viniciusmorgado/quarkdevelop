@@ -32,7 +32,7 @@ namespace MonoDevelop.VersionControl.Git
 {
 	abstract class GitVersionControl : VersionControlSystem
 	{
-		string version = null;
+		string version;
 		bool failedToInitialize;
 
 		const string GitExtension = ".git";

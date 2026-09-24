@@ -901,8 +901,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Implement
         {
             if (IsDismissed)
                 return;
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
             if (model.Uninitialized)
                 return; // Language service wishes to not show completion yet.
             if (!_jtc.IsOnMainThread)
@@ -1558,7 +1557,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Implement
                 return model;
             }
 
-            var lastIndex = model.PresentedItems.Count() - 1;
+            var lastIndex = model.PresentedItems.Length - 1;
             var currentIndex = model.SelectSuggestionItem ? -1 : model.SelectedIndex;
 
             if (offset > 0) // Scrolling down. Stop at last index and don't wrap around.

@@ -138,12 +138,9 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 
 		internal EditorTheme (string name, List<ThemeSetting> settings, string uuuid)
 		{
-			if (name == null)
-				throw new ArgumentNullException (nameof (name));
-			if (settings == null)
-				throw new ArgumentNullException (nameof (settings));
-			if (uuuid == null)
-				throw new ArgumentNullException (nameof (uuuid));
+			ArgumentNullException.ThrowIfNull (name);
+			ArgumentNullException.ThrowIfNull (settings);
+			ArgumentNullException.ThrowIfNull (uuuid);
 			Name = name;
 			this.settings = settings;
 			this.Uuid = uuuid;

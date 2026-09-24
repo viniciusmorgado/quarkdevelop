@@ -76,7 +76,7 @@ namespace Xwt.Motion
 					timeouts.RemoveAll (t => t.Item1 == timeout.Item1);
 			}
 
-			if (!timeouts.Any ()) {
+			if (timeouts.Count == 0) {
 				enabled = false;
 				Disable ();
 			}
@@ -123,7 +123,7 @@ namespace Xwt.Motion
 		{
 			timeouts.RemoveAll (t => t.Item1 == handle);
 
-			if (!timeouts.Any ()) {
+			if (timeouts.Count == 0) {
 				enabled = false;
 				Disable ();
 			}

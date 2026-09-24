@@ -130,7 +130,7 @@ namespace MonoDevelop.Core.Serialization
 	{
 		public static XmlConfigurationWriter DefaultWriter = new XmlConfigurationWriter ();
 		
-		public bool StoreAllInElements = false;
+		public bool StoreAllInElements;
 		
 		public string[] StoreInElementExceptions { get; set; }
 

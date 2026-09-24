@@ -36,7 +36,7 @@ namespace MonoDevelop.VersionControl.Views
 			}
 		}
 		
-		bool isDisposed = false;
+		bool isDisposed;
 		// GTK3 cell renderers are not Gtk.Object and have no destroy signal: release on dispose.
 		protected override void Dispose (bool disposing)
 		{
@@ -54,8 +54,7 @@ namespace MonoDevelop.VersionControl.Views
 		{
 			if (isDisposed)
 				return;
-			if (lines == null)
-				throw new ArgumentNullException ("lines");
+			ArgumentNullException.ThrowIfNull (lines);
 			this.lines = lines;
 			this.diffMode = diffMode;
 			this.path = path;
@@ -517,7 +516,7 @@ namespace MonoDevelop.VersionControl.Views
 			OnGetPreferredWidth (widget, out minimum_width, out natural_width);
 		}
 		
-		static StateType GetState (Gtk.Widget widget, CellRendererState flags)
+		new static StateType GetState (Gtk.Widget widget, CellRendererState flags)
 		{
 			if ((flags & CellRendererState.Selected) != 0)
 				return widget.HasFocus ? StateType.Selected : StateType.Active;
@@ -533,7 +532,7 @@ namespace MonoDevelop.VersionControl.Views
 			int j = line.IndexOf (',', i);
 			if (j == -1) return -1;
 			int cline;
-			if (!int.TryParse (line.Substring (i, j - i), out cline))
+			if (!int.TryParse (line.AsSpan (i, j - i), out cline))
 			    return -1;
 			return cline;
 		}

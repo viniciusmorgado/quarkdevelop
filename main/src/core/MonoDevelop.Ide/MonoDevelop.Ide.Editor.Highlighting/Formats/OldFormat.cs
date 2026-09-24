@@ -84,7 +84,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 				var fontStyle = StringBuilderCache.Allocate ();
 				if (style.FontStyle != Xwt.Drawing.FontStyle.Normal) {
 					fontStyle.Append (style.FontStyle.ToString ().ToLower ());
-					fontStyle.Append (" ");
+					fontStyle.Append (' ');
 				}
 				if (style.FontWeight != Xwt.Drawing.FontWeight.Normal) {
 					fontStyle.Append (style.FontWeight.ToString ().ToLower ());
@@ -1193,7 +1193,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 
 			static HslColor ParseColor (string value)
 			{
-				if (value.Length == 9 && value.StartsWith ("#", StringComparison.Ordinal)) {
+				if (value.Length == 9 && value.StartsWith ('#')) {
 					double r = ((double)int.Parse (value.Substring (1, 2), System.Globalization.NumberStyles.HexNumber)) / 255;
 					double g = ((double)int.Parse (value.Substring (3, 2), System.Globalization.NumberStyles.HexNumber)) / 255;
 					double b = ((double)int.Parse (value.Substring (5, 2), System.Globalization.NumberStyles.HexNumber)) / 255;
@@ -1371,7 +1371,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 			{
 				if (colorString == "0x02000000")
 					return new Cairo.Color (0, 0, 0, 0);
-				string color = "#" + colorString.Substring (8, 2) + colorString.Substring (6, 2) + colorString.Substring (4, 2);
+				string color = string.Concat ("#", colorString.AsSpan (8, 2), colorString.AsSpan (6, 2), colorString.AsSpan (4, 2));
 				return HslColor.Parse (color);
 			}
 

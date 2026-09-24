@@ -21,8 +21,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <exception cref="ArgumentNullException"><paramref name="errorType"/> is null.</exception>
         public ErrorTag(string errorType, object toolTipContent)
         {
-            if (errorType == null)
-                throw new ArgumentNullException(nameof(errorType));
+            ArgumentNullException.ThrowIfNull(errorType);
             
             ErrorType = errorType;
             ToolTipContent = toolTipContent;

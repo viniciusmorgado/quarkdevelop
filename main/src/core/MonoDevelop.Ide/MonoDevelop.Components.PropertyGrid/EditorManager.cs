@@ -118,8 +118,8 @@ namespace MonoDevelop.Components.PropertyGrid
 
 			//does a registered GTK# editor support this natively?
 			Type editType = pd.PropertyType;
-			if (editors.ContainsKey (editType))
-				return editors [editType];
+			if (editors.TryGetValue (editType, out var value))
+				return value;
 			
 			//editors that edit derived types
 			//TODO: find most derived type?

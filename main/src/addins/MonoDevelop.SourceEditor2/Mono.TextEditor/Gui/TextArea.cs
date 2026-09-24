@@ -71,7 +71,7 @@ namespace Mono.TextEditor
 
 		protected TextViewMargin   textViewMargin;
 
-		DocumentLine longestLine      = null;
+		DocumentLine longestLine;
 		double      longestLineWidth = -1;
 		
 		List<Margin> margins = new List<Margin> ();
@@ -341,8 +341,7 @@ namespace Mono.TextEditor
 		MonoTextEditor editor;
 		internal void Initialize (MonoTextEditor editor, TextDocument doc, ITextEditorOptions options, EditMode initialMode)
 		{
-			if (doc == null)
-				throw new ArgumentNullException ("doc");
+			ArgumentNullException.ThrowIfNull (doc);
 			this.editor = editor;
 			textEditorData = new TextEditorData (doc);
 			textEditorData.RecenterEditor += TextEditorData_RecenterEditor; 
@@ -1007,7 +1006,7 @@ namespace Mono.TextEditor
 			}
 		}
 		
-		bool settingWidgetBg = false;
+		bool settingWidgetBg;
 		protected override void OnStyleSet (Gtk.Style previous_style)
 		{
 			base.OnStyleSet (previous_style);
@@ -1387,7 +1386,7 @@ namespace Mono.TextEditor
 			return true;
 		}
 		
-		uint mouseButtonPressed = 0;
+		uint mouseButtonPressed;
 		uint lastTime;
 		double pressPositionX, pressPositionY;
 		protected override bool OnButtonPressEvent (Gdk.EventButton e)
@@ -1517,8 +1516,8 @@ namespace Mono.TextEditor
 			textViewMargin.InSelectionDrag = false;
 		}
 		
-		bool dragOver = false;
-		ClipboardActions.CopyOperation dragContents = null;
+		bool dragOver;
+		ClipboardActions.CopyOperation dragContents;
 		DocumentLocation defaultCaretPos, dragCaretPos;
 		MonoDevelop.Ide.Editor.Selection selection = MonoDevelop.Ide.Editor.Selection.Empty;
 		
@@ -1618,7 +1617,7 @@ namespace Mono.TextEditor
 			return base.OnDragMotion (context, x, y, time);
 		}
 		
-		Margin oldMargin = null;
+		Margin oldMargin;
 		bool overChildWidget;
 
 		public event EventHandler<Xwt.MouseMovedEventArgs> BeginHover;
@@ -1706,7 +1705,7 @@ namespace Mono.TextEditor
 			return base.OnMotionNotifyEvent (e);
 		}
 		
-		uint   scrollWindowTimer = 0;
+		uint   scrollWindowTimer;
 		double scrollWindowTimer_x;
 		double scrollWindowTimer_y;
 		Gdk.ModifierType scrollWindowTimer_mod;
@@ -1798,7 +1797,7 @@ namespace Mono.TextEditor
 			customText = null;
 		}
 		#endregion
-		internal bool IsMouseTrapped { get; set; } = false;
+		internal bool IsMouseTrapped { get; set; }
 		
 		protected override bool OnEnterNotifyEvent (EventCrossing evnt)
 		{
@@ -2067,7 +2066,7 @@ namespace Mono.TextEditor
 			}
 		}
 		
-		bool inCaretScroll = false;
+		bool inCaretScroll;
 		public void ScrollToCaret ()
 		{
 			ScrollTo (Caret.Location);
@@ -2312,7 +2311,7 @@ namespace Mono.TextEditor
 			return base.OnWidgetEvent (evnt);
 		}*/
 		
-		double oldVadjustment = 0;
+		double oldVadjustment;
 		
 		void UpdateAdjustments ()
 		{
@@ -2735,7 +2734,7 @@ namespace Mono.TextEditor
 		
 		#region Search & Replace
 		
-		bool highlightSearchPattern = false;
+		bool highlightSearchPattern;
 		
 		public string SearchPattern {
 			get {
@@ -2980,7 +2979,7 @@ namespace Mono.TextEditor
 			textViewMargin.HighlightCaretLine = true;
 		}
 
-		SearchHighlightPopupWindow popupWindow = null;
+		SearchHighlightPopupWindow popupWindow;
 		
 		public void StopSearchResultAnimation ()
 		{
@@ -3092,7 +3091,7 @@ namespace Mono.TextEditor
 
 			const int shadowOffset = 1;
 
-			Pango.Layout layout = null;
+			Pango.Layout layout;
 
 			protected override void Draw (Cairo.Context cr, Cairo.Rectangle area)
 			{
@@ -3195,14 +3194,14 @@ namespace Mono.TextEditor
 		TooltipItem tipItem;
 		
 		int tipX, tipY, tipOffset;
-		uint tipHideTimeoutId = 0;
-		uint tipShowTimeoutId = 0;
+		uint tipHideTimeoutId;
+		uint tipShowTimeoutId;
 		static Xwt.WindowFrame tipWindow;
 		static TooltipProvider currentTooltipProvider;
 
 		// Data for the next tooltip to be shown
-		int nextTipOffset = 0;
-		int nextTipX=0; int nextTipY=0;
+		int nextTipOffset;
+		int nextTipX; int nextTipY;
 		Gdk.ModifierType nextTipModifierState = ModifierType.None;
 		DateTime nextTipScheduledTime; // Time at which we want the tooltip to show
 		
@@ -3603,7 +3602,7 @@ namespace Mono.TextEditor
 		{
 			return margins.Find((margin) => { return marginType.IsAssignableFrom (margin.GetType ()); });
 		}
-		bool requestResetCaretBlink = false;
+		bool requestResetCaretBlink;
 		public void RequestResetCaretBlink ()
 		{
 			if (this.IsFocus)

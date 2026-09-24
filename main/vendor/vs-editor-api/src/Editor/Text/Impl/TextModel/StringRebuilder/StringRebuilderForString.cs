@@ -87,8 +87,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public override void Write(TextWriter writer, Span span)
         {
-            if (writer == null)
-                throw new ArgumentNullException(nameof(writer));
+            ArgumentNullException.ThrowIfNull(writer);
 
             writer.Write(this.GetText(span));
         }

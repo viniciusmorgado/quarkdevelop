@@ -38,7 +38,7 @@ using NuGet.Versioning;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeNuGetPackageManager : INuGetPackageManager
+	sealed class FakeNuGetPackageManager : INuGetPackageManager
 	{
 		public INuGetProjectContext ClearDirectInstallProjectContext;
 

@@ -241,8 +241,7 @@ namespace MonoDevelop.Core.Instrumentation
 
 		protected void SetProperty (object value, [CallerMemberName]string? name = null)
 		{
-			if (name == null)
-				throw new ArgumentNullException (nameof (name));
+			ArgumentNullException.ThrowIfNull (name);
 
 			Properties [name] = value;
 		}
@@ -250,8 +249,7 @@ namespace MonoDevelop.Core.Instrumentation
 		// [return: MaybeNull]
 		protected T GetProperty<T> ([CallerMemberName]string? name = null)
 		{
-			if (name == null)
-				throw new ArgumentNullException (nameof (name));
+			ArgumentNullException.ThrowIfNull (name);
 
 			if (Properties.TryGetValue (name, out var result)) {
 				return (T)Convert.ChangeType (result, typeof (T), CultureInfo.InvariantCulture);
@@ -262,8 +260,7 @@ namespace MonoDevelop.Core.Instrumentation
 
 		protected bool ContainsProperty ([CallerMemberName]string? propName = null)
 		{
-			if (propName == null)
-				throw new ArgumentNullException (nameof (propName));
+			ArgumentNullException.ThrowIfNull (propName);
 
 			return Properties.ContainsKey (propName);
 		}

@@ -128,7 +128,7 @@ namespace Mono.TextEditor.Vi
 			for (int i = startLine + 1; i <= endLine; i++) {
 				seg = data.Document.GetLine (i);
 				//lastSpaceOffset = startOffset + sb.Length;
-				sb.Append (" ");
+				sb.Append (' ');
 				sb.Append (data.Document.GetTextAt (seg).Trim ());
 			}
 			length = (seg.Offset - startOffset) + seg.Length;

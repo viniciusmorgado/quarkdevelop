@@ -61,7 +61,7 @@ namespace MonoDevelop.CSharp.ClassOutline
 	/// <seealso cref="MonoDevelop.CSharp.ClassOutline.OutlineSettings"/>
 	class CSharpOutlineTextEditorExtension : TextEditorExtension, IOutlinedDocument
 	{
-		SemanticModel lastCU = null;
+		SemanticModel lastCU;
 
 		MonoDevelop.Ide.Gui.Components.PadTreeView outlineTreeView;
 		TreeStore outlineTreeStore;

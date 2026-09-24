@@ -111,11 +111,11 @@ namespace Xwt.GtkBackend
 		#endregion
 	}
 	
-	class DataRequest: IAsyncResult
+	sealed class DataRequest: IAsyncResult
 	{
 		Gtk.Clipboard clipboard;
 		Gdk.Atom[] atoms;
-		int index = 0;
+		int index;
 		ManualResetEvent doneEvent;
 		bool complete;
 		TransferDataType type;

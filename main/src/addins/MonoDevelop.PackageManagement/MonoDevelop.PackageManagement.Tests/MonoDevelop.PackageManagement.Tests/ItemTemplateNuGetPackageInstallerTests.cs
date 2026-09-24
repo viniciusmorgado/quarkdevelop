@@ -143,7 +143,7 @@ namespace MonoDevelop.PackageManagement.Tests
 		{
 			CreateInstaller ();
 
-			await installer.Run (dotNetProject, new TemplatePackageReference [0]);
+			await installer.Run (dotNetProject, System.Array.Empty<TemplatePackageReference> ());
 
 			Assert.IsNull (statusMessage);
 		}

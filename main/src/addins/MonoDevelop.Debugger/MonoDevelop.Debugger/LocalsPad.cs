@@ -100,7 +100,7 @@ namespace MonoDevelop.Debugger
 					locals = frame.GetAllLocals ();
 					timer.Stop (true);
 				} catch {
-					locals = new ObjectValue[0];
+					locals = Array.Empty<ObjectValue> ();
 					timer.Stop (false);
 				}
 

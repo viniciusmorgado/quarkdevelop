@@ -38,7 +38,7 @@ using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Extension;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Options;
-
+using System;
 
 namespace MonoDevelop.CSharp.Formatting
 {
@@ -69,15 +69,15 @@ namespace MonoDevelop.CSharp.Formatting
 			}
 			if (Microsoft.CodeAnalysis.CSharp.LanguageService.CSharpSyntaxFacts.Instance.IsVerbatimStringLiteral (token)) {
 				int idx = text.IndexOf ('"');
-				if (idx > 0 && !token.Text.EndsWith ("\"", System.StringComparison.Ordinal))
-					return TextPasteUtils.VerbatimStringStrategy.Encode (text.Substring (0, idx)) + text.Substring (idx);
+				if (idx > 0 && !token.Text.EndsWith ('"'))
+					return string.Concat (TextPasteUtils.VerbatimStringStrategy.Encode (text.Substring (0, idx)), text.AsSpan (idx));
 				return TextPasteUtils.VerbatimStringStrategy.Encode (text);
 			}
 
 			if (token.IsKind (SyntaxKind.StringLiteralToken)) {
 				int idx = text.IndexOf ('"');
-				if (idx > 0 && !token.Text.EndsWith ("\"", System.StringComparison.Ordinal))
-					return TextPasteUtils.StringLiteralStrategy.Encode (text.Substring (0, idx)) + text.Substring (idx);
+				if (idx > 0 && !token.Text.EndsWith ('"'))
+					return string.Concat (TextPasteUtils.StringLiteralStrategy.Encode (text.Substring (0, idx)), text.AsSpan (idx));
 				return TextPasteUtils.StringLiteralStrategy.Encode (text);
 			}
 

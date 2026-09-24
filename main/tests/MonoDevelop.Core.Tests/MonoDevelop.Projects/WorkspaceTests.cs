@@ -377,7 +377,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 	
-	class MyData: IDisposable
+	sealed class MyData: IDisposable
 	{
 		public int Disposed;
 		
@@ -388,7 +388,7 @@ namespace MonoDevelop.Projects
 
 	}
 	
-	class DummySolutionItem: SolutionItem
+	sealed class DummySolutionItem: SolutionItem
 	{
 		public DummySolutionItem ()
 		{

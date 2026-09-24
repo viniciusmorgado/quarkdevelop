@@ -18,7 +18,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
     {
         char[] data;
         int length;         // *byte* length of data
-        int position = 0;   // *byte* offset into data
+        int position;   // *byte* offset into data
         byte? pendingByte;
 
         public CharStream(char[] data, int length)

@@ -34,7 +34,7 @@ using MonoDevelop.Ide.Editor.Extension;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture()]
-	class VirtualIndentModeTests
+	sealed class VirtualIndentModeTests
 	{
 		public static TextEditorData CreateData (string content)
 		{
@@ -445,7 +445,7 @@ namespace Mono.TextEditor.Tests
 
 		}
 
-		class TestBug15476IndentationTracker : DefaultIndentationTracker
+		sealed class TestBug15476IndentationTracker : DefaultIndentationTracker
 		{
 			public override IndentationTrackerFeatures SupportedFeatures {
 				get {

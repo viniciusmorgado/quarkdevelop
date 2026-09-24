@@ -99,7 +99,7 @@ namespace MonoDevelop.PackageManagement
 				packageManagementEvents.OnUpdatedPackagesAvailable ();
 			}
 
-			if (pendingSolutions.Any ()) {
+			if (pendingSolutions.Count != 0) {
 				var solution = pendingSolutions[0];
 				pendingSolutions.RemoveAt (0);
 				CheckForUpdates (solution);
@@ -120,7 +120,7 @@ namespace MonoDevelop.PackageManagement
 		public bool AnyUpdates ()
 		{
 			return GuiSyncDispatch (() => {
-				return projectsWithUpdatedPackages.Any ();
+				return projectsWithUpdatedPackages.Count != 0;
 			});
 		}
 

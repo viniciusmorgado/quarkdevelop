@@ -38,8 +38,8 @@ namespace Microsoft.VisualStudio.Text.Utilities
         private FrugalList<IExtensionErrorHandler> _errorHandlers;
         private FrugalList<IExtensionPerformanceTracker> _perfTrackers;
 
-        private static Exception LastHandledException = null;
-        private static string LastHandleExceptionStackTrace = null;
+        private static Exception LastHandledException;
+        private static string LastHandleExceptionStackTrace;
 
         public GuardedOperations()
         {
@@ -807,7 +807,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
             }).Task;
         }
 
-        internal static bool IgnoreFailures = false;
+        internal static bool IgnoreFailures;
         internal static bool BreakOnFailures = true;
 
         public bool TryCastToType<TArgs>(object toCast, out TArgs casted)

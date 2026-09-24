@@ -78,8 +78,7 @@ namespace MonoDevelop.Projects.Text
 		public string IndentString {
 			get { return indentString; }
 			set {
-				if (value == null)
-					throw new ArgumentNullException ("value");
+				ArgumentNullException.ThrowIfNull (value);
 				indentString = value;
 				formattedIndentString = null;
 			}

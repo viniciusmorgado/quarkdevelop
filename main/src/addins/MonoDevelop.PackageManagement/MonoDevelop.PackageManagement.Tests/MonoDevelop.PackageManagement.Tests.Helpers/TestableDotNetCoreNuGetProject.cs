@@ -29,7 +29,7 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableDotNetCoreNuGetProject : DotNetCoreNuGetProject
+	sealed class TestableDotNetCoreNuGetProject : DotNetCoreNuGetProject
 	{
 		public TestableDotNetCoreNuGetProject (DotNetProject project)
 			: base (project, new [] { "netcoreapp1.0" }, ConfigurationSelector.Default)

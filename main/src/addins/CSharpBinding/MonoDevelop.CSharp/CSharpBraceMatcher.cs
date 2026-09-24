@@ -100,7 +100,7 @@ namespace MonoDevelop.CSharp
 				}
 			}
 
-			if (token.IsKind (SyntaxKind.StringLiteralToken) && token.ToString().EndsWith ("\"", StringComparison.Ordinal)) {
+			if (token.IsKind (SyntaxKind.StringLiteralToken) && token.ToString().EndsWith ('"')) {
 				if (token.IsVerbatimStringLiteral ()) {
 					if (offset <= tokenSpan.Start)
 						return new BraceMatchingResult (new TextSegment (tokenSpan.Start, 2), new TextSegment (tokenSpan.End - 1, 1), true);
@@ -114,7 +114,7 @@ namespace MonoDevelop.CSharp
 				}
 			}
 
-			if (token.IsKind (SyntaxKind.CharacterLiteralToken) && token.ToString().EndsWith ("\'", StringComparison.Ordinal)) {
+			if (token.IsKind (SyntaxKind.CharacterLiteralToken) && token.ToString().EndsWith ('\'')) {
 				if (offset <= tokenSpan.Start)
 					return new BraceMatchingResult (new TextSegment (tokenSpan.Start, 1), new TextSegment (tokenSpan.End - 1, 1), true);
 				if (offset >= tokenSpan.End - 1)

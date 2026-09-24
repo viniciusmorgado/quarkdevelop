@@ -106,7 +106,7 @@ namespace MonoDevelop.Ide.Projects
 			this.radioKeep.Name = "radioKeep";
 			this.radioKeep.DrawIndicator = true;
 			this.radioKeep.UseUnderline = true;
-			this.radioKeep.Group = new global::Gtk.RadioButton [0];
+			this.radioKeep.Group = System.Array.Empty<Gtk.RadioButton> ();
 			this.radioKeep.Remove (this.radioKeep.Child);
 			// Container child radioKeep.Gtk.Container+ContainerChild
 			this.labelKeep = new global::Gtk.Label ();

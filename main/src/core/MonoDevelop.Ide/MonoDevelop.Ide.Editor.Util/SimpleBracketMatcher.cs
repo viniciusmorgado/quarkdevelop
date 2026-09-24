@@ -61,10 +61,8 @@ namespace MonoDevelop.Ide.Editor.Util
 
 		static int StartsWithListMember (IReadonlyTextDocument document, IList<string> list, int offset)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
-			if (list == null)
-				throw new ArgumentNullException ("list");
+			ArgumentNullException.ThrowIfNull (document);
+			ArgumentNullException.ThrowIfNull (list);
 			for (int i = 0; i < list.Count; i++) {
 				string item = list [i];
 				if (offset + item.Length < document.Length) {

@@ -253,7 +253,7 @@ namespace MonoDevelop.Core
 					sb.Append ("__");
 				else if (c != '.' && c != '-' && !char.IsLetter (c) && (!char.IsNumber (c) || n==0)) {
 					string s = ((int)c).ToString ("X");
-					sb.Append ("_").Append (s.Length.ToString ());
+					sb.Append ('_').Append (s.Length);
 					sb.Append (s);
 				}
 				else

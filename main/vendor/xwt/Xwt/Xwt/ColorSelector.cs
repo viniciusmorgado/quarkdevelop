@@ -409,7 +409,7 @@ namespace Xwt
 		}
 	}
 	
-	class HueBox: Canvas
+	sealed class HueBox: Canvas
 	{
 		const int size = 150;
 		const int padding = 3;
@@ -520,7 +520,7 @@ namespace Xwt
 		public event EventHandler SelectionChanged;
 	}
 	
-	class LightBox: Canvas
+	sealed class LightBox: Canvas
 	{
 		const int padding = 3;
 		double light;
@@ -618,7 +618,7 @@ namespace Xwt
 		public event EventHandler SelectionChanged;
 	}
 	
-	class ColorSelectionBox: Canvas
+	sealed class ColorSelectionBox: Canvas
 	{
 		Color color;
 		

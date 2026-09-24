@@ -30,7 +30,7 @@ using NuGet.Configuration;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeNuGetSettings : ISettings
+	sealed class FakeNuGetSettings : ISettings
 	{
 		public string FileName { get; set; } = "NuGet.Config";
 

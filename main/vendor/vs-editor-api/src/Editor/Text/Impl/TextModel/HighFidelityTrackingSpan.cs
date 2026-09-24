@@ -172,7 +172,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
                 {
                     sb.Append(string.Format(System.Globalization.CultureInfo.CurrentCulture, "V{0}@{1}", vp.VersionNumber, vp.Position));
                 }
-                sb.Append("]");
+                sb.Append(']');
             }
             if (c.NoninvertibleEndHistory != null)
             {
@@ -181,7 +181,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
                 {
                     sb.Append(string.Format(System.Globalization.CultureInfo.CurrentCulture, "V{0}@{1}", vp.VersionNumber, vp.Position));
                 }
-                sb.Append("]");
+                sb.Append(']');
             }
             return sb.ToString();
         }

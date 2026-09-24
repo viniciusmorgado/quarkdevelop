@@ -60,7 +60,7 @@ namespace MonoDevelop.Ide.Gui.OptionPanels
 		/// </summary>
 		public virtual FilePath[] DefaultSdkLocations {
 			get {
-				return new FilePath[0];
+				return Array.Empty<FilePath> ();
 			}
 		}
 

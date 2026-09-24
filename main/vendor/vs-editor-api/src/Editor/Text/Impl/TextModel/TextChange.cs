@@ -29,7 +29,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         private LineBreakBoundaryConditions _lineBreakBoundaryConditions;
         private bool _isOpaque;
 
-        private int? _lineCountDelta = null;
+        private int? _lineCountDelta;
         private int _masterChangeOffset = -1;
 
         #endregion // Private Members
@@ -51,10 +51,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         /// </param>
         public TextChange(int oldPosition, StringRebuilder oldText, StringRebuilder newText, LineBreakBoundaryConditions boundaryConditions)
         {
-            if (oldPosition < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(oldPosition));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(oldPosition);
 
             _oldPosition = oldPosition;
             _newPosition = oldPosition;
@@ -104,10 +101,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
             get { return _oldPosition; }
             internal set
             {
-                if (value < 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
+                ArgumentOutOfRangeException.ThrowIfNegative(value);
                 _oldPosition = value;
             }
         }
@@ -117,10 +111,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
             get { return _newPosition; }
             internal set
             {
-                if (value < 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
+                ArgumentOutOfRangeException.ThrowIfNegative(value);
                 _newPosition = value;
             }
         }
@@ -193,20 +184,14 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public char GetOldTextAt(int position)
         {
-            if (position > this.OldLength)
-            {
-                throw new ArgumentOutOfRangeException(nameof(position));
-            }
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(position, this.OldLength);
 
             return _oldText[position];
         }
 
         public char GetNewTextAt(int position)
         {
-            if (position > this.NewLength)
-            {
-                throw new ArgumentOutOfRangeException(nameof(position));
-            }
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(position, this.NewLength);
 
             return _newText[position];
         }

@@ -41,7 +41,7 @@ namespace Xwt
 
 		public string Text { get; set; }
 
-		class SpanInfo: List<TextAttribute>
+		sealed class SpanInfo: List<TextAttribute>
 		{
 			public string Tag;
 		}

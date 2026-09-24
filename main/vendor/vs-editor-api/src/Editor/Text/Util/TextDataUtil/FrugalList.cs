@@ -65,10 +65,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public FrugalList(IList<T> elements)
         {
-            if (elements == null)
-            {
-                throw new ArgumentNullException(nameof(elements));
-            }
+            ArgumentNullException.ThrowIfNull(elements);
             switch (elements.Count)
             {
                 case 0:
@@ -106,10 +103,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public void AddRange(IList<T> list)
         {
-            if (list == null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
+            ArgumentNullException.ThrowIfNull(list);
 
             for (int i = 0; i < list.Count; ++i)
             {
@@ -124,10 +118,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public int RemoveAll(Predicate<T> match)
         {
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
             int removed = 0;
             for (int i = Count - 1; i >= 0; --i)
             {
@@ -315,10 +306,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
+            ArgumentNullException.ThrowIfNull(array);
             int count = Count;
             if (count > 0)
             {

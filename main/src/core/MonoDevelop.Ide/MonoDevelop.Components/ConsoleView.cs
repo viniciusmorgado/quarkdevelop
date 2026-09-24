@@ -42,7 +42,7 @@ namespace MonoDevelop.Components
 		Stack<string> commandHistoryPast = new Stack<string> ();
 		Stack<string> commandHistoryFuture = new Stack<string> ();
 
-		bool inBlock = false;
+		bool inBlock;
 		string blockText = "";
 
 		TextMark inputBeginMark;

@@ -112,7 +112,7 @@ namespace MonoDevelop.Components.PropertyGrid
 			s = s.TrimStart ('\n', ' ', '\t');
 			i = s.IndexOf ('\n');
 			if (i != -1)
-				return s.Substring (0, i) + "...";
+				return string.Concat (s.AsSpan (0, i), "...");
 			return s;
 		}
 		

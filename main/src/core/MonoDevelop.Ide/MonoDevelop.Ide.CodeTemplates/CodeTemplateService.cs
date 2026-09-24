@@ -94,7 +94,7 @@ namespace MonoDevelop.Ide.CodeTemplates
 		{
 			var savedTemplates = templates;
 			if (savedTemplates == null || string.IsNullOrEmpty (mimeType))
-				return new CodeTemplate [0];
+				return Array.Empty<CodeTemplate> ();
 			return savedTemplates.ToArray ().Where (delegate (CodeTemplate t) {
 				try {
 					return t != null && IdeServices.DesktopService.GetMimeTypeIsSubtype (mimeType, t.MimeType);
@@ -174,9 +174,9 @@ namespace MonoDevelop.Ide.CodeTemplates
 							sb.Append ("$end$");
 							sb.Append (nameBuilder);
 						} else {
-							sb.Append ("$");
+							sb.Append ('$');
 							sb.Append (nameBuilder);
-							sb.Append ("$");
+							sb.Append ('$');
 							result.AddVariable (new CodeTemplateVariable (nameBuilder.ToString ()) { Default = nameBuilder.ToString (), IsEditable = true });
 						}
 						nameBuilder.Length = 0;

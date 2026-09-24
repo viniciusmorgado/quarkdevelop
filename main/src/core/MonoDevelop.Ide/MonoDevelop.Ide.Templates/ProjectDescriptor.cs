@@ -51,7 +51,7 @@ namespace MonoDevelop.Ide.Templates
 		private List<SingleFileDescriptionTemplate> resources = new List<SingleFileDescriptionTemplate> ();
 		private List<ProjectReferenceDescription> references = new List<ProjectReferenceDescription> ();
 
-		private XmlElement projectOptions = null;
+		private XmlElement projectOptions;
 		private List<ProjectTemplatePackageReference> packageReferences = new List<ProjectTemplatePackageReference> ();
 
 		protected ProjectDescriptor ()
@@ -126,7 +126,7 @@ namespace MonoDevelop.Ide.Templates
 			if (!Services.ProjectService.CanCreateSolutionItem (projectType, projectCreateInformation, projectOptions) && projectType != lang && !string.IsNullOrEmpty (lang)) {
 				// Maybe the type of the template is just a flavor id. In that case try using the language as project type.
 				projectType = lang;
-				flavors = splitType ?? new string[0];
+				flavors = splitType ?? Array.Empty<string> ();
 			} else
 				flavors = projectTypes.Skip (1).ToArray ();
 
@@ -270,7 +270,7 @@ namespace MonoDevelop.Ide.Templates
 
 		public bool HasPackages ()
 		{
-			return packageReferences.Any ();
+			return packageReferences.Count != 0;
 		}
 
 		[Obsolete]

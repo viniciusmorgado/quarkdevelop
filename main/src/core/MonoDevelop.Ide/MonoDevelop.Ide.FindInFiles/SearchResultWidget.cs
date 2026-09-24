@@ -576,7 +576,7 @@ namespace MonoDevelop.Ide.FindInFiles
 		{
 			TextIter iter = textviewLog.Buffer.EndIter;
 			textviewLog.Buffer.Insert (ref iter, text);
-			if (text.EndsWith ("\n", StringComparison.Ordinal))
+			if (text.EndsWith ('\n'))
 				textviewLog.ScrollMarkOnscreen (textviewLog.Buffer.InsertMark);
 		}
 		

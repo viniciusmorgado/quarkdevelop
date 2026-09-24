@@ -27,7 +27,7 @@ namespace NuGet.PackageManagement.UI
 			IPackageMetadataProvider metadataProvider,
 			PackageSearchMetadataCache cachedUpdates,
 			Common.ILogger logger)
-			: this (new PackageIdentity[0], metadataProvider, cachedUpdates, logger)
+			: this (Array.Empty<PackageIdentity> (), metadataProvider, cachedUpdates, logger)
 		{
 			_context = context;
 		}
@@ -38,21 +38,15 @@ namespace NuGet.PackageManagement.UI
 			PackageSearchMetadataCache cachedUpdates,
 			Common.ILogger logger)
 		{
-			if (installedPackages == null) {
-				throw new ArgumentNullException (nameof (installedPackages));
-			}
+			ArgumentNullException.ThrowIfNull (installedPackages);
 			_installedPackages = installedPackages;
 
-			if (metadataProvider == null) {
-				throw new ArgumentNullException (nameof (metadataProvider));
-			}
+			ArgumentNullException.ThrowIfNull (metadataProvider);
 			_metadataProvider = metadataProvider;
 
 			_cachedUpdates = cachedUpdates;
 
-			if (logger == null) {
-				throw new ArgumentNullException (nameof (logger));
-			}
+			ArgumentNullException.ThrowIfNull (logger);
 		}
 
 		public override async Task<SearchResult<IPackageSearchMetadata>> ContinueSearchAsync (ContinuationToken continuationToken, CancellationToken cancellationToken)

@@ -33,7 +33,7 @@ using NuGet.Packaging;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableProjectPackagesFolderNode : ProjectPackagesFolderNode
+	sealed class TestableProjectPackagesFolderNode : ProjectPackagesFolderNode
 	{
 		public TestableProjectPackagesFolderNode (
 			IDotNetProject project,

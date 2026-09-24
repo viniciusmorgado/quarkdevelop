@@ -146,7 +146,7 @@ namespace MonoDevelop.PackageManagement.NodeBuilders
 
 		public bool AnyPackageReferences ()
 		{
-			return packageReferences.Any ();
+			return packageReferences.Count != 0;
 		}
 
 		public IEnumerable<PackageReferenceNode> GetPackageReferencesNodes ()

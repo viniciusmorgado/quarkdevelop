@@ -35,7 +35,7 @@ using System;
 
 namespace MonoDevelop.Projects.MSBuild
 {
-	partial class BuildEngine
+	sealed partial class BuildEngine
 	{
 		static CultureInfo uiCulture;
 		readonly Dictionary<string, string> unsavedProjects = new Dictionary<string, string> ();

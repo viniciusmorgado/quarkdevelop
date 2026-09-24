@@ -726,7 +726,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 					}
 				}
 
-				if (loadedNodes.Any ()) {
+				if (loadedNodes.Count != 0) {
 					foreach (var ext in allExtensions.Where (ex => ex.SourceExtensionNode != null)) {
 						if (loadedNodes.Contains (ext.SourceExtensionNode.Data.NodeId)) {
 							ext.Dispose ();

@@ -58,7 +58,7 @@ namespace MonoDevelop.Core.Logging
 				callerFrame++;
 			}
 
-			sb.Append ("\n");
+			sb.Append ('\n');
 			FormatStackTrace (sb, frames, callerFrame);
 
 			LoggingService.LogError (StringBuilderCache.ReturnAndFree(sb));
@@ -93,7 +93,7 @@ namespace MonoDevelop.Core.Logging
 			for (int i = startIndex; i < frames.Length; i++) {
 				var frame = frames [i];
 				if (i > startIndex)
-					sb.Append ("\n");
+					sb.Append ('\n');
 				sb.Append ("   at ");
 				FormatStackFrame (sb, frame);
 			}
@@ -108,7 +108,7 @@ namespace MonoDevelop.Core.Logging
 					sb.AppendFormat ("{0}.{1}", method.DeclaringType.FullName, method.Name);
 				else
 					sb.Append (method.Name);
-				/* Append parameter information */sb.Append ("(");
+				/* Append parameter information */sb.Append ('(');
 				ParameterInfo[] p = method.GetParameters ();
 				for (int j = 0; j < p.Length; ++j) {
 					if (j > 0)
@@ -119,14 +119,14 @@ namespace MonoDevelop.Core.Logging
 						pt = pt.GetElementType ();
 					if (pt.IsClass && pt.Namespace != String.Empty) {
 						sb.Append (pt.Namespace);
-						sb.Append (".");
+						sb.Append ('.');
 					}
 					sb.Append (pt.Name);
 					if (byref)
 						sb.Append (" ByRef");
 					sb.AppendFormat (" {0}", p [j].Name);
 				}
-				sb.Append (")");
+				sb.Append (')');
 			}
 			else {
 				// Method information not available

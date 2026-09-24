@@ -118,7 +118,7 @@ namespace MonoDevelop.DotNetCore.Templating
 
 			partialFileName = partialFileName.Substring (0, partialFileName.Length - nupkgTagString.Length + 1);
 
-			return partialFileName.IndexOf ("NUnit3.", StringComparison.OrdinalIgnoreCase) == 0 ?
+			return partialFileName.StartsWith ("NUnit3.", StringComparison.OrdinalIgnoreCase) ?
 				partialFileName.ToLowerInvariant () :
 				"microsoft.dotnet." + partialFileName.ToLowerInvariant ();
 		}

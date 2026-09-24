@@ -305,7 +305,7 @@ namespace MonoDevelop.Components.PropertyGrid
 			tree.PropertySort = propertySort;
 			
 			if (currentObject == null) {
-				properties = new PropertyDescriptorCollection (new PropertyDescriptor[0] {});
+				properties = new PropertyDescriptorCollection (Array.Empty<PropertyDescriptor> ());
 				tree.Populate (properties, currentObject);
 			}
 			else {
@@ -323,7 +323,7 @@ namespace MonoDevelop.Components.PropertyGrid
 			PropertyDescriptorCollection properties;
 			
 			if (currentObject == null) {
-				properties = new PropertyDescriptorCollection (new PropertyDescriptor[0] {});
+				properties = new PropertyDescriptorCollection (Array.Empty<PropertyDescriptor> ());
 				tree.Update (properties, currentObject);
 			}
 			else {

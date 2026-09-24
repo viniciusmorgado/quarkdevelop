@@ -36,10 +36,8 @@ namespace MonoDevelop.SourceEditor
 
 		public UnitTestMarker (ExtensibleTextEditor textEditor, UnitTestMarkerHost host, UnitTestLocation unitTest)
 		{
-			if (textEditor == null)
-				throw new ArgumentNullException ("textEditor");
-			if (host == null)
-				throw new ArgumentNullException ("host");
+			ArgumentNullException.ThrowIfNull (textEditor);
+			ArgumentNullException.ThrowIfNull (host);
 			this.textEditor = textEditor;
 			this.host = host;
 			this.unitTest = unitTest;

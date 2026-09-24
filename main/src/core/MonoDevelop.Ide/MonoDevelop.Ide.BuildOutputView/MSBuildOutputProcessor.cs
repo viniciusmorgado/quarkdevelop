@@ -276,7 +276,7 @@ namespace MonoDevelop.Ide.BuildOutputView
 					return false;
 				}
 
-				content = $"{content.Substring (0, equalSign).Trim ()}={content.Substring (equalSign + 1, content.Length - equalSign - 1).Trim ()}";
+				content = $"{content.Substring (0, equalSign).Trim ()}={content.Substring (equalSign + 1).Trim ()}";
 				processor.CurrentNode.AddParameter (stringPool.Add (content), stringPool.Add (e.Message));
 			}
 

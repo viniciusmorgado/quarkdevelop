@@ -559,7 +559,7 @@ namespace MonoDevelop.Projects
 			}
 		}
 
-		class AddReferenceOnReevaluateProjectExtension : DotNetProjectExtension
+		sealed class AddReferenceOnReevaluateProjectExtension : DotNetProjectExtension
 		{
 			protected internal override Task OnReevaluateProject (ProgressMonitor monitor)
 			{
@@ -580,7 +580,7 @@ namespace MonoDevelop.Projects
 			}
 		}
 
-		class RemoveReferenceOnReevaluateProjectExtension : DotNetProjectExtension
+		sealed class RemoveReferenceOnReevaluateProjectExtension : DotNetProjectExtension
 		{
 			protected internal override Task OnReevaluateProject (ProgressMonitor monitor)
 			{

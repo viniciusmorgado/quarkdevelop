@@ -372,10 +372,8 @@ namespace Mono.Debugging.Client
 		/// </exception>
 		public void Run (DebuggerStartInfo startInfo, DebuggerSessionOptions options)
 		{
-			if (startInfo == null)
-				throw new ArgumentNullException (nameof (startInfo));
-			if (options == null)
-				throw new ArgumentNullException (nameof (options));
+			ArgumentNullException.ThrowIfNull (startInfo);
+			ArgumentNullException.ThrowIfNull (options);
 			
 			lock (slock) {
 				this.options = options;
@@ -408,10 +406,8 @@ namespace Mono.Debugging.Client
 		/// </exception>
 		public void AttachToProcess (ProcessInfo proc, DebuggerSessionOptions options)
 		{
-			if (proc == null)
-				throw new ArgumentNullException (nameof (proc));
-			if (options == null)
-				throw new ArgumentNullException (nameof (options));
+			ArgumentNullException.ThrowIfNull (proc);
+			ArgumentNullException.ThrowIfNull (options);
 			
 			lock (slock) {
 				this.options = options;
@@ -603,17 +599,14 @@ namespace Mono.Debugging.Client
 		/// <param name="column">Column.</param>
 		public void SetNextStatement (string fileName, int line, int column)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException (nameof (fileName));
+			ArgumentNullException.ThrowIfNull (fileName);
 
 			if (fileName.Length == 0)
 				throw new ArgumentException ("Path cannot be empty.", nameof (fileName));
 
-			if (line < 1)
-				throw new ArgumentOutOfRangeException (nameof (line));
+			ArgumentOutOfRangeException.ThrowIfLessThan (line, 1);
 
-			if (column < 1)
-				throw new ArgumentOutOfRangeException (nameof (column));
+			ArgumentOutOfRangeException.ThrowIfLessThan (column, 1);
 
 			if (!IsConnected || IsRunning || !CanSetNextStatement)
 				throw new NotSupportedException ();
@@ -627,8 +620,7 @@ namespace Mono.Debugging.Client
 		/// <param name="ilOffset">The IL offset.</param>
 		public void SetNextStatement (int ilOffset)
 		{
-			if (ilOffset < 0)
-				throw new ArgumentOutOfRangeException (nameof (ilOffset));
+			ArgumentOutOfRangeException.ThrowIfNegative (ilOffset);
 
 			if (!IsConnected || IsRunning || !CanSetNextStatement)
 				throw new NotSupportedException ();
@@ -1734,7 +1726,7 @@ namespace Mono.Debugging.Client
 		}
 	}
 	
-	class InternalDebuggerSession: IDebuggerSessionFrontend
+	sealed class InternalDebuggerSession: IDebuggerSessionFrontend
 	{
 		readonly DebuggerSession session;
 		

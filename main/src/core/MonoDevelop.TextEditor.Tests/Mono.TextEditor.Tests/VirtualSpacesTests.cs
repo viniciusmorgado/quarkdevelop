@@ -32,7 +32,7 @@ using MonoDevelop.Ide.Editor;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture()]
-	class VirtualSpacesTests : TextEditorTestBase
+	sealed class VirtualSpacesTests : TextEditorTestBase
 	{
 
 		/// <summary>

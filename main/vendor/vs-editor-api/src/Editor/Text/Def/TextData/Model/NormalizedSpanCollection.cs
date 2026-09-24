@@ -16,7 +16,7 @@ namespace Microsoft.VisualStudio.Text
     public class NormalizedSpanCollection : ReadOnlyCollection<Span>
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104", Justification = "Type is readonly")]
-        public readonly static NormalizedSpanCollection Empty = new NormalizedSpanCollection();
+        public new readonly static NormalizedSpanCollection Empty = new NormalizedSpanCollection();
 
         /// <summary>
         /// Initializes a new instance of <see cref="NormalizedSpanCollection"/> that is empty.
@@ -94,14 +94,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentNullException">Either <paramref name="left"/> or <paramref name="right"/> is null.</exception>
         public static NormalizedSpanCollection Union(NormalizedSpanCollection left, NormalizedSpanCollection right)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             if (left.Count == 0)
             {
@@ -164,14 +158,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is null.</exception>
         public static NormalizedSpanCollection Overlap(NormalizedSpanCollection left, NormalizedSpanCollection right)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             if (left.Count == 0)
             {
@@ -221,14 +209,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentNullException"><paramref name="right"/> is null.</exception>
         public static NormalizedSpanCollection Intersection(NormalizedSpanCollection left, NormalizedSpanCollection right)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             if (left.Count == 0)
             {
@@ -277,14 +259,8 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentNullException"><paramref name="right"/> is null.</exception>
         public static NormalizedSpanCollection Difference(NormalizedSpanCollection left, NormalizedSpanCollection right)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             if (left.Count == 0)
             {
@@ -399,10 +375,7 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
         public bool OverlapsWith(NormalizedSpanCollection set)
         {
-            if (set == null)
-            {
-                throw new ArgumentNullException(nameof(set));
-            }
+            ArgumentNullException.ThrowIfNull(set);
 
             for (int index1 = 0, index2 = 0; (index1 < this.Count) && (index2 < set.Count) ;)
             {
@@ -458,10 +431,7 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
         public bool IntersectsWith(NormalizedSpanCollection set)
         {
-            if (set == null)
-            {
-                throw new ArgumentNullException(nameof(set));
-            }
+            ArgumentNullException.ThrowIfNull(set);
 
             for (int index1 = 0, index2 = 0; (index1 < this.Count) && (index2 < set.Count); )
             {
@@ -542,7 +512,7 @@ namespace Microsoft.VisualStudio.Text
             StringBuilder value = new StringBuilder("{");
             foreach (Span s in this)
                 value.Append(s.ToString());
-            value.Append("}");
+            value.Append('}');
 
             return value.ToString();
         }
@@ -587,10 +557,7 @@ namespace Microsoft.VisualStudio.Text
 
         private static IList<Span> NormalizeSpans(IEnumerable<Span> spans)
         {
-            if (spans == null)
-            {
-                throw new ArgumentNullException(nameof(spans));
-            }
+            ArgumentNullException.ThrowIfNull(spans);
 
             var sorted = new List<Span>(spans);
             if (sorted.Count <= 1)

@@ -11,10 +11,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
         protected IntellisenseSession(ITextView textView, ITrackingPoint triggerPoint)
             : base(textView)
         {
-            if (triggerPoint == null)
-            {
-                throw new ArgumentNullException("triggerPoint");
-            }
+            ArgumentNullException.ThrowIfNull(triggerPoint);
 
             this.triggerPoint = triggerPoint;
         }

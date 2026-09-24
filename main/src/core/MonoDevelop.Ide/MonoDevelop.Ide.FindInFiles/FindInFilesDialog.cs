@@ -72,8 +72,8 @@ namespace MonoDevelop.Ide.FindInFiles
 		Label labelPath;
 		HBox hboxPath;
 		
-		Properties properties = null;
-		bool replaceMode = false;
+		Properties properties;
+		bool replaceMode;
 		
 		static void SetButtonIcon (Button button, string stockIcon)
 		{

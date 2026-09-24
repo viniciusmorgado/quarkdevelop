@@ -38,7 +38,7 @@ namespace MonoDevelop.Core.Text
 	/// </summary>
 	public static class TextFileUtility
 	{
-		readonly static int maxBomLength = 0;
+		readonly static int maxBomLength;
 		readonly static Encoding[] encodingsWithBom;
 
 		public readonly static Encoding DefaultEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
@@ -92,8 +92,7 @@ namespace MonoDevelop.Core.Text
 
 		public static StreamReader OpenStream (byte[] bytes)
 		{
-			if (bytes == null)
-				throw new ArgumentNullException ("bytes");
+			ArgumentNullException.ThrowIfNull (bytes);
 			return OpenStream (new MemoryStream (bytes, false));
 		}
 
@@ -104,8 +103,7 @@ namespace MonoDevelop.Core.Text
 
 		public static StreamReader OpenStream (Stream stream, out bool hasBom)
 		{
-			if (stream == null)
-				throw new ArgumentNullException ("stream");
+			ArgumentNullException.ThrowIfNull (stream);
 			byte[] possibleBom = new byte[maxBomLength];
 			stream.Read (possibleBom, 0, System.Math.Min ((int)stream.Length, maxBomLength));
 
@@ -145,8 +143,7 @@ namespace MonoDevelop.Core.Text
 
 		public static string GetText (byte[] bytes, out Encoding encoding, out bool hasBom)
 		{
-			if (bytes == null)
-				throw new ArgumentNullException ("bytes");
+			ArgumentNullException.ThrowIfNull (bytes);
 			encoding = null;
 			int start = 0;
 			hasBom = false;
@@ -186,8 +183,7 @@ namespace MonoDevelop.Core.Text
 
 		public static string GetText (Stream inputStream, out Encoding encoding)
 		{
-			if (inputStream == null)
-				throw new ArgumentNullException ("inputStream");
+			ArgumentNullException.ThrowIfNull (inputStream);
 			using (var stream = OpenStream (inputStream)) {
 				encoding = stream.CurrentEncoding;
 				return stream.ReadToEnd ();
@@ -196,8 +192,7 @@ namespace MonoDevelop.Core.Text
 
 		public static async Task<TextContent> GetTextAsync (Stream inputStream)
 		{
-			if (inputStream == null)
-				throw new ArgumentNullException ("inputStream");
+			ArgumentNullException.ThrowIfNull (inputStream);
 			var tc = new TextContent ();
 			using (var stream = OpenStream (inputStream, out var hasBom)) {
 				tc.Encoding = stream.CurrentEncoding;
@@ -223,8 +218,7 @@ namespace MonoDevelop.Core.Text
 
 		public static string GetText (string fileName, out Encoding encoding)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
+			ArgumentNullException.ThrowIfNull (fileName);
 			return GetText (File.ReadAllBytes (fileName), out encoding);
 		}
 
@@ -233,18 +227,14 @@ namespace MonoDevelop.Core.Text
 		#region file methods
 		static void ArgumentCheck (string fileName)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
+			ArgumentNullException.ThrowIfNull (fileName);
 		}
 
 		static void ArgumentCheck (string fileName, string text, Encoding encoding)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
-			if (text == null)
-				throw new ArgumentNullException ("text");
-			if (encoding == null)
-				throw new ArgumentNullException ("encoding");
+			ArgumentNullException.ThrowIfNull (fileName);
+			ArgumentNullException.ThrowIfNull (text);
+			ArgumentNullException.ThrowIfNull (encoding);
 		}
 
 		static FilePath WriteTextInit (string fileName)
@@ -394,16 +384,14 @@ namespace MonoDevelop.Core.Text
 
 		public static string ReadAllText (string fileName, out Encoding encoding)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
+			ArgumentNullException.ThrowIfNull (fileName);
 			byte[] content = File.ReadAllBytes (fileName);
 			return GetText (content, out encoding);
 		}
 
 		public static async Task<TextContent> ReadAllTextAsync (string fileName)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
+			ArgumentNullException.ThrowIfNull (fileName);
 			byte[] content = await ReadAllBytesAsync (fileName).ConfigureAwait (false);
 
 			Encoding encoding;
@@ -417,10 +405,8 @@ namespace MonoDevelop.Core.Text
 
 		public static string ReadAllText (string fileName, Encoding encoding)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
-			if (encoding == null)
-				throw new ArgumentNullException ("encoding");
+			ArgumentNullException.ThrowIfNull (fileName);
+			ArgumentNullException.ThrowIfNull (encoding);
 			using (var reader = new StreamReader (fileName, encoding)) {
 				return reader.ReadToEnd ();
 			}
@@ -428,10 +414,8 @@ namespace MonoDevelop.Core.Text
 
 		public static async Task<TextContent> ReadAllTextAsync (string fileName, Encoding encoding)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
-			if (encoding == null)
-				throw new ArgumentNullException ("encoding");
+			ArgumentNullException.ThrowIfNull (fileName);
+			ArgumentNullException.ThrowIfNull (encoding);
 
 			using (var reader = new StreamReader (fileName, encoding)) {
 				return new TextContent {
@@ -464,8 +448,7 @@ namespace MonoDevelop.Core.Text
 		#region ASCII encoding check
 		public static bool IsASCII (string text)
 		{
-			if (text == null)
-				throw new ArgumentNullException ("text");
+			ArgumentNullException.ThrowIfNull (text);
 			for (int i = 0; i < text.Length; i++) {
 				var ch = text [i];
 				if (ch > 0x7F)
@@ -478,16 +461,14 @@ namespace MonoDevelop.Core.Text
 		#region Binary check
 		public static bool IsBinary (byte[] bytes)
 		{
-			if (bytes == null)
-				throw new ArgumentNullException ("bytes");
+			ArgumentNullException.ThrowIfNull (bytes);
 			var enc = AutoDetectEncoding (bytes, Math.Min (bytes.Length, maxBufferLength));
 			return enc == Encoding.ASCII;
 		}
 
 		public static bool IsBinary (string fileName)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
+			ArgumentNullException.ThrowIfNull (fileName);
 			using (var stream = new FileStream (fileName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: DefaultBufferSize, options: FileOptions.SequentialScan)) {
 				return IsBinary (stream);
 			}
@@ -495,8 +476,7 @@ namespace MonoDevelop.Core.Text
 
 		public static bool IsBinary (Stream stream)
 		{
-			if (stream == null)
-				throw new ArgumentNullException ("stream");
+			ArgumentNullException.ThrowIfNull (stream);
 
 			var enc = AutoDetectEncoding (stream);
 			return enc == Encoding.ASCII;
@@ -566,7 +546,7 @@ namespace MonoDevelop.Core.Text
 
 			protected abstract void Init ();
 
-			bool isInitialized = false;
+			bool isInitialized;
 
 			public void Initialize ()
 			{

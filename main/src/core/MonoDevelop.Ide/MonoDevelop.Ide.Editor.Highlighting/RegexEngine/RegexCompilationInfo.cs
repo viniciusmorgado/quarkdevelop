@@ -60,8 +60,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         public String Pattern {
             get { return pattern; }
             set { 
-                if (value == null)
-                    throw new ArgumentNullException("value");
+            ArgumentNullException.ThrowIfNull(value);
                 pattern = value;
             }
         }
@@ -84,9 +83,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         public String Name {
             get { return name; }
             set { 
-                if (value == null) {
-                    throw new ArgumentNullException("value");
-                }
+            ArgumentNullException.ThrowIfNull(value);
 				
                 if (value.Length == 0) {
                 	throw new ArgumentException("value");					
@@ -104,8 +101,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         public String Namespace {
             get { return nspace; }
             set { 
-                if (value == null)
-                    throw new ArgumentNullException("value");
+            ArgumentNullException.ThrowIfNull(value);
                 nspace = value;
             }
         }

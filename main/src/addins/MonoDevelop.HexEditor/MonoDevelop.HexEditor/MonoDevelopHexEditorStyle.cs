@@ -35,7 +35,7 @@ using MonoDevelop.Ide.Editor.Highlighting;
 
 namespace MonoDevelop.HexEditor
 {
-	class MonoDevelopHexEditorStyle : HexEditorStyle, IDisposable
+	sealed class MonoDevelopHexEditorStyle : HexEditorStyle, IDisposable
 	{
 		EditorTheme colorStyle;
 		Mono.MHex.HexEditor hexEditor;

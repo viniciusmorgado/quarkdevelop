@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Shared.VSCodeDebugProtocol.Messages;
 
 namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 {
-	class VSCodeEvaluationSource : VSCodeObjectSource
+	sealed class VSCodeEvaluationSource : VSCodeObjectSource
 	{
 		readonly EvaluateResponse response;
 		readonly string expression;

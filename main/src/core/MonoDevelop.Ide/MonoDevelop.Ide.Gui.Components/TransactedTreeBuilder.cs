@@ -634,7 +634,7 @@ namespace MonoDevelop.Ide.Gui.Components
 			
 			TreeNode CreateNode (object dataObject)
 			{
-				if (dataObject == null) throw new ArgumentNullException ("dataObject");
+				ArgumentNullException.ThrowIfNull (dataObject);
 				
 				NodeBuilder[] chain = tree.GetBuilderChain (dataObject.GetType ());
 				if (chain == null) return null;
@@ -806,7 +806,7 @@ namespace MonoDevelop.Ide.Gui.Components
 				if (objects.TryGetValue (dataObject, out nods))
 					return nods;
 				else
-					return new TreeNode [0];
+					return Array.Empty<TreeNode> ();
 			}
 
 			public void CommitChanges ()

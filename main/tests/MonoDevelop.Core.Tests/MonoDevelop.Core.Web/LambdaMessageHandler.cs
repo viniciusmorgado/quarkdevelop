@@ -11,15 +11,13 @@ using System.Threading.Tasks;
 
 namespace MonoDevelop.Core.Web
 {
-	internal class LambdaMessageHandler : HttpMessageHandler
+	internal sealed class LambdaMessageHandler : HttpMessageHandler
 	{
 		private readonly Func<HttpRequestMessage, HttpResponseMessage> _delegate;
 
 		public LambdaMessageHandler (Func<HttpRequestMessage, HttpResponseMessage> @delegate)
 		{
-			if (@delegate == null) {
-				throw new ArgumentNullException (nameof (@delegate));
-			}
+			ArgumentNullException.ThrowIfNull (@delegate);
 
 			_delegate = @delegate;
 		}

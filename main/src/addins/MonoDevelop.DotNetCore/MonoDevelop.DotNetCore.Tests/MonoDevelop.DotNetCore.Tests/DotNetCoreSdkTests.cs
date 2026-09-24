@@ -31,7 +31,7 @@ using System.Linq;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class DotNetCoreSdkTests
+	sealed class DotNetCoreSdkTests
 	{
 		/// <summary>
 		/// Checks that a project's target framework is supported based on the install .NET Core SDKs.

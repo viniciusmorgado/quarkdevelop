@@ -35,7 +35,7 @@ using TreeModel = Gtk.ITreeModel;
 
 namespace Xwt.GtkBackend
 {
-	class IterPos: TreePosition
+	sealed class IterPos: TreePosition
 	{
 		public IterPos ()
 		{

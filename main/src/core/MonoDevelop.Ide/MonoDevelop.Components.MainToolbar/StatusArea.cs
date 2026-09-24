@@ -768,7 +768,7 @@ namespace MonoDevelop.Components.MainToolbar
 			renderArg.CurrentTextIsMarkup = isMarkup;
 		}
 
-		static bool iconLoaded = false;
+		static bool iconLoaded;
 		void LoadPixbuf (IconId image)
 		{
 			// We dont need to load the same image twice

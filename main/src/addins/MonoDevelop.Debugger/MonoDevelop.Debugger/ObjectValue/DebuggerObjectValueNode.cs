@@ -152,7 +152,7 @@ namespace MonoDevelop.Debugger
 				} catch (Exception ex) {
 					// Note: this should only happen if someone breaks ObjectValue.GetAllChildren()
 					LoggingService.LogError ("Failed to get ObjectValue children.", ex);
-					return new ObjectValue[0];
+					return Array.Empty<ObjectValue> ();
 				}
 			}, cancellationToken);
 		}
@@ -165,7 +165,7 @@ namespace MonoDevelop.Debugger
 				} catch (Exception ex) {
 					// Note: this should only happen if someone breaks ObjectValue.GetAllChildren()
 					LoggingService.LogError ("Failed to get ObjectValue range of children.", ex);
-					return new ObjectValue[0];
+					return Array.Empty<ObjectValue> ();
 				}
 			}, cancellationToken);
 		}

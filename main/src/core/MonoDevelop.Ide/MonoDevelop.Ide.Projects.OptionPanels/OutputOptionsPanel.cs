@@ -199,7 +199,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 			conf.AppendTargetFrameworkToOutputPath = dir.EndsWithTargetFramework (conf.TargetFrameworkShortName) || dir.EndsWithTargetFramework ();
 
 			// check if the outputDirectory has been modified
-			var outputModified = conf.OutputDirectory.FullPath.ToString ().IndexOf (dir, StringComparison.InvariantCulture) != 0;
+			var outputModified = !conf.OutputDirectory.FullPath.ToString ().StartsWith (dir, StringComparison.InvariantCulture);
 			if (outputModified) {
 				// if so, we have to remove $(TargetFramework) at the end since msbuild will add it due to AppendTargetFrameworkToOutputPath == true
 				if (dir.EndsWithTargetFramework ()) {

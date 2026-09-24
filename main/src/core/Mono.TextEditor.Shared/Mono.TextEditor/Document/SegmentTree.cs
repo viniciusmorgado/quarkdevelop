@@ -144,8 +144,7 @@ namespace Mono.TextEditor
 		
 		public void Add (TreeSegment node)
 		{
-			if (node == null)
-				throw new ArgumentNullException ("node");
+			ArgumentNullException.ThrowIfNull (node);
 			if (node.segmentTree != null)
 				throw new InvalidOperationException ("Node already attached.");
 			

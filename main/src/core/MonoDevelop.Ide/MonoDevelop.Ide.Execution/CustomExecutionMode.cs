@@ -156,7 +156,7 @@ namespace MonoDevelop.Ide.Execution
 				return cachedCustomizers;
 
 			if (commandData == null)
-				return cachedCustomizers = new Tuple<ExecutionCommandCustomizer,object>[0];
+				return cachedCustomizers = Array.Empty<Tuple<ExecutionCommandCustomizer, object>> ();
 
 			return cachedCustomizers = commandData
 					.Select (cmdData => Tuple.Create (

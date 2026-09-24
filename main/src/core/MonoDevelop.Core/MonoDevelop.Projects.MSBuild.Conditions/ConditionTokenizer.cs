@@ -38,10 +38,10 @@ namespace MonoDevelop.Projects.MSBuild.Conditions {
 
 	internal sealed class ConditionTokenizer {
 	
-		string	inputString = null;
-		int	position = 0;
-		int	tokenPosition = 0;
-		int tokenLength = 0;
+		string	inputString;
+		int	position;
+		int	tokenPosition;
+		int tokenLength;
 		int nextChar = -1;
 		
 		Token	token;
@@ -72,8 +72,7 @@ namespace MonoDevelop.Projects.MSBuild.Conditions {
 		
 		public void Tokenize (string s)
 		{
-			if (s == null)
-				throw new ArgumentNullException ("s");
+			ArgumentNullException.ThrowIfNull (s);
 		
 			this.inputString = s;
 			this.position = 0;

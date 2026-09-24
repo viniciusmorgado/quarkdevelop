@@ -94,7 +94,7 @@ namespace Mono.MHex.Rendering
 		}
 		
 		#region Layout caching
-		protected class LayoutWrapper : IDisposable
+		protected sealed class LayoutWrapper : IDisposable
 		{
 			public TextLayout Layout {
 				get;
@@ -235,11 +235,9 @@ namespace Mono.MHex.Rendering
 		
 		protected static uint TranslateToUTF8Index (string text, uint textIndex, ref uint curIndex, ref uint byteIndex)
 		{
-			if (text == null)
-				throw new ArgumentNullException (nameof (text));
+			ArgumentNullException.ThrowIfNull (text);
 
-			if (textIndex < 0)
-				throw new ArgumentOutOfRangeException (nameof (textIndex));
+			ArgumentOutOfRangeException.ThrowIfNegative (textIndex);
 
 			if (textIndex < curIndex) {
 				if (textIndex > text.Length)
@@ -313,7 +311,7 @@ namespace Mono.MHex.Rendering
 		public event EventHandler MouseLeave;
 	}
 	
-	class MarginMouseEventArgs : EventArgs
+	sealed class MarginMouseEventArgs : EventArgs
 	{
 		Margin margin;
 
@@ -359,7 +357,7 @@ namespace Mono.MHex.Rendering
 		}
 	}
 
-	class MarginMouseMovedEventArgs : EventArgs
+	sealed class MarginMouseMovedEventArgs : EventArgs
 	{
 		public double X {
 			get {

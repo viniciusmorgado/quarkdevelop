@@ -39,7 +39,7 @@ namespace Xwt.Drawing
 	{
 		List<ImageFrame> frames = new List<ImageFrame> ();
 
-		class ImageFrame {
+		sealed class ImageFrame {
 			public BitmapImage Bitmap;
 			public double ScaleFactor;
 			public List<ImageSection> HorizontalSections;
@@ -49,7 +49,7 @@ namespace Xwt.Drawing
 			public BitmapImage[] TileCache;
 		}
 
-		class ImageSection {
+		sealed class ImageSection {
 			public int Start;
 			public double Size;
 			public RenderMode Mode;

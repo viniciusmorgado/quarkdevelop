@@ -36,18 +36,14 @@ namespace MonoDevelop.Core.Web
 			IProxyCredentialCache credentialCache)
 			: base (clientHandler)
 		{
-			if (clientHandler == null) {
-				throw new ArgumentNullException (nameof (clientHandler));
-			}
+			ArgumentNullException.ThrowIfNull (clientHandler);
 
 			this.clientHandler = clientHandler;
 
 			// credential service is optional
 			this.credentialService = credentialService;
 
-			if (credentialCache == null) {
-				throw new ArgumentNullException (nameof (credentialCache));
-			}
+			ArgumentNullException.ThrowIfNull (credentialCache);
 
 			this.credentialCache = credentialCache;
 		}

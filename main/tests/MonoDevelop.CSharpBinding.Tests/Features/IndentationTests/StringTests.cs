@@ -30,7 +30,7 @@ using NUnit.Framework;
 namespace ICSharpCode.NRefactory6.IndentationTests
 {
 	[TestFixture]
-	class StringTests
+	sealed class StringTests
 	{
 		[Test]
 		public void TestString_Simple()

@@ -41,10 +41,7 @@ namespace NuGet.PackageManagement.UI
 
 		public MultiSourcePackageFeed(IEnumerable<SourceRepository> sourceRepositories, INuGetUILogger logger)
 		{
-			if (sourceRepositories == null)
-			{
-				throw new ArgumentNullException(nameof(sourceRepositories));
-			}
+			ArgumentNullException.ThrowIfNull(sourceRepositories);
 
 			if (!sourceRepositories.Any())
 			{
@@ -220,7 +217,7 @@ namespace NuGet.PackageManagement.UI
 				.Where(r => r.NextToken != null)
 				.ToDictionary(r => r.SourceSearchStatus.Single().Key, r => r.NextToken);
 
-			if (cursors.Keys.Any())
+			if (cursors.Keys.Count != 0)
 			{
 				result.NextToken = new AggregatedContinuationToken
 				{

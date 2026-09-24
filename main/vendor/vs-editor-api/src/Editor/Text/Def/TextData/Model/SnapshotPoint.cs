@@ -23,10 +23,7 @@ namespace Microsoft.VisualStudio.Text
         /// <param name="position">The position of the point.</param>
         public SnapshotPoint(ITextSnapshot snapshot, int position)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
             if (position < 0 || position > snapshot.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(position));
@@ -89,10 +86,7 @@ namespace Microsoft.VisualStudio.Text
             }
             else
             {
-                if (targetSnapshot == null)
-                {
-                    throw new ArgumentNullException(nameof(targetSnapshot));
-                }
+                ArgumentNullException.ThrowIfNull(targetSnapshot);
                 if (targetSnapshot.TextBuffer != this.Snapshot.TextBuffer)
                 {
                     throw new ArgumentException(Strings.InvalidSnapshot);

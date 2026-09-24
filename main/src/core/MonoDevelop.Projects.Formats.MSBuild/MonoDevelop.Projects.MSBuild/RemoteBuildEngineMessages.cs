@@ -30,7 +30,7 @@ using MonoDevelop.Core.Execution;
 namespace MonoDevelop.Projects.MSBuild
 {
 	[MessageDataTypeAttribute]
-	class InitializeRequest: BinaryMessage
+	sealed class InitializeRequest: BinaryMessage
 	{
 		[MessageDataProperty]
 		public int IdeProcessId { get; set; }
@@ -46,61 +46,61 @@ namespace MonoDevelop.Projects.MSBuild
 	}
 
 	[MessageDataTypeAttribute]
-	class LoadProjectRequest: BinaryMessage<LoadProjectResponse>
+	sealed class LoadProjectRequest: BinaryMessage<LoadProjectResponse>
 	{
 		[MessageDataProperty]
 		public string ProjectFile { get; set; }
 	}
 
 	[MessageDataTypeAttribute]
-	class LoadProjectResponse: BinaryMessage
+	sealed class LoadProjectResponse: BinaryMessage
 	{
 		[MessageDataProperty]
 		public int ProjectId { get; set; }
 	}
 
 	[MessageDataTypeAttribute]
-	class UnloadProjectRequest: BinaryMessage
+	sealed class UnloadProjectRequest: BinaryMessage
 	{
 		[MessageDataProperty]
 		public int ProjectId { get; set; }
 	}
 
 	[MessageDataTypeAttribute]
-	class CancelTaskRequest: BinaryMessage
+	sealed class CancelTaskRequest: BinaryMessage
 	{
 		[MessageDataProperty]
 		public int TaskId { get; set; }
 	}
 
 	[MessageDataTypeAttribute]
-	class SetGlobalPropertiesRequest: BinaryMessage
+	sealed class SetGlobalPropertiesRequest: BinaryMessage
 	{
 		[MessageDataProperty]
 		public Dictionary<string, string> Properties { get; set; }
 	}
 
 	[MessageDataTypeAttribute]
-	class PingRequest: BinaryMessage
+	sealed class PingRequest: BinaryMessage
 	{
 		[MessageDataProperty]
 		public int TaskId = 1;
 	}
 
 	[MessageDataTypeAttribute]
-	class DisposeRequest: BinaryMessage
+	sealed class DisposeRequest: BinaryMessage
 	{
 	}
 
 	[MessageDataTypeAttribute]
-	class RefreshProjectRequest: BinaryMessage
+	sealed class RefreshProjectRequest: BinaryMessage
 	{
 		[MessageDataProperty]
 		public int ProjectId { get; set; }
 	}
 
 	[MessageDataTypeAttribute]
-	class RefreshWithContentRequest: BinaryMessage
+	sealed class RefreshWithContentRequest: BinaryMessage
 	{
 		[MessageDataProperty]
 		public int ProjectId { get; set; }
@@ -110,7 +110,7 @@ namespace MonoDevelop.Projects.MSBuild
 	}
 
 	[MessageDataTypeAttribute]
-	class RunProjectRequest: BinaryMessage<RunProjectResponse>
+	sealed class RunProjectRequest: BinaryMessage<RunProjectResponse>
 	{
 		[MessageDataProperty]
 		public int ProjectId { get; set; }
@@ -150,14 +150,14 @@ namespace MonoDevelop.Projects.MSBuild
 	}
 
 	[MessageDataTypeAttribute]
-	class RunProjectResponse : BinaryMessage
+	sealed class RunProjectResponse : BinaryMessage
 	{
 		[MessageDataProperty]
 		public MSBuildResult Result { get; set; }
 	}
 
 	[MessageDataTypeAttribute]
-	class LogMessage : BinaryMessage
+	sealed class LogMessage : BinaryMessage
 	{
 		[MessageDataProperty]
 		public int LoggerId { get; set; }
@@ -170,7 +170,7 @@ namespace MonoDevelop.Projects.MSBuild
 	}
 
 	[MessageDataType]
-	class LogEvent
+	sealed class LogEvent
 	{
 		[MessageDataProperty]
 		public MSBuildEvent Event { get; set; }
@@ -189,7 +189,7 @@ namespace MonoDevelop.Projects.MSBuild
 	}
 
 	[MessageDataTypeAttribute]
-	class ProjectConfigurationInfo
+	sealed class ProjectConfigurationInfo
 	{
 		[MessageDataProperty]
 		public string ProjectFile { get; set; }
@@ -208,7 +208,7 @@ namespace MonoDevelop.Projects.MSBuild
 	}
 
 	[MessageDataType]
-	class LoggerInfo
+	sealed class LoggerInfo
 	{
 		[MessageDataProperty]
 		public string Id { get; set; }
@@ -221,7 +221,7 @@ namespace MonoDevelop.Projects.MSBuild
 	}
 
 	[MessageDataType]
-	class BeginBuildRequest : BinaryMessage
+	sealed class BeginBuildRequest : BinaryMessage
 	{
 		[MessageDataProperty]
 		public string BinLogFilePath { get; set; }
@@ -240,7 +240,7 @@ namespace MonoDevelop.Projects.MSBuild
 	}
 
 	[MessageDataType]
-	class EndBuildRequest : BinaryMessage
+	sealed class EndBuildRequest : BinaryMessage
 	{
 	}
 }

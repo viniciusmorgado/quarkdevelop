@@ -173,8 +173,8 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
             if (str == null)
                 str = String.Empty;
             
-            if (_stringhash.ContainsKey(str)) {
-                i = (Int32)_stringhash[str];
+            if (_stringhash.TryGetValue(str, out var value)) {
+                i = (Int32)value;
             }
             else {
                 i = _stringtable.Count;

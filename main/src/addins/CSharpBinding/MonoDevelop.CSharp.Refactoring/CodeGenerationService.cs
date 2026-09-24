@@ -97,12 +97,9 @@ namespace MonoDevelop.Refactoring
 
 		public static async Task AddNewMember (Projects.Project project, ITypeSymbol type, Location part, SyntaxNode newMember, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			if (project == null)
-				throw new ArgumentNullException (nameof (project));
-			if (type == null)
-				throw new ArgumentNullException (nameof (type));
-			if (newMember == null)
-				throw new ArgumentNullException (nameof (newMember));
+			ArgumentNullException.ThrowIfNull (project);
+			ArgumentNullException.ThrowIfNull (type);
+			ArgumentNullException.ThrowIfNull (newMember);
 			if (!type.IsDefinedInSource ())
 				throw new ArgumentException ("The given type needs to be defined in source code.", nameof (type));
 
@@ -138,14 +135,10 @@ namespace MonoDevelop.Refactoring
 		readonly static SyntaxAnnotation insertedMemberAnnotation = new SyntaxAnnotation ("INSERTION_ANNOTATAION");
 		public static async Task InsertMemberWithCursor (string operation, Projects.Project project, ITypeSymbol type, Location part, SyntaxNode newMember, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			if (operation == null)
-				throw new ArgumentNullException (nameof (operation));
-			if (project == null)
-				throw new ArgumentNullException (nameof (project));
-			if (type == null)
-				throw new ArgumentNullException (nameof (type));
-			if (newMember == null)
-				throw new ArgumentNullException (nameof (newMember));
+			ArgumentNullException.ThrowIfNull (operation);
+			ArgumentNullException.ThrowIfNull (project);
+			ArgumentNullException.ThrowIfNull (type);
+			ArgumentNullException.ThrowIfNull (newMember);
 			var doc = await IdeApp.Workbench.OpenDocument (part.SourceTree.FilePath, project, true);
 			var textView = await doc.GetContentWhenAvailable<ITextView> (cancellationToken);
 			await doc.DocumentContext.UpdateParseDocument ();
@@ -257,8 +250,7 @@ namespace MonoDevelop.Refactoring
 
 		public static void AddAttribute (INamedTypeSymbol cls, string name, params object [] parameters)
 		{
-			if (cls == null)
-				throw new ArgumentNullException ("cls");
+			ArgumentNullException.ThrowIfNull (cls);
 			bool isOpen;
 			string fileName = cls.Locations.First ().SourceTree.FilePath;
 			var buffer = TextFileProvider.Instance.GetTextEditorData (fileName, out isOpen);
@@ -268,18 +260,18 @@ namespace MonoDevelop.Refactoring
 			int pos = cls.Locations.First ().SourceSpan.Start;
 			var line = buffer.GetLineByOffset (pos);
 			code.Append (buffer.GetLineIndent (line));
-			code.Append ("[");
+			code.Append ('[');
 			code.Append (name);
 			if (parameters != null && parameters.Length > 0) {
-				code.Append ("(");
+				code.Append ('(');
 				for (int i = 0; i < parameters.Length; i++) {
 					if (i > 0)
 						code.Append (", ");
 					code.Append (parameters [i]);
 				}
-				code.Append (")");
+				code.Append (')');
 			}
-			code.Append ("]");
+			code.Append (']');
 			code.AppendLine ();
 
 			buffer.InsertText (line.Offset, StringBuilderCache.ReturnAndFree (code));
@@ -291,14 +283,10 @@ namespace MonoDevelop.Refactoring
 
 		public static ITypeSymbol AddType (DotNetProject project, string folder, string namspace, ClassDeclarationSyntax type)
 		{
-			if (project == null)
-				throw new ArgumentNullException (nameof (project));
-			if (folder == null)
-				throw new ArgumentNullException (nameof (folder));
-			if (namspace == null)
-				throw new ArgumentNullException (nameof (namspace));
-			if (type == null)
-				throw new ArgumentNullException (nameof (type));
+			ArgumentNullException.ThrowIfNull (project);
+			ArgumentNullException.ThrowIfNull (folder);
+			ArgumentNullException.ThrowIfNull (namspace);
+			ArgumentNullException.ThrowIfNull (type);
 			var ns = SyntaxFactory.NamespaceDeclaration (SyntaxFactory.ParseName (namspace)).WithMembers (new SyntaxList<MemberDeclarationSyntax> () { type });
 
 			string fileName = project.LanguageBinding.GetFileName (Path.Combine (folder, type.Identifier.ToString ()));

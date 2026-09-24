@@ -25,8 +25,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         private CachingTextImage(StringRebuilder builder, ITextImageVersion version)
         {
-            if (builder == null)
-                throw new ArgumentNullException(nameof(builder));
+            ArgumentNullException.ThrowIfNull(builder);
 
             this.Builder = builder;
             this.Version = version;

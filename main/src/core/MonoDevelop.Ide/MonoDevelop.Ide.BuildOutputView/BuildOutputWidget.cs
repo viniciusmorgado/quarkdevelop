@@ -765,8 +765,7 @@ namespace MonoDevelop.Ide.BuildOutputView
 
 			public DropDownWindowDataProvider (BuildOutputWidget widget, BuildOutputNode node)
 			{
-				if (widget == null)
-					throw new ArgumentNullException ("widget");
+				ArgumentNullException.ThrowIfNull (widget);
 				this.widget = widget;
 				Reset ();
 

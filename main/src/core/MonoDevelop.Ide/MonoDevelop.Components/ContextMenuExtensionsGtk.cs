@@ -39,10 +39,8 @@ namespace MonoDevelop.Components
 
 		public static void ShowContextMenu (Gtk.Widget parent, Gdk.EventButton evt, ContextMenu menu, Action closeHandler)
 		{
-			if (parent == null)
-				throw new ArgumentNullException ("parent");
-			if (menu == null)
-				throw new ArgumentNullException ("menu");
+			ArgumentNullException.ThrowIfNull (parent);
+			ArgumentNullException.ThrowIfNull (menu);
 
 			var gtkMenu = FromMenu (menu, closeHandler);
 			gtkMenu.ShowAll ();
@@ -56,10 +54,8 @@ namespace MonoDevelop.Components
 
 		public static void ShowContextMenu (Gtk.Widget parent, int x, int y, ContextMenu menu, Action closeHandler, bool selectFirstItem = false)
 		{
-			if (parent == null)
-				throw new ArgumentNullException ("parent");
-			if (menu == null)
-				throw new ArgumentNullException ("menu");
+			ArgumentNullException.ThrowIfNull (parent);
+			ArgumentNullException.ThrowIfNull (menu);
 
 			var gtkMenu = FromMenu (menu, closeHandler);
 			gtkMenu.ShowAll ();
@@ -96,20 +92,16 @@ namespace MonoDevelop.Components
 
 		public static void ShowContextMenu (Gtk.Widget parent, Gdk.EventButton evt, Gtk.Menu menu)
 		{
-			if (parent == null)
-				throw new ArgumentNullException ("parent");
-			if (menu == null)
-				throw new ArgumentNullException ("menu");
+			ArgumentNullException.ThrowIfNull (parent);
+			ArgumentNullException.ThrowIfNull (menu);
 
 			GtkWorkarounds.ShowContextMenu (menu, parent, evt);
 		}
 
 		public static void ShowContextMenu (Gtk.Widget parent, int x, int y, Gtk.Menu menu)
 		{
-			if (parent == null)
-				throw new ArgumentNullException ("parent");
-			if (menu == null)
-				throw new ArgumentNullException ("menu");
+			ArgumentNullException.ThrowIfNull (parent);
+			ArgumentNullException.ThrowIfNull (menu);
 
 			GtkWorkarounds.ShowContextMenu (menu, parent, x, y, parent.Allocation);
 		}

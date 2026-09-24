@@ -864,7 +864,7 @@ namespace MonoDevelop.Debugger
 			}
 		}
 		
-		PinnedWatch pinnedWatch = null;
+		PinnedWatch pinnedWatch;
 		public PinnedWatch PinnedWatch {
 			get {
 				return pinnedWatch;
@@ -1269,7 +1269,7 @@ namespace MonoDevelop.Debugger
 				// Truncate the string to stop the UI from hanging
 				// when calculating the size for very large amounts
 				// of text.
-				return val.DisplayValue.Substring (0, 1000) + "…";
+				return string.Concat (val.DisplayValue.AsSpan (0, 1000), "…");
 
 			return val.DisplayValue;
 		}
@@ -1474,7 +1474,7 @@ namespace MonoDevelop.Debugger
 				} catch (Exception ex) {
 					// Note: this should only happen if someone breaks ObjectValue.GetAllChildren()
 					LoggingService.LogError ("Failed to get ObjectValue children.", ex);
-					return new ObjectValue[0];
+					return Array.Empty<ObjectValue> ();
 				}
 			}, value, cancellationToken);
 		}
@@ -1800,7 +1800,7 @@ namespace MonoDevelop.Debugger
 					return false;
 				if (obj.IsPrimitive) {
 					//obj.DisplayValue.Contains ("|") is special case to detect enum with [Flags]
-					return obj.TypeName == "string" || (obj.DisplayValue != null && obj.DisplayValue.Contains ("|"));
+					return obj.TypeName == "string" || (obj.DisplayValue != null && obj.DisplayValue.Contains ('|'));
 				}
 				if (string.IsNullOrEmpty (obj.TypeName))
 					return false;

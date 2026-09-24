@@ -151,10 +151,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public ITextBuffer CreateTextBuffer(IContentType contentType)
         {
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(contentType);
             return Make(contentType, StringRebuilder.Empty, false);
         }
 
@@ -165,10 +162,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public ITextBuffer CreateTextBuffer(SnapshotSpan span, IContentType contentType)
         {
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(contentType);
 
             StringRebuilder content = StringRebuilderFromSnapshotSpan(span);
 
@@ -177,14 +171,8 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public ITextBuffer CreateTextBuffer(ITextImage image, IContentType contentType)
         {
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image));
-            }
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(image);
+            ArgumentNullException.ThrowIfNull(contentType);
 
             StringRebuilder content = StringRebuilder.Create(image);
 
@@ -193,14 +181,8 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public ITextBuffer CreateTextBuffer(string text, IContentType contentType, bool spurnGroup)
         {
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(text);
+            ArgumentNullException.ThrowIfNull(contentType);
             return Make(contentType, StringRebuilder.Create(text), spurnGroup);
         }
 
@@ -211,14 +193,8 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public ITextBuffer CreateTextBuffer(TextReader reader, IContentType contentType, long length, string traceId, bool throwOnInvalidCharacters)
         {
-            if (reader == null)
-            {
-                throw new ArgumentNullException(nameof(reader));
-            }
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(reader);
+            ArgumentNullException.ThrowIfNull(contentType);
             if (length > int.MaxValue)
             {
                 throw new InvalidOperationException(Strings.FileTooLarge);
@@ -330,14 +306,8 @@ namespace Microsoft.VisualStudio.Text.Implementation
                                                         IContentType contentType)
         {
             // projectionEditResolver is allowed to be null.
-            if (trackingSpans == null)
-            {
-                throw new ArgumentNullException(nameof(trackingSpans));
-            }
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(trackingSpans);
+            ArgumentNullException.ThrowIfNull(contentType);
             IProjectionBuffer buffer =
                 new ProjectionBuffer(this, projectionEditResolver, contentType, trackingSpans, _differenceService, _textDifferencingSelectorService.DefaultTextDifferencingService, options, _guardedOperations);
             RaiseProjectionBufferCreatedEvent(buffer);
@@ -349,10 +319,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
                                                         ProjectionBufferOptions options)
         {
             // projectionEditResolver is allowed to be null.
-            if (trackingSpans == null)
-            {
-                throw new ArgumentNullException(nameof(trackingSpans));
-            }
+            ArgumentNullException.ThrowIfNull(trackingSpans);
 
             IProjectionBuffer buffer =
                 new ProjectionBuffer(this, projectionEditResolver, ProjectionContentType, trackingSpans, _differenceService, _textDifferencingSelectorService.DefaultTextDifferencingService, options, _guardedOperations);
@@ -366,18 +333,12 @@ namespace Microsoft.VisualStudio.Text.Implementation
                                                   IContentType contentType)
         {
             // projectionEditResolver is allowed to be null.
-            if (exposedSpans == null)
-            {
-                throw new ArgumentNullException(nameof(exposedSpans));
-            }
+            ArgumentNullException.ThrowIfNull(exposedSpans);
             if (exposedSpans.Count == 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(exposedSpans));  // really?
             }
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(contentType);
 
             if (exposedSpans[0].Snapshot != exposedSpans[0].Snapshot.TextBuffer.CurrentSnapshot)
             {

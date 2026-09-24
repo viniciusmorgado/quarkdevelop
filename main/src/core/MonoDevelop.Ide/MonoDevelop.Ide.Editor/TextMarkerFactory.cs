@@ -80,8 +80,7 @@ namespace MonoDevelop.Ide.Editor
 
 		public static ILinkTextMarker CreateLinkMarker (TextEditor editor, ISegment segment, Action<LinkRequest> activateLink)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (segment);
 			return editor.TextMarkerFactory.CreateLinkMarker (editor, segment.Offset, segment.Length, activateLink);
 		}
 
@@ -92,8 +91,7 @@ namespace MonoDevelop.Ide.Editor
 
 		public static IGenericTextSegmentMarker CreateGenericTextSegmentMarker (TextEditor editor, TextSegmentMarkerEffect effect, ISegment segment)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (segment);
 			return editor.TextMarkerFactory.CreateGenericTextSegmentMarker (editor, effect, null, segment.Offset, segment.Length);
 		}
 
@@ -104,8 +102,7 @@ namespace MonoDevelop.Ide.Editor
 
 		public static IGenericTextSegmentMarker CreateGenericTextSegmentMarker (TextEditor editor, TextSegmentMarkerEffect effect, HslColor color, ISegment segment)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (segment);
 			return editor.TextMarkerFactory.CreateGenericTextSegmentMarker (editor, effect, color, segment.Offset, segment.Length);
 		}
 

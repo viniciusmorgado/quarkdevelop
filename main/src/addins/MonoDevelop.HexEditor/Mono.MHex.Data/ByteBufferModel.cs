@@ -45,7 +45,7 @@ namespace Mono.MHex.Data
 
 		protected override Type RepresentationType => typeof (ByteBufferModelRepresentation);
 
-		protected class ByteBufferModelRepresentation : FileModelRepresentation
+		protected sealed class ByteBufferModelRepresentation : FileModelRepresentation
 		{
 			ByteBuffer byteBuffer;
 
@@ -69,7 +69,7 @@ namespace Mono.MHex.Data
 			{
 				byteBuffer = new ByteBuffer ();
 				byteBuffer.Replaced += ByteBuffer_Replaced;
-				byteBuffer.Buffer = new ArrayBuffer (new byte [0]);
+				byteBuffer.Buffer = new ArrayBuffer (Array.Empty<byte> ());
 			}
 
 			protected override Task OnSave ()

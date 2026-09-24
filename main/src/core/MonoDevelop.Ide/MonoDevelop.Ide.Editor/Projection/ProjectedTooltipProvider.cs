@@ -38,10 +38,8 @@ namespace MonoDevelop.Ide.Editor.Projection
 
 		public ProjectedTooltipProvider (Projection projection, TooltipProvider projectedTooltipProvider)
 		{
-			if (projection == null)
-				throw new ArgumentNullException ("projection");
-			if (projectedTooltipProvider == null)
-				throw new ArgumentNullException ("projectedTooltipProvider");
+			ArgumentNullException.ThrowIfNull (projection);
+			ArgumentNullException.ThrowIfNull (projectedTooltipProvider);
 			this.projectedTooltipProvider = projectedTooltipProvider;
 			this.projection = projection;
 		}

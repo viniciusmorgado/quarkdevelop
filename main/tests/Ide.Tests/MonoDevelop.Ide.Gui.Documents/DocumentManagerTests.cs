@@ -463,7 +463,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 			}
 		}
 
-		string GetTempFile (string extension)
+		new string GetTempFile (string extension)
 		{
 			var tempFile = Path.GetTempFileName ();
 			var finalFile = tempFile + extension;
@@ -850,15 +850,15 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class TestController: DocumentController
+	sealed class TestController: DocumentController
 	{
 	}
 
-	class TestFileController : FileDocumentController
+	sealed class TestFileController : FileDocumentController
 	{
 	}
 
-	class TestFileControllerFactory : FileDocumentControllerFactory
+	sealed class TestFileControllerFactory : FileDocumentControllerFactory
 	{
 		public override Task<DocumentController> CreateController (FileDescriptor modelDescriptor, DocumentControllerDescription controllerDescription)
 		{
@@ -874,7 +874,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class DocumentManagerEventTracker
+	sealed class DocumentManagerEventTracker
 	{
 		private readonly DocumentManager documentManager;
 
@@ -902,7 +902,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class SlowlyLoadedController: DocumentController
+	sealed class SlowlyLoadedController: DocumentController
 	{
 		TaskCompletionSource<bool> slowLoad = new TaskCompletionSource<bool> ();
 
@@ -923,7 +923,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
   
-	class ReusableController : DocumentController
+	sealed class ReusableController : DocumentController
 	{
 		ModelDescriptor modelDescriptor;
 
@@ -941,7 +941,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class ReusableFileController : FileDocumentController
+	sealed class ReusableFileController : FileDocumentController
 	{
 		public bool AllowReuse { get; set; } = true;
 		
@@ -953,7 +953,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class ReusableFileControllerFactory : FileDocumentControllerFactory
+	sealed class ReusableFileControllerFactory : FileDocumentControllerFactory
 	{
 		public bool Enabled { get; set; } = true;
 
@@ -969,7 +969,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class ReusableControllerFactory : DocumentControllerFactory
+	sealed class ReusableControllerFactory : DocumentControllerFactory
 	{
 		public override Task<DocumentController> CreateController (ModelDescriptor modelDescriptor, DocumentControllerDescription controllerDescription)
 		{
@@ -984,7 +984,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 	}
 
 
-	class ReusableDescriptor : ModelDescriptor
+	sealed class ReusableDescriptor : ModelDescriptor
 	{
 	}
 }

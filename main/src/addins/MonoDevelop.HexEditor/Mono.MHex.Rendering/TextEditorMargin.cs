@@ -32,7 +32,7 @@ using Xwt;
 
 namespace Mono.MHex.Rendering
 {
-	class TextEditorMargin : Margin
+	sealed class TextEditorMargin : Margin
 	{
 		internal double charWidth;
 		public override double Width {
@@ -83,7 +83,7 @@ namespace Mono.MHex.Rendering
 					if (!char.IsControl (ch)) {
 						sb.Append (ch);
 					} else {
-						sb.Append (".");
+						sb.Append ('.');
 					}
 				}
 				break;
@@ -94,7 +94,7 @@ namespace Mono.MHex.Rendering
 					if (char.IsLetterOrDigit (ch) || char.IsWhiteSpace (ch) || char.IsSymbol (ch) || char.IsPunctuation (ch))
 						sb.Append (ch);
 					else
-						sb.Append (".");
+						sb.Append ('.');
 				}
 				break;
 			default:

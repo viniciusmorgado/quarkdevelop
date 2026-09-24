@@ -38,18 +38,14 @@ namespace MonoDevelop.SourceEditor
 
         public PopupAgent(Mono.TextEditor.MonoTextEditor textView, IMDSpaceReservationManager manager, ITrackingSpan visualSpan, PopupStyles style, Widget content)
         {
-            if (textView == null)
-                throw new ArgumentNullException("textView");
-            if (manager == null)
-                throw new ArgumentNullException("manager");
-            if (visualSpan == null)
-                throw new ArgumentNullException("visualSpan");
+            ArgumentNullException.ThrowIfNull(textView);
+            ArgumentNullException.ThrowIfNull(manager);
+            ArgumentNullException.ThrowIfNull(visualSpan);
             if (((int)style & ~(0xff)) != 0)        //Union of all the legal style bits.
-                throw new ArgumentOutOfRangeException("style");
-            if (content == null)
-                throw new ArgumentNullException("content");
+                throw new ArgumentOutOfRangeException(nameof(style));
+            ArgumentNullException.ThrowIfNull(content);
             if ((style & PopupStyles.DismissOnMouseLeaveText) != 0 && (style & PopupStyles.DismissOnMouseLeaveTextOrContent) != 0)
-                throw new ArgumentException("Can't specify both PopupStyles.DismissOnMouseLeaveText and PopupStyles.DismissOnMouseLeaveTextOrContent", "style");
+                throw new ArgumentException("Can't specify both PopupStyles.DismissOnMouseLeaveText and PopupStyles.DismissOnMouseLeaveTextOrContent", nameof(style));
 
             _textView = textView;
             _manager = manager;

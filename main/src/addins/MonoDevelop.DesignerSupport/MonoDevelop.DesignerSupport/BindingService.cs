@@ -191,7 +191,7 @@ namespace MonoDevelop.DesignerSupport
 		{
 			IMethodSymbol eveMeth = GetMethodSignature (eve);
 			if (eveMeth == null)
-				return new IMethodSymbol[0];
+				return Array.Empty<IMethodSymbol> ();
 			return GetCompatibleMethodsInClass (cls, eveMeth);
 		}
 

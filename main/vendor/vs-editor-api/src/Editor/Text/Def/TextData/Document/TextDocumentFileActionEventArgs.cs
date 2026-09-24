@@ -50,10 +50,7 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentNullException"><paramref name="filePath"/> is null.</exception>
         public TextDocumentFileActionEventArgs(string filePath, DateTime time, FileActionTypes fileActionType)
         {
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+            ArgumentNullException.ThrowIfNull (filePath);
 
             _filePath = filePath;
             _time = time;

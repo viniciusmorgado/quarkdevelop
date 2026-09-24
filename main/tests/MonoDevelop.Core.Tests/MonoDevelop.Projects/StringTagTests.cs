@@ -165,11 +165,11 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class StringTagTestExtension: SolutionItemExtension
+	sealed class StringTagTestExtension: SolutionItemExtension
 	{
 	}
 
-	class TestTagProvider: StringTagProvider<StringTagTestExtension>
+	sealed class TestTagProvider: StringTagProvider<StringTagTestExtension>
 	{
 		#region implemented abstract members of StringTagProvider
 

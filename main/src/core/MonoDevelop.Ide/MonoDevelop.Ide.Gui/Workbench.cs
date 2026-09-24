@@ -79,7 +79,7 @@ namespace MonoDevelop.Ide.Gui
 		DefaultWorkbench workbench;
 		PadCollection pads;
 		bool fileEventsFrozen;
-		bool hasEverBeenShown = false;
+		bool hasEverBeenShown;
 
 		public event EventHandler<DocumentEventArgs> ActiveDocumentChanged {
 			add { documentManager.ActiveDocumentChanged += value; }
@@ -462,7 +462,7 @@ namespace MonoDevelop.Ide.Gui
 		internal async Task<bool> SaveAllDirtyFiles ()
 		{
 			Document[] docs = Documents.Where (doc => doc.IsDirty).ToArray ();
-			if (!docs.Any ())
+			if (docs.Length == 0)
 				return true;
 
 			foreach (Document doc in docs) {
@@ -1029,7 +1029,7 @@ namespace MonoDevelop.Ide.Gui
 			}
 		}
 
-		System.Timers.Timer tabsChangedTimer = null;
+		System.Timers.Timer tabsChangedTimer;
 
 		void DisposeTimerAndSave (object o, EventArgs e)
 		{

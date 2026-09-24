@@ -213,7 +213,7 @@ namespace MonoDevelop.Refactoring
 				}
 			}
 
-			bool isDisposed = false;
+			bool isDisposed;
 			// GTK 3: cell renderers are not GtkObjects (no destroy signal); release the layout on dispose.
 			protected override void Dispose (bool disposing)
 			{

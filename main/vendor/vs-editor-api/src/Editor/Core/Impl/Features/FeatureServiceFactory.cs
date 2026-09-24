@@ -28,7 +28,7 @@ namespace Microsoft.VisualStudio.Utilities.Features.Implementation
         /// </summary>
         internal IDictionary<string, SortedSet<string>> RelatedDefinitions { get; set; }
 
-        private bool initializing = false;
+        private bool initializing;
         private IFeatureService _globalFeatureService;
 
         /// <inheritdoc />
@@ -52,8 +52,7 @@ namespace Microsoft.VisualStudio.Utilities.Features.Implementation
         /// <inheritdoc />
         public IFeatureService GetOrCreate(IPropertyOwner scope)
         {
-            if (scope == null)
-                throw new ArgumentNullException(nameof(scope));
+            ArgumentNullException.ThrowIfNull(scope);
 
             return scope.Properties.GetOrCreateSingletonProperty(
                 () => new FeatureService(GlobalFeatureService, this));

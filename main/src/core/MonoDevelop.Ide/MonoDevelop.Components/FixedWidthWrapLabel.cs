@@ -39,7 +39,7 @@ namespace MonoDevelop.Components
 	public class FixedWidthWrapLabel : Widget
 	{
 		string text;
-		bool use_markup = false;
+		bool use_markup;
 		Pango.Layout layout;
 		int indent;
 		int spacing;

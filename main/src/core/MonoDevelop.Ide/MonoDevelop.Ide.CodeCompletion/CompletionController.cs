@@ -113,10 +113,8 @@ namespace MonoDevelop.Ide.CodeCompletion
 		/// </summary>
 		public void InitializeSession (ICompletionWidget completionWidget, CodeCompletionContext completionContext)
 		{
-			if (completionWidget == null)
-				throw new ArgumentNullException (nameof (completionWidget));
-			if (completionContext == null)
-				throw new ArgumentNullException (nameof (completionContext));
+			ArgumentNullException.ThrowIfNull (completionWidget);
+			ArgumentNullException.ThrowIfNull (completionContext);
 
 			view.Initialize (this, this);
 
@@ -139,8 +137,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 
 		public bool ShowListWindow (ICompletionDataList list, CodeCompletionContext completionContext)
 		{
-			if (list == null)
-				throw new ArgumentNullException (nameof (list));
+			ArgumentNullException.ThrowIfNull (list);
 
 			CodeCompletionContext = completionContext;
 			dataList = list;

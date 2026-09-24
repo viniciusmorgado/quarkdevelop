@@ -57,10 +57,7 @@
 
         public IAsyncQuickInfoSession GetSession(ITextView textView)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             if (textView.Properties.TryGetProperty(typeof(AsyncQuickInfoPresentationSession), out AsyncQuickInfoPresentationSession property))
             {

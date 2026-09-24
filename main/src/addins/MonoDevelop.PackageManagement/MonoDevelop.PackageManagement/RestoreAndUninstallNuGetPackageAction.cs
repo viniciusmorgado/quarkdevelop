@@ -100,7 +100,7 @@ namespace MonoDevelop.PackageManagement
 
 		public IEnumerable<NuGetProjectAction> GetNuGetProjectActions ()
 		{
-			return uninstallAction.GetNuGetProjectActions () ?? new NuGetProjectAction[0];
+			return uninstallAction.GetNuGetProjectActions () ?? Array.Empty<NuGetProjectAction> ();
 		}
 
 		public bool HasPackageScriptsToRun ()

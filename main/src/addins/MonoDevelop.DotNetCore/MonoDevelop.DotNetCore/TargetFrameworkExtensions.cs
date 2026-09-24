@@ -55,7 +55,7 @@ namespace MonoDevelop.DotNetCore
 
 		public static bool IsNetStandard (this TargetFramework framework, string version)
 		{
-			return framework.Id.IsNetStandard () && framework.Id.Version.IndexOf (version, StringComparison.InvariantCulture) == 0;
+			return framework.Id.IsNetStandard () && framework.Id.Version.StartsWith (version, StringComparison.InvariantCulture);
 		}
 
 		public static bool IsLowerThanNetStandard16 (this TargetFramework framework)
@@ -77,7 +77,7 @@ namespace MonoDevelop.DotNetCore
 
 		public static bool IsNetCoreApp (this TargetFramework framework, string version)
 		{
-			return framework.Id.IsNetCoreApp () && framework.Id.Version.IndexOf (version, StringComparison.InvariantCulture) == 0;
+			return framework.Id.IsNetCoreApp () && framework.Id.Version.StartsWith (version, StringComparison.InvariantCulture);
 		}
 
 		public static bool IsNetCoreAppOrHigher (this TargetFramework framework, DotNetCoreVersion version)

@@ -23,10 +23,7 @@ namespace Microsoft.VisualStudio.Text
 
         public VersionedPosition(ITextImageVersion version, int position)
         {
-            if (version == null)
-            {
-                throw new ArgumentNullException(nameof(version));
-            }
+            ArgumentNullException.ThrowIfNull(version);
 
             if ((position < 0) || (position > version.Length))
             {
@@ -44,10 +41,7 @@ namespace Microsoft.VisualStudio.Text
 
         public VersionedPosition TranslateTo(ITextImageVersion other, PointTrackingMode mode)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
+            ArgumentNullException.ThrowIfNull(other);
 
             return new VersionedPosition(other, other.TrackTo(this, mode));
         }

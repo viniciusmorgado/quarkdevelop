@@ -101,9 +101,9 @@ namespace MonoDevelop.Ide.WelcomePage
 				desc = GettextCatalog.GetString (desc);
 
 				if (desc.Length > MaxCharacters) {
-					int truncateIndex = desc.IndexOf (" ", MaxCharacters);
+					int truncateIndex = desc.IndexOf (' ', MaxCharacters);
 					if (truncateIndex > 0)
-						desc = desc.Substring (0, truncateIndex) + "...";
+						desc = string.Concat (desc.AsSpan (0, truncateIndex), "...");
 				}
 
 				this.desc = desc;
@@ -138,9 +138,9 @@ namespace MonoDevelop.Ide.WelcomePage
 			this.LinkUrl = link;
 
 			if (description.Length > MaxCharacters) {
-				int truncateIndex = description.IndexOf (" ", MaxCharacters);
+				int truncateIndex = description.IndexOf (' ', MaxCharacters);
 				if (truncateIndex > 0)
-					description = description.Substring (0, truncateIndex) + "...";
+					description = string.Concat (description.AsSpan (0, truncateIndex), "...");
 			}
 			this.desc = description;
 			SetDate (date);
@@ -316,7 +316,7 @@ namespace MonoDevelop.Ide.WelcomePage
 				}
 				switch (ch) {
 				case '\n':
-					result.Append (" ");
+					result.Append (' ');
 					break;
 				case '<':
 					inTag = true;

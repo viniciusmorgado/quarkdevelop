@@ -61,7 +61,7 @@ namespace MonoDevelop.Projects
 	/// </remarks>
 	public class Project : SolutionItem
 	{
-		string[] flavorGuids = new string[0];
+		string[] flavorGuids = Array.Empty<string> ();
 		static Counter<ProjectEventMetadata> ProjectOpenedCounter = InstrumentationService.CreateCounter<ProjectEventMetadata> ("Project Opened", "Project Model", id:"Ide.Project.Open");
 
 		string[] buildActions;
@@ -1265,8 +1265,7 @@ namespace MonoDevelop.Projects
 			//remove the "common" actions, since they're handled separately
 			IList<string> commonActions = ProjectExtension.OnGetCommonBuildActions ();
 			foreach (string action in commonActions)
-				if (actions.Contains (action))
-					actions.Remove (action);
+				actions.Remove (action);
 
 			if (predicate != null)
 				commonActions = commonActions.Where (action => predicate (action)).ToList ();
@@ -1453,9 +1452,7 @@ namespace MonoDevelop.Projects
 
 		async Task<TargetEvaluationResult> DoRunTarget (ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
 		{
-			if (configuration == null) {
-				throw new ArgumentNullException ("configuration");
-			}
+			ArgumentNullException.ThrowIfNull (configuration);
 			if (target == ProjectService.BuildTarget) {
 				SolutionItemConfiguration conf = GetConfiguration (configuration);
 				if (conf != null && conf.CustomCommands.HasCommands (CustomCommandType.Build)) {
@@ -1501,8 +1498,8 @@ namespace MonoDevelop.Projects
 			var configs = GetConfigurations (configuration, includeReferencedProjects);	
 
 
-			string [] evaluateItems = context != null ? context.ItemsToEvaluate.ToArray () : new string [0];
-			string [] evaluateProperties = context != null ? context.PropertiesToEvaluate.ToArray () : new string [0];
+			string [] evaluateItems = context != null ? context.ItemsToEvaluate.ToArray () : Array.Empty<string> ();
+			string [] evaluateProperties = context != null ? context.PropertiesToEvaluate.ToArray () : Array.Empty<string> ();
 
 			var globalProperties = CreateGlobalProperties (configuration, target);
 			if (context != null) {
@@ -1682,7 +1679,7 @@ namespace MonoDevelop.Projects
 		string GetActiveTargetFramework ()
 		{
 			var frameworks = GetTargetFrameworks (MSBuildProject);
-			if (frameworks != null && frameworks.Any ())
+			if (frameworks != null && frameworks.Length != 0)
 				return frameworks.FirstOrDefault ();
 
 			return null;
@@ -1694,7 +1691,7 @@ namespace MonoDevelop.Projects
 		/// </summary>
 		static string[] GetTargetFrameworks (MSBuildProject project)
 		{
-			if (!project.GetReferencedSDKs ().Any ())
+			if (project.GetReferencedSDKs ().Length == 0)
 				return null;
 
 			var propertyGroup = project.GetGlobalPropertyGroup ();
@@ -2312,9 +2309,7 @@ namespace MonoDevelop.Projects
 		[Obsolete ("Use MSBuild")]
 		public List<FilePath> GetOutputFiles (ConfigurationSelector configuration)
 		{
-			if (configuration == null) {
-				throw new ArgumentNullException ("configuration");
-			}
+			ArgumentNullException.ThrowIfNull (configuration);
 			var list = new List<FilePath> ();
 			PopulateOutputFileList (list, configuration);
 			return list;
@@ -2878,7 +2873,7 @@ namespace MonoDevelop.Projects
 
 				// Workaround for a VS issue. VS doesn't include the curly braces in the ProjectGuid
 				// of shared projects.
-				if (!itemGuid.StartsWith ("{", StringComparison.Ordinal))
+				if (!itemGuid.StartsWith ('{'))
 					itemGuid = "{" + itemGuid + "}";
 
 				ItemId = itemGuid.ToUpper ();
@@ -3959,7 +3954,7 @@ namespace MonoDevelop.Projects
 					if (globItem != null) {
 						var updateGlobItems = msproject.FindUpdateGlobItemsIncludingFile (item.Include, globItem).ToList ();
 						// Globbing magic can only be done if there is no metadata (for now)
-						if (globItem.Metadata.GetProperties ().Count () == 0 && !updateGlobItems.Any ()) {
+						if (!globItem.Metadata.GetProperties ().Any () && updateGlobItems.Count == 0) {
 							var it = new MSBuildItem (item.ItemName);
 							var itemDefinitionProps = msproject.GetEvaluatedItemDefinitionProperties (it.Name);
 							if (itemDefinitionProps != null) {
@@ -3970,7 +3965,7 @@ namespace MonoDevelop.Projects
 							} else {
 								item.Write (this, it);
 							}
-							if (it.Metadata.GetProperties ().Count () == 0)
+							if (!it.Metadata.GetProperties ().Any ())
 								buildItem = globItem;
 
 							// Add an expanded item so a Remove item does not
@@ -3997,7 +3992,7 @@ namespace MonoDevelop.Projects
 								buildItem = new MSBuildItem (item.ItemName) { Update = item.Include };
 								msproject.AddItem (buildItem);
 							}
-						} else if (updateGlobItems.Any ()) {
+						} else if (updateGlobItems.Count != 0) {
 							// Multiple update items not supported yet.
 							buildItem = updateGlobItems [0];
 							sourceItems = new [] { globItem, buildItem };
@@ -4560,7 +4555,7 @@ namespace MonoDevelop.Projects
 		public IEnumerable<ProjectItem> AddItemsForFileIncludedInGlob (FilePath file)
 		{
 			var include = MSBuildProjectService.ToMSBuildPath (ItemDirectory, file);
-			foreach (var it in sourceProject.FindGlobItemsIncludingFile (include).Where (it => it.Metadata.GetProperties ().Count () == 0)) {
+			foreach (var it in sourceProject.FindGlobItemsIncludingFile (include).Where (it => !it.Metadata.GetProperties ().Any ())) {
 				var eit = CreateFakeEvaluatedItem (sourceProject, it, include, null);
 				var pi = CreateProjectItem (eit);
 				pi.Read (this, eit);

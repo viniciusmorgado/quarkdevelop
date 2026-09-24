@@ -43,7 +43,7 @@ namespace MonoDevelop.CSharp
 {
 	class UnitTestTextEditorExtension : AbstractUnitTestTextEditorExtension
 	{
-		static readonly IList<UnitTestLocation> emptyList = new UnitTestLocation[0];
+		static readonly IList<UnitTestLocation> emptyList = Array.Empty<UnitTestLocation> ();
 
 		static bool HasMethodMarkerAttribute (SemanticModel model, IUnitTestMarkers[] markers)
 		{
@@ -155,14 +155,14 @@ namespace MonoDevelop.CSharp
 			{
 				switch (arg.Kind) {
 				case TypedConstantKind.Array:
-					sb.Append ("[");
+					sb.Append ('[');
 					for (int i = 0; i < arg.Values.Length; i++) {
 						if (i > 0)
 							sb.Append (", ");
 
 						AddArgument (arg.Values [i], sb);
 					}
-					sb.Append ("]");
+					sb.Append (']');
 					break;
 				case TypedConstantKind.Enum:
 					ulong constant;

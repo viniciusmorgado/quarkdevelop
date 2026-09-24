@@ -69,18 +69,9 @@ namespace Microsoft.VisualStudio.Text.Editor.Implementation
                                  ICollection<Lazy<ITextViewConnectionListener, IContentTypeAndTextViewRoleMetadata>> textViewConnectionListeners,
                                  IGuardedOperations guardedOperations)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException("textView");
-            }
-            if (textViewConnectionListeners == null)
-            {
-                throw new ArgumentNullException("textViewConnectionListeners");
-            }
-            if (guardedOperations == null)
-            {
-                throw new ArgumentNullException("guardedOperations");
-            }
+            ArgumentNullException.ThrowIfNull(textView);
+            ArgumentNullException.ThrowIfNull(textViewConnectionListeners);
+            ArgumentNullException.ThrowIfNull(guardedOperations);
 
             _textView = textView;
             _guardedOperations = guardedOperations;

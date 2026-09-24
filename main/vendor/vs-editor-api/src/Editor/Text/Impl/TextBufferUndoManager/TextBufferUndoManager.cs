@@ -28,20 +28,14 @@ namespace Microsoft.VisualStudio.Text.BufferUndoManager.Implementation
 
         IEditorOperations _initiatingOperations = null;
 #endif
-        ITextUndoTransaction _createdTransaction = null;
+        ITextUndoTransaction _createdTransaction;
 #endregion
 
         public TextBufferUndoManager(ITextBuffer textBuffer, ITextUndoHistoryRegistry undoHistoryRegistry)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
-            if (undoHistoryRegistry == null)
-            {
-                throw new ArgumentNullException(nameof(undoHistoryRegistry));
-            }
+            ArgumentNullException.ThrowIfNull(undoHistoryRegistry);
 
             _textBuffer = textBuffer;
             _undoHistoryRegistry = undoHistoryRegistry;

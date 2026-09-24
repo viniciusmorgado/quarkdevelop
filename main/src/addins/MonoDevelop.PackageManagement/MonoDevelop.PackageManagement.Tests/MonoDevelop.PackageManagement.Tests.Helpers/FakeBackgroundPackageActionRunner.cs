@@ -31,7 +31,7 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeBackgroundPackageActionRunner : IBackgroundPackageActionRunner
+	sealed class FakeBackgroundPackageActionRunner : IBackgroundPackageActionRunner
 	{
 		public IEnumerable<IInstallNuGetPackageAction> PendingInstallActionsForProject (DotNetProject project)
 		{

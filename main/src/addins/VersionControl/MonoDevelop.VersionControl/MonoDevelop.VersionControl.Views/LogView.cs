@@ -9,7 +9,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MonoDevelop.Ide.Gui.Documents;
-using System.Threading.Tasks;
 
 namespace MonoDevelop.VersionControl.Views
 {

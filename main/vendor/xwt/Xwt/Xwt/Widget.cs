@@ -45,7 +45,7 @@ namespace Xwt
 		static bool DebugWidgetLayout = false;
 		static int DebugWidgetLayoutIndent = 0;
 
-		static Widget[] emptyList = new Widget[0];
+		static Widget[] emptyList = Array.Empty<Widget> ();
 		List<Widget> children;
 		WidgetSpacing margin;
 		Size cachedSize;
@@ -2140,7 +2140,7 @@ namespace Xwt
 		}
 	}
 	
-	class EventMap
+	sealed class EventMap
 	{
 		public string MethodName;
 		public object EventId;

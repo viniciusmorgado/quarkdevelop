@@ -37,7 +37,7 @@ namespace Xwt.GtkBackend
 {
 	public static class CellUtil
 	{
-		class CellDataSource: ICellDataSource
+		sealed class CellDataSource: ICellDataSource
 		{
 			TreeIter iter;
 			TreeModel treeModel;

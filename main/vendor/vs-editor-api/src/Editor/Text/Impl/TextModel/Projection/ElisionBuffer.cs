@@ -250,19 +250,13 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public IProjectionSnapshot ElideSpans(NormalizedSpanCollection spansToElide)
         {
-            if (spansToElide == null)
-            {
-                throw new ArgumentNullException(nameof(spansToElide));
-            }
+            ArgumentNullException.ThrowIfNull(spansToElide);
             return ModifySpans(spansToElide, null);
         }
 
         public IProjectionSnapshot ExpandSpans(NormalizedSpanCollection spansToExpand)
         {
-            if (spansToExpand == null)
-            {
-                throw new ArgumentNullException(nameof(spansToExpand));
-            }
+            ArgumentNullException.ThrowIfNull(spansToExpand);
             return ModifySpans(null, spansToExpand);
         }
 

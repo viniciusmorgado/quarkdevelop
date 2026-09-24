@@ -25,14 +25,10 @@ namespace NuGet.PackageManagement.UI
 			Task<SearchResult<IPackageSearchMetadata>> searchTask,
 			CancellationToken cancellationToken)
 		{
-			if (packageFeed == null) {
-				throw new ArgumentNullException (nameof (packageFeed));
-			}
+			ArgumentNullException.ThrowIfNull (packageFeed);
 			_packageFeed = packageFeed;
 
-			if (searchTask == null) {
-				throw new ArgumentNullException (nameof (searchTask));
-			}
+			ArgumentNullException.ThrowIfNull (searchTask);
 			_startFromTask = searchTask;
 
 			_cancellationToken = cancellationToken;
@@ -42,9 +38,7 @@ namespace NuGet.PackageManagement.UI
 
 		private PackageFeedEnumerator (PackageFeedEnumerator other)
 		{
-			if (other == null) {
-				throw new ArgumentNullException (nameof (other));
-			}
+			ArgumentNullException.ThrowIfNull (other);
 			_packageFeed = other._packageFeed;
 			_startFromTask = other._startFromTask;
 			_cancellationToken = other._cancellationToken;

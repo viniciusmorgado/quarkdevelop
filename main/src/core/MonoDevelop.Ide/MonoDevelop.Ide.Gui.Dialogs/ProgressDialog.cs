@@ -42,7 +42,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		
 		TextTag tag;
 		TextTag bold;
-		int ident = 0;
+		int ident;
 		List<TextTag> tags = new List<TextTag> ();
 		Stack<string> indents = new Stack<string> ();
 		CancellationTokenSource cancellationTokenSource;
@@ -125,7 +125,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		public void WriteText (string text)
 		{
 			AddText (text);
-			if (text.EndsWith ("\n"))
+			if (text.EndsWith ('\n'))
 				detailsTextView.ScrollMarkOnscreen (buffer.InsertMark);
 		}
 		

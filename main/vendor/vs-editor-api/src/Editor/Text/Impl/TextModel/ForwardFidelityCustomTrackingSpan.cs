@@ -17,10 +17,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         public ForwardFidelityCustomTrackingSpan(TextVersion version, Span span, object customState, CustomTrackToVersion behavior)
             : base(version, span, SpanTrackingMode.Custom)
         {
-            if (behavior == null)
-            {
-                throw new ArgumentNullException(nameof(behavior));
-            }
+            ArgumentNullException.ThrowIfNull(behavior);
             this.behavior = behavior;
             this.customState = customState;
         }

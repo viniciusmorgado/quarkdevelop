@@ -238,7 +238,7 @@ namespace MonoDevelop.Debugger
 
 		protected virtual Task<IList<ObjectValueNode>> OnLoadChildrenAsync (CancellationToken cancellationToken)
 		{
-			return Task.FromResult ((IList<ObjectValueNode>) new ObjectValueNode[0]);
+			return Task.FromResult ((IList<ObjectValueNode>)Array.Empty<ObjectValueNode> ());
 		}
 
 		/// <summary>
@@ -246,7 +246,7 @@ namespace MonoDevelop.Debugger
 		/// </summary>
 		protected virtual Task<Tuple<IList<ObjectValueNode>, bool>> OnLoadChildrenAsync (int index, int count, CancellationToken cancellationToken)
 		{
-			return Task.FromResult (Tuple.Create ((IList<ObjectValueNode>) new ObjectValueNode[0], true));
+			return Task.FromResult (Tuple.Create ((IList<ObjectValueNode>)Array.Empty<ObjectValueNode> (), true));
 		}
 
 		protected void OnValueChanged (EventArgs e)

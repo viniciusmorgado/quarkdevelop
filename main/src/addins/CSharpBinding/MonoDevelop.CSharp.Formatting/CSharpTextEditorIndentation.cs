@@ -448,7 +448,7 @@ namespace MonoDevelop.CSharp.Formatting
 
 				if (!isCompletionWindowOpen &&                           // Completion window handles ';' on it's own
 					Editor.GetCharAt (Editor.CaretOffset - 1) == ';' &&  // Formatting engine may've already interfered
-					!(text.EndsWith (";", StringComparison.Ordinal) || text.Trim ().StartsWith ("for", StringComparison.Ordinal))) {
+					!(text.EndsWith (';') || text.Trim ().StartsWith ("for", StringComparison.Ordinal))) {
 					int guessedOffset;
 
 					if (GuessSemicolonInsertionOffset (Editor, curLine, Editor.CaretOffset, out guessedOffset)) {
@@ -776,7 +776,7 @@ namespace MonoDevelop.CSharp.Formatting
 					}
 					//multi-line comments
 				} else if (stateTracker.IsInsideMultiLineComment) {
-					if (textEditorData.GetTextAt (line.Offset, line.Length).TrimStart ().StartsWith ("*", StringComparison.Ordinal))
+					if (textEditorData.GetTextAt (line.Offset, line.Length).TrimStart ().StartsWith ('*'))
 						return false;
 					textEditorData.EnsureCaretIsNotVirtual ();
 					string commentPrefix = string.Empty;
@@ -784,7 +784,7 @@ namespace MonoDevelop.CSharp.Formatting
 						commentPrefix = "* ";
 					} else if (trimmedPreviousLine.StartsWith ("/**", StringComparison.Ordinal) || trimmedPreviousLine.StartsWith ("/*", StringComparison.Ordinal)) {
 						commentPrefix = " * ";
-					} else if (trimmedPreviousLine.StartsWith ("*", StringComparison.Ordinal)) {
+					} else if (trimmedPreviousLine.StartsWith ('*')) {
 						commentPrefix = "*";
 					}
 
@@ -803,7 +803,7 @@ namespace MonoDevelop.CSharp.Formatting
 					textEditorData.InsertText (prevLine.Offset + prevLine.Length, insertedText);
 					var lineOffset = line.Offset + insertedText.Length;
 					int indentSize = textEditorData.CaretOffset - lineOffset;
-					insertedText = prevLine.GetIndentation (textEditorData) + (trimmedPreviousLine.StartsWith ("\"", StringComparison.Ordinal) ? "" : "\t") + "\"";
+					insertedText = prevLine.GetIndentation (textEditorData) + (trimmedPreviousLine.StartsWith ('"') ? "" : "\t") + "\"";
 					textEditorData.ReplaceText (lineOffset, indentSize, insertedText);
 					return true;
 				}

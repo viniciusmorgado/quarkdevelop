@@ -403,7 +403,7 @@ namespace MonoDevelop.Projects.MSBuild
 						return new KeyValuePair<string,string> (li.Trim (), "");
 				});
 			else
-				return new KeyValuePair<string,string> [0];
+				return Array.Empty<KeyValuePair<string, string>> ();
 		}
 
 		public SlnSectionType SectionType { get; set; }
@@ -930,8 +930,7 @@ namespace MonoDevelop.Projects.MSBuild
 
 		public SlnSection GetOrCreateSection (string id, SlnSectionType sectionType)
 		{
-			if (id == null)
-				throw new ArgumentNullException ("id");
+			ArgumentNullException.ThrowIfNull (id);
 			var sec = this.FirstOrDefault (s => s.Id == id);
 			if (sec == null) {
 				sec = new SlnSection { Id = id };
@@ -943,8 +942,7 @@ namespace MonoDevelop.Projects.MSBuild
 
 		public void RemoveSection (string id)
 		{
-			if (id == null)
-				throw new ArgumentNullException ("id");
+			ArgumentNullException.ThrowIfNull (id);
 			var s = GetSection (id);
 			if (s != null)
 				Remove (s);

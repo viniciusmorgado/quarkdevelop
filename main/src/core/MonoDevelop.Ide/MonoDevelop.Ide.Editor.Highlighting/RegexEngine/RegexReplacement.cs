@@ -190,10 +190,9 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         internal String Replace(Regex regex, string input, int count, int startat) {
             Match match;
 
-            if (count < -1)
-                throw new ArgumentOutOfRangeException("count");
+            ArgumentOutOfRangeException.ThrowIfLessThan (count, -1);
             if (startat < 0 || startat > input.Length) 
-                throw new ArgumentOutOfRangeException("startat");
+                throw new ArgumentOutOfRangeException(nameof (startat));
 
             if (count == 0)
 				return input.ToString ();
@@ -211,7 +210,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
 
                     do {
                         if (match.Index != prevat)
-							sb.Append (input.Substring (prevat, match.Index - prevat));
+							sb.Append (input.AsSpan (prevat, match.Index - prevat));
 
                         prevat = match.Index + match.Length;
                         ReplacementImpl(sb, match);
@@ -222,7 +221,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                     } while (match.Success);
 
                     if (prevat < input.Length)
-						sb.Append (input.Substring (prevat, input.Length - prevat));
+						sb.Append (input.AsSpan (prevat, input.Length - prevat));
                 }
                 else {
                     List<String> al = new List<String>();
@@ -243,7 +242,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                     sb = new StringBuilder();
 
                     if (prevat > 0)
-						sb.Append (input.Substring (0, prevat));
+						sb.Append (input.AsSpan (0, prevat));
 
                     for (int i = al.Count - 1; i >= 0; i--) {
                         sb.Append(al[i]);
@@ -267,12 +266,10 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                                        string input, int count, int startat) {
             Match match;
 
-            if (evaluator == null)
-                throw new ArgumentNullException("evaluator");
-            if (count < -1)
-                throw new ArgumentOutOfRangeException("count");
+            ArgumentNullException.ThrowIfNull (evaluator);
+            ArgumentOutOfRangeException.ThrowIfLessThan (count, -1);
             if (startat < 0 || startat > input.Length)
-                throw new ArgumentOutOfRangeException("startat");
+                throw new ArgumentOutOfRangeException(nameof (startat));
 
             if (count == 0)
 				return input.ToString ();
@@ -291,7 +288,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
 
                     do {
                         if (match.Index != prevat)
-							sb.Append (input.Substring (prevat, match.Index - prevat));
+							sb.Append (input.AsSpan (prevat, match.Index - prevat));
 
                         prevat = match.Index + match.Length;
 
@@ -304,7 +301,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                     } while (match.Success);
 
                     if (prevat < input.Length)
-						sb.Append (input.Substring (prevat, input.Length - prevat));
+						sb.Append (input.AsSpan (prevat, input.Length - prevat));
                 }
                 else {
                     List<String> al = new List<String>();
@@ -327,7 +324,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                     sb = new StringBuilder();
 
                     if (prevat > 0)
-						sb.Append (input.Substring (0, prevat));
+						sb.Append (input.AsSpan (0, prevat));
 
                     for (int i = al.Count - 1; i >= 0; i--) {
                         sb.Append(al[i]);
@@ -346,11 +343,10 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
             Match match;
 			string [] result;
 
-            if (count < 0)
-                throw new ArgumentOutOfRangeException("count");
+            ArgumentOutOfRangeException.ThrowIfNegative (count);
 
             if (startat < 0 || startat > input.Length) 
-                throw new ArgumentOutOfRangeException("startat");
+                throw new ArgumentOutOfRangeException(nameof (startat));
                 
             if (count == 1) {
 				result = new string[1];
@@ -393,7 +389,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                             break;
                     }
 
-					al.Add (input.Substring(prevat, input.Length - prevat));
+					al.Add (input.Substring (prevat));
                 }
                 else {
                     int prevat = input.Length;

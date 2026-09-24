@@ -77,7 +77,7 @@ namespace MonoDevelop.Ide.Extensions
 				Guid guid = KnownImagesGuid;
 				int hashIdx = imageid.IndexOf ('#', start, end - start);
 				if (hashIdx > -1) {
-					guid = Guid.Parse (imageid.Substring (start, hashIdx - start));
+					guid = Guid.Parse (imageid.AsSpan (start, hashIdx - start));
 					start = hashIdx + 1;
 				}
 

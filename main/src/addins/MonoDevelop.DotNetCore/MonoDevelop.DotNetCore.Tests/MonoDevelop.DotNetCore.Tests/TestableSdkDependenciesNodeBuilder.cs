@@ -32,7 +32,7 @@ using MonoDevelop.Ide.Gui.Components;
 
 namespace MonoDevelop.DotNetCore.Tests
 {
-	class TestableSdkDependenciesNodeBuilder : SdkDependenciesNodeBuilder
+	sealed class TestableSdkDependenciesNodeBuilder : SdkDependenciesNodeBuilder
 	{
 		public List<object> ChildNodes = new List<object> ();
 

@@ -33,7 +33,7 @@ using MonoDevelop.Core.Text;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture()]
-	class TextBreakerTests : TextEditorTestBase
+	sealed class TextBreakerTests : TextEditorTestBase
 	{
 		[Test()]
 		public void TestTextBreakerWithSingleWord ()

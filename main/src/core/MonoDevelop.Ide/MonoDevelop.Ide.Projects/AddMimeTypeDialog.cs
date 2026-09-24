@@ -89,7 +89,7 @@ namespace MonoDevelop.Ide.Projects
 		
 		string TryGetFileType (string name)
 		{
-			if (name.StartsWith ("."))
+			if (name.StartsWith ('.'))
 				name = name.Substring (1);
 			
 			string tmpFile = null;

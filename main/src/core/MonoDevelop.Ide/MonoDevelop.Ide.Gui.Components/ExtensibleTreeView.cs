@@ -65,7 +65,7 @@ namespace MonoDevelop.Ide.Gui.Components
 		CustomCellRendererText text_render;
 		TreeBuilderContext builderContext;
 		Dictionary<object, List<TreeNodeCallback>> callbacks = new Dictionary<object, List<TreeNodeCallback>> ();
-		bool editingText = false;
+		bool editingText;
 
 		TreePadOption[] options;
 		TreeOptions globalOptions;
@@ -729,7 +729,7 @@ namespace MonoDevelop.Ide.Gui.Components
 		{
 			Gtk.TreePath[] paths = tree.Selection.GetSelectedRows ();
 			if (paths.Length == 0) {
-				return new SelectionGroup [0];
+				return Array.Empty<SelectionGroup> ();
 			}
 			if (paths.Length == 1) {
 				Gtk.TreeIter it;
@@ -908,7 +908,7 @@ namespace MonoDevelop.Ide.Gui.Components
 				if (nodeGroups.Count () == 1) {
 					SelectionGroup grp = nodeGroups.First ();
 
-					if (grp.Nodes.Count () == 1) {
+					if (grp.Nodes.Count == 1) {
 						ITreeNavigator node = grp.Nodes.First ();
 						if (node.Expanded) {
 							grp.SavePositions ();
@@ -944,7 +944,7 @@ namespace MonoDevelop.Ide.Gui.Components
 				if (nodeGroups.Count () == 1) {
 					SelectionGroup grp = nodeGroups.First ();
 
-					if (grp.Nodes.Count () == 1)
+					if (grp.Nodes.Count == 1)
 					{
 						ITreeNavigator node = grp.Nodes.First ();
 						if (!node.HasChildren () || !node.Expanded) {
@@ -2306,8 +2306,8 @@ namespace MonoDevelop.Ide.Gui.Components
 				new Gtk.TargetEntry ("application/x-rootwindow-drop", 0, 33)
 			};
 
-			public object[] dragObjects = null;
-			bool dropping = false;
+			public object[] dragObjects;
+			bool dropping;
 			Func<object,string> nodeToUri;
 
 			public void EnableDragUriSource (Func<object,string> nodeToUri)

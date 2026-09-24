@@ -269,7 +269,7 @@ namespace MonoDevelop.PackageManagement
 				var projectActions = actions
 					.Where (action => action.Project == project)
 					.ToArray ();
-				if (projectActions.Any ()) {
+				if (projectActions.Length != 0) {
 					project.OnAfterExecuteActions (projectActions);
 				}
 			}

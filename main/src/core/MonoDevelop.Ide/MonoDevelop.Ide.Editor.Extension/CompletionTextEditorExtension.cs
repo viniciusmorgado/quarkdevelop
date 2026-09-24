@@ -128,7 +128,7 @@ namespace MonoDevelop.Ide.Editor.Extension
 
 		CancellationTokenSource completionTokenSrc = new CancellationTokenSource ();
 		CancellationTokenSource parameterHintingSrc = new CancellationTokenSource ();
-		bool parameterHingtingCursorPositionChanged = false;
+		bool parameterHingtingCursorPositionChanged;
 
 		// When a key is pressed, and before the key is processed by the editor, this method will be invoked.
 		// Return true if the key press should be processed by the editor.
@@ -769,7 +769,7 @@ namespace MonoDevelop.Ide.Editor.Extension
 			CurrentCompletionContext = null;
 		}
 
-		bool disposed = false;
+		bool disposed;
 		public override void Dispose ()
 		{
 			if (!disposed)

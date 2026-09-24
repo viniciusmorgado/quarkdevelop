@@ -64,7 +64,6 @@ namespace MonoDevelop.Debugger
 	{
 		// For button sensitivity.
 		DialogButton buttonOk;
-		bool editing;
 
 		// Groupings for sensitivity
 		HBox hboxFunction = new HBox () { MarginLeft = 18 };
@@ -308,7 +307,6 @@ namespace MonoDevelop.Debugger
 		void SetInitialData ()
 		{
 			if (be != null) {
-				editing = true;
 				if (be.HitCountMode == HitCountMode.None) {
 					ignoreHitType.SelectedItem = HitCountMode.GreaterThanOrEqualTo;
 					ignoreHitCount.Value = 0;

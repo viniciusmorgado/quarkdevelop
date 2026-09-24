@@ -41,7 +41,7 @@ namespace MonoDevelop.DocFood.Options
 		}
 	}
 	
-	class OptionsPanelPanel : OptionsPanel
+	sealed class OptionsPanelPanel : OptionsPanel
 	{
 		OptionsPanelWidget panel;
 		

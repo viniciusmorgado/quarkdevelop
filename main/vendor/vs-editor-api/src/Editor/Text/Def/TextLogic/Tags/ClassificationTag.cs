@@ -21,8 +21,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <exception cref="ArgumentNullException">If the type is passed in as null</exception>
         public ClassificationTag(IClassificationType type)
         {
-            if (type == null)
-                throw new ArgumentNullException(nameof(type));
+            ArgumentNullException.ThrowIfNull (type);
 
             ClassificationType = type;
         }

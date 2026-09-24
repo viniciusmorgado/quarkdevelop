@@ -32,7 +32,7 @@ using MonoDevelop.Core;
 
 namespace Mono.MHex
 {
-	class HexEditorDebugger : VBox
+	sealed class HexEditorDebugger : VBox
 	{
 		public HexEditorData HexEditorData {
 			get {

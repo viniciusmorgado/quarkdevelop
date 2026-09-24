@@ -31,7 +31,7 @@ using Gtk;
 
 namespace Mono.Addins.GuiGtk3
 {
-    class HoverImageButton : EventBox
+    sealed class HoverImageButton : EventBox
     {
         private static Gdk.Cursor hand_cursor = new Gdk.Cursor(Gdk.CursorType.Hand1);
 
@@ -79,7 +79,7 @@ namespace Mono.Addins.GuiGtk3
             }
         }
 
-        private bool changing_style = false;
+        private bool changing_style;
         protected override void OnStyleSet(Style previous_style)
         {
             if(changing_style) {

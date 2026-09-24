@@ -154,7 +154,7 @@ namespace MonoDevelop.Core
 			Assert.AreEqual (4, memoTest3CallCount);
 		}
 
-		class DateTimeWrapper
+		sealed class DateTimeWrapper
 		{
 			public DateTime DateTime;
 		}
@@ -167,9 +167,9 @@ namespace MonoDevelop.Core
 			new DateTimeWrapper { DateTime = new DateTime (2016, 01, 14) },
 		};
 
-		readonly DateTimeWrapper [] defaultDateTimeSource = { };
+		readonly DateTimeWrapper [] defaultDateTimeSource = Array.Empty<DateTimeWrapper> ();
 
-		class DateTimeComparer : IComparer<DateTime>
+		sealed class DateTimeComparer : IComparer<DateTime>
 		{
 			public int Compare (DateTime x, DateTime y)
 			{

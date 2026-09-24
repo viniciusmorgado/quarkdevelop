@@ -22,8 +22,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if virtual space is enabled, otherwise <c>false</c>.</returns>
         public static bool IsVirtualSpaceEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewOptions.UseVirtualSpaceId);
         }
@@ -35,8 +34,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if overwrite mode is enabled, otherwise <c>false</c>.</returns>
         public static bool IsOverwriteModeEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewOptions.OverwriteModeId);
         }
@@ -48,8 +46,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if auto-scroll is enabled, otherwise <c>false</c>.</returns>
         public static bool IsAutoScrollEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewOptions.AutoScrollId);
         }
@@ -61,8 +58,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns>The <see cref="WordWrapStyles"/> of the set of editor options.</returns>
         public static WordWrapStyles WordWrapStyle(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<WordWrapStyles>(DefaultTextViewOptions.WordWrapStyleId);
         }
@@ -74,24 +70,21 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if visible whitespace is enabled, otherwise <c>false</c>.</returns>
         public static bool IsVisibleWhitespaceEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewOptions.UseVisibleWhitespaceId);
         }
 
         public static bool IsVisibleWhitespaceOnlyWhenSelectedEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewOptions.UseVisibleWhitespaceOnlyWhenSelectedId);
         }
 
         public static DefaultTextViewOptions.IncludeWhitespaces VisibleWhitespaceEnabledTypes(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<DefaultTextViewOptions.IncludeWhitespaces>(DefaultTextViewOptions.UseVisibleWhitespaceIncludeId);
         }
@@ -104,8 +97,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <remarks>The view's underlying buffer can still be modified even if this option is set.</remarks>
         public static bool DoesViewProhibitUserInput(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewOptions.ViewProhibitUserInputId);
         }
@@ -117,8 +109,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the option is enabled, otherwise <c>false</c>.</returns>
         public static bool IsOutliningUndoEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultTextViewOptions.OutliningUndoOptionId);
         }
@@ -130,8 +121,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the drag/drop editing option is enabled, <c>false</c> otherwise.</returns>
         public static bool IsDragDropEditingEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultTextViewOptions.DragDropEditingId);
         }
@@ -143,8 +133,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if ViewportLeft is clipped, otherwise <c>false</c>.</returns>
         public static bool IsViewportLeftClipped(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewOptions.IsViewportLeftClippedId);
         }
@@ -154,8 +143,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// </summary>
         public static bool ShouldMoveCaretOnSelectAll(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultTextViewOptions.ShouldMoveCaretOnSelectAllId);
         }
@@ -176,8 +164,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the vertical scrollbar is enabled, otherwise <c>false</c>.</returns>
         public static bool IsVerticalScrollBarEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewHostOptions.VerticalScrollBarId);
         }
@@ -189,8 +176,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the horizontal scrollbar is enabled, otherwise <c>false</c>.</returns>
         public static bool IsHorizontalScrollBarEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewHostOptions.HorizontalScrollBarId);
         }
@@ -202,8 +188,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the glyph margin is enabled, otherwise <c>false</c>.</returns>
         public static bool IsGlyphMarginEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewHostOptions.GlyphMarginId);
         }
@@ -215,8 +200,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the selection margin is enabled, otherwise <c>false</c>.</returns>
         public static bool IsSelectionMarginEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewHostOptions.SelectionMarginId);
         }
@@ -228,8 +212,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the line number margin is enabled, otherwise <c>false</c>.</returns>
         public static bool IsLineNumberMarginEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewHostOptions.LineNumberMarginId);
         }
@@ -241,8 +224,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if change tracking is enabled, otherwise <c>false</c>.</returns>
         public static bool IsChangeTrackingEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewHostOptions.ChangeTrackingId);
         }
@@ -255,8 +237,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <remarks>Disabling the margin does NOT turn off Outlining (it just hides the margin</remarks>
         public static bool IsOutliningMarginEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewHostOptions.OutliningMarginId);
         }
@@ -268,8 +249,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the zoom control is enabled, otherwise <c>false</c>.</returns>
         public static bool IsZoomControlEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewHostOptions.ZoomControlId);
         }
@@ -281,10 +261,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the editor is in either "Extra Contrast" or "High Contrast" modes, otherwise <c>false</c>.</returns>
         public static bool IsInContrastMode(this IEditorOptions options)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue<bool>(DefaultTextViewHostOptions.IsInContrastModeId);
         }

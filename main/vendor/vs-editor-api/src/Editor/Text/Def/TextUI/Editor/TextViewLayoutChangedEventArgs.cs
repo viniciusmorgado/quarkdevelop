@@ -62,14 +62,10 @@ namespace Microsoft.VisualStudio.Text.Editor
                                               IList<ITextViewLine> newOrReformattedLines,
                                               IList<ITextViewLine> translatedLines)
         {
-            if (oldState == null)
-                throw new ArgumentNullException(nameof(oldState));
-            if (newState == null)
-                throw new ArgumentNullException(nameof(newState));
-            if (translatedLines == null)
-                throw new ArgumentNullException(nameof(translatedLines));
-            if (newOrReformattedLines == null)
-                throw new ArgumentNullException(nameof(newOrReformattedLines));
+            ArgumentNullException.ThrowIfNull(oldState);
+            ArgumentNullException.ThrowIfNull(newState);
+            ArgumentNullException.ThrowIfNull(translatedLines);
+            ArgumentNullException.ThrowIfNull(newOrReformattedLines);
 
             _oldViewState = oldState;
             _newViewState = newState;

@@ -55,8 +55,7 @@ namespace MonoDevelop.Core.Web
 
 		public void UpdateCredential (Uri proxyAddress, NetworkCredential credentials)
 		{
-			if (credentials == null)
-				throw new ArgumentNullException (nameof (credentials));
+			ArgumentNullException.ThrowIfNull (credentials);
 
 			Version = Guid.NewGuid ();
 			cache [proxyAddress] = credentials;

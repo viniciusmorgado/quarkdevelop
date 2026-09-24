@@ -7,7 +7,6 @@ namespace MonoDevelop.VersionControl
 {
 	public class VersionInfo
 	{
-		bool opsLoaded;
 		VersionControlOperation operations;
 		Repository ownerRepository;
 

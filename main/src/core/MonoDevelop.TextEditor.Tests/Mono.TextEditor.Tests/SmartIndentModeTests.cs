@@ -37,7 +37,7 @@ namespace Mono.TextEditor.Tests
 	{
 		internal readonly static IndentationTracker IndentTracker = new TestIndentTracker ();
 
-		internal class TestIndentTracker : IndentationTracker
+		internal sealed class TestIndentTracker : IndentationTracker
 		{
 			string indentString;
 			Dictionary<int, string> definedIndents = new Dictionary<int, string> ();

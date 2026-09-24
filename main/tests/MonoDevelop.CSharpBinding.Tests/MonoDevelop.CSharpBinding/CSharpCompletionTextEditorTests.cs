@@ -166,7 +166,7 @@ namespace console61
 		{
 			int endPos = text.IndexOf ('$');
 			if (endPos >= 0)
-				text = text.Substring (0, endPos) + text.Substring (endPos + 1);
+				text = string.Concat (text.AsSpan (0, endPos), text.AsSpan (endPos + 1));
 
 			using (var testCase = await SetupTestCase (text, cursorPosition: Math.Max (0, endPos))) {
 				var doc = testCase.Document;
@@ -297,10 +297,10 @@ namespace console61
 
 			int startOfStatement = text.IndexOf ('$');
 			if (startOfStatement >= 0)
-				text = text.Substring (0, startOfStatement) + text.Substring (startOfStatement + 1);
+				text = string.Concat (text.AsSpan (0, startOfStatement), text.AsSpan (startOfStatement + 1));
 			int endOfStatement = text.IndexOf ('$');
 			if (endOfStatement >= 0)
-				text = text.Substring (0, endOfStatement) + text.Substring (endOfStatement + 1);
+				text = string.Concat (text.AsSpan (0, endOfStatement), text.AsSpan (endOfStatement + 1));
 
 			using (var testCase = await SetupTestCase (text, cursorPosition: Math.Max (0, startOfStatement))) {
 				var doc = testCase.Document;

@@ -460,7 +460,7 @@ namespace MonoDevelop.Projects.SharedAssetsProjects
 		IEnumerable<DotNetProject> GetReferencingProjects ()
 		{
 			if (ParentSolution == null)
-				return new DotNetProject[0];
+				return Array.Empty<DotNetProject> ();
 
 			return ParentSolution.GetAllItems<DotNetProject> ().Where (p => p.References.Any (r => r.GetItemsProjectPath () == ProjItemsPath));
 		}

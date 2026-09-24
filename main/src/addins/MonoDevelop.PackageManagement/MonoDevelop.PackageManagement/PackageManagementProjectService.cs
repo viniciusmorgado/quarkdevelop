@@ -92,7 +92,7 @@ namespace MonoDevelop.PackageManagement
 			if (OpenSolution != null) {
 				return OpenSolution.GetAllProjects ();
 			}
-			return new IDotNetProject [0];
+			return Array.Empty<IDotNetProject> ();
 		}
 		
 		public string GetDefaultCustomToolForFileName(ProjectFile projectItem)

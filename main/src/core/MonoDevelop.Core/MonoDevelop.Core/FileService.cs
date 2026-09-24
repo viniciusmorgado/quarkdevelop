@@ -610,8 +610,7 @@ namespace MonoDevelop.Core
 
 		public static string GetFullPath (string path)
 		{
-			if (path == null)
-				throw new ArgumentNullException ("path");
+			ArgumentNullException.ThrowIfNull (path);
 			if (!Platform.IsWindows || path.IndexOf ('*') == -1)
 				return Path.GetFullPath (path);
 			else {
@@ -1118,11 +1117,9 @@ namespace MonoDevelop.Core
 						values [path] = state = new FileEventState ();
 					}
 
-					if (eventIndex >= Events.Count)
-						throw new ArgumentOutOfRangeException (nameof (eventIndex));
+					ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual (eventIndex, Events.Count);
 
-					if (fileIndex >= ((FileEventData)Events[eventIndex]).Args.Count)
-						throw new ArgumentOutOfRangeException (nameof (fileIndex));
+					ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual (fileIndex, ((FileEventData)Events[eventIndex]).Args.Count);
 
 					state.Indices.Add ((eventIndex, fileIndex, isSource));
 					state.FinalState = newState;

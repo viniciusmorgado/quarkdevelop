@@ -148,8 +148,8 @@ namespace MonoDevelop.Ide.Fonts
 		/// </param>
 		public FontDescription GetFontDescription (string name, bool createDefaultFont = true)
 		{
-			if (loadedFonts.ContainsKey (name))
-				return loadedFonts [name];
+			if (loadedFonts.TryGetValue (name, out var value))
+				return value;
 			return loadedFonts [name] = LoadFont (GetUnderlyingFontName (name));
 		}
 
@@ -171,8 +171,7 @@ namespace MonoDevelop.Ide.Fonts
 		
 		public void SetFont (string name, string value)
 		{
-			if (loadedFonts.ContainsKey (name)) 
-				loadedFonts.Remove (name);
+			loadedFonts.Remove (name);
 
 			var font = GetFontDescriptionCodon (name);
 			if (font != null && font.FontDescription == value) {

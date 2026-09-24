@@ -41,7 +41,7 @@ namespace Xwt.GtkBackend
 		
 		public double Heigth = -1;
 
-		internal class PangoBackend : IDisposable
+		internal sealed class PangoBackend : IDisposable
 		{
 			Pango.Layout layout;
 			public Pango.Layout Layout {
@@ -58,7 +58,7 @@ namespace Xwt.GtkBackend
 			}
 
 			FastPangoAttrList attributes;
-			bool hasUnassignedAttributes = false;
+			bool hasUnassignedAttributes;
 			public FastPangoAttrList Attributes {
 				get {
 					if (attributes == null)

@@ -18,10 +18,10 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
     internal class BufferGroup
     {
-        private static bool tracing = false;
-        private static bool detailedTracing = false;
-        private static Exception LastMasterEditException = null;
-        private static string LastMasterEditExceptionStackTrace = null;
+        private static bool tracing;
+        private static bool detailedTracing;
+        private static Exception LastMasterEditException;
+        private static string LastMasterEditExceptionStackTrace;
 
         /// <summary>
         /// The text buffers that are members of this group. All buffers related by projection must be in the 
@@ -36,8 +36,8 @@ namespace Microsoft.VisualStudio.Text.Implementation
         /// are delivered 'bottom up'
         /// </summary>
         internal Queue<Tuple<BaseBuffer.ITextEventRaiser, BaseBuffer>> eventQueue = new Queue<Tuple<BaseBuffer.ITextEventRaiser, BaseBuffer>>();
-        internal int depth = 0;
-        internal bool eventingInProgress = false;
+        internal int depth;
+        internal bool eventingInProgress;
 
         private class GraphEntry
         {

@@ -54,8 +54,8 @@ namespace MonoDevelop.Ide.Fonts
 		
 		public string GetFont (string fontName)
 		{
-			if (customFonts.ContainsKey (fontName))
-				return customFonts [fontName];
+			if (customFonts.TryGetValue (fontName, out var value))
+				return value;
 			
 			return IdeServices.FontService.GetUnderlyingFontName (fontName);
 		}

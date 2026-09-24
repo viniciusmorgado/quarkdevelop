@@ -385,9 +385,7 @@ namespace Mono.TextEditor.Theatrics
 
 		private void Pack (Widget widget, uint duration, Easing easing, Blocking blocking, bool end)
 		{
-			if (widget == null) {
-				throw new ArgumentNullException ("widget");
-			}
+			ArgumentNullException.ThrowIfNull (widget);
 			
 			AnimatedWidget animated_widget = new AnimatedWidget (widget, duration, easing, blocking, horizontal);
 			animated_widget.Parent = this;
@@ -455,9 +453,7 @@ namespace Mono.TextEditor.Theatrics
 
 		private void RemoveCore (Widget widget, uint duration, Easing easing, Blocking blocking, bool use_easing, bool use_blocking)
 		{
-			if (widget == null) {
-				throw new ArgumentNullException ("widget");
-			}
+			ArgumentNullException.ThrowIfNull (widget);
 			
 			AnimatedWidget animated_widget = null;
 			foreach (AnimatedWidget child in Widgets) {
@@ -468,7 +464,7 @@ namespace Mono.TextEditor.Theatrics
 			}
 			
 			if (animated_widget == null) {
-				throw new ArgumentException ("Cannot remove the specified widget because it has not been added to this container or it has already been removed.", "widget");
+				throw new ArgumentException ("Cannot remove the specified widget because it has not been added to this container or it has already been removed.", nameof (widget));
 			}
 			
 			RemoveCore (animated_widget, duration, easing, blocking, use_easing, use_blocking);

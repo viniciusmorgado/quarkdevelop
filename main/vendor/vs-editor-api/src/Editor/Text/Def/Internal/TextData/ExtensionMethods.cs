@@ -23,10 +23,7 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentOutOfRangeException"> if <paramref name="startIndex"/> is negative.</exception>
         public static int IndexOfNextNonWhiteSpaceCharacter(this ITextSnapshotLine line, int startIndex)
         {
-            if (startIndex < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(startIndex));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(startIndex);
 
             // Take advantage of performant [] operators on the ITextSnapshot
             ITextSnapshot snapshot = line.Snapshot;
@@ -52,10 +49,7 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentOutOfRangeException"> if <paramref name="startIndex"/> is negative.</exception>
         public static int IndexOfPreviousNonWhiteSpaceCharacter(this ITextSnapshotLine line, int startIndex)
         {
-            if (startIndex < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(startIndex));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(startIndex);
 
             // Take advantage of performant [] operators on the ITextSnapshot
             ITextSnapshot snapshot = line.Snapshot;

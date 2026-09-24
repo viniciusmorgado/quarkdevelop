@@ -232,7 +232,7 @@ namespace MonoDevelop.Projects
 			set { outputDirectory = value; }
 		}
 
-		bool debugMode = false;
+		bool debugMode;
 		public bool DebugSymbols {
 			get { return debugMode; }
 			set { debugMode = value; }
@@ -244,8 +244,8 @@ namespace MonoDevelop.Projects
 			set { pauseConsoleOutput = value; }
 		}
 
-		bool writeExternalConsoleLowercase = false;
-		bool externalConsole = false;
+		bool writeExternalConsoleLowercase;
+		bool externalConsole;
 		public bool ExternalConsole {
 			get { return externalConsole; }
 			set { externalConsole = value; }

@@ -31,14 +31,14 @@ using Microsoft.Build.Utilities;
 
 namespace MonoDevelop.Projects.MSBuild
 {
-	class MSBuildLoggerAdapter: LoggerAdapter
+	sealed class MSBuildLoggerAdapter: LoggerAdapter
 	{
 		ILogger [] loggers;
 		IEventSource eventSource;
 		TargetLogger eventsLogger;
 		readonly List<MSBuildTargetResult> results = new List<MSBuildTargetResult> ();
 
-		class LocalLogger : Logger
+		sealed class LocalLogger : Logger
 		{
 			internal MSBuildLoggerAdapter Adapter;
 

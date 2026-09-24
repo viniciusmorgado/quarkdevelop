@@ -39,7 +39,7 @@ namespace Xwt
 	[BackendType (typeof(ISegmentedButtonBackend))]
 	public class SegmentedButton : Widget
 	{
-		class ButtonCollection : Collection<Button>
+		sealed class ButtonCollection : Collection<Button>
 		{
 			SegmentedButton parent;
 

@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Shared.VSCodeDebugProtocol.Messages;
 
 namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 {
-	class VSCodeVariableSource : VSCodeObjectSource
+	sealed class VSCodeVariableSource : VSCodeObjectSource
 	{
 		readonly Variable variable;
 		readonly string display;

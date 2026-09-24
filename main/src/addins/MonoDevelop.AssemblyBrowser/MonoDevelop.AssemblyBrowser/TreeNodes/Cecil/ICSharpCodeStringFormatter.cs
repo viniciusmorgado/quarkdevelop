@@ -34,8 +34,7 @@ namespace MonoDevelop.AssemblyBrowser
 	{
 		public static string GetDisplayString (this IMethod method)
 		{
-			if (method == null)
-				throw new ArgumentNullException (nameof (method));
+			ArgumentNullException.ThrowIfNull (method);
 
 			var sb = StringBuilderCache.Allocate ();
 			sb.Append (method.Name);

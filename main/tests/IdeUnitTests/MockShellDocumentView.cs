@@ -74,7 +74,7 @@ namespace IdeUnitTests
 		protected virtual void Render (StringBuilder sb, int indent)
 		{
 			sb.Append (new string (' ', indent));
-			sb.Append ("[").Append (Tag).AppendLine ("]");
+			sb.Append ('[').Append (Tag).AppendLine ("]");
 			RenderProperty (sb, indent + 2, "Title", title);
 			RenderProperty (sb, indent + 2, "AccessibilityDescription", accessibilityDescription);
 		}

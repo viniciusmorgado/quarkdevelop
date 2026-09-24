@@ -59,8 +59,8 @@ namespace MonoDevelop.Ide
 		bool useDefaultRuntime;
 		DocumentManager documentManager;
 
-		SolutionFolderItem currentSolutionItem = null;
-		WorkspaceItem currentWorkspaceItem = null;
+		SolutionFolderItem currentSolutionItem;
+		WorkspaceItem currentWorkspaceItem;
 		object currentItem;
 
 		internal RootWorkspace ()
@@ -297,7 +297,7 @@ namespace MonoDevelop.Ide
 			if (CurrentSelectedSolution != null)
 				return CurrentSelectedSolution.GetExecutionDependencies ();
 			else
-				return new IBuildTarget [0];
+				return Array.Empty<IBuildTarget> ();
 		}
 
 

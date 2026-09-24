@@ -17,7 +17,7 @@ namespace Microsoft.VisualStudio.Text.MultiSelection.Implementation
         private ITextSnapshot _currentSnapshot;
         private HashSet<Selection> _historicalSelections = new HashSet<Selection>();
         private bool _highFidelityMode;
-        private bool _isDisposed = false;
+        private bool _isDisposed;
 
         public SelectionTransformer(MultiSelectionBroker multiSelectionBroker, Selection selection)
         {

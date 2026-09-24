@@ -69,8 +69,7 @@ namespace Microsoft.VisualStudio.Utilities
         /// <returns>The property that was requested.</returns>
         public T GetOrCreateSingletonProperty<T>(object key, Func<T> creator) where T : class
         {
-            if (creator == null)
-                throw new ArgumentNullException(nameof(creator));
+            ArgumentNullException.ThrowIfNull(creator);
 
             lock (this.syncLock)
             {

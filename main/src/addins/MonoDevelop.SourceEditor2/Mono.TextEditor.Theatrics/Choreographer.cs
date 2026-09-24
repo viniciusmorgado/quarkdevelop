@@ -63,7 +63,7 @@ namespace Mono.TextEditor.Theatrics
         public static double Compose (double percent, Easing easing)
         {
             if (percent < 0.0 || percent > 1.0) {
-                throw new ArgumentOutOfRangeException ("percent", "must be between 0 and 1 inclusive");
+                throw new ArgumentOutOfRangeException (nameof (percent), "must be between 0 and 1 inclusive");
             }
 
             switch (easing) {

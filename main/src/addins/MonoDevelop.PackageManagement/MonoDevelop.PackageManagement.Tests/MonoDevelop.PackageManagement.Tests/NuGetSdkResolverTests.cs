@@ -32,7 +32,7 @@ using UnitTests;
 namespace MonoDevelop.PackageManagement.Tests
 {
 	[TestFixture]
-	class NuGetSdkResolverTests : TestBase
+	sealed class NuGetSdkResolverTests : TestBase
 	{
 		[Test]
 		[Category ("Quarantine")]

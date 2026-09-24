@@ -53,10 +53,10 @@ namespace MonoDevelop.Projects
 			if (string.IsNullOrEmpty (input))
 				throw new ArgumentException ("Sdk project short target framework cannot be null or an empty string.", nameof (input));
 
-			if (input.Contains (","))
+			if (input.Contains (','))
 				throw new ArgumentException ("Sdk project short target framework cannot contain ','.", nameof (input));
 
-			if (input.Contains ("+"))
+			if (input.Contains ('+'))
 				throw new ArgumentException ("Sdk project short target framework cannot contain '+'.", nameof (input));
 
 			string identifier = input.TrimEnd ('.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -76,7 +76,7 @@ namespace MonoDevelop.Projects
 			if (string.IsNullOrEmpty (input))
 				return false;
 
-			if (input.Contains (",") || input.Contains ("+"))
+			if (input.Contains (',') || input.Contains ('+'))
 				return false;
 
 			framework = Parse (input);
@@ -91,7 +91,7 @@ namespace MonoDevelop.Projects
 
 		void UpdateVersion (string newVersion)
 		{
-			if (Version.Contains (".")) {
+			if (Version.Contains ('.')) {
 				Version = newVersion;
 			} else {
 				Version = newVersion.Replace (".", string.Empty);

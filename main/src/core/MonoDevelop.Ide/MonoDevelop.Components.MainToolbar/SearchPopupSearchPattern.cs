@@ -121,7 +121,7 @@ namespace MonoDevelop.Components.MainToolbar
 				}
 			}
 			if (foundTags < maxTag)
-				parts[foundTags++] = searchPattern.Substring (idx,searchPattern.Length - idx);
+				parts[foundTags++] = searchPattern.Substring (idx);
 			switch (foundTags) {
 			case 1:
 				pattern = parts [0];

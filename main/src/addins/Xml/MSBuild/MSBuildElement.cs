@@ -32,7 +32,7 @@ namespace MonoDevelop.Xml.MSBuild
 {
 	class MSBuildElement
 	{
-		static readonly string[] emptyArray = new string[0];
+		static readonly string[] emptyArray = Array.Empty<string> ();
 
 		string[] children, attributes;
 

@@ -63,7 +63,7 @@ namespace MonoDevelop.DotNetCore
 				.ToArray ();
 
 			// If there are no runtimes then do not consider the runtime to be installed.
-			if (!Versions.Any ())
+			if (Versions.Length == 0)
 				IsInstalled = false;
 
 			// Used by the DotNetMSBuildSdkResolver to find the .NET Core SDK.

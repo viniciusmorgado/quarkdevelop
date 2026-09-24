@@ -65,14 +65,8 @@ namespace Microsoft.VisualStudio.Text.EditorPrimitives.Implementation
 
         public override TextRange GetTextRange(TextPoint startPoint, TextPoint endPoint)
         {
-            if (startPoint == null)
-            {
-                throw new ArgumentNullException(nameof(startPoint));
-            }
-            if (endPoint == null)
-            {
-                throw new ArgumentNullException(nameof(endPoint));
-            }
+            ArgumentNullException.ThrowIfNull(startPoint);
+            ArgumentNullException.ThrowIfNull(endPoint);
 
             if (!object.ReferenceEquals(startPoint.TextBuffer, this))
             {

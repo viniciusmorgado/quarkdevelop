@@ -78,10 +78,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
         public IEditorOperations GetEditorOperations(ITextView textView)
         {
             // Validate
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             // Only one EditorOperations should be created per ITextView
             IEditorOperations editorOperations = null;

@@ -51,7 +51,7 @@ using System.Runtime.CompilerServices;
 //[assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyFile("")]
 
-class MSBuildConsts
+sealed class MSBuildConsts
 {
 	public const string Version = "15.0";
 }

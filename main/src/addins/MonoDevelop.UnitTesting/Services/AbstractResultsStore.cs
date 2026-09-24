@@ -302,7 +302,7 @@ namespace MonoDevelop.UnitTesting
 
 			int i = str.IndexOfAny (specialCharacters);
 			while (i != -1) {
-				str = str.Substring (0, i) + '%' + ((int) str [i]).ToString ("X") + str.Substring (i + 1);
+				str = string.Concat (str.AsSpan (0, i), "%", ((int) str [i]).ToString ("X"), str.AsSpan (i + 1));
 				i = str.IndexOfAny (specialCharacters, i + 3);
 			}
 			return str;

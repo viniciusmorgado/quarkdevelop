@@ -99,7 +99,7 @@ namespace Xwt
 	{
 		ITextEntryBackend backend;
 		
-		protected new class WidgetBackendHost: TextEntry.WidgetBackendHost
+		protected new sealed class WidgetBackendHost: TextEntry.WidgetBackendHost
 		{
 			protected override IBackend OnCreateBackend ()
 			{

@@ -229,12 +229,12 @@ namespace MonoDevelop.Core
 	}
 
 	[MessageDataTypeAttribute]
-	class PingRequest: BinaryMessage
+	sealed class PingRequest: BinaryMessage
 	{
 	}
 
 	[MessageDataTypeAttribute]
-	class CustomData
+	sealed class CustomData
 	{
 		[MessageDataProperty]
 		public string Data;

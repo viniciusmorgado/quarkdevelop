@@ -42,14 +42,8 @@ namespace Microsoft.VisualStudio.Text.Projection
                                                        object editTag)
           : base(beforeSnapshot, afterSnapshot, insertedSpans, deletedSpans, spanPosition, options, editTag)
         {
-            if (addedBuffers == null)
-            {
-                throw new ArgumentNullException(nameof(addedBuffers));
-            }
-            if (removedBuffers == null)
-            {
-                throw new ArgumentNullException(nameof(removedBuffers));
-            }
+            ArgumentNullException.ThrowIfNull(addedBuffers);
+            ArgumentNullException.ThrowIfNull(removedBuffers);
             this.addedBuffers = addedBuffers;
             this.removedBuffers = removedBuffers;
         }

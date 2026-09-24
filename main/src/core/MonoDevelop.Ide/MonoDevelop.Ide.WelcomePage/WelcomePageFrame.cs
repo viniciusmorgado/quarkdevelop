@@ -188,7 +188,7 @@ namespace MonoDevelop.Ide.WelcomePage
 		}
 		
 		//this is used to style like a tooltip
-		bool changeStyle = false;
+		bool changeStyle;
 		
 		protected override void OnStyleSet (Gtk.Style previous_style)
 		{

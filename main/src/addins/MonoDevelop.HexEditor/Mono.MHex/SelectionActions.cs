@@ -77,7 +77,7 @@ namespace Mono.MHex
 			data.Caret.PreserveSelection = false;
 		}
 
-		class PositionChangedHandler
+		sealed class PositionChangedHandler
 		{
 			HexEditorData data;
 			

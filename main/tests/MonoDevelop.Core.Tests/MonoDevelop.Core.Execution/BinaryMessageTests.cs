@@ -52,7 +52,7 @@ namespace MonoDevelop.Core.Execution
 				new int[] {0, 1, 1},
 				new int[] {0, 1, 2},
 			}),
-			new Data (new int[0, 0, 0], 0, new int[][] {}),
+			new Data (new int[0, 0, 0], 0, Array.Empty<int[]> ()),
 			new Data (new int[0, 0, 1], 1, new int[][] { new int[] { 0, 0, 0 } }),
 			new Data (new int[3, 3, 3], 27, new int[][] {
 				new int[] {0, 0, 0},

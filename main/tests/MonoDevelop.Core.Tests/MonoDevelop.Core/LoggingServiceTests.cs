@@ -177,7 +177,7 @@ namespace MonoDevelop.Core
 			LoggingService.ReportCrashes = oldValue;
 		}
 
-		class LoggingServiceTestsLogger : ILogger
+		sealed class LoggingServiceTestsLogger : ILogger
 		{
 			#region ILogger implementation
 			List<Tuple<LogLevel, string>> messages = new List<Tuple<LogLevel, string>> ();
@@ -211,7 +211,7 @@ namespace MonoDevelop.Core
 			#endregion
 		}
 
-		class LoggingServiceTestsCrashReporter : CrashReporter
+		sealed class LoggingServiceTestsCrashReporter : CrashReporter
 		{
 			readonly List<Tuple<Exception, bool, string>> messages = new List<Tuple<Exception, bool, string>> ();
 

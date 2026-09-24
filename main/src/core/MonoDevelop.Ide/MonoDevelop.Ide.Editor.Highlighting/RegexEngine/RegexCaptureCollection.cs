@@ -116,8 +116,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         ///    </para>
         /// </devdoc>
         public void CopyTo(Array array, int arrayIndex) {
-            if (array == null)
-                throw new ArgumentNullException("array");
+            ArgumentNullException.ThrowIfNull(array);
 
             for (int i = arrayIndex, j = 0; j < Count; i++, j++) {
                 array.SetValue(this[j], i);
@@ -144,7 +143,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                 return _group;
 
             if (i >= _capcount || i < 0)
-                throw new ArgumentOutOfRangeException("i");
+                throw new ArgumentOutOfRangeException(nameof(i));
 
             // first time a capture is accessed, compute them all
             if (_captures == null) {

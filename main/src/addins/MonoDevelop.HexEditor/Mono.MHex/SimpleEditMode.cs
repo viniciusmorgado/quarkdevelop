@@ -31,7 +31,7 @@ using Xwt;
 
 namespace Mono.MHex
 {
-	class SimpleEditMode : EditMode
+	sealed class SimpleEditMode : EditMode
 	{
 		Dictionary<int, Action<HexEditorData>> keyBindings = new Dictionary<int, Action<HexEditorData>> ();
 		
@@ -180,8 +180,8 @@ namespace Mono.MHex
 		protected override void HandleKeypress (Key key, uint unicodeChar, ModifierKeys modifier)
 		{
 			int keyCode = GetKeyCode (key, modifier);
-			if (keyBindings.ContainsKey (keyCode)) {
-				keyBindings [keyCode] (HexEditorData);
+			if (keyBindings.TryGetValue (keyCode, out var value)) {
+				value (HexEditorData);
 				return;
 			}
 

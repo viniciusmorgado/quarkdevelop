@@ -75,7 +75,7 @@ namespace MonoDevelop.VersionControl.Git.Tests
 			DeleteDirectory (workDir);
 		}
 
-		class BlameData {
+		sealed class BlameData {
 			public string File { get; }
 			public string [] Lines { get; }
 			public int ChunkCount { get; }
@@ -95,7 +95,7 @@ namespace MonoDevelop.VersionControl.Git.Tests
 			}
 		}
 
-		class CommitData {
+		sealed class CommitData {
 			public List<BlameData> Datas = new List<BlameData> ();
 			public Commit Commit { get; set; }
 		}

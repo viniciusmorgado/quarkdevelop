@@ -36,7 +36,7 @@ namespace Xwt.GtkBackend
 {
 	public static class Util
 	{
-		static uint targetIdCounter = 0;
+		static uint targetIdCounter;
 		static Dictionary<TransferDataType, Gtk.TargetEntry[]> dragTargets = new Dictionary<TransferDataType, Gtk.TargetEntry[]> ();
 		static Dictionary<string, TransferDataType> atomToType = new Dictionary<string, TransferDataType> ();
 		static Size[] iconSizes = new Size[7];

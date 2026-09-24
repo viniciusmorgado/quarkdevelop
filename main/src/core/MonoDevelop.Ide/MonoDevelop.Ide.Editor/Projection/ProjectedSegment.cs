@@ -65,8 +65,7 @@ namespace MonoDevelop.Ide.Editor.Projection
 
 		public bool IsInOriginal (ISegment segment)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (segment);
 
 			return segment.Contains(Offset) && segment.Contains (Offset + Length); 
 		}

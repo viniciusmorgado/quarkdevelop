@@ -7,17 +7,11 @@
      12 CA1816
       8 VSTHRD002
       6 CA1863
-      6 CA1845
       6 CA1716
       4 VSTHRD003
-      4 CA1825
-      4 CA1805
       4 CA1725
       2 VSTHRD105
       2 CA2249
-      2 CA1865
       2 CA1859
-      2 CA1834
       2 CA1806
-      2 CA1510
       2 CA1310

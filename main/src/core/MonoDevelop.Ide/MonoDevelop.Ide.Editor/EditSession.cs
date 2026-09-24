@@ -60,8 +60,7 @@ namespace MonoDevelop.Ide.Editor
 
 		internal void SetEditor(TextEditor editor)
 		{
-			if (editor == null)
-				throw new ArgumentNullException (nameof (editor));
+			ArgumentNullException.ThrowIfNull (editor);
 			this.editor = editor;
 			this.version = editor.Version;
 			OnEditorSet ();

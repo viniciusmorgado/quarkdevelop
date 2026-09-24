@@ -134,7 +134,7 @@ namespace MonoDevelop.Projects.MSBuild
 		internal static SdkInfo[] LoadConfig (string file)
 		{
 			if (!File.Exists (file))
-				return new SdkInfo [0];
+				return Array.Empty<SdkInfo> ();
 			
 			var sdks = new List<SdkInfo> ();
 			using (var sr = new StreamReader (file)) {

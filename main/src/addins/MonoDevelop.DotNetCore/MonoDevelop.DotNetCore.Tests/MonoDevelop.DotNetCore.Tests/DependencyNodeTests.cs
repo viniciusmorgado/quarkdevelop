@@ -43,7 +43,7 @@ using UnitTests;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class DependencyNodeTests : DotNetCoreTestBase
+	sealed class DependencyNodeTests : DotNetCoreTestBase
 	{
 		DotNetProject project;
 		DependenciesNode dependenciesNode;

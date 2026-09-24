@@ -140,7 +140,7 @@ namespace MonoDevelop.Ide.Navigation
 		{
 			if (current == null) {
 				currentIndex = -1;
-				return new NavigationHistoryItem[0];
+				return Array.Empty<NavigationHistoryItem> ();
 			}
 			
 			//balance the list around the central item

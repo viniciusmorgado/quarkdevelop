@@ -189,7 +189,7 @@ namespace MonoDevelop.VersionControl
 
 		// Returns the list of child repositories
 		public virtual IEnumerable<Repository> ChildRepositories {
-			get { return new Repository [0]; }
+			get { return Array.Empty<Repository> (); }
 		}
 
 		// Returns true if the user is allowed to modify files which have not been
@@ -447,7 +447,6 @@ namespace MonoDevelop.VersionControl
 			public bool GetRemoteStatus;
 		}
 
-		bool queryRunning;
 		VersionInfoCache infoCache;
 
 		/// <summary>
@@ -938,7 +937,7 @@ namespace MonoDevelop.VersionControl
 				while ((line = sr.ReadLine ()) != null) {
 					if (pathRoot != null && fileName != null &&
 						(line.StartsWith ("+++ " + pathRoot, StringComparison.Ordinal) || line.StartsWith ("--- " + pathRoot, StringComparison.Ordinal))) {
-						line = line.Substring (0, 4) + line.Substring (4 + pathRoot.Length);
+						line = string.Concat (line.AsSpan (0, 4), line.AsSpan (4 + pathRoot.Length));
 						content.Append (line).Append ('\n');
 					}
 					else if (!line.StartsWith ("Index:", StringComparison.Ordinal)) {
@@ -995,7 +994,7 @@ namespace MonoDevelop.VersionControl
 		/// </returns>
 		public virtual Task<Annotation []> GetAnnotationsAsync (FilePath repositoryPath, Revision since, CancellationToken cancellationToken = default)
 		{
-			return Task.FromResult (new Annotation[0]);
+			return Task.FromResult (Array.Empty<Annotation> ());
 		}
 
 		/// <summary>

@@ -31,7 +31,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeSourceRepositoryProvider : ISourceRepositoryProvider
+	sealed class FakeSourceRepositoryProvider : ISourceRepositoryProvider
 	{
 		public List<SourceRepository> Repositories = new List<SourceRepository> ();
 		public FakePackageSourceProvider FakePackageSourceProvider = new FakePackageSourceProvider ();
@@ -47,7 +47,7 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 
 		public SourceRepository CreateRepository (PackageSource source, FeedType type)
 		{
-			return new SourceRepository (source, new INuGetResourceProvider[0]);
+			return new SourceRepository (source, System.Array.Empty<INuGetResourceProvider> ());
 		}
 
 		public IEnumerable<SourceRepository> GetRepositories ()

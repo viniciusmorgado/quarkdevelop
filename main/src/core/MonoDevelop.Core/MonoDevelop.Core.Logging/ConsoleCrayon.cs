@@ -65,7 +65,7 @@ namespace MonoDevelop.Core.Logging
 		private static void SetColor (ConsoleColor color, bool isForeground)
 		{
 			if (color < ConsoleColor.Black || color > ConsoleColor.White) {
-				throw new ArgumentOutOfRangeException ("color", "Not a ConsoleColor value.");
+				throw new ArgumentOutOfRangeException (nameof (color), "Not a ConsoleColor value.");
 			}
 			
 			if (XtermColors) {
@@ -163,7 +163,7 @@ namespace MonoDevelop.Core.Logging
 
 		#region xterm Detection
 
-		private static bool? xterm_colors = null;
+		private static bool? xterm_colors;
 		public static bool XtermColors { 
 			get {
 				if (xterm_colors == null) {

@@ -59,8 +59,7 @@ namespace MonoDevelop.VersionControl
 
 		public static FileUpdateEventInfo UpdateRepository (Repository repo)
 		{
-			if (repo == null)
-				throw new ArgumentNullException (nameof (repo));
+			ArgumentNullException.ThrowIfNull (repo);
 			return new FileUpdateEventInfo (repo, null, false) { RepositoryChanged = true };
 		}
 	}

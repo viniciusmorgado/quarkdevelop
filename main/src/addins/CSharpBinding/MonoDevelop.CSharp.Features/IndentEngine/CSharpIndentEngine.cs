@@ -194,7 +194,7 @@ namespace ICSharpCode.NRefactory6.CSharp
 		/// <summary>
 		///    Represents the number of pushed chars.
 		/// </summary>
-		internal int offset = 0;
+		internal int offset;
 
 		/// <summary>
 		///    The current line number.
@@ -224,17 +224,17 @@ namespace ICSharpCode.NRefactory6.CSharp
 		/// <summary>
 		///    Current char that's being pushed.
 		/// </summary>
-		internal char currentChar = '\0';
+		internal char currentChar;
 
 		/// <summary>
 		///    Last non-whitespace char that has been pushed.
 		/// </summary>
-		internal char previousChar = '\0';
+		internal char previousChar;
 
 		/// <summary>
 		///    Previous new line char
 		/// </summary>
-		internal char previousNewline = '\0';
+		internal char previousNewline;
 
 		/// <summary>
 		///    Current indent level on this line.
@@ -244,12 +244,12 @@ namespace ICSharpCode.NRefactory6.CSharp
 		/// <summary>
 		///     True if this line began in <see cref="VerbatimStringState"/>.
 		/// </summary>
-		internal bool lineBeganInsideVerbatimString = false;
+		internal bool lineBeganInsideVerbatimString;
 
 		/// <summary>
 		///     True if this line began in <see cref="MultiLineCommentState"/>.
 		/// </summary>
-		internal bool lineBeganInsideMultiLineComment = false;
+		internal bool lineBeganInsideMultiLineComment;
 
 		#endregion
 
@@ -443,8 +443,7 @@ namespace ICSharpCode.NRefactory6.CSharp
 		/// <param name="defineSymbol">The symbol to define.</param>
 		public void DefineSymbol(string defineSymbol)
 		{
-			if (!customConditionalSymbols.Contains(defineSymbol))
-				customConditionalSymbols.Add(defineSymbol);
+			customConditionalSymbols.Add(defineSymbol);
 		}
 
 		/// <summary>
@@ -453,8 +452,7 @@ namespace ICSharpCode.NRefactory6.CSharp
 		/// <param name="undefineSymbol">The symbol to undefine.</param>
 		public void RemoveSymbol(string undefineSymbol)
 		{
-			if (customConditionalSymbols.Contains(undefineSymbol))
-				customConditionalSymbols.Remove(undefineSymbol);
+			customConditionalSymbols.Remove(undefineSymbol);
 		}
 		#endregion
 

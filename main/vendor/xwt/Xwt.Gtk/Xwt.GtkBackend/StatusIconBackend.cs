@@ -51,9 +51,7 @@ namespace Xwt.GtkBackend
 		
 		public void SetMenu (object menuBackend) 
 		{
-			if (menuBackend == null) {
-				throw new ArgumentNullException ("menuBackend");
-			}
+			ArgumentNullException.ThrowIfNull (menuBackend);
 			if (menu != null) {
 				statusItem.PopupMenu -= HandleStatusItemPopupMenu;
 			}

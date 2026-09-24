@@ -51,7 +51,7 @@ namespace Xwt.GtkBackend
 		#endregion
 	}
 
-	class ImagePatternBackend
+	sealed class ImagePatternBackend
 	{
 		public ImageDescription Image;
 

@@ -46,10 +46,7 @@ namespace Microsoft.VisualStudio.Text.AdornmentLibrary.ToolTip.Implementation
                 throw new InvalidOperationException("Must be called on UI thread");
             }
 
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
+            ArgumentNullException.ThrowIfNull(model);
 
             var lazyFactory = this.FindFactory<TView>(model.GetType());
 

@@ -191,10 +191,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public override ITextSnapshot GetMatchingSnapshot(ITextBuffer textBuffer)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
             foreach (ITextSnapshot snappy in this.sourceSnapshotMap.Keys)
             {
                 if (snappy.TextBuffer == textBuffer)
@@ -207,10 +204,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public override ITextSnapshot GetMatchingSnapshotInClosure(ITextBuffer textBuffer)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
             foreach (ITextSnapshot snappy in this.sourceSnapshotMap.Keys)
             {
                 if (snappy.TextBuffer == textBuffer)
@@ -232,10 +226,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public override ITextSnapshot GetMatchingSnapshotInClosure(Predicate<ITextBuffer> match)
         {
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
             foreach (ITextSnapshot snappy in this.sourceSnapshotMap.Keys)
             {
                 if (match(snappy.TextBuffer))

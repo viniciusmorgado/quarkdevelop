@@ -97,7 +97,7 @@ namespace MonoDevelop.Core.Text
 		public override int[] GetMatch (string text)
 		{
 			if (filterLowerCase.Length == 0) 
-				return new int[0];
+				return Array.Empty<int> ();
 			if (string.IsNullOrEmpty (text))
 				return null;
 			int totalWords;
@@ -326,7 +326,7 @@ namespace MonoDevelop.Core.Text
 			return lane;
 		}
 		
-		int lanePoolIndex = 0;
+		int lanePoolIndex;
 		List<MatchLane> lanePool = new List<MatchLane> ();
 	
 		enum MatchMode {

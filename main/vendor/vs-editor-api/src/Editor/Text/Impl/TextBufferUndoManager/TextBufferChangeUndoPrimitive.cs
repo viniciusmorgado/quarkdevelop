@@ -48,15 +48,9 @@ namespace Microsoft.VisualStudio.Text.BufferUndoManager.Implementation
         public TextBufferChangeUndoPrimitive(ITextUndoHistory undoHistory, ITextVersion textVersion)
         {
             // Verify input parameters
-            if (undoHistory == null)
-            {
-                throw new ArgumentNullException(nameof(undoHistory));
-            }
+            ArgumentNullException.ThrowIfNull(undoHistory);
 
-            if (textVersion == null)
-            {
-                throw new ArgumentNullException(nameof(textVersion));
-            }
+            ArgumentNullException.ThrowIfNull(textVersion);
 
             this.Changes = textVersion.Changes;
             this.BeforeReiteratedVersionNumber = textVersion.ReiteratedVersionNumber;

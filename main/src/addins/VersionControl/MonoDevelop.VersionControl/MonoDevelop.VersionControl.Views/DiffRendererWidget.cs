@@ -33,7 +33,6 @@ using MonoDevelop.Components;
 using System.Text;
 using MonoDevelop.Ide.Fonts;
 using MonoDevelop.Core;
-using MonoDevelop.Components;
 using MonoDevelop.Components.AtkCocoaHelper;
 using System.Linq;
 
@@ -83,7 +82,7 @@ namespace MonoDevelop.VersionControl.Views
 			}
 		}
 
-		bool isDisposed = false;
+		bool isDisposed;
 
 		protected override void OnDestroyed ()
 		{
@@ -335,7 +334,7 @@ namespace MonoDevelop.VersionControl.Views
 			if (Accessible == null)
 				return;
 			if (replaceFirst) {
-				text = ' ' + text.Substring (1);
+				text = string.Concat (" ", text.AsSpan (1));
 				replaceFirst = false;
 			}
 			this.accessibleLines.Add (new DiffLineAccessible (this, x, y, blockType, lineNumber, text));
@@ -589,7 +588,7 @@ namespace MonoDevelop.VersionControl.Views
 			int j = line.IndexOf (',', i);
 			if (j == -1) return -1;
 			int cline;
-			if (!int.TryParse (line.Substring (i, j - i), out cline))
+			if (!int.TryParse (line.AsSpan (i, j - i), out cline))
 				return -1;
 			return cline;
 		}

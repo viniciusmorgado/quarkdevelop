@@ -262,7 +262,7 @@ namespace MonoDevelop.Core.Instrumentation
 		static Counter CreateCounter<T> (string name, string? category, bool logMessages, string? id, bool isTimer) where T:CounterMetadata, new()
 		{
 			if (name == null)
-				throw new ArgumentNullException ("name", "Counters must have a Name");
+				throw new ArgumentNullException (nameof (name), "Counters must have a Name");
 
 			InitializeHandlers ();
 			

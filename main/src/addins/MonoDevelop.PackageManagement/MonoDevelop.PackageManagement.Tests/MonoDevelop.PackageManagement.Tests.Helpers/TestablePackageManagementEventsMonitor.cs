@@ -31,7 +31,7 @@ using MonoDevelop.Core;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestablePackageManagementEventsMonitor : PackageManagementEventsMonitor
+	sealed class TestablePackageManagementEventsMonitor : PackageManagementEventsMonitor
 	{
 		public TestablePackageManagementEventsMonitor (
 			ProgressMonitor progressMonitor,

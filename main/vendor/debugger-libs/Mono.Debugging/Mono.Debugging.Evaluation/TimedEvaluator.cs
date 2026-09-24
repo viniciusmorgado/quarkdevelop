@@ -204,7 +204,7 @@ namespace Mono.Debugging.Evaluation
 			}
 		}
 
-		class Task
+		sealed class Task
 		{
 			public ManualResetEvent RunningEvent = new ManualResetEvent (false);
 			public ManualResetEvent RunFinishedEvent = new ManualResetEvent (false);

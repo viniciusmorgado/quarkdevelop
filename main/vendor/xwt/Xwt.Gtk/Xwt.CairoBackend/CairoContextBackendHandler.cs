@@ -47,7 +47,7 @@ namespace Xwt.CairoBackend
 
 		Data stackTop;
 
-		class Data {
+		sealed class Data {
 			public double PatternAlpha;
 			public double GlobalAlpha;
 			public Data Previous;

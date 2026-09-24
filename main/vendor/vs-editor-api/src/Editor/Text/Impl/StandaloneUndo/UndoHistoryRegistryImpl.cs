@@ -48,10 +48,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         /// <returns></returns>
         public  ITextUndoHistory RegisterHistory(object context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             return RegisterHistory(context, false);
         }
@@ -64,16 +61,13 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         /// <returns></returns>
         public  ITextUndoHistory RegisterHistory(object context, bool keepAlive)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             ITextUndoHistory result;
 
-            if (strongContextMapping.ContainsKey(context))
+            if (strongContextMapping.TryGetValue(context, out var value))
             {
-                result = strongContextMapping[context];
+                result = value;
 
                 if (!keepAlive)
                 {
@@ -116,16 +110,13 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         /// <returns></returns>
         public  ITextUndoHistory GetHistory(object context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             ITextUndoHistory result;
 
-            if (strongContextMapping.ContainsKey(context))
+            if (strongContextMapping.TryGetValue(context, out var value))
             {
-                result = strongContextMapping[context];
+                result = value;
             }
             else if (weakContextMapping.ContainsKey(new WeakReferenceForDictionaryKey(context)))
             {
@@ -147,16 +138,13 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         /// <returns></returns>
         public  bool TryGetHistory(object context, out ITextUndoHistory history)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             ITextUndoHistory result = null;
 
-            if (strongContextMapping.ContainsKey(context))
+            if (strongContextMapping.TryGetValue(context, out var value))
             {
-                result = strongContextMapping[context];
+                result = value;
             }
             else if (weakContextMapping.ContainsKey(new WeakReferenceForDictionaryKey(context)))
             {
@@ -174,15 +162,9 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         /// <param name="history"></param>
         public  void AttachHistory(object context, ITextUndoHistory history)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
-            if (history == null)
-            {
-                throw new ArgumentNullException(nameof(history));
-            }
+            ArgumentNullException.ThrowIfNull(history);
 
             AttachHistory(context, history, false);
         }
@@ -195,28 +177,22 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         /// <param name="keepAlive"></param>
         public  void AttachHistory(object context, ITextUndoHistory history, bool keepAlive)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
-            if (history == null)
-            {
-                throw new ArgumentNullException(nameof(history));
-            }
+            ArgumentNullException.ThrowIfNull(history);
 
             if (strongContextMapping.ContainsKey(context) || weakContextMapping.ContainsKey(new WeakReferenceForDictionaryKey(context)))
             {
                 throw new InvalidOperationException("Strings.AttachHistoryAlreadyContainsContextInRegistry");
             }
 
-            if (!histories.ContainsKey(history))
+            if (!histories.TryGetValue(history, out var value))
             {
                 histories.Add(history, 1);
             }
             else
             {
-                ++histories[history];
+                histories[history] = ++value;
             }
 
             if (keepAlive)
@@ -235,10 +211,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         /// <param name="history"></param>
         public  void RemoveHistory(ITextUndoHistory history)
         {
-            if (history == null)
-            {
-                throw new ArgumentNullException(nameof(history));
-            }
+            ArgumentNullException.ThrowIfNull(history);
 
             if (!histories.ContainsKey(history))
             {

@@ -138,7 +138,7 @@ namespace MonoDevelop.Components.AutoTest.Results
 				}
 
 				if (button != null && button.UseUnderline && propText != null) {
-					int indexOfUnderline = propText.IndexOf ("_");
+					int indexOfUnderline = propText.IndexOf ('_');
 					if (indexOfUnderline > -1) {
 						propText = propText.Remove (indexOfUnderline, 1);
 					}
@@ -262,11 +262,11 @@ namespace MonoDevelop.Components.AutoTest.Results
 			Label lbl = resultWidget as Label;
 			if(lbl != null)
 			{
-				GLib.Signal.Emit (lbl, "activate-link", new object[]{});
+				GLib.Signal.Emit (lbl, "activate-link", Array.Empty<object> ());
 				return true;
 			}
-			GLib.Signal.Emit (resultWidget, "button-press-event", new object [] { });
-			GLib.Signal.Emit (resultWidget, "button-release-event", new object [] { });
+			GLib.Signal.Emit (resultWidget, "button-press-event", Array.Empty<object> ());
+			GLib.Signal.Emit (resultWidget, "button-release-event", Array.Empty<object> ());
 
 			return true;
 		}

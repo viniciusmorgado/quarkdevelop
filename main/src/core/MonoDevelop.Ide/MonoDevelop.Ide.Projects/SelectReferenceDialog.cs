@@ -63,7 +63,7 @@ namespace MonoDevelop.Ide.Projects
 		SearchEntry filterEntry;
 
 		Dictionary<FilePath,List<FilePath>> recentFiles;
-		bool recentFilesModified = false;
+		bool recentFilesModified;
 
 		static FilePath RecentAssembliesFile = UserProfile.Current.CacheDir.Combine ("RecentAssemblies2.txt");
 		const int RecentFileListSize = 75;
@@ -402,7 +402,7 @@ namespace MonoDevelop.Ide.Projects
 				result = list;
 			if (recentFiles.TryGetValue (solutionFile, out list))
 				result = result != null ? result.Concat (list) : list;
-			return result ?? new FilePath[0];
+			return result ?? Array.Empty<FilePath> ();
 		}
 		
 		void LoadRecentFiles ()

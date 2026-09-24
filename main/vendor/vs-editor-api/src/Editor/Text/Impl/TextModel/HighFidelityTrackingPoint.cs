@@ -411,12 +411,12 @@ namespace Microsoft.VisualStudio.Text.Implementation
             sb.Append(ToString(c.Version, c.Position, this.trackingMode));
             if (c.NoninvertibleHistory != null)
             {
-                sb.Append("[");
+                sb.Append('[');
                 foreach (VersionNumberPosition vp in c.NoninvertibleHistory)
                 {
                     sb.Append(string.Format(System.Globalization.CultureInfo.CurrentCulture, "V{0}@{1}", vp.VersionNumber, vp.Position));
                 }
-                sb.Append("]");
+                sb.Append(']');
             }
             return sb.ToString();
         }

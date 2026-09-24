@@ -31,7 +31,7 @@ using MonoDevelop.Core.Execution;
 namespace MonoDevelop.Projects.MSBuild
 {
 	[MessageDataTypeAttribute]
-	class MSBuildResult
+	sealed class MSBuildResult
 	{
 		[MessageDataProperty]
 		MSBuildTargetResult[] errors;

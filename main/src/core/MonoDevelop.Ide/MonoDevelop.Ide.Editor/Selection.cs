@@ -95,9 +95,9 @@ namespace MonoDevelop.Ide.Editor
 		public Selection (DocumentLocation anchor, DocumentLocation lead, SelectionMode selectionMode = SelectionMode.Normal)
 		{
 			if (anchor.Line < DocumentLocation.MinLine || anchor.Column < DocumentLocation.MinColumn)
-				throw new ArgumentOutOfRangeException ("anchor", anchor + " is out of range.");
+				throw new ArgumentOutOfRangeException (nameof (anchor), anchor + " is out of range.");
 			if (lead.Line < DocumentLocation.MinLine || lead.Column < DocumentLocation.MinColumn)
-				throw new ArgumentOutOfRangeException ("lead", lead + " is out of range.");
+				throw new ArgumentOutOfRangeException (nameof (lead), lead + " is out of range.");
 			this.Anchor = anchor;
 			this.Lead = lead;
 			this.selectionMode = selectionMode;

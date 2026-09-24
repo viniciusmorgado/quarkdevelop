@@ -96,11 +96,11 @@
         /// <summary>
         /// The text that will be displayed on the hyperlink tooltip.
         /// </summary>
-        public string Tooltip { get; } = null;
+        public string Tooltip { get; }
 
         /// <summary>
         /// The navigation action for the hyperlink.
         /// </summary>
-        public Action NavigationAction { get; } = null;
+        public Action NavigationAction { get; }
     }
 }

@@ -125,7 +125,7 @@ namespace MonoDevelop.Gettext
 	internal class PluralFormsScanner
 	{
 		string str;
-		int pos = 0;
+		int pos;
 		PluralFormsToken token;
 		
 		public PluralFormsScanner(string str)

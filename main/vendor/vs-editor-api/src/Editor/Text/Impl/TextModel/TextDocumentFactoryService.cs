@@ -52,20 +52,11 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public ITextDocument CreateAndLoadTextDocument(string filePath, IContentType contentType, Encoding encoding, out bool characterSubstitutionsOccurred)
         {
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+            ArgumentNullException.ThrowIfNull(filePath);
 
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(contentType);
 
-            if (encoding == null)
-            {
-                throw new ArgumentNullException(nameof(encoding));
-            }
+            ArgumentNullException.ThrowIfNull(encoding);
 
             var fallbackDetector = new FallbackDetector(encoding.DecoderFallback);
             var modifiedEncoding = (Encoding)encoding.Clone();
@@ -98,15 +89,9 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public ITextDocument CreateAndLoadTextDocument(string filePath, IContentType contentType, bool attemptUtf8Detection, out bool characterSubstitutionsOccurred)
         {
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+            ArgumentNullException.ThrowIfNull(filePath);
 
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(contentType);
 
             characterSubstitutionsOccurred = false;
 
@@ -203,15 +188,9 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public ITextDocument CreateTextDocument(ITextBuffer textBuffer, string filePath)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+            ArgumentNullException.ThrowIfNull(filePath);
 
             TextDocument textDocument = new TextDocument(textBuffer, filePath, DateTime.UtcNow, this, Encoding.UTF8);
             RaiseTextDocumentCreated(textDocument);
@@ -221,10 +200,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public bool TryGetTextDocument(ITextBuffer textBuffer, out ITextDocument textDocument)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
             textDocument = null;
 

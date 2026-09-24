@@ -31,7 +31,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeUpdatedPackagesInWorkspace : IUpdatedNuGetPackagesInWorkspace
+	sealed class FakeUpdatedPackagesInWorkspace : IUpdatedNuGetPackagesInWorkspace
 	{
 		public List<UpdatedNuGetPackagesInProject> ProjectsWithUpdatedPackages = new List<UpdatedNuGetPackagesInProject> ();
 
@@ -57,7 +57,7 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 
 		public bool AnyUpdates ()
 		{
-			return ProjectsWithUpdatedPackages.Any ();
+			return ProjectsWithUpdatedPackages.Count != 0;
 		}
 
 		public void Clear (ISolution solution)

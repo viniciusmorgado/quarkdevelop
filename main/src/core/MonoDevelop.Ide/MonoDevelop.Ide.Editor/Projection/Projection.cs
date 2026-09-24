@@ -91,8 +91,7 @@ namespace MonoDevelop.Ide.Editor.Projection
 
 		public Projection (ITextDocument document, IReadOnlyList<ProjectedSegment> projectedSegments)
 		{
-			if (document == null)
-				throw new ArgumentNullException (nameof (document));
+			ArgumentNullException.ThrowIfNull (document);
 			this.Document = document;
 
 			for (int i = 0; i < projectedSegments.Count; i++) {

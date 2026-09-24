@@ -32,7 +32,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace MonoDevelop.DotNetCore.Tests
 {
-	class FakeUpdatedPackagesInWorkspace : IUpdatedNuGetPackagesInWorkspace
+	sealed class FakeUpdatedPackagesInWorkspace : IUpdatedNuGetPackagesInWorkspace
 	{
 		public List<UpdatedNuGetPackagesInProject> ProjectsWithUpdatedPackages = new List<UpdatedNuGetPackagesInProject> ();
 
@@ -58,7 +58,7 @@ namespace MonoDevelop.DotNetCore.Tests
 
 		public bool AnyUpdates ()
 		{
-			return ProjectsWithUpdatedPackages.Any ();
+			return ProjectsWithUpdatedPackages.Count != 0;
 		}
 
 		public void Clear (ISolution solution)

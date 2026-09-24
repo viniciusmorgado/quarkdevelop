@@ -24,8 +24,7 @@ namespace Microsoft.VisualStudio.Text.Formatting
         /// <exception cref="ArgumentNullException"><paramref name="span"/> is null.</exception>
         public TextAndAdornmentSequenceChangedEventArgs(IMappingSpan span)
         {
-            if (span == null)
-                throw new ArgumentNullException(nameof(span));
+            ArgumentNullException.ThrowIfNull (span);
 
             this.Span = span;
         }

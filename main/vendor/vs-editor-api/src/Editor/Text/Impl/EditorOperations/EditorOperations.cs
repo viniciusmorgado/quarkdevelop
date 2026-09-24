@@ -92,10 +92,8 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
                                   EditorOperationsFactoryService factory)
         {
             // Validate
-            if (textView == null)
-                throw new ArgumentNullException(nameof(textView));
-            if (factory == null)
-                throw new ArgumentNullException(nameof(factory));
+            ArgumentNullException.ThrowIfNull(textView);
+            ArgumentNullException.ThrowIfNull(factory);
 
             _textView = textView;
             _factory = factory;
@@ -438,7 +436,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
 
                                 offset += lineBreakText.Length;
 
-                                curLineText = lineBreakText + curLineText.Substring(0, curLineText.Length - lineBreakText.Length);
+                                curLineText = string.Concat(lineBreakText, curLineText.AsSpan(0, curLineText.Length - lineBreakText.Length));
                             }
 
 
@@ -1369,10 +1367,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
         /// <exception cref="ArgumentNullException"><paramref name="textLine"/> is null.</exception>
         public void MoveCaret(ITextViewLine textLine, double horizontalOffset, bool extendSelection)
         {
-            if (textLine == null)
-            {
-                throw new ArgumentNullException(nameof(textLine));
-            }
+            ArgumentNullException.ThrowIfNull(textLine);
 
             if (extendSelection)
             {
@@ -2263,8 +2258,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
         /// </param>
         public void SelectLine(ITextViewLine viewLine, bool extendSelection)
         {
-            if (viewLine == null)
-                throw new ArgumentNullException(nameof(viewLine));
+            ArgumentNullException.ThrowIfNull(viewLine);
 
             SnapshotPoint anchor;
             SnapshotPoint active;
@@ -2528,10 +2522,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
         public bool ReplaceSelection(string text)
         {
             // Validate
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
+            ArgumentNullException.ThrowIfNull(text);
 
             Func<bool> action = () =>
             {
@@ -2589,10 +2580,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
         /// <remarks>If one of the matches found is read only, none of the matches will be replaced.</remarks>
         public int ReplaceAllMatches(string searchText, string replaceText, bool matchCase, bool matchWholeWord, bool useRegularExpressions)
         {
-            if (searchText == null)
-            {
-                throw new ArgumentNullException(nameof(searchText));
-            }
+            ArgumentNullException.ThrowIfNull(searchText);
 
             FindData findData = new FindData(searchText, _textView.TextSnapshot);
             findData.TextStructureNavigator = _textStructureNavigator;
@@ -3362,10 +3350,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
         private bool InsertText(string text, bool final, string undoText, bool isOverwriteModeEnabled)
         {
             // Validate
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
+            ArgumentNullException.ThrowIfNull(text);
 
             if ((text.Length == 0) && !final)
             {
@@ -3615,8 +3600,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
 
         public bool InsertTextAsBox(string text, out VirtualSnapshotPoint boxStart, out VirtualSnapshotPoint boxEnd, string undoText)
         {
-            if (text == null)
-                throw new ArgumentNullException(nameof(text));
+            ArgumentNullException.ThrowIfNull(text);
 
             boxStart = boxEnd = _textView.Caret.Position.VirtualBufferPosition;
 

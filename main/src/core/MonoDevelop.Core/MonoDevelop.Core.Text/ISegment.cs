@@ -211,7 +211,7 @@ namespace MonoDevelop.Core.Text
 		public static TextSegment FromBounds (int startOffset, int endOffset)
 		{
 			if (startOffset > endOffset)
-				throw new ArgumentOutOfRangeException ("endOffset", "endOffset < startOffset");
+				throw new ArgumentOutOfRangeException (nameof (endOffset), "endOffset < startOffset");
 			return new TextSegment (startOffset, endOffset - startOffset);
 		}
 
@@ -322,8 +322,7 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		protected AbstractSegment (ISegment segment)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (segment);
 			this.offset = segment.Offset;
 			this.length = segment.Length;
 		}
@@ -349,8 +348,7 @@ namespace MonoDevelop.Core.Text
 		/// </remarks>
 		public static bool Contains (this ISegment segment, int offset, int length)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (segment);
 			return segment.Offset <= offset && offset + length <= segment.EndOffset;
 		}
 
@@ -359,10 +357,8 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public static bool Contains (this ISegment segment, ISegment span)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
-			if (span == null)
-				throw new ArgumentNullException ("span");
+			ArgumentNullException.ThrowIfNull (segment);
+			ArgumentNullException.ThrowIfNull (span);
 			return segment.Offset <= span.Offset && span.EndOffset <= segment.EndOffset;
 		}
 
@@ -371,8 +367,7 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public static bool Contains (this ISegment segment, int offset)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (segment);
 			return unchecked((uint)(offset - segment.Offset) < (uint)segment.Length);
 		}
 
@@ -381,8 +376,7 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public static bool IsInside (this ISegment segment, int offset)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (segment);
 			return unchecked((uint)(offset - segment.Offset) <= (uint)segment.Length);
 		}
 
@@ -401,8 +395,7 @@ namespace MonoDevelop.Core.Text
 		[Obsolete ("Use the Microsoft.VisualStudio.Text APIs")]
 		public static ISegment AdjustSegment (this ISegment segment, TextChangeEventArgs args)
 		{
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (segment);
 			var newStartOffset = args.GetNewOffset (segment.Offset);
 			var newEndOffset = args.GetNewOffset (segment.EndOffset);
 			return new TextSegment (newStartOffset, newEndOffset - newStartOffset);
@@ -411,8 +404,7 @@ namespace MonoDevelop.Core.Text
 		[Obsolete ("Use the Microsoft.VisualStudio.Text APIs")]
 		public static IEnumerable<ISegment> AdjustSegments (this IEnumerable<ISegment> segments, TextChangeEventArgs args)
 		{
-			if (segments == null)
-				throw new ArgumentNullException ("segments");
+			ArgumentNullException.ThrowIfNull (segments);
 			foreach (var segment in segments) {
 				yield return segment.AdjustSegment (args);
 			}
@@ -420,8 +412,7 @@ namespace MonoDevelop.Core.Text
 
 		public static bool IsInvalid (this ISegment segment)
 		{
-			if (segment == null)
-				throw new ArgumentNullException (nameof (segment));
+			ArgumentNullException.ThrowIfNull (segment);
 			return segment.Offset < 0;
 		}
 	}

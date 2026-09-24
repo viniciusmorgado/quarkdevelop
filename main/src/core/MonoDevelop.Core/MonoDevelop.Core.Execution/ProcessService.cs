@@ -53,7 +53,7 @@ namespace MonoDevelop.Core.Execution
 		
 		const string ExecutionModesExtensionPath = "/MonoDevelop/Core/ExecutionModes";
 
-		Dictionary<string, string> environmentVariableOverrides = null;
+		Dictionary<string, string> environmentVariableOverrides;
 		
 		public IDictionary<string, string> EnvironmentVariableOverrides {
 			get {
@@ -166,8 +166,7 @@ namespace MonoDevelop.Core.Execution
 
 		public ProcessStartInfo CreateProcessStartInfo (string command, string arguments, string workingDirectory, bool redirectStandardInput)
 		{
-			if (command == null)
-				throw new ArgumentNullException("command");
+			ArgumentNullException.ThrowIfNull (command);
 			
 			if (command.Length == 0)
 				throw new ArgumentException("command");
@@ -307,7 +306,7 @@ namespace MonoDevelop.Core.Execution
 		void CheckRemoteType (Type type)
 		{
 			if (!typeof(IDisposable).IsAssignableFrom (type))
-				throw new ArgumentException ("The remote object type must implement IDisposable", "type");
+				throw new ArgumentException ("The remote object type must implement IDisposable", nameof (type));
 		}
 		
 		public IDisposable CreateExternalProcessObject (Type type, bool shared = true, IList<string> userAssemblyPaths = null, OperationConsole console = null)

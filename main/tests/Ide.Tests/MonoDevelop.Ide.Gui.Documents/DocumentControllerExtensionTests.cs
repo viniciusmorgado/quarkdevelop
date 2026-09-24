@@ -181,35 +181,35 @@ namespace MonoDevelop.Ide.Gui.Documents
 
 					var instance = controller.GetContent<TestExtension<Test1>> ();
 					Assert.IsNotNull (instance);
-					Assert.AreEqual (1, TestExtension<Test1>.LiveExtensions.Count ());
+					Assert.AreEqual (1, TestExtension<Test1>.LiveExtensions.Count);
 
 					Assert.IsNotNull (controller.GetContent<TestExtension<Test2>> ());
-					Assert.AreEqual (1, TestExtension<Test2>.LiveExtensions.Count ());
+					Assert.AreEqual (1, TestExtension<Test2>.LiveExtensions.Count);
 
 					Assert.IsNull (controller.GetContent<TestExtension<Test3>> ());
-					Assert.AreEqual (0, TestExtension<Test3>.LiveExtensions.Count ());
+					Assert.AreEqual (0, TestExtension<Test3>.LiveExtensions.Count);
 
 					controller.FilePath = "foo.test2";
 
 					Assert.AreSame (instance, controller.GetContent<TestExtension<Test1>> ());
-					Assert.AreEqual (1, TestExtension<Test1>.LiveExtensions.Count ());
+					Assert.AreEqual (1, TestExtension<Test1>.LiveExtensions.Count);
 
 					Assert.IsNull (controller.GetContent<TestExtension<Test2>> ());
-					Assert.AreEqual (0, TestExtension<Test2>.LiveExtensions.Count ());
+					Assert.AreEqual (0, TestExtension<Test2>.LiveExtensions.Count);
 
 					Assert.IsNotNull (controller.GetContent<TestExtension<Test3>> ());
-					Assert.AreEqual (1, TestExtension<Test3>.LiveExtensions.Count ());
+					Assert.AreEqual (1, TestExtension<Test3>.LiveExtensions.Count);
 
 					controller.FilePath = "foo.test1";
 
 					Assert.AreSame (instance, controller.GetContent<TestExtension<Test1>> ());
-					Assert.AreEqual (1, TestExtension<Test1>.LiveExtensions.Count ());
+					Assert.AreEqual (1, TestExtension<Test1>.LiveExtensions.Count);
 
 					Assert.IsNotNull (controller.GetContent<TestExtension<Test2>> ());
-					Assert.AreEqual (1, TestExtension<Test2>.LiveExtensions.Count ());
+					Assert.AreEqual (1, TestExtension<Test2>.LiveExtensions.Count);
 
 					Assert.IsNull (controller.GetContent<TestExtension<Test3>> ());
-					Assert.AreEqual (0, TestExtension<Test3>.LiveExtensions.Count ());
+					Assert.AreEqual (0, TestExtension<Test3>.LiveExtensions.Count);
 				}
 
 			} finally {
@@ -586,7 +586,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class TestControllerWithExtension: FileDocumentController
+	sealed class TestControllerWithExtension: FileDocumentController
 	{
 		protected override object OnGetContent (Type type)
 		{
@@ -692,17 +692,17 @@ namespace MonoDevelop.Ide.Gui.Documents
 	{
 	}
 
-	class Producer4
+	sealed class Producer4
 	{
 	}
 
-	class Producer5
+	sealed class Producer5
 	{
 	}
 
-	class ProducerExtension : TestExtension<ProducerExtension>, IProducer
+	sealed class ProducerExtension : TestExtension<ProducerExtension>, IProducer
 	{
-		class MyProducer : IProducer2, IProducer3
+		sealed class MyProducer : IProducer2, IProducer3
 		{
 		}
 
@@ -741,7 +741,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		public WorkspaceObject KnownOwner { get; set; }
 	}
 
-	class ConsumerExtension: TestExtension<ConsumerExtension>
+	sealed class ConsumerExtension: TestExtension<ConsumerExtension>
 	{
 		public override Task<bool> SupportsController (DocumentController controller)
 		{
@@ -749,7 +749,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class OwnerConditionedExtension : TestExtension<OwnerConditionedExtension>
+	sealed class OwnerConditionedExtension : TestExtension<OwnerConditionedExtension>
 	{
 		public override Task<bool> SupportsController (DocumentController controller)
 		{
@@ -757,7 +757,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class MyWorkspaceObject : WorkspaceObject
+	sealed class MyWorkspaceObject : WorkspaceObject
 	{
 		protected override string OnGetBaseDirectory ()
 		{
@@ -775,36 +775,36 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class FullReloadExtension : TestExtension<OwnerConditionedExtension>
+	sealed class FullReloadExtension : TestExtension<OwnerConditionedExtension>
 	{
 		public override ProjectReloadCapability ProjectReloadCapability => ProjectReloadCapability.Full;
 	}
 
-	class UnsavedDataReloadExtension : TestExtension<OwnerConditionedExtension>
+	sealed class UnsavedDataReloadExtension : TestExtension<OwnerConditionedExtension>
 	{
 		public override ProjectReloadCapability ProjectReloadCapability => ProjectReloadCapability.UnsavedData;
 	}
 
-	class NoReloadExtension : TestExtension<OwnerConditionedExtension>
+	sealed class NoReloadExtension : TestExtension<OwnerConditionedExtension>
 	{
 		public override ProjectReloadCapability ProjectReloadCapability => ProjectReloadCapability.None;
 	}
 
-	class StatusTest1: TestExtension<StatusTest1>
+	sealed class StatusTest1: TestExtension<StatusTest1>
 	{
 
 	}
 
-	class StatusTest2 : TestExtension<StatusTest2>
+	sealed class StatusTest2 : TestExtension<StatusTest2>
 	{
 
 	}
 
 	// Placeholder types
 
-	class ExtensionThatMatches { }
-	class ExtensionThatDoesntMatch { }
-	class Test1 { }
-	class Test2 { }
-	class Test3 { }
+	sealed class ExtensionThatMatches { }
+	sealed class ExtensionThatDoesntMatch { }
+	sealed class Test1 { }
+	sealed class Test2 { }
+	sealed class Test3 { }
 }

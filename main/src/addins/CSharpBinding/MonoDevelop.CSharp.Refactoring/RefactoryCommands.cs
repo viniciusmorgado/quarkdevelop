@@ -212,7 +212,7 @@ namespace MonoDevelop.CSharp.Refactoring
 			if (idx > 0)
 				idx = fileName.LastIndexOfAny (seperators, idx - 1);
 			if (idx > 0)
-				return "..." + fileName.Substring (idx);
+				return string.Concat ("...", fileName.AsSpan (idx));
 			return fileName;
 		}
 	}

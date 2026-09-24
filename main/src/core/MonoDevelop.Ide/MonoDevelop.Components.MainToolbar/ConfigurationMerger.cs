@@ -285,7 +285,7 @@ namespace MonoDevelop.Components.MainToolbar
 				if (part != null)
 					return part.Targets;
 				else
-					return new ExecutionTarget[0];
+					return Array.Empty<ExecutionTarget> ();
 			}
 		}
 

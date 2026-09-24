@@ -28,7 +28,7 @@ using System;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableUpdatedNuGetPackagesInWorkspace : UpdatedNuGetPackagesInWorkspace
+	sealed class TestableUpdatedNuGetPackagesInWorkspace : UpdatedNuGetPackagesInWorkspace
 	{
 		public IPackageManagementEvents PackageManagementEvents;
 		public TestableCheckForNuGetPackageUpdatesTaskRunner TaskRunner;

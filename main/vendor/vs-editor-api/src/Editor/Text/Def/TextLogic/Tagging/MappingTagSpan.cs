@@ -54,8 +54,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <exception cref="ArgumentNullException"><paramref name="span"/> or <paramref name="tag"/> is null.</exception>
         public MappingTagSpan(IMappingSpan span, T tag)
         {
-            if (span == null)
-                throw new ArgumentNullException(nameof(span));
+            ArgumentNullException.ThrowIfNull(span);
             if (tag == null)
                 throw new ArgumentNullException(nameof(tag));
 

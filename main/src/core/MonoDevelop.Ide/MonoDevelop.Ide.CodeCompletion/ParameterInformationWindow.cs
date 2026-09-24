@@ -193,8 +193,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 
 		public async void ShowParameterInfo (ParameterHintingResult provider, int overload, int _currentParam, int maxSize)
 		{
-			if (provider == null)
-				throw new ArgumentNullException ("provider");
+			ArgumentNullException.ThrowIfNull (provider);
 			int numParams = System.Math.Max (0, provider [overload].ParameterCount);
 			var currentParam = System.Math.Min (_currentParam, numParams - 1);
 			if (numParams > 0 && currentParam < 0)

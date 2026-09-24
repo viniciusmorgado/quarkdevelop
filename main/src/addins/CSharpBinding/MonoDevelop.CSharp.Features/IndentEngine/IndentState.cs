@@ -750,10 +750,10 @@ namespace ICSharpCode.NRefactory6.CSharp
 				// try to capture where (generic type constraint)
 				ThisLineIndent.Push(IndentType.Continuation);
 			}
-			else if (statements.ContainsKey(keyword))
+			else if (statements.TryGetValue(keyword, out var value))
 			{
 				Statement previousStatement = CurrentStatement;
-				CurrentStatement = statements[keyword];
+				CurrentStatement = value;
 
 				// return if this is a using declaration or alias
 				if (CurrentStatement == Statement.Using &&
@@ -1341,17 +1341,11 @@ namespace ICSharpCode.NRefactory6.CSharp
 						break;
 					case PreProcessorDirective.Define:
 						var defineSymbol = DirectiveStatement.ToString().Trim();
-						if (!Engine.conditionalSymbols.Contains(defineSymbol))
-						{
-							Engine.conditionalSymbols.Add(defineSymbol);
-						}
+						Engine.conditionalSymbols.Add(defineSymbol);
 						break;
 					case PreProcessorDirective.Undef:
 						var undefineSymbol = DirectiveStatement.ToString().Trim();
-						if (Engine.conditionalSymbols.Contains(undefineSymbol))
-						{
-							Engine.conditionalSymbols.Remove(undefineSymbol);
-						}
+						Engine.conditionalSymbols.Remove(undefineSymbol);
 						break;
 					case PreProcessorDirective.Endif:
 						// marks the end of this block
@@ -1428,9 +1422,9 @@ namespace ICSharpCode.NRefactory6.CSharp
 				return;
 			}
 
-			if (preProcessorDirectives.ContainsKey(keyword))
+			if (preProcessorDirectives.TryGetValue(keyword, out var value))
 			{
-				DirectiveType = preProcessorDirectives[keyword];
+				DirectiveType = value;
 
 				// adjust the indentation for the region directive
 				if (DirectiveType == PreProcessorDirective.Region)

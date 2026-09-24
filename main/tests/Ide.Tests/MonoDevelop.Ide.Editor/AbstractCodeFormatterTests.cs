@@ -41,7 +41,7 @@ namespace MonoDevelop.Ide.Editor
 	[RequireService (typeof (TaskService))]
 	public class AbstractCodeFormatterTests : IdeTestBase
 	{
-		class TestAbstractCodeFormatter : AbstractCodeFormatter
+		sealed class TestAbstractCodeFormatter : AbstractCodeFormatter
 		{
 			protected override ITextSource FormatImplementation (PolicyContainer policyParent, string mimeType, ITextSource input, int startOffset, int length)
 			{

@@ -134,7 +134,7 @@ namespace MonoDevelop.Projects.Text
 					}
 					conversion = list.ToArray ();
 				}
-				return conversion ?? new TextEncoding[0];
+				return conversion ?? Array.Empty<TextEncoding> ();
 			}
 			set {
 				conversion = value;

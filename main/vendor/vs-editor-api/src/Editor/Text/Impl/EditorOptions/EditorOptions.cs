@@ -62,8 +62,7 @@ namespace Microsoft.VisualStudio.Text.EditorOptions.Implementation
                 if (_parent == null)
                     throw new InvalidOperationException("Cannot change the Parent of the global options.");
 
-                if (value == null)
-                    throw new ArgumentNullException(nameof(value));
+                ArgumentNullException.ThrowIfNull(value);
 
                 if (value == this)
                     throw new ArgumentException("The Parent of this instance of IEditorOptions cannot be set to itself.");

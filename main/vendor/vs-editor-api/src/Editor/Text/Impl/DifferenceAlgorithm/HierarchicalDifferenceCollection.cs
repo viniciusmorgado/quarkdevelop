@@ -45,12 +45,9 @@ namespace Microsoft.VisualStudio.Text.Differencing.Implementation
                                                 ITextDifferencingService differenceService,
                                                 StringDifferenceOptions options)
         {
-            if (differenceCollection == null)
-                throw new ArgumentNullException(nameof(differenceCollection));
-            if (left == null)
-                throw new ArgumentNullException(nameof(left));
-            if (right == null)
-                throw new ArgumentNullException(nameof(right));
+            ArgumentNullException.ThrowIfNull(differenceCollection);
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
             if (!object.ReferenceEquals(left, differenceCollection.LeftSequence))
                 throw new ArgumentException("left must equal differenceCollection.LeftSequence");
             if (!object.ReferenceEquals(right, differenceCollection.RightSequence))

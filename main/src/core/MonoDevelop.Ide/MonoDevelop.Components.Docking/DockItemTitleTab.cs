@@ -60,7 +60,7 @@ namespace MonoDevelop.Components.Docking
 		DockItem item;
 		bool allowPlaceholderDocking;
 		bool mouseOver;
-		Widget currentFocus = null; // Currently focused child
+		Widget currentFocus; // Currently focused child
 
 		IDisposable subscribedLeaveEvent;
 

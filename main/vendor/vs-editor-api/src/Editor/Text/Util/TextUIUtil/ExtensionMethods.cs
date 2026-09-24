@@ -15,15 +15,9 @@ namespace Microsoft.VisualStudio.Text.MultiSelection
         public static double MapXCoordinate(this ITextViewLine textLine, ITextView textView,
             double xCoordinate, ISmartIndentationService smartIndentationService, bool userSpecifiedXCoordinate)
         {
-            if (textLine == null)
-            {
-                throw new ArgumentNullException(nameof(textLine));
-            }
+            ArgumentNullException.ThrowIfNull(textLine);
 
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             // if the clicked point is to the right of the text and virtual space is disabled, the coordinate
             // needs to be fixed
@@ -118,10 +112,7 @@ namespace Microsoft.VisualStudio.Text.MultiSelection
 
         public static bool TryGetClosestTextViewLine(this ITextView textView, double yCoordinate, out ITextViewLine closestLine)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             if (textView.IsClosed || textView.InLayout)
             {

@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeLicenseAcceptanceService : ILicenseAcceptanceService
+	sealed class FakeLicenseAcceptanceService : ILicenseAcceptanceService
 	{
 		public bool AcceptLicensesReturnValue = true;
 

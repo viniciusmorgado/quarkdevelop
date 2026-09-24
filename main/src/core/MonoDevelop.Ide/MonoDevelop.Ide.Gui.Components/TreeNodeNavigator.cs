@@ -94,7 +94,7 @@ namespace MonoDevelop.Ide.Gui.Components
 					if (chain != null)
 						return chain;
 					else
-						return new NodeBuilder [0];
+						return Array.Empty<NodeBuilder> ();
 				}
 			}
 			

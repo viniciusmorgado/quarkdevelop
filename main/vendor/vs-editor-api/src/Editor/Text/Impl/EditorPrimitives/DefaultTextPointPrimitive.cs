@@ -289,10 +289,7 @@ namespace Microsoft.VisualStudio.Text.EditorPrimitives.Implementation
 
         public override TextRange GetTextRange(TextPoint otherPoint)
         {
-            if (otherPoint == null)
-            {
-                throw new ArgumentNullException(nameof(otherPoint));
-            }
+            ArgumentNullException.ThrowIfNull(otherPoint);
 
             if (otherPoint.TextBuffer != TextBuffer)
             {
@@ -352,10 +349,7 @@ namespace Microsoft.VisualStudio.Text.EditorPrimitives.Implementation
 
         public override bool InsertText(string text)
         {
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
+            ArgumentNullException.ThrowIfNull(text);
 
             if (text.Length > 0)
             {
@@ -735,14 +729,8 @@ namespace Microsoft.VisualStudio.Text.EditorPrimitives.Implementation
 
         private void ValidateFindParameters(string pattern, TextPoint endPoint)
         {
-            if (pattern == null)
-            {
-                throw new ArgumentNullException(nameof(pattern));
-            }
-            if (endPoint == null)
-            {
-                throw new ArgumentNullException(nameof(endPoint));
-            }
+            ArgumentNullException.ThrowIfNull(pattern);
+            ArgumentNullException.ThrowIfNull(endPoint);
             if (endPoint.TextBuffer != TextBuffer)
             {
                 throw new ArgumentException(Strings.OtherPointFromWrongBuffer);

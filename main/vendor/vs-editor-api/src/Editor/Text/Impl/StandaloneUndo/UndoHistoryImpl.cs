@@ -247,10 +247,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         /// </remarks>
         public void Undo(int count)
         {
-            if (count <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
             if (!IsThereEnoughVisibleTransactions(this.undoStack, count))
             {
@@ -324,10 +321,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Standalone
         /// </remarks>
         public void Redo(int count)
         {
-            if (count <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
             if (!IsThereEnoughVisibleTransactions(this.redoStack, count))
             {

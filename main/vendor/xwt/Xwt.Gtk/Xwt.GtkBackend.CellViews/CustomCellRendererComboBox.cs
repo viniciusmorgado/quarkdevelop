@@ -34,7 +34,7 @@ namespace Xwt.GtkBackend
 		Gtk.CellRendererCombo renderer;
 		Dictionary<object, CustomListModel> modelCache = new Dictionary<object, CustomListModel> ();
 
-		class DataSourceRef
+		sealed class DataSourceRef
 		{
 			readonly WeakReference source;
 			readonly int hash;

@@ -89,7 +89,7 @@ namespace MonoDevelop.Debugger
 				debugEngines.Add (de);
 				comboDebs.AppendText (de.Name);
 			}
-			if (!debugEngines.Any ())
+			if (debugEngines.Count == 0)
 				return;
 			if (defaultEngine == null)
 				defaultEngine = debugEngines.First ();

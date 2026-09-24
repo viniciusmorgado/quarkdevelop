@@ -557,7 +557,7 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 					var targetFiles = srcFiles.Select (f => targetRoot.Combine (f.ToRelative (srcRoot)));
 					if (IdeApp.ProjectOperations.AddFilesToProject (project, srcFiles.ToArray (), targetFiles.ToArray (), null).Any ())
 						changedProject = true;
-					else if (!srcFiles.Any () && existingPf == null) {
+					else if (srcFiles.Count == 0 && existingPf == null) {
 						// Just add empty folder.
 						project.Files.Add (new ProjectFile (targetRoot) { Subtype = Subtype.Directory });
 						changedProject = true;

@@ -46,7 +46,7 @@ namespace Microsoft.Build.Shared
 		/// <summary>
 		/// The directory where MSBuild stores cache information used during the build.
 		/// </summary>
-		internal static string cacheDirectory = null;
+		internal static string cacheDirectory;
 
 		/// <summary>
 		/// FOR UNIT TESTS ONLY
@@ -100,7 +100,7 @@ namespace Microsoft.Build.Shared
 		internal static string GetCacheDirectory ()
 		{
 			if (cacheDirectory == null) {
-				cacheDirectory = Path.Combine (Path.GetTempPath (), String.Format (CultureInfo.CurrentUICulture, "MSBuild{0}", Process.GetCurrentProcess ().Id));
+				cacheDirectory = Path.Combine (Path.GetTempPath (), String.Format (CultureInfo.CurrentUICulture, "MSBuild{0}", Environment.ProcessId));
 			}
 
 			return cacheDirectory;
@@ -239,7 +239,7 @@ namespace Microsoft.Build.Shared
 		internal static string NormalizePath (string path)
 		{
 			if (path.Length == 0)
-				throw new ArgumentException (path, "path");
+				throw new ArgumentException (path, nameof (path));
 
 #if FEATURE_LEGACY_GETFULLPATH
 
@@ -382,12 +382,12 @@ namespace Microsoft.Build.Shared
 			// Find the part of the name we want to check, that is remove quotes, if present
 			string checkValue = newValue;
 			if (newValue.Length > 2) {
-				if (newValue.StartsWith ("'")) {
-					if (newValue.EndsWith ("'")) {
+				if (newValue.StartsWith ('\'')) {
+					if (newValue.EndsWith ('\'')) {
 						checkValue = newValue.Substring (1, newValue.Length - 2);
 						quote = "'";
 					}
-				} else if (newValue.StartsWith ("\"") && newValue.EndsWith ("\"")) {
+				} else if (newValue.StartsWith ('"') && newValue.EndsWith ('"')) {
 					checkValue = newValue.Substring (1, newValue.Length - 2);
 					quote = "\"";
 				}

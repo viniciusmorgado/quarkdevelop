@@ -29,14 +29,13 @@ using System.Linq;
 
 namespace Xwt.Drawing
 {
-	class ComposedImage : DrawingImage
+	sealed class ComposedImage : DrawingImage
 	{
 		readonly Image [] images;
 
 		public ComposedImage (IEnumerable<Image> images, Size size = default (Size))
 		{
-			if (images == null)
-				throw new ArgumentNullException (nameof (images));
+			ArgumentNullException.ThrowIfNull (images);
 			this.images = images.ToArray ();
 			if (this.images.Length == 0)
 				throw new ArgumentException ("The enumeration does not contain any images", nameof (images));

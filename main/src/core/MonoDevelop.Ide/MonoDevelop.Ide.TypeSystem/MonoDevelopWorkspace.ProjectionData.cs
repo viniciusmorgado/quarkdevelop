@@ -50,10 +50,8 @@ namespace MonoDevelop.Ide.TypeSystem
 
 			internal void UpdateProjectionEntry (MonoDevelop.Projects.ProjectFile projectFile, IReadOnlyList<Projection> projections)
 			{
-				if (projectFile == null)
-					throw new ArgumentNullException (nameof (projectFile));
-				if (projections == null)
-					throw new ArgumentNullException (nameof (projections));
+				ArgumentNullException.ThrowIfNull (projectFile);
+				ArgumentNullException.ThrowIfNull (projections);
 
 				lock (projectionListUpdateLock) {
 					foreach (var entry in projectionList) {

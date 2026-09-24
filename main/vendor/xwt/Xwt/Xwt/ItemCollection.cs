@@ -40,7 +40,7 @@ namespace Xwt
 		DataField<string> labelField = new DataField<string> ();
 		DataField<object> dataField = new DataField<object> ();
 		
-		class ItemWithLabel {
+		sealed class ItemWithLabel {
 			public object Item;
 			public string Label;
 		}

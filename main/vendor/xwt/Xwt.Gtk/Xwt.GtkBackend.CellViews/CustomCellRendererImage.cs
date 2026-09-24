@@ -55,7 +55,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	class ImageRenderer: GtkCellRendererCustom
+	sealed class ImageRenderer: GtkCellRendererCustom
 	{
 		ImageDescription image;
 

@@ -323,7 +323,7 @@ namespace MonoDevelop.Projects.Policies
 		public IEnumerable<ScopedPolicy> DirectGetAll ()
 		{
 			if (policies == null)
-				return new ScopedPolicy [0];
+				return Array.Empty<ScopedPolicy> ();
 			return policies.Select (pk => new ScopedPolicy (pk.Key.PolicyType, pk.Value, pk.Key.Scope));
 		}
 		

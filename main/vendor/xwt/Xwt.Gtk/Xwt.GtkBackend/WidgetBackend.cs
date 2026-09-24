@@ -46,7 +46,7 @@ namespace Xwt.GtkBackend
 
 		bool minSizeSet;
 		
-		class DragDropData
+		sealed class DragDropData
 		{
 			public TransferDataSource CurrentDragData;
 			public Gdk.DragAction DestDragAction;
@@ -1110,7 +1110,7 @@ namespace Xwt.GtkBackend
 			HandleDragBegin (null, args);
 		}
 		
-		class IconInitializer
+		sealed class IconInitializer
 		{
 			public Gdk.Pixbuf Image;
 			public double HotX, HotY;
@@ -1248,7 +1248,7 @@ namespace Xwt.GtkBackend
 		Gtk.Widget Widget { get; }
 	}
 
-	class WidgetPlacementWrapper: Gtk.Alignment, IConstraintProvider
+	sealed class WidgetPlacementWrapper: Gtk.Alignment, IConstraintProvider
 	{
 		public WidgetPlacementWrapper (): base (0, 0, 1, 1)
 		{

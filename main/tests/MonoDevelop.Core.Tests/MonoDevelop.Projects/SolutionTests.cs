@@ -1093,7 +1093,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class SomeItem: SolutionItem
+	sealed class SomeItem: SolutionItem
 	{
 		public int BoundEvents;
 		public int UnboundEvents;
@@ -1129,7 +1129,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class CustomSolutionItemNode<T>: ProjectModelExtensionNode where T:new()
+	sealed class CustomSolutionItemNode<T>: ProjectModelExtensionNode where T:new()
 	{
 		public override object CreateInstance ()
 		{
@@ -1138,7 +1138,7 @@ namespace MonoDevelop.Projects
 	}
 
 	[SolutionDataSection ("TestData")]
-	class TestSolutionExtension: SolutionExtension
+	sealed class TestSolutionExtension: SolutionExtension
 	{
 		[ItemProperty ("prop1", DefaultValue = "xx")]
 		public string Prop1 { get; set; }
@@ -1150,7 +1150,7 @@ namespace MonoDevelop.Projects
 		public ComplexSolutionData Extra { get; set; }
 	}
 
-	class ComplexSolutionData
+	sealed class ComplexSolutionData
 	{
 		[ItemProperty ("prop3")]
 		public string Prop3 { get; set; }
@@ -1159,7 +1159,7 @@ namespace MonoDevelop.Projects
 		public string Prop4 { get; set; }
 	}
 
-	class TestBuildSolutionExtension : SolutionExtension
+	sealed class TestBuildSolutionExtension : SolutionExtension
 	{
 		public static Action BeginBuildCalled, EndBuildCalled;
 
@@ -1176,7 +1176,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class TestBuildSolutionItemExtension : SolutionItemExtension
+	sealed class TestBuildSolutionItemExtension : SolutionItemExtension
 	{
 		public static Action BuildCalled;
 
@@ -1187,7 +1187,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class TestProjectExtension : DotNetProjectExtension
+	sealed class TestProjectExtension : DotNetProjectExtension
 	{
 		public TaskCompletionSource<bool> TaskCompletionSource = new TaskCompletionSource<bool> ();
 

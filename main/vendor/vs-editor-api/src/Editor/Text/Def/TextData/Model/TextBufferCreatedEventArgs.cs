@@ -22,10 +22,7 @@ namespace Microsoft.VisualStudio.Text
         /// <param name="textBuffer">The <see cref="ITextBuffer"/> which was created.</param>
         public TextBufferCreatedEventArgs(ITextBuffer textBuffer)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull (textBuffer);
             TextBuffer = textBuffer;
         }
     }

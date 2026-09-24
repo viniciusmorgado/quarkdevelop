@@ -37,7 +37,7 @@ namespace MonoDevelop.Components
 	public class ImageLoader
 	{
 		readonly object mutex = new object ();
-		Xwt.Drawing.Image image = null;
+		Xwt.Drawing.Image image;
 		string cachePath, url;
 		double scaleFactor;
 

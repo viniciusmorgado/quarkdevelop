@@ -39,8 +39,8 @@ namespace MonoDevelop.Projects.MSBuild
 		List<IMSBuildItemEvaluated> evaluatedItemsIgnoringCondition = new List<IMSBuildItemEvaluated> ();
 		Dictionary<string, MSBuildPropertyGroupEvaluated> evaluatedItemDefinitions;
 		MSBuildEvaluatedPropertyCollection evaluatedProperties;
-		MSBuildTarget[] targets = new MSBuildTarget[0];
-		MSBuildTarget[] targetsIgnoringCondition = new MSBuildTarget[0];
+		MSBuildTarget[] targets = Array.Empty<MSBuildTarget> ();
+		MSBuildTarget[] targetsIgnoringCondition = Array.Empty<MSBuildTarget> ();
 		Dictionary<string,string> globalProperties = new Dictionary<string, string> ();
 		ConditionedPropertyCollection conditionedProperties;
 

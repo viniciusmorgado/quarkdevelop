@@ -472,7 +472,7 @@ namespace MonoDevelop.Components.DockNotebook
 			return base.OnLeaveNotifyEvent (evnt);
 		}
 
-		public void Close ()
+		public new void Close ()
 		{
 			Application.Invoke ((o, args) => {
 				placeholder.Destroy ();

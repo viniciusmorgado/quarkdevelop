@@ -44,8 +44,7 @@ namespace Mono.TextEditor
 
 		public ActionMargin (MonoTextEditor editor)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
+			ArgumentNullException.ThrowIfNull (editor);
 			this.editor = editor;
 			marginWidth = 20;
 			IsVisible = false;

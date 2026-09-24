@@ -448,7 +448,7 @@ namespace MonoDevelop.Ide.Gui
 			});
 		}
 
-		uint parseTimeout = 0;
+		uint parseTimeout;
 		CancellationTokenSource analysisDocumentSrc = new CancellationTokenSource ();
 
 		void CancelEnsureAnalysisDocumentIsOpen ()

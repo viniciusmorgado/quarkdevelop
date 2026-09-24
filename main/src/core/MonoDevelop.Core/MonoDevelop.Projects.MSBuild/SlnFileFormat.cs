@@ -268,7 +268,7 @@ namespace MonoDevelop.Projects.MSBuild
 				// are missing "{"..."}" in their guid. This is not generally a problem since it
 				// is a valid GUID format. However the solution file format requires that these are present. 
 				string itemGuid = item.ItemId;
-				if (!itemGuid.StartsWith ("{", StringComparison.Ordinal) && !itemGuid.EndsWith ("}", StringComparison.Ordinal))
+				if (!itemGuid.StartsWith ('{') && !itemGuid.EndsWith ('}'))
 					itemGuid = "{" + itemGuid + "}";
 
 				var pset = col.GetOrCreatePropertySet (itemGuid, ignoreCase:true);
@@ -321,7 +321,7 @@ namespace MonoDevelop.Projects.MSBuild
 			// Find a solution item section of type SolutionItems
 			var sec = proj.Sections.GetSection ("SolutionItems");
 			if (sec == null)
-				return new string[0];
+				return Array.Empty<string> ();
 
 			return sec.Properties.Keys.ToList ();
 		}
@@ -665,8 +665,8 @@ namespace MonoDevelop.Projects.MSBuild
 
 					string key = projGuid + "." + slnConfig;
 					SolutionConfigurationEntry combineConfigEntry = null;
-					if (cache.ContainsKey (key)) {
-						combineConfigEntry = cache [key];
+					if (cache.TryGetValue (key, out var value)) {
+						combineConfigEntry = value;
 					} else {
 						combineConfigEntry = GetConfigEntry (sln, item, slnConfig);
 						combineConfigEntry.Build = false; // Not buildable by default. Build will be enabled if a Build.0 entry is found

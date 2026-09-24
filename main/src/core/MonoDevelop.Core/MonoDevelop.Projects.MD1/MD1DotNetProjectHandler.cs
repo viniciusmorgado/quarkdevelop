@@ -207,8 +207,8 @@ namespace MonoDevelop.Projects.MD1
 					continue;
 
 				string cmd = String.Empty;
-				if (resourcesByCulture.ContainsKey (culture))
-					cmd = resourcesByCulture [culture];
+				if (resourcesByCulture.TryGetValue (culture, out var value))
+					cmd = value;
 
 				cmd = String.Format ("{0} \"/embed:{1},{2}\"", cmd, fname, resourceId);
 				resourcesByCulture [culture] = cmd;

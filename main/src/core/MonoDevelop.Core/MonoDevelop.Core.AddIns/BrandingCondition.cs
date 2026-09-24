@@ -34,7 +34,7 @@ namespace MonoDevelop.Core.AddIns
 		{
 			string appName = conditionNode.GetAttribute ("value");
 			bool negate = false;
-			if (appName.StartsWith ("!", StringComparison.Ordinal)) {
+			if (appName.StartsWith ('!')) {
 				appName = appName.Substring (1);
 				negate = true;
 			}

@@ -31,26 +31,26 @@ namespace MonoDevelop.Components.PropertyGrid
 	[TestFixture]
 	public class EditorManagerTests
 	{
-		class TestTypes
+		sealed class TestTypes
 		{
-			public class TypeHasIndexer
+			public sealed class TypeHasIndexer
 			{
 				public TypeHasIndexer this [int x] {
 					get { return default(TypeHasIndexer); }
 				}
 			}
 
-			public class TypeHasPublicProperty
+			public sealed class TypeHasPublicProperty
 			{
 				public TypeHasPublicProperty Item { get; set; }
 			}
 
-			public class TypeHasPrivateProperty
+			public sealed class TypeHasPrivateProperty
 			{
 				TypeHasPrivateProperty Item { get; set; }
 			}
 
-			public class TypeHasNoProperty
+			public sealed class TypeHasNoProperty
 			{
 				#pragma warning disable 649 // never assigned
 				public TypeHasNoProperty Item;

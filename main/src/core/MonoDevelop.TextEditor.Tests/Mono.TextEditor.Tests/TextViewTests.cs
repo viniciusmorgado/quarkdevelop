@@ -43,7 +43,7 @@ namespace Mono.TextEditor.Tests
 	[TestFixture]
 	public class TextViewTests
 	{
-		class TestSyntaxMode : ISyntaxHighlighting
+		sealed class TestSyntaxMode : ISyntaxHighlighting
 		{
 			#pragma warning disable 67 // unused
 			public event EventHandler<MonoDevelop.Ide.Editor.LineEventArgs> HighlightingStateChanged;

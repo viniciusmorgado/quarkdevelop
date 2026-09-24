@@ -78,7 +78,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	class TempCairoContextBackend : CairoContextBackend
+	sealed class TempCairoContextBackend : CairoContextBackend
 	{
 		public TempCairoContextBackend (double scaleFactor) : base (scaleFactor)
 		{

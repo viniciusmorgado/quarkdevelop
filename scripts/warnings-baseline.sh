@@ -36,7 +36,13 @@ dotnet build "$project" -nologo -clp:NoSummary -p:TreatWarningsAsErrors=false --
 
 # Only warnings reported for this project (dependencies are built too and have their own baseline).
 project_abs="$(cd "$(dirname "$project")" && pwd)/$(basename "$project")"
-grep -F "[$project_abs" "$log" | grep -oE 'warning [A-Z]+[0-9]+' | awk '{print $2}' | sort | uniq -c | sort -rn > "$counts.tmp"
+{ grep -F "[$project_abs" "$log" || true; } | grep -oE 'warning [A-Z]+[0-9]+' | awk '{print $2}' | sort | uniq -c | sort -rn > "$counts.tmp" || true
+if [[ ! -s "$counts.tmp" ]]; then
+	# No legacy warnings left: no baseline, every warning of this project is an error.
+	rm -f "$counts.tmp" "$counts"
+	md_log "no warnings: baseline removed for $name"
+	exit 0
+fi
 if grep -qE "$forbidden" <(awk '{print $2}' "$counts.tmp"); then
 	awk '{print $2}' "$counts.tmp" | grep -E "$forbidden" >&2 || true
 	rm -f "$counts.tmp"

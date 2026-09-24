@@ -34,7 +34,7 @@ namespace MonoDevelop.Gettext.Editor
 	partial class CatalogHeadersWidget : Bin
 	{
 		Catalog headers;
-		bool inUpdate = false;
+		bool inUpdate;
 		public event EventHandler PluralDefinitionChanged;
 		
 		public CatalogHeadersWidget ()

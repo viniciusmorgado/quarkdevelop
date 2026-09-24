@@ -75,7 +75,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			this.toggleFindInFiles.DrawIndicator = false;
 			this.toggleFindInFiles.UseUnderline = true;
 			this.toggleFindInFiles.Relief = ((global::Gtk.ReliefStyle)(2));
-			this.toggleFindInFiles.Group = new global::Gtk.RadioButton [0];
+			this.toggleFindInFiles.Group = System.Array.Empty<Gtk.RadioButton> ();
 			this.hbox3.Add (this.toggleFindInFiles);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.toggleFindInFiles]));
 			w2.Position = 0;

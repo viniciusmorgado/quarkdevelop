@@ -1409,7 +1409,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class CustomItem : ProjectItem
+	sealed class CustomItem : ProjectItem
 	{
 		public override string Include {
 			get {
@@ -1423,7 +1423,7 @@ namespace MonoDevelop.Projects
 		public string SomeMetadata { get; set; }
 	}
 
-	class CustomFlavorNode : SolutionItemExtensionNode
+	sealed class CustomFlavorNode : SolutionItemExtensionNode
 	{
 		public CustomFlavorNode ()
 		{
@@ -1436,14 +1436,14 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class CustomFlavor : ProjectExtension
+	sealed class CustomFlavor : ProjectExtension
 	{
 	}
 
-	class SerializedSaveTestExtension: SolutionItemExtension
+	sealed class SerializedSaveTestExtension: SolutionItemExtension
 	{
-		static bool Running = false;
-		public static int SaveCount = 0;
+		static bool Running;
+		public static int SaveCount;
 
 		internal protected override async Task OnSave (ProgressMonitor monitor)
 		{

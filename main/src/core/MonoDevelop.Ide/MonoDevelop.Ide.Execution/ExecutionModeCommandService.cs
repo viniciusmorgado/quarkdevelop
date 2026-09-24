@@ -534,7 +534,7 @@ namespace MonoDevelop.Ide.Execution
 
 		internal static ExecutionConfiguration[] GetExecutionConfigurations (SolutionItem item)
 		{
-			var res = item.UserProperties.GetValue<ExecutionConfiguration []> ("ExecutionConfigurations") ?? new ExecutionConfiguration [0];
+			var res = item.UserProperties.GetValue<ExecutionConfiguration []> ("ExecutionConfigurations") ?? Array.Empty<ExecutionConfiguration> ();
 			return res.Where (c => c.Resolve (item)).ToArray ();
 		}
 

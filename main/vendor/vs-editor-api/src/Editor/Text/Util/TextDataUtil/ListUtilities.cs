@@ -52,10 +52,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         public static T? FirstOrNullable<T>(this IEnumerable<T> source)
            where T : struct
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
+            ArgumentNullException.ThrowIfNull (source);
 
             return source.Cast<T?>().FirstOrDefault();
         }

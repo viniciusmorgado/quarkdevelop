@@ -9,7 +9,7 @@ using System.Net;
 
 namespace MonoDevelop.PackageManagement.Tests
 {
-	internal class TestProxy : IWebProxy
+	internal sealed class TestProxy : IWebProxy
 	{
 		readonly Uri proxyAddress;
 

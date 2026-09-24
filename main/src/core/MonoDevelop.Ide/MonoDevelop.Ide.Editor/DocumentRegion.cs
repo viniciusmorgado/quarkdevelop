@@ -125,8 +125,7 @@ namespace MonoDevelop.Ide.Editor
 
 		public TextSegment GetSegment (TextEditor document)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			var begin = document.LocationToOffset (Begin);
 			var end = document.LocationToOffset (End);
 			return new TextSegment (begin, end - begin);

@@ -68,7 +68,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 				else if (ConfiguredSolution != null)
 					return ConfiguredSolution.Configurations;
 				else
-					return new ItemConfiguration [0];
+					return Array.Empty<ItemConfiguration> ();
 			}
 		}
 

@@ -93,10 +93,8 @@ namespace MonoDevelop.AssemblyBrowser
 
 		public AssemblyLoader (AssemblyBrowserWidget widget, string fileName)
 		{
-			if (widget == null)
-				throw new ArgumentNullException (nameof (widget));
-			if (fileName == null)
-				throw new ArgumentNullException (nameof (fileName));
+			ArgumentNullException.ThrowIfNull (widget);
+			ArgumentNullException.ThrowIfNull (fileName);
 			this.widget = widget;
 			FileName = fileName;
 			if (!File.Exists (fileName))

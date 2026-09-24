@@ -43,8 +43,8 @@ namespace MonoDevelop.DesignerSupport
 {
 	public class DesignerSupportService
 	{
-		IPropertyPad propertyPad = null;
-		ToolboxService toolboxService = null;
+		IPropertyPad propertyPad;
+		ToolboxService toolboxService;
 		IPropertyProvider[] providers;
 		
 		IPropertyPadProvider lastPadProvider;

@@ -84,7 +84,7 @@ namespace MonoDevelop.UnitTesting
 			} catch (Exception ex) {
 				LoggingService.LogError ("Test store query failed. Test history data may be corrupt.", ex);
 			}
-			return new UnitTestResult [0];
+			return Array.Empty<UnitTestResult> ();
 		}
 
 		public UnitTestResult [] GetResultsToDate (DateTime endDate, int count)
@@ -95,7 +95,7 @@ namespace MonoDevelop.UnitTesting
 			} catch (Exception ex) {
 				LoggingService.LogError ("Test store query failed. Test history data may be corrupt.", ex);
 			}
-			return new UnitTestResult [0];
+			return Array.Empty<UnitTestResult> ();
 		}
 	}
 }

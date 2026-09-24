@@ -57,15 +57,9 @@ namespace Microsoft.VisualStudio.Text.Classification.Implementation
         /// </summary>
         public IClassificationType CreateClassificationType(string type, IEnumerable<IClassificationType> baseTypes)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
+            ArgumentNullException.ThrowIfNull(type);
 
-            if (baseTypes == null)
-            {
-                throw new ArgumentNullException(nameof(baseTypes));
-            }
+            ArgumentNullException.ThrowIfNull(baseTypes);
             if (ClassificationTypes.ContainsKey(type))
             {
                 throw new InvalidOperationException(LookUp.Strings.ClassificationAlreadyAdded);
@@ -92,10 +86,7 @@ namespace Microsoft.VisualStudio.Text.Classification.Implementation
         public IClassificationType CreateTransientClassificationType(IEnumerable<IClassificationType> baseTypes)
         {
             // Validate
-            if (baseTypes == null)
-            {
-                throw new ArgumentNullException(nameof(baseTypes));
-            }
+            ArgumentNullException.ThrowIfNull(baseTypes);
             if (!baseTypes.GetEnumerator().MoveNext())
             {
                 throw new InvalidOperationException(LookUp.Strings.TransientTypesNeedAtLeastOneBaseType);
@@ -113,10 +104,7 @@ namespace Microsoft.VisualStudio.Text.Classification.Implementation
         public IClassificationType CreateTransientClassificationType(params IClassificationType[] baseTypes)
         {
             // Validate
-            if (baseTypes == null)
-            {
-                throw new ArgumentNullException(nameof(baseTypes));
-            }
+            ArgumentNullException.ThrowIfNull(baseTypes);
             if (baseTypes.Length == 0)
             {
                 throw new InvalidOperationException(LookUp.Strings.TransientTypesNeedAtLeastOneBaseType);

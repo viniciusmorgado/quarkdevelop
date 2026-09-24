@@ -74,10 +74,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         /// </summary>
         static public int ScanForLineCount(string text)
         {
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
+            ArgumentNullException.ThrowIfNull(text);
             int lines = 0;
             for (int i = 0; i < text.Length; )
             {
@@ -104,10 +101,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         /// </summary>
         static public int ScanForLineCount(char[] text, int start, int length)
         {
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
+            ArgumentNullException.ThrowIfNull(text);
             int lines = 0;
             for (int i = 0; i < length; )
             {
@@ -255,14 +249,8 @@ namespace Microsoft.VisualStudio.Text.Utilities
         /// <remarks>If the buffer already has a tag, the new tag is concatenated to it (with an intervening "::".</remarks>
         public static void TagBuffer(ITextBuffer buffer, string tag)
         {
-            if (buffer == null)
-            {
-                throw new ArgumentNullException(nameof(buffer));
-            }
-            if (tag == null)
-            {
-                throw new ArgumentNullException(nameof(tag));
-            }
+            ArgumentNullException.ThrowIfNull(buffer);
+            ArgumentNullException.ThrowIfNull(tag);
             string existingTag = "";
             if (!buffer.Properties.TryGetProperty<string>("tag", out existingTag))
             {
@@ -282,10 +270,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         /// <exception cref="ArgumentNullException">if <paramref name="buffer"/> is null.</exception>
         public static string GetTag(ITextBuffer buffer)
         {
-            if (buffer == null)
-            {
-                throw new ArgumentNullException(nameof(buffer));
-            }
+            ArgumentNullException.ThrowIfNull(buffer);
             string tag = "";
             buffer.Properties.TryGetProperty<string>("tag", out tag);
             return tag;

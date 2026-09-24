@@ -26,7 +26,7 @@
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableUninstallNuGetPackageAction : UninstallNuGetPackageAction
+	sealed class TestableUninstallNuGetPackageAction : UninstallNuGetPackageAction
 	{
 		public FakeNuGetProjectContext ProjectContext;
 		public FakeNuGetPackageManager PackageManager;

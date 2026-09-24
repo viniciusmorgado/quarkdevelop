@@ -43,8 +43,8 @@ namespace MonoDevelop.Ide.Projects
 {
     internal class PackageReferencePanel : VBox, IReferencePanel 
     {
-        ListStore store = null;
-        private TreeView treeView = null;
+        ListStore store;
+        private TreeView treeView;
 		bool showAll;
 		DotNetProject configureProject;
 		StringMatcher stringMatcher;
@@ -52,7 +52,7 @@ namespace MonoDevelop.Ide.Projects
 
         private IAssemblyContext targetContext;
         private TargetFramework targetVersion;
-        private SelectReferenceDialog selectDialog = null;
+        private SelectReferenceDialog selectDialog;
 		
 		const int ColName = 0;
 		const int ColVersion = 1;
@@ -270,7 +270,7 @@ namespace MonoDevelop.Ide.Projects
 				lastPos = pos + 1;
 			}
 			if (lastPos < text.Length)
-				result.Append (GLib.Markup.EscapeText (text.Substring (lastPos, text.Length - lastPos)));
+				result.Append (GLib.Markup.EscapeText (text.Substring (lastPos)));
 			return result.ToString ();
 		}
 

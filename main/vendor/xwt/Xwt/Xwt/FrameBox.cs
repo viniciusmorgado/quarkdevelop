@@ -39,7 +39,7 @@ namespace Xwt
 		FrameCanvas canvas;
 		Color borderColor = Colors.Black;
 
-		class FrameCanvas: Canvas
+		sealed class FrameCanvas: Canvas
 		{
 			Widget child;
 

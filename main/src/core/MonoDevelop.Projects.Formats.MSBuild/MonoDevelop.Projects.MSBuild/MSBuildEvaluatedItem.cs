@@ -31,7 +31,7 @@ using MonoDevelop.Core.Execution;
 namespace MonoDevelop.Projects.MSBuild
 {
 	[MessageDataTypeAttribute]
-	class MSBuildEvaluatedItem
+	sealed class MSBuildEvaluatedItem
 	{
 		public MSBuildEvaluatedItem ()
 		{

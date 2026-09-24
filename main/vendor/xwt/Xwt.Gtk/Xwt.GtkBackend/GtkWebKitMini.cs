@@ -267,7 +267,7 @@ namespace Xwt.GtkBackend.WebKit
 			Initialize ();
 		}
 
-		static bool initialized = false;
+		static bool initialized;
 		internal static void Initialize ()
 		{
 			if (initialized)

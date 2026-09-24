@@ -222,8 +222,7 @@ namespace MonoDevelop.Ide.FindInFiles
 
 		public WholeProjectScope (Project project)
 		{
-			if (project == null)
-				throw new ArgumentNullException ("project");
+			ArgumentNullException.ThrowIfNull (project);
 
 			this.project = project;
 		}
@@ -336,7 +335,7 @@ namespace MonoDevelop.Ide.FindInFiles
 						if (attr.HasFlag (FileAttributes.Hidden))
 							continue;
 					}
-					if (Path.GetFileName (fileName).StartsWith (".", StringComparison.Ordinal))
+					if (Path.GetFileName (fileName).StartsWith ('.'))
 						continue;
 					if (!filterOptions.NameMatches (fileName))
 						continue;
@@ -352,7 +351,7 @@ namespace MonoDevelop.Ide.FindInFiles
 							if (attr.HasFlag (FileAttributes.Hidden))
 								continue;
 						}
-						if (Path.GetFileName (directoryName).StartsWith (".", StringComparison.Ordinal))
+						if (Path.GetFileName (directoryName).StartsWith ('.'))
 							continue;
 						directoryStack.Push (directoryName);
 					}

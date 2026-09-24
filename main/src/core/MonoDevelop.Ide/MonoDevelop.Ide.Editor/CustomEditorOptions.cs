@@ -165,8 +165,7 @@ namespace MonoDevelop.Ide.Editor
 
 		public CustomEditorOptions (ITextEditorOptions initializeFrom)
 		{
-			if (initializeFrom == null)
-				throw new ArgumentNullException (nameof (initializeFrom));
+			ArgumentNullException.ThrowIfNull (initializeFrom);
 			WordFindStrategy = initializeFrom.WordFindStrategy;
 			TabsToSpaces = initializeFrom.TabsToSpaces;
 			IndentationSize = initializeFrom.IndentationSize;

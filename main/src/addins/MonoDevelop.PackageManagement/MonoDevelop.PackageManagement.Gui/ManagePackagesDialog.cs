@@ -657,11 +657,11 @@ namespace MonoDevelop.PackageManagement
 				accessibleDescription.Append (", ");
 				if (packageViewModel.ShowVersionInsteadOfDownloadCount) {
 					accessibleDescription.Append (GettextCatalog.GetString ("Version"));
-					accessibleDescription.Append (" ");
+					accessibleDescription.Append (' ');
 					accessibleDescription.Append (packageViewModel.GetDownloadCountOrVersionDisplayText ());
 				} else {
 					accessibleDescription.Append (packageViewModel.GetDownloadCountOrVersionDisplayText ());
-					accessibleDescription.Append (" ");
+					accessibleDescription.Append (' ');
 					accessibleDescription.Append (GettextCatalog.GetString ("Downloads"));
 				}
 			}
@@ -716,7 +716,7 @@ namespace MonoDevelop.PackageManagement
 					RunPackageActions (packageActions);
 				} else {
 					var projects = SelectProjects ().ToList ();
-					if (projects.Any ()) {
+					if (projects.Count != 0) {
 						List<IPackageAction> packageActions = CreatePackageActionsForSelectedPackages (projects);
 						RunPackageActions (packageActions);
 					}
@@ -844,7 +844,7 @@ namespace MonoDevelop.PackageManagement
 			int count = packageActions.Count;
 			if (count == 1) {
 				if (packageActions [0] is UpdateMultipleNuGetPackagesAction updateMultiplePackagesAction) {
-					count = updateMultiplePackagesAction.PackagesToUpdate.Count ();
+					count = updateMultiplePackagesAction.PackagesToUpdate.Count;
 					if (count == 1) {
 						return ProgressMonitorStatusMessageFactory.CreateUpdatingSinglePackageMessage (
 							updateMultiplePackagesAction.PackagesToUpdate.First ().Id);

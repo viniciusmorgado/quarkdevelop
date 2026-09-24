@@ -49,8 +49,7 @@ namespace MonoDevelop.Ide.Editor.Projection
 
 		public ProjectedCompletionExtension (DocumentContext ctx, IReadOnlyList<Projection> projections)
 		{
-			if (projections == null)
-				throw new ArgumentNullException ("projections");
+			ArgumentNullException.ThrowIfNull (projections);
 			this.ctx = ctx;
 			this.projections = projections;
 		}
@@ -117,10 +116,8 @@ namespace MonoDevelop.Ide.Editor.Projection
 
 			public ProjectedCompletionWidget (ICompletionWidget completionWidget, Projection projection)
 			{
-				if (completionWidget == null)
-					throw new ArgumentNullException ("completionWidget");
-				if (projection == null)
-					throw new ArgumentNullException ("projection");
+				ArgumentNullException.ThrowIfNull (completionWidget);
+				ArgumentNullException.ThrowIfNull (projection);
 				this.projection = projection;
 				this.completionWidget = completionWidget;
 			}

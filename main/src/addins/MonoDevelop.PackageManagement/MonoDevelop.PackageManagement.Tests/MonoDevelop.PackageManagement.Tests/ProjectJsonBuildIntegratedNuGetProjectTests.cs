@@ -37,7 +37,7 @@ using System.Linq;
 namespace MonoDevelop.PackageManagement.Tests
 {
 	[TestFixture]
-	class ProjectJsonBuildIntegratedNuGetProjectTests
+	sealed class ProjectJsonBuildIntegratedNuGetProjectTests
 	{
 		ProjectJsonBuildIntegratedNuGetProject projectJsonNuGetProject;
 

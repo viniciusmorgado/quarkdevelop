@@ -48,7 +48,7 @@ namespace MonoDevelop.DesignerSupport
 			
 			//we only handle names that end with the language extension
 			string langExt = proj.LanguageBinding.GetFileName ("a");
-			langExt = langExt.Substring (1, langExt.Length - 1);
+			langExt = langExt.Substring (1);
 			
 			//if filename ends with lang extension, it could be a child file
 			if (file.Name.EndsWith (langExt, StringComparison.OrdinalIgnoreCase)) {

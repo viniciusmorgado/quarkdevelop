@@ -242,7 +242,7 @@ namespace Mono.Debugging.Evaluation
 				// Ignore
 			}
 
-			return new ValueReference [0];
+			return Array.Empty<ValueReference> ();
 		}
 		
 		public IObjectSource ParentSource { get; set; }

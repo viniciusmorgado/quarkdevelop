@@ -36,7 +36,7 @@ using System;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class DotNetCoreProjectTemplateWizardTests : DotNetCoreVersionsRestorerTestBase
+	sealed class DotNetCoreProjectTemplateWizardTests : DotNetCoreVersionsRestorerTestBase
 	{
 		DotNetCoreProjectTemplateWizard wizard;
 
@@ -130,7 +130,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		{
 			CreateWizard ();
 			AddSupportedParameters ("NetStandard");
-			DotNetCoreRuntimesInstalled (new string[0]);
+			DotNetCoreRuntimesInstalled (Array.Empty<string> ());
 			MonoRuntimeInfoExtensions.CurrentRuntimeVersion = new Version ("5.4.0");
 
 			int pages = GetTotalPages ();
@@ -166,7 +166,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		{
 			CreateWizard ();
 			AddSupportedParameters ("NetStandard;FSharpNetStandard");
-			DotNetCoreRuntimesInstalled (new string[0]);
+			DotNetCoreRuntimesInstalled (Array.Empty<string> ());
 			MonoRuntimeInfoExtensions.CurrentRuntimeVersion = new Version ("5.16.0");
 
 			int pages = GetTotalPages ();
@@ -370,7 +370,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		{
 			CreateWizard ();
 			AddSupportedParameters ("NetCoreLibrary");
-			DotNetCoreRuntimesInstalled (new string[0]);
+			DotNetCoreRuntimesInstalled (Array.Empty<string> ());
 
 			int pages = GetTotalPages ();
 

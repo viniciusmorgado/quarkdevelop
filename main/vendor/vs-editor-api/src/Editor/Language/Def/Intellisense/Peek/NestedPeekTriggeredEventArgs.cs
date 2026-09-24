@@ -36,14 +36,8 @@ namespace Microsoft.VisualStudio.Language.Intellisense
             {
                 throw new ArgumentException("cannot be null or whitespace", nameof(relationshipName));
             }
-            if (peekableItems == null)
-            {
-                throw new ArgumentNullException(nameof(peekableItems));
-            }
-            if (trackingPoint == null)
-            {
-                throw new ArgumentNullException(nameof(trackingPoint));
-            }
+            ArgumentNullException.ThrowIfNull(peekableItems);
+            ArgumentNullException.ThrowIfNull(trackingPoint);
 
             RelationshipName = relationshipName;
             PeekableItems = peekableItems;

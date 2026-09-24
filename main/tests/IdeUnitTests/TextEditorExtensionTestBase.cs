@@ -56,7 +56,7 @@ namespace MonoDevelop.Ide
 			Language = language;
 			MimeType = mimeType;
 			ProjectFileName = projectFileName;
-			References = references ?? new string [0];
+			References = references ?? Array.Empty<string> ();
 		}
 
 		EditorExtensionTestData (EditorExtensionTestData other) :

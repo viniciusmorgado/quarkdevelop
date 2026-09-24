@@ -32,7 +32,7 @@ namespace Xwt
 		string GetPluralString(string singular, string plural, int number);
 	}
 
-	class DefaultTranslationCatalog : ITranslationCatalog
+	sealed class DefaultTranslationCatalog : ITranslationCatalog
 	{
 		public string GetString(string str)
 		{

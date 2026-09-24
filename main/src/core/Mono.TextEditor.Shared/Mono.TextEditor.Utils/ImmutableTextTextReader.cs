@@ -38,8 +38,7 @@ namespace Mono.TextEditor.Utils
 
 		public ImmutableTextTextReader(ImmutableText immutableText)
 		{
-			if (immutableText == null)
-				throw new ArgumentNullException(nameof (immutableText));
+			ArgumentNullException.ThrowIfNull (immutableText);
 			this.immutableText = immutableText;
 		}
 

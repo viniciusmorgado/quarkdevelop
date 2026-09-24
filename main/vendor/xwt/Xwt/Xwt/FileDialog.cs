@@ -40,7 +40,7 @@ namespace Xwt
 		string currentFolder;
 		string title = "";
 		string fileName;
-		string[] fileNames = new string[0];
+		string[] fileNames = Array.Empty<string> ();
 		
 		internal FileDialog ()
 		{

@@ -64,7 +64,7 @@ namespace MonoDevelop.Core
 				var ue = (UserException)ex;
 				if (!string.IsNullOrEmpty (ue.Details)) {
 					var msg = ex.Message.TrimEnd ();
-					if (!msg.EndsWith ("."))
+					if (!msg.EndsWith ('.'))
 						msg += ". ";
 					else
 						msg += " ";

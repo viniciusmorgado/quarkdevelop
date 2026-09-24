@@ -321,8 +321,7 @@ namespace MonoDevelop.CSharp.Refactoring
 		//		
 		static void AppendReturnType(StringBuilder result, CodeGenerationOptions options, ITypeSymbol type)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
+			ArgumentNullException.ThrowIfNull (type);
 			result.Append(CSharpAmbience.SafeMinimalDisplayString (type, options.SemanticModel, options.Part.SourceSpan.Start, Ambience.LabelFormat));
 
 			//			var implementingType = options.Part;
@@ -374,11 +373,11 @@ namespace MonoDevelop.CSharp.Refactoring
 			StringBuilder result = Core.StringBuilderCache.Allocate ();
 			AppendIndent (result);
 			AppendModifiers (result, options, field);
-			result.Append (" ");
+			result.Append (' ');
 			AppendReturnType (result, options, field.Type);
-			result.Append (" ");
+			result.Append (' ');
 			result.Append (CSharpAmbience.FilterName (field.Name));
-			result.Append (";");
+			result.Append (';');
 			return new CodeGeneratorMemberResult (Core.StringBuilderCache.ReturnAndFree (result), -1, -1);
 		}
 
@@ -395,21 +394,21 @@ namespace MonoDevelop.CSharp.Refactoring
 
 			result.Append ("event ");
 			AppendReturnType (result, options, evt.Type);
-			result.Append (" ");
+			result.Append (' ');
 			if (options.ExplicitDeclaration) {
 				AppendReturnType (result, options, evt.ContainingType);
-				result.Append (".");
+				result.Append ('.');
 			}
 
 			result.Append (CSharpAmbience.FilterName (evt.Name));
 			if (options.ExplicitDeclaration) {
-				result.Append ("{");
+				result.Append ('{');
 				AppendIndent (result);
 				result.Append ("add {");
 				AppendIndent (result);
 				result.Append ("// TODO");
 				result.AppendLine ();
-				result.Append ("}");
+				result.Append ('}');
 
 				AppendIndent (result);
 				result.Append ("remove {");
@@ -418,7 +417,7 @@ namespace MonoDevelop.CSharp.Refactoring
 				result.AppendLine ();
 				result.Append ("}}");
 			} else {
-				result.Append (";");
+				result.Append (';');
 			}
 			return new CodeGeneratorMemberResult (Core.StringBuilderCache.ReturnAndFree (result));
 		}
@@ -464,26 +463,26 @@ namespace MonoDevelop.CSharp.Refactoring
 			//			if (method.IsPartial)
 			//				result.Append ("partial ");
 			AppendReturnType (result, options, method.ReturnType);
-			result.Append (" ");
+			result.Append (' ');
 			if (options.ExplicitDeclaration) {
 				AppendReturnType (result, options, method.ContainingType);
-				result.Append(".");
+				result.Append('.');
 			}
 
 			result.Append(CSharpAmbience.FilterName(method.Name));
 			if (method.TypeParameters.Length > 0) {
-				result.Append("<");
+				result.Append('<');
 				for (int i = 0; i < method.TypeParameters.Length; i++) {
 					if (i > 0)
 						result.Append(", ");
 					var p = method.TypeParameters[i];
 					result.Append(CSharpAmbience.FilterName(p.Name));
 				}
-				result.Append(">");
+				result.Append('>');
 			}
-			result.Append("(");
+			result.Append('(');
 			AppendParameterList (result, options, method.Parameters, true);
-			result.Append(")");
+			result.Append(')');
 
 			var typeParameters = method.TypeParameters;
 
@@ -535,9 +534,9 @@ namespace MonoDevelop.CSharp.Refactoring
 			//			}
 
 			if (options.ImplementingType.TypeKind == TypeKind.Interface) {
-				result.Append (";");
+				result.Append (';');
 			} else {
-				result.Append ("{");
+				result.Append ('{');
 				if (method.Name == "ToString" && method.Parameters.Length == 0 && method.ReturnType != null/* && method.ReturnType.FullName == "System.String"*/) {
 					AppendIndent (result);
 					bodyStartOffset = result.Length;
@@ -563,7 +562,7 @@ namespace MonoDevelop.CSharp.Refactoring
 						result.Append (property.Name);
 						result.Append ("={");
 						result.Append (i++);
-						result.Append ("}");
+						result.Append ('}');
 					}
 					result.Append ("]\"");
 					foreach (var property in properties) {
@@ -629,7 +628,7 @@ namespace MonoDevelop.CSharp.Refactoring
 							result.Append ("return ");
 						result.Append ("base.");
 						result.Append (CSharpAmbience.FilterName (method.Name));
-						result.Append ("(");
+						result.Append ('(');
 						AppendParameterList (result, options, method.Parameters, false);
 						result.Append (");");
 					} else {
@@ -638,7 +637,7 @@ namespace MonoDevelop.CSharp.Refactoring
 					bodyEndOffset = result.Length;
 					result.AppendLine ();
 				}
-				result.Append ("}");
+				result.Append ('}');
 			}
 			return new CodeGeneratorMemberResult(Core.StringBuilderCache.ReturnAndFree (result), bodyStartOffset, bodyEndOffset);
 		}
@@ -651,26 +650,26 @@ namespace MonoDevelop.CSharp.Refactoring
 			AppendObsoleteAttribute (result, options, method);
 			result.Append("partial ");
 			AppendReturnType (result, options, method.ReturnType);
-			result.Append(" ");
+			result.Append(' ');
 			if (options.ExplicitDeclaration) {
 				AppendReturnType (result, options, method.ContainingType);
-				result.Append(".");
+				result.Append('.');
 			}
 
 			result.Append(CSharpAmbience.FilterName(method.Name));
 			if (method.TypeParameters.Length > 0) {
-				result.Append("<");
+				result.Append('<');
 				for (int i = 0; i < method.TypeParameters.Length; i++) {
 					if (i > 0)
 						result.Append(", ");
 					var p = method.TypeParameters[i];
 					result.Append(CSharpAmbience.FilterName(p.Name));
 				}
-				result.Append(">");
+				result.Append('>');
 			}
-			result.Append("(");
+			result.Append('(');
 			AppendParameterList (result, options, method.Parameters, true);
-			result.Append(")");
+			result.Append(')');
 
 			var typeParameters = method.TypeParameters;
 			result.AppendLine("{");
@@ -707,7 +706,7 @@ namespace MonoDevelop.CSharp.Refactoring
 					if (p.IsParams)
 						result.Append ("params ");
 					AppendReturnType (result, options, p.Type);
-					result.Append (" ");
+					result.Append (' ');
 				}
 				result.Append (CSharpAmbience.FilterName (p.Name));
 				if (asParameterList && p.HasExplicitDefaultValue) {
@@ -716,22 +715,22 @@ namespace MonoDevelop.CSharp.Refactoring
 						var name = Enum.GetName (p.ExplicitDefaultValue.GetType (), p.ExplicitDefaultValue);
 						if (name != null) {
 							AppendReturnType (result, options, p.Type);
-							result.Append (".");
+							result.Append ('.');
 							result.Append (name);
 						} else {
-							result.Append ("(");
+							result.Append ('(');
 							AppendReturnType (result, options, p.Type);
-							result.Append (")").Append (p.ExplicitDefaultValue);
+							result.Append (')').Append (p.ExplicitDefaultValue);
 						}
 					} else if (p.ExplicitDefaultValue is char) {
-						result.Append ("'").Append (p.ExplicitDefaultValue).Append ("'");
+						result.Append ('\'').Append (p.ExplicitDefaultValue).Append ('\'');
 					} else if (p.ExplicitDefaultValue is string) {
-						result.Append ("\"").Append (CSharpTextEditorIndentation.ConvertToStringLiteral ((string)p.ExplicitDefaultValue)).Append ("\"");
+						result.Append ('"').Append (CSharpTextEditorIndentation.ConvertToStringLiteral ((string)p.ExplicitDefaultValue)).Append ('"');
 					} else if (p.ExplicitDefaultValue is bool) {
 						result.Append ((bool)p.ExplicitDefaultValue ? "true" : "false");
 					} else if (p.ExplicitDefaultValue == null) {
 						if (p.Type.IsValueType && p.Type.SpecialType != SpecialType.System_String) {
-							result.Append ("default(").Append (p.Type.ToMinimalDisplayString (options.SemanticModel, options.Part.SourceSpan.Start)).Append (")");
+							result.Append ("default(").Append (p.Type.ToMinimalDisplayString (options.SemanticModel, options.Part.SourceSpan.Start)).Append (')');
 						} else {
 							result.Append ("null");
 						}
@@ -810,11 +809,11 @@ namespace MonoDevelop.CSharp.Refactoring
 			AppendObsoleteAttribute (result, options, property);
 			AppendModifiers (result, options, property);
 			AppendReturnType (result, options, property.Type);
-			result.Append (" ");
+			result.Append (' ');
 			if (property.IsIndexer) {
 				result.Append ("this[");
 				AppendParameterList (result, options, property.Parameters, true);
-				result.Append ("]");
+				result.Append (']');
 			} else {
 				//				if (options.ExplicitDeclaration) {
 				//					result.Append (ambience.GetString (property.DeclaringType, OutputFlags.IncludeGenerics));
@@ -846,12 +845,12 @@ namespace MonoDevelop.CSharp.Refactoring
 						} else {
 							result.Append ("return base.");
 							result.Append (CSharpAmbience.FilterName (property.Name));
-							result.Append (";");
+							result.Append (';');
 						}
 						bodyEndOffset = result.Length;
 						result.AppendLine ();
 					}
-					result.Append ("}");
+					result.Append ('}');
 					result.AppendLine ();
 					regions.Add (new CodeGeneratorBodyRegion (bodyStartOffset, bodyEndOffset));
 				}
@@ -885,12 +884,12 @@ namespace MonoDevelop.CSharp.Refactoring
 						bodyEndOffset = result.Length;
 						result.AppendLine ();
 					}
-					result.Append ("}");
+					result.Append ('}');
 					result.AppendLine ();
 					regions.Add (new CodeGeneratorBodyRegion (bodyStartOffset, bodyEndOffset));
 				}
 			}
-			result.Append ("}");
+			result.Append ('}');
 			return new CodeGeneratorMemberResult (Core.StringBuilderCache.ReturnAndFree (result), regions);
 		}
 
@@ -1021,36 +1020,36 @@ namespace MonoDevelop.CSharp.Refactoring
 			AppendModifiers (result, options, method);
 
 			AppendReturnType (result, options, method.ReturnType);
-			result.Append (" ");
+			result.Append (' ');
 			if (options.ExplicitDeclaration) {
 				AppendReturnType (result, options, method.ContainingType);
-				result.Append(".");
+				result.Append('.');
 			}
 
 			result.Append(CSharpAmbience.FilterName(method.Name));
 			if (method.TypeParameters.Length > 0) {
-				result.Append("<");
+				result.Append('<');
 				for (int i = 0; i < method.TypeParameters.Length; i++) {
 					if (i > 0)
 						result.Append(", ");
 					var p = method.TypeParameters[i];
 					result.Append(CSharpAmbience.FilterName(p.Name));
 				}
-				result.Append(">");
+				result.Append('>');
 			}
-			result.Append("(");
+			result.Append('(');
 			AppendParameterList (result, options, method.Parameters, true);
-			result.Append(")");
+			result.Append(')');
 
 			var typeParameters = method.TypeParameters;
 
-			result.Append ("{");
+			result.Append ('{');
 			AppendIndent (result);
 			bodyStartOffset = result.Length;
 			result.Append ("throw new System.NotImplementedException ();");
 			bodyEndOffset = result.Length;
 			result.AppendLine ();
-			result.Append ("}");
+			result.Append ('}');
 			return new CodeGeneratorMemberResult(Core.StringBuilderCache.ReturnAndFree (result), bodyStartOffset, bodyEndOffset);
 		}
 

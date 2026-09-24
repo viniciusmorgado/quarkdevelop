@@ -182,7 +182,7 @@ namespace MonoDevelop.Ide.Projects
 						sb.Append (s);
 						first = false;
 					}
-					sb.Append (")");
+					sb.Append (')');
 				}
 			}
 			return StringBuilderCache.ReturnAndFree (sb);
@@ -293,7 +293,7 @@ namespace MonoDevelop.Ide.Projects
 						sb.Append (s);
 						first = false;
 					}
-					sb.Append (")");
+					sb.Append (')');
 				}
 				store.AppendValues (sb.ToString ());
 				sb.Length = 0;

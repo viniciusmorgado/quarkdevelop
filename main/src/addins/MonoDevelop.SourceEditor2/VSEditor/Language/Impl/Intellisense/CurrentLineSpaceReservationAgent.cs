@@ -26,7 +26,7 @@ namespace MonoDevelop.SourceEditor
 
         private ITextView _textView;
         private IIntellisenseSessionStack _sessionStack;
-        private bool _isAttached = false;
+        private bool _isAttached;
 
         [Export(typeof(ITextViewCreationListener))]
         [ContentType("Text")]

@@ -49,8 +49,7 @@ namespace Microsoft.VisualStudio.Text
         /// <remarks>If <paramref name="position"/> specifies a location that is not at the end of a line, then <paramref name="virtualSpaces"/> is set to 0.</remarks>
         public VirtualSnapshotPoint(SnapshotPoint position, int virtualSpaces)
         {
-            if (virtualSpaces < 0)
-                throw new ArgumentOutOfRangeException(nameof(virtualSpaces));
+            ArgumentOutOfRangeException.ThrowIfNegative(virtualSpaces);
 
             //Treat trying to set virtual spaces in the middle of a line as a soft error. It is easy to do if some 3rd party does an unexpected edit on a text change
             //and setting virtualSpaces to 0 is a reasonable fallback behavior.
@@ -74,10 +73,8 @@ namespace Microsoft.VisualStudio.Text
         /// the resulting VirtualSnapshotPoint will be one "space" past the end of the line).</remarks>
         public VirtualSnapshotPoint(ITextSnapshotLine line, int offset)
         {
-            if (line == null)
-                throw new ArgumentNullException(nameof(line));
-            if (offset < 0)
-                throw new ArgumentOutOfRangeException(nameof(offset));
+            ArgumentNullException.ThrowIfNull(line);
+            ArgumentOutOfRangeException.ThrowIfNegative(offset);
 
             if (offset <= line.Length)
             {
@@ -152,10 +149,7 @@ namespace Microsoft.VisualStudio.Text
         /// </remarks>
         public VirtualSnapshotPoint TranslateTo(ITextSnapshot snapshot, PointTrackingMode trackingMode)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
 
             if (snapshot.Version.VersionNumber < _position.Snapshot.Version.VersionNumber)
             {

@@ -18,7 +18,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
     internal abstract class BaseProjectionSnapshot : BaseSnapshot, IProjectionSnapshot2
     {
         #region State and Construction
-        protected int totalLength = 0;
+        protected int totalLength;
         protected int totalLineCount = 1;
 
         protected BaseProjectionSnapshot(ITextVersion2 version, StringRebuilder builder)

@@ -179,8 +179,7 @@ namespace MonoDevelop.Core
 				//avoid emitting the event if not necessary
 				if (old == null)
 					return;
-				if (properties.ContainsKey (key)) 
-					properties = properties.Remove (key);
+				properties = properties.Remove (key);
 			} else {
 				//avoid emitting the event if not necessary
 				if (val.Equals (old))
@@ -417,11 +416,11 @@ namespace MonoDevelop.Core
 			result.Append ("[Properties:");
 			foreach (KeyValuePair<string, object> property in this.properties) {
 				result.Append (property.Key);
-				result.Append ("=");
+				result.Append ('=');
 				result.Append (property.Value);
-				result.Append (",");
+				result.Append (',');
 			}
-			result.Append ("]");
+			result.Append (']');
 			return StringBuilderCache.ReturnAndFree (result);
 		}
 			

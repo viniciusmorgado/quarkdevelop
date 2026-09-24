@@ -106,7 +106,7 @@ namespace MonoDevelop.UnitTesting
 		string GetBinaryFilePath(string xmlFilePath)
 		{
 			// filename with the binary extension
-			return xmlFilePath.Substring (0, xmlFilePath.Length - xmlExtension.Length) + binaryExtension;
+			return string.Concat (xmlFilePath.AsSpan (0, xmlFilePath.Length - xmlExtension.Length), binaryExtension);
 		}
 	}
 }

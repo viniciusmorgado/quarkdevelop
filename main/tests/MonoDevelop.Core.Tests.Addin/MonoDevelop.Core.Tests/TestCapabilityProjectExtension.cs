@@ -30,7 +30,7 @@ namespace MonoDevelop.Core.Tests
 {
 	[ExportProjectModelExtension]
 	[AppliesTo ("TestCapability")]
-	class TestCapabilityProjectExtension : DotNetProjectExtension
+	sealed class TestCapabilityProjectExtension : DotNetProjectExtension
 	{
 	}
 }

@@ -37,7 +37,7 @@ using NUnit.Framework;
 namespace MonoDevelop.CSharpBinding
 {
 	[TestFixture]
-	class ExpandSelectionHandlerTests : TextEditorExtensionTestBase
+	sealed class ExpandSelectionHandlerTests : TextEditorExtensionTestBase
 	{
 		protected override EditorExtensionTestData GetContentData () => EditorExtensionTestData.CSharpWithReferences;
 		protected override IEnumerable<TextEditorExtension> GetEditorExtensions ()
@@ -111,7 +111,7 @@ class FooBar
 		{
 			int endPos = text.IndexOf ('@');
 			if (endPos >= 0)
-				text = text.Substring (0, endPos) + text.Substring (endPos + 1);
+				text = string.Concat (text.AsSpan (0, endPos), text.AsSpan (endPos + 1));
 
 			using (var testCase = await SetupTestCase (text, Math.Max (0, endPos))) {
 				var doc = testCase.Document;

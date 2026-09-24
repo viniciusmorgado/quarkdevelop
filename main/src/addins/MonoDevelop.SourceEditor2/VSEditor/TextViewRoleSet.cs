@@ -18,16 +18,13 @@ namespace Microsoft.VisualStudio.Text.Editor.Implementation
 
         public TextViewRoleSet(IEnumerable<string> roles)
         {
-            if (roles == null)
-            {
-                throw new ArgumentNullException("roles");
-            }
+            ArgumentNullException.ThrowIfNull(roles);
             this.roles = new List<String>();
             foreach (string role in roles)
             {
                 if (role == null)
                 {
-                    throw new ArgumentNullException("roles");
+                    throw new ArgumentNullException(nameof(roles));
                 }
                 else
                 {
@@ -38,10 +35,7 @@ namespace Microsoft.VisualStudio.Text.Editor.Implementation
 
         public bool Contains(string textViewRole)
         {
-            if (textViewRole == null)
-            {
-                throw new ArgumentNullException("textViewRole");
-            }
+            ArgumentNullException.ThrowIfNull(textViewRole);
             string upperTextViewRole = textViewRole.ToUpperInvariant();
             foreach (string role in this.roles)
             {
@@ -55,10 +49,7 @@ namespace Microsoft.VisualStudio.Text.Editor.Implementation
 
         public bool ContainsAny(IEnumerable<string> textViewRoles)
         {
-            if (textViewRoles == null)
-            {
-                throw new ArgumentNullException("textViewRoles");
-            }
+            ArgumentNullException.ThrowIfNull(textViewRoles);
             foreach (string textViewRole in textViewRoles)
             {
                 if (textViewRole != null)
@@ -78,10 +69,7 @@ namespace Microsoft.VisualStudio.Text.Editor.Implementation
 
         public bool ContainsAll(IEnumerable<string> textViewRoles)
         {
-            if (textViewRoles == null)
-            {
-                throw new ArgumentNullException("textViewRoles");
-            }
+            ArgumentNullException.ThrowIfNull(textViewRoles);
             foreach (string textViewRole in textViewRoles)
             {
                 if (textViewRole != null)
@@ -107,17 +95,11 @@ namespace Microsoft.VisualStudio.Text.Editor.Implementation
 
         public ITextViewRoleSet UnionWith(ITextViewRoleSet roleSet)
         {
-            if (roleSet == null)
-            {
-                throw new ArgumentNullException("roleSet");
-            }
+            ArgumentNullException.ThrowIfNull(roleSet);
             var resultRoles = new HashSet<string>(this.roles);
             foreach (string role in roleSet)
             {
-                if (!resultRoles.Contains(role))
-                {
-                    resultRoles.Add(role);
-                }
+                resultRoles.Add(role);
             }
             return new TextViewRoleSet(resultRoles);
         }

@@ -161,8 +161,7 @@ namespace MonoDevelop.Ide.Editor
 
 		internal static Task InformAutoSaveThread (ITextSource content, string fileName, bool isDirty)
 		{
-			if (content == null)
-				throw new ArgumentNullException (nameof (content));
+			ArgumentNullException.ThrowIfNull (content);
 			if (!autoSaveEnabled || string.IsNullOrEmpty (fileName))
 				return Task.CompletedTask;
 			if (isDirty) {

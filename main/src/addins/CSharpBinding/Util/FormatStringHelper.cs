@@ -43,10 +43,8 @@ namespace ICSharpCode.NRefactory6.CSharp
 			Func<IParameterSymbol, ExpressionSyntax, bool> argumentFilter,
 			CancellationToken cancellationToken = default (CancellationToken))
 		{
-			if (semanticModel == null)
-				throw new ArgumentNullException("semanticModel");
-			if (invocationExpression == null)
-				throw new ArgumentNullException("invocationExpression");
+			ArgumentNullException.ThrowIfNull(semanticModel);
+			ArgumentNullException.ThrowIfNull(invocationExpression);
 			var symbolInfo = semanticModel.GetSymbolInfo(invocationExpression.Expression, cancellationToken);
 			if (argumentFilter == null)
 				argumentFilter = (p, e) => true;

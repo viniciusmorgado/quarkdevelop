@@ -28,7 +28,7 @@ using MonoDevelop.Projects.MSBuild;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableProjectPackageReference : ProjectPackageReference
+	sealed class TestableProjectPackageReference : ProjectPackageReference
 	{
 		public TestableProjectPackageReference (string id, string version)
 		{

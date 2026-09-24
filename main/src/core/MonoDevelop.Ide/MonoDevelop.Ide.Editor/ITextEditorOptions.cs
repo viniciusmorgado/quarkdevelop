@@ -113,8 +113,7 @@ namespace MonoDevelop.Ide.Editor
 	{
 		public static EditorTheme GetEditorTheme (this ITextEditorOptions options)
 		{
-			if (options == null)
-				throw new ArgumentNullException ("options");
+			ArgumentNullException.ThrowIfNull (options);
 			return SyntaxHighlightingService.GetEditorTheme (options.EditorTheme);
 		}
 
@@ -123,8 +122,7 @@ namespace MonoDevelop.Ide.Editor
 		/// </summary>
 		public static string GetIndentationString (this ITextEditorOptions options)
 		{
-			if (options == null)
-				throw new ArgumentNullException ("options");
+			ArgumentNullException.ThrowIfNull (options);
 			return options.TabsToSpaces ? new string (' ', options.IndentationSize) : "\t";
 		}
 	}

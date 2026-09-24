@@ -135,7 +135,7 @@ namespace Xwt {
 		}
 	}
 	
-	class SizeValueConverter: TypeConverter
+	sealed class SizeValueConverter: TypeConverter
 	{
 		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
 		{
@@ -148,7 +148,7 @@ namespace Xwt {
 		}
 	}
 	
-	class SizeValueSerializer: ValueSerializer
+	sealed class SizeValueSerializer: ValueSerializer
 	{
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{
@@ -172,9 +172,9 @@ namespace Xwt {
 			if (i == -1)
 				return Size.Zero;
 			double w, h;
-			if (!double.TryParse (value.Substring (0, i), NumberStyles.Any, CultureInfo.InvariantCulture, out w))
+			if (!double.TryParse (value.AsSpan (0, i), NumberStyles.Any, CultureInfo.InvariantCulture, out w))
 				return Size.Zero;
-			if (!double.TryParse (value.Substring (i+1), NumberStyles.Any, CultureInfo.InvariantCulture, out h))
+			if (!double.TryParse (value.AsSpan (i+1), NumberStyles.Any, CultureInfo.InvariantCulture, out h))
 				return Size.Zero;
 			return new Size (w, h);
 		}

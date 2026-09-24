@@ -121,7 +121,7 @@ namespace Mono.Debugging.Evaluation
 							values = new [] { thisValue };
 						}
 					} else
-						values = new ObjectValue [0];
+						values = Array.Empty<ObjectValue> ();
 
 					return ObjectValue.CreateArray (null, new ObjectPath ("this"), "", values.Length, ObjectValueFlags.EvaluatingGroup, values);
 				});
@@ -147,7 +147,7 @@ namespace Mono.Debugging.Evaluation
 							values = new [] { exceptionValue };
 						}
 					} else
-						values = new ObjectValue [0];
+						values = Array.Empty<ObjectValue> ();
 
 					return ObjectValue.CreateArray (null, new ObjectPath (options.CurrentExceptionTag), "", values.Length, ObjectValueFlags.EvaluatingGroup, values);
 				});
@@ -176,7 +176,7 @@ namespace Mono.Debugging.Evaluation
 							values = new [] { exceptionValue };
 						}
 					} else
-						values = new ObjectValue [0];
+						values = Array.Empty<ObjectValue> ();
 
 					return ObjectValue.CreateArray (null, new ObjectPath (options.CurrentExceptionTag), "", values.Length, ObjectValueFlags.EvaluatingGroup, values);
 				});
@@ -290,7 +290,7 @@ namespace Mono.Debugging.Evaluation
 		}
 	}
 	
-	class FrameInfo
+	sealed class FrameInfo
 	{
 		public EvaluationContext Context;
 		public List<ValueReference> LocalVariables = new List<ValueReference> ();

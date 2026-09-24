@@ -31,7 +31,7 @@ using MonoDevelop.Core;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableBackgroundPackageActionRunner : BackgroundPackageActionRunner
+	sealed class TestableBackgroundPackageActionRunner : BackgroundPackageActionRunner
 	{
 		public Queue<Action> BackgroundActionsQueued = new Queue<Action> ();
 

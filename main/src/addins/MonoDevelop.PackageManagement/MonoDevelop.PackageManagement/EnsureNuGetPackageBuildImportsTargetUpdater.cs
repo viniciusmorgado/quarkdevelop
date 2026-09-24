@@ -75,7 +75,7 @@ namespace MonoDevelop.PackageManagement
 
 			nugetImportTarget.RemoveTask (msbuildTask);
 
-			if (nugetImportTarget.Tasks.Count () == 0) {
+			if (!nugetImportTarget.Tasks.Any ()) {
 				project.Remove (nugetImportTarget);
 			}
 		}

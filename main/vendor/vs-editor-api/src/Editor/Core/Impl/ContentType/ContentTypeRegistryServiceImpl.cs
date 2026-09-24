@@ -443,10 +443,7 @@ namespace Microsoft.VisualStudio.Utilities.Implementation
             ContentTypeImpl contentType = null;
             if (string.IsNullOrEmpty(extension))
             {
-                if (extension == null)
-                {
-                    throw new ArgumentNullException(nameof(extension));
-                }
+                ArgumentNullException.ThrowIfNull(extension);
             }
             else
             {
@@ -460,10 +457,7 @@ namespace Microsoft.VisualStudio.Utilities.Implementation
 
         public IEnumerable<string> GetExtensionsForContentType(IContentType contentType)
         {
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(contentType);
 
             this.BuildContentTypes();
 
@@ -523,10 +517,7 @@ namespace Microsoft.VisualStudio.Utilities.Implementation
 
         public void RemoveFileExtension(string extension)
         {
-            if (extension == null)
-            {
-                throw new ArgumentNullException(nameof(extension));
-            }
+            ArgumentNullException.ThrowIfNull(extension);
 
             this.BuildContentTypes();
 
@@ -563,10 +554,7 @@ namespace Microsoft.VisualStudio.Utilities.Implementation
 
             if (string.IsNullOrWhiteSpace(fileName))
             {
-                if (fileName == null)
-                {
-                    throw new ArgumentNullException(nameof(fileName));
-                }
+                ArgumentNullException.ThrowIfNull(fileName);
             }
             else
             {
@@ -579,10 +567,7 @@ namespace Microsoft.VisualStudio.Utilities.Implementation
 
         public IContentType GetContentTypeForFileNameOrExtension(string name)
         {
-            if (name == null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+            ArgumentNullException.ThrowIfNull(name);
 
             // No need to lock, we are calling locking public method.
             var contentType = this.GetContentTypeForFileName(name);
@@ -599,10 +584,7 @@ namespace Microsoft.VisualStudio.Utilities.Implementation
 
         public IEnumerable<string> GetFileNamesForContentType(IContentType contentType)
         {
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(contentType);
 
             this.BuildContentTypes();
 
@@ -664,10 +646,7 @@ namespace Microsoft.VisualStudio.Utilities.Implementation
 
         public void RemoveFileName(string fileName)
         {
-            if (fileName == null)
-            {
-                throw new ArgumentNullException(nameof(fileName));
-            }
+            ArgumentNullException.ThrowIfNull(fileName);
 
             this.BuildContentTypes();
 
@@ -709,10 +688,7 @@ namespace Microsoft.VisualStudio.Utilities.Implementation
 
         private IContentType InternalGetContentTypeForPath(string filePath)
         {
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+            ArgumentNullException.ThrowIfNull(filePath);
 
             string fileName = Path.GetFileName(filePath);
             string extension = Path.GetExtension(fileName);
@@ -740,7 +716,7 @@ namespace Microsoft.VisualStudio.Utilities.Implementation
 
         private static string RemoveExtensionDot(string extension)
         {
-            if (extension.StartsWith(".", StringComparison.Ordinal))
+            if (extension.StartsWith('.'))
             {
                 return extension.TrimStart('.');
             }

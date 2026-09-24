@@ -417,7 +417,7 @@ namespace Mono.Addins.GuiGtk3
 		}
 	}
 	
-	class ImageContainer: Gtk.EventBox
+	sealed class ImageContainer: Gtk.EventBox
 	{
 		AddinRepositoryEntry aentry;
 		IAsyncResult aresult;

@@ -36,7 +36,6 @@ using MonoDevelop.Ide;
 using MonoDevelop.Components.AtkCocoaHelper;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui.Shell;
-using System.Linq;
 
 namespace MonoDevelop.Components.DockNotebook
 {

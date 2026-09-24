@@ -29,10 +29,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (bufferGraph == null)
-            {
-                throw new ArgumentNullException(nameof(bufferGraph));
-            }
+            ArgumentNullException.ThrowIfNull(bufferGraph);
             this.anchorSpan = anchorSpan;
             this.trackingMode = trackingMode;
             this.bufferGraph = bufferGraph;
@@ -105,8 +102,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public NormalizedSnapshotSpanCollection GetSpans(ITextSnapshot targetSnapshot)
         {
-            if (targetSnapshot == null)
-                throw new ArgumentNullException(nameof(targetSnapshot));
+            ArgumentNullException.ThrowIfNull(targetSnapshot);
 
             NormalizedSnapshotSpanCollection results = GetSpans(targetSnapshot.TextBuffer);
             if ((results.Count > 0) && (results[0].Snapshot != targetSnapshot))
@@ -125,10 +121,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public NormalizedSnapshotSpanCollection GetSpans(Predicate<ITextBuffer> match)
         {
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
 
             ITextBuffer anchorBuffer = this.AnchorBuffer;
             SnapshotSpan currentSpan = this.anchorSpan.TranslateTo(anchorBuffer.CurrentSnapshot, this.trackingMode);

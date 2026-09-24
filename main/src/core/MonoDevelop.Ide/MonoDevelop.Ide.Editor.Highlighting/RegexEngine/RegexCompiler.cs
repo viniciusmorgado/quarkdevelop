@@ -226,7 +226,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         
             for (int i=0; i<regexes.Length; i++) {
                 if (regexes[i] == null) {
-                    throw new ArgumentNullException("regexes");
+                    throw new ArgumentNullException(nameof(regexes));
                 }
                 String pattern = regexes[i].Pattern;
                 RegexOptions options = regexes[i].Options;
@@ -3037,7 +3037,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
 
 	[Obsolete ("Old editor")]
     internal class RegexTypeCompiler : RegexCompiler {
-        private static int _typeCount = 0;
+        private static int _typeCount;
         private static LocalDataStoreSlot _moduleSlot = Thread.AllocateDataSlot();
 
         private  PersistedAssemblyBuilder _assembly;
@@ -3063,7 +3063,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                 List<CustomAttributeBuilder> assemblyAttributes = new List<CustomAttributeBuilder>();
 
                 ConstructorInfo transparencyCtor = typeof(SecurityTransparentAttribute).GetConstructor(Type.EmptyTypes);
-                CustomAttributeBuilder transparencyAttribute = new CustomAttributeBuilder(transparencyCtor, new object[0]);
+                CustomAttributeBuilder transparencyAttribute = new CustomAttributeBuilder(transparencyCtor, Array.Empty<object>());
                 assemblyAttributes.Add(transparencyAttribute);
 
 #if !DISABLE_CAS_USE
@@ -3170,7 +3170,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
             FieldInfo capslistF               = RegexField("capslist");
             FieldInfo capsizeF                = RegexField("capsize");
             FieldInfo internalMatchTimeoutF   = RegexField("internalMatchTimeout");
-            Type[] noTypeArray                = new Type[0];
+            Type[] noTypeArray                = Array.Empty<Type>();
             ConstructorBuilder defCtorBuilder, tmoutCtorBuilder;
         
             DefineType(name, ispublic, typeof(Regex));
@@ -3184,7 +3184,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                     // call base constructor
                     Ldthis();
                     _ilg.Emit(OpCodes.Call, typeof(Regex).GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                                                                         null, new Type[0], new ParameterModifier[0]));
+                                                                         null, Array.Empty<Type>(), Array.Empty<ParameterModifier>()));
                     // set pattern
                     Ldthis();
                     Ldstr(pattern);
@@ -3294,7 +3294,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
             MethodInfo addMethod = typeof(Hashtable).GetMethod("Add", BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
             
             Ldthis();
-            Newobj(typeof(Hashtable).GetConstructor(new Type[0]));
+            Newobj(typeof(Hashtable).GetConstructor(Array.Empty<Type>()));
 #endif
 
             Stfld(field);
@@ -3336,7 +3336,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
          * Generates a very simple factory method.
          */
         internal void GenerateCreateInstance(Type newtype) {
-            Newobj(newtype.GetConstructor(new Type[0]));
+            Newobj(newtype.GetConstructor(Array.Empty<Type>()));
             Ret();
         }
 
@@ -3382,7 +3382,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
 
 	[Obsolete ("Old editor")]
     internal class RegexLWCGCompiler : RegexCompiler {
-        private static int _regexCount = 0;
+        private static int _regexCount;
         private static Type[] _paramTypes = new Type[] {typeof(RegexRunner)};
         
         internal RegexLWCGCompiler() {

@@ -44,7 +44,7 @@ namespace MonoDevelop.RegexToolkit
 		ShowRegexToolkit
 	}
 	
-	class RegexToolkitController : DocumentController
+	sealed class RegexToolkitController : DocumentController
 	{
 		RegexToolkitWidget regexToolkit;
 
@@ -80,7 +80,7 @@ namespace MonoDevelop.RegexToolkit
 		protected override bool ControllerIsViewOnly => true;
 	}
 	
-	class ShowRegexToolkitHandler : CommandHandler
+	sealed class ShowRegexToolkitHandler : CommandHandler
 	{
 		protected override void Run ()
 		{

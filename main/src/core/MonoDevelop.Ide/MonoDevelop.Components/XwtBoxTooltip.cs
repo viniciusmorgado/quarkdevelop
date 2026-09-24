@@ -107,8 +107,7 @@ namespace MonoDevelop.Components
 
 		public XwtBoxTooltip (Widget child)
 		{
-			if (child == null)
-				throw new ArgumentNullException (nameof (child));
+			ArgumentNullException.ThrowIfNull (child);
 			
 			Content = child;
 			// FIXME: WPF blocks the main Gtk loop and makes TooltipPopoverWindow unusable.

@@ -52,7 +52,7 @@ namespace MonoDevelop.PackageManagement
 		public override void Run (Solution solution, IList<PackageReferencesForCreatedProject> packageReferencesForCreatedProjects)
 		{
 			List<IPackageAction> installPackageActions = CreatePackageActions (solution, packageReferencesForCreatedProjects);
-			if (!installPackageActions.Any ())
+			if (installPackageActions.Count == 0)
 				return;
 
 			ProgressMonitorStatusMessage progressMessage = ProgressMonitorStatusMessageFactory.CreateInstallingProjectTemplatePackagesMessage ();
@@ -63,7 +63,7 @@ namespace MonoDevelop.PackageManagement
 		List<IPackageAction> CreatePackageActions (Solution solution, IList<PackageReferencesForCreatedProject> packageReferencesForCreatedProjects)
 		{
 			List<IPackageAction> actions = CreateInstallPackageActions (solution, packageReferencesForCreatedProjects);
-			if (actions.Any () && PackageManagementServices.Options.IsCheckForPackageUpdatesOnOpeningSolutionEnabled) {
+			if (actions.Count != 0 && PackageManagementServices.Options.IsCheckForPackageUpdatesOnOpeningSolutionEnabled) {
 				actions.Add (new CheckForUpdatedPackagesAction (solution));
 			}
 			return actions;

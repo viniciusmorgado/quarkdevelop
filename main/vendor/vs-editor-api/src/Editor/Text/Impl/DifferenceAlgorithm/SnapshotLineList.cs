@@ -26,8 +26,7 @@ namespace Microsoft.VisualStudio.Text.Differencing.Implementation
 
         public SnapshotLineList(SnapshotSpan snapshotSpan, Func<ITextSnapshotLine, string> getLineTextCallback, StringDifferenceOptions options)
         {
-            if (getLineTextCallback == null)
-                throw new ArgumentNullException(nameof(getLineTextCallback));
+            ArgumentNullException.ThrowIfNull(getLineTextCallback);
             if ((options.DifferenceType & StringDifferenceTypes.Line) == 0)
                 throw new InvalidOperationException("This collection can only be used for line differencing");
 

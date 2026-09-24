@@ -78,7 +78,7 @@ namespace MonoDevelop.Ide
 			}
 		}
 
-		class GatherResultCallback : ISearchResultCallback
+		sealed class GatherResultCallback : ISearchResultCallback
 		{
 			public List<SearchResult> Results = new List<SearchResult> ();
 

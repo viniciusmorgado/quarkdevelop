@@ -92,8 +92,8 @@ namespace MonoDevelop.Projects
 			}
 		}
 
-		public bool SignAssembly { get; set; } = false;
-		public bool DelaySign { get; set; } = false;
+		public bool SignAssembly { get; set; }
+		public bool DelaySign { get; set; }
 		public bool PublicSign { get; set; }
 
 		internal string OldAssemblyKeyFile {
@@ -212,7 +212,7 @@ namespace MonoDevelop.Projects
 		{
 			if (CompilationParameters != null)
 				return CompilationParameters.GetDefineSymbols ();
-			return new string[0];
+			return Array.Empty<string> ();
 		}
 
 		public override ConfigurationSelector Selector {

@@ -28,10 +28,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// the preceding edge of the gap or the following edge of the gap.</param>
         public CaretPosition(VirtualSnapshotPoint bufferPosition, IMappingPoint mappingPoint, PositionAffinity caretAffinity)
         {
-            if (mappingPoint == null)
-            {
-                throw new ArgumentNullException(nameof(mappingPoint));
-            }
+            ArgumentNullException.ThrowIfNull(mappingPoint);
 
             _bufferPosition = bufferPosition;
             _mappingPoint = mappingPoint;

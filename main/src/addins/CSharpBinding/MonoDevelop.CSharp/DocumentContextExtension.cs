@@ -39,8 +39,7 @@ namespace MonoDevelop.CSharp
 	{
 		public static async Task<OptionSet> GetOptionsAsync (this DocumentContext ctx, CancellationToken cancellationToken = default (CancellationToken))
 		{
-			if (ctx == null)
-				throw new ArgumentNullException (nameof (ctx));
+			ArgumentNullException.ThrowIfNull (ctx);
 			try {
 				// Roslyn 4+: the C# policy no longer reaches the document options (IDocumentOptionsProvider is gone),
 				// so the policy of the project comes first; documents without a project use their Roslyn options.

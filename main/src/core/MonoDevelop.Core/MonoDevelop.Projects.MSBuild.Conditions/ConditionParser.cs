@@ -277,7 +277,7 @@ namespace MonoDevelop.Projects.MSBuild.Conditions {
 				ThrowParseException (TokenType.RightParen, "Missing closing parenthesis in condition {0}", conditionStr);
 			tokenizer.GetNextToken ();
 
-			sb.Append (")");
+			sb.Append (')');
 
 			//FIXME: HACKY!
 			return new ConditionFactorExpression (new Token (Core.StringBuilderCache.ReturnAndFree (sb), TokenType.String, token_pos));

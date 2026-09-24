@@ -36,7 +36,7 @@ using UnitTests;
 namespace MonoDevelop.UnitTesting.Tests
 {
 	[TestFixture]
-	class VsTestUnitTestTests : TestBase
+	sealed class VsTestUnitTestTests : TestBase
 	{
 		VsTestUnitTest CreateVsUnitTest (string fullyQualifiedName)
 		{
@@ -118,7 +118,7 @@ namespace MonoDevelop.UnitTesting.Tests
 			Assert.AreEqual (currentClass.Tests.Count, 2);
 		}
 
-		class MyVsTestUnitTest : VsTestUnitTest
+		sealed class MyVsTestUnitTest : VsTestUnitTest
 		{
 			public MyVsTestUnitTest (string displayName, string fixtureTypeNamespace, string fixtureTypeName) : base(displayName)
 			{

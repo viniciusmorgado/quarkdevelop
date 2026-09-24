@@ -29,7 +29,7 @@ using NUnit.Framework;
 namespace ICSharpCode.NRefactory6.IndentationTests
 {
 	[TestFixture]
-	class CommentTests
+	sealed class CommentTests
 	{
 		[Test]
 		public void TestLineComment_Simple()

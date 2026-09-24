@@ -90,7 +90,7 @@ namespace Mono.TextEditor.Utils
 		/// <summary>Holds the mask used to ensure a block boundary cesures.</summary>
 		const int BLOCK_MASK = ~(BLOCK_SIZE - 1);
 
-		static readonly LeafNode EMPTY_NODE = new Leaf8BitNode (new byte [0]);
+		static readonly LeafNode EMPTY_NODE = new Leaf8BitNode (Array.Empty<byte> ());
 
 		public static readonly ImmutableText Empty = new ImmutableText (EMPTY_NODE, null);
 
@@ -295,8 +295,7 @@ namespace Mono.TextEditor.Utils
 
 		static void VerifyArrayWithRange (char [] array, int arrayIndex, int count)
 		{
-			if (array == null)
-				throw new ArgumentNullException (nameof (array));
+			ArgumentNullException.ThrowIfNull (array);
 			if (arrayIndex < 0 || arrayIndex > array.Length) {
 				throw new ArgumentOutOfRangeException (nameof (arrayIndex), arrayIndex, "0 <= arrayIndex <= " + array.Length.ToString (CultureInfo.InvariantCulture));
 			}

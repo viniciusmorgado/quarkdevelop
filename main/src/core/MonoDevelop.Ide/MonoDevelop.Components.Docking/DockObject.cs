@@ -53,7 +53,7 @@ namespace MonoDevelop.Components.Docking
 		
 		double defaultHorSize = -1;
 		double defaultVerSize = -1;
-		double prefSize = 0;
+		double prefSize;
 		
 		// Those are the last known coordinates of the item. They are stored in StoreAllocation
 		// and restored to rect in RestoreAllocation. This is needed for example when a layout

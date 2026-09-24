@@ -82,7 +82,7 @@ namespace MonoDevelop.DotNetCore.Tests
 
 		protected void DotNetCoreSdksNotInstalled ()
 		{
-			DotNetCoreSdksInstalled (new string[0]);
+			DotNetCoreSdksInstalled (System.Array.Empty<string> ());
 			DotNetCoreSdk.SetInstalled (false);
 			DotNetCoreSdk.SetSdkRootPath (null);
 		}

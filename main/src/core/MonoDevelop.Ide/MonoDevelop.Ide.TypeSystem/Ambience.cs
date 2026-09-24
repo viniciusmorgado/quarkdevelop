@@ -580,7 +580,7 @@ namespace MonoDevelop.Ide.TypeSystem
 						case "seealso":
 							if (string.IsNullOrEmpty (options.HighlightParameter)) {
 								ret.Append (options.FormatHeading (GettextCatalog.GetString ("See also:")));
-								ret.Append (" ");
+								ret.Append (' ');
 								ret.Append (EscapeText (xml ["cref"]));
 								ret.Append (EscapeText (xml ["langword"]));
 							}
@@ -592,7 +592,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				if (IsEmptyDocumentation (ret.ToString ()) && IsEmptyDocumentation (parameterBuilder.ToString ()))
 					return EscapeText (doc);
 				if (string.IsNullOrEmpty (options.HighlightParameter) && exceptionCount > 0)
-					ret.Append (exceptions.ToString ());
+					ret.Append (exceptions);
 
 				string result = ret.ToString ();
 				if (summaryEnd < 0)
@@ -604,12 +604,12 @@ namespace MonoDevelop.Ide.TypeSystem
 				paramSb.Append ("<small>");
 				paramSb.AppendLine (options.FormatHeading (GettextCatalog.GetPluralString ("Parameter:", "Parameters:", paramCount)));
 				paramSb.Append ("</small>");*/
-					paramSb.Append (parameterBuilder.ToString ());
+					paramSb.Append (parameterBuilder);
 					result = result.Insert (summaryEnd, StringBuilderCache.ReturnAndFree(paramSb));
 				}
 				result = result.Trim ();
 				if (result.EndsWith (Environment.NewLine + "</small>"))
-					result = result.Substring (0, result.Length - (Environment.NewLine + "</small>").Length) + "</small>";
+					result = string.Concat (result.AsSpan (0, result.Length - (Environment.NewLine + "</small>").Length), "</small>");
 				return result;
 			} catch (Exception ex) {
 				MonoDevelop.Core.LoggingService.LogError (ex.ToString ());

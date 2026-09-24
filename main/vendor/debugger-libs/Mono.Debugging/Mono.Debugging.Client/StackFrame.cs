@@ -139,12 +139,12 @@ namespace Mono.Debugging.Client
 				var args = this.GetParameters (options);
 
 				//MethodName starting with "["... it's something like [ExternalCode]
-				if (!this.SourceLocation.MethodName.StartsWith ("[", StringComparison.Ordinal)) {
+				if (!this.SourceLocation.MethodName.StartsWith ('[')) {
 					if (options.StackFrameFormat.Module && !string.IsNullOrEmpty (this.FullModuleName)) {
 						methodNameBuilder.Insert (0, System.IO.Path.GetFileName (this.FullModuleName) + "!");
 					}
 					if (options.StackFrameFormat.ParameterTypes || options.StackFrameFormat.ParameterNames || options.StackFrameFormat.ParameterValues) {
-						methodNameBuilder.Append ("(");
+						methodNameBuilder.Append ('(');
 						for (int n = 0; n < args.Length; n++) {
 							if (args [n].IsEvaluating) {
 								var manualReset = new ManualResetEvent (false);
@@ -162,7 +162,7 @@ namespace Mono.Debugging.Client
 							if (options.StackFrameFormat.ParameterTypes) {
 								methodNameBuilder.Append (args [n].TypeName);
 								if (options.StackFrameFormat.ParameterNames)
-									methodNameBuilder.Append (" ");
+									methodNameBuilder.Append (' ');
 							}
 							if (options.StackFrameFormat.ParameterNames)
 								methodNameBuilder.Append (args [n].Name);
@@ -173,7 +173,7 @@ namespace Mono.Debugging.Client
 								methodNameBuilder.Append (val.Replace ("\r\n", " ").Replace ("\n", " "));
 							}
 						}
-						methodNameBuilder.Append (")");
+						methodNameBuilder.Append (')');
 					}
 				}
 
@@ -190,7 +190,7 @@ namespace Mono.Debugging.Client
 		{
 			if (!hasDebugInfo) {
 				DebuggerLoggingService.LogMessage ("Cannot get local variables: no debugging symbols for frame: {0}", this);
-				return new ObjectValue [0];
+				return Array.Empty<ObjectValue> ();
 			}
 
 			var values = sourceBacktrace.GetLocalVariables (index, options);
@@ -207,7 +207,7 @@ namespace Mono.Debugging.Client
 		{
 			if (!hasDebugInfo) {
 				DebuggerLoggingService.LogMessage ("Cannot get parameters: no debugging symbols for frame: {0}", this);
-				return new ObjectValue [0];
+				return Array.Empty<ObjectValue> ();
 			}
 
 			var values = sourceBacktrace.GetParameters (index, options);
@@ -219,7 +219,7 @@ namespace Mono.Debugging.Client
 		{
 			if (!hasDebugInfo) {
 				DebuggerLoggingService.LogMessage ("Cannot get local variables: no debugging symbols for frame: {0}", this);
-				return new ObjectValue [0];
+				return Array.Empty<ObjectValue> ();
 			}
 
 			var evaluator = session.FindExpressionEvaluator (this);
@@ -231,7 +231,7 @@ namespace Mono.Debugging.Client
 		{
 			if (!hasDebugInfo) {
 				DebuggerLoggingService.LogMessage ("Cannot get local variables: no debugging symbols for frame: {0}", this);
-				return new ObjectValue [0];
+				return Array.Empty<ObjectValue> ();
 			}
 
 			var values = sourceBacktrace.GetAllLocals (index, options);

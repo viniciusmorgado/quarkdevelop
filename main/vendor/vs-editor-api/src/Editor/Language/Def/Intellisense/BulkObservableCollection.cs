@@ -23,8 +23,8 @@ namespace Microsoft.VisualStudio.Language.Intellisense
         private delegate void InsertItemCallback(int index, T item);
         private delegate void MoveItemCallback(int oldIndex, int newIndex);
 
-        private int _rangeOperationCount = 0;
-        private bool _collectionChangedDuringRangeOperation = false;
+        private int _rangeOperationCount;
+        private bool _collectionChangedDuringRangeOperation;
         private Dispatcher _dispatcher;
         private ReadOnlyObservableCollection<T> _readOnlyAccessor;
 

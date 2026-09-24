@@ -33,10 +33,7 @@ namespace Microsoft.VisualStudio.Utilities
             where TValue : class
             where TMetadata : IOrderable
         {
-            if (itemsToOrder == null)
-            {
-                throw new ArgumentNullException(nameof(itemsToOrder));
-            }
+            ArgumentNullException.ThrowIfNull(itemsToOrder);
 
 #if false && DEBUG
             Debug.WriteLine("Before ordering");
@@ -449,7 +446,7 @@ namespace Microsoft.VisualStudio.Utilities
             //Used to identify cycles
             public int Index = -1;
             public int LowIndex = -1;
-            public bool ContainedInKnownCycle = false;
+            public bool ContainedInKnownCycle;
 
             public Node(Lazy<TValue, TMetadata> item)
             {

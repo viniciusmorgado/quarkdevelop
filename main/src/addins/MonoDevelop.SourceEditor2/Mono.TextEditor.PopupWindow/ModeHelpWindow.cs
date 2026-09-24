@@ -133,7 +133,7 @@ namespace Mono.TextEditor.PopupWindow
 			return new Gtk.Requisition { Width = width, Height = height };
 		}
 		
-		int xSpacer = 0;
+		int xSpacer;
 		
 		protected override void OnDestroyed ()
 		{
@@ -485,7 +485,7 @@ namespace Mono.TextEditor.PopupWindow
 			return new Gtk.Requisition { Width = width, Height = height };
 		}
 		
-		int xSpacer = 0;
+		int xSpacer;
 		
 		protected override void OnDestroyed ()
 		{

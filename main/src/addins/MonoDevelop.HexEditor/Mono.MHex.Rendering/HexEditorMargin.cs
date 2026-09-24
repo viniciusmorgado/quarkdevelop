@@ -32,7 +32,7 @@ using Xwt;
 
 namespace Mono.MHex.Rendering
 {
-	class HexEditorMargin : Margin
+	sealed class HexEditorMargin : Margin
 	{
 		double groupWidth, byteWidth;
 			
@@ -95,7 +95,7 @@ namespace Mono.MHex.Rendering
 			for (int i = 0; i < lineBytes.Length; i++) {
 				sb.Append (string.Format ("{0:X2}", lineBytes[i]));
 				if ((i + 1) % Editor.Options.GroupBytes == 0)
-					sb.Append (" "); // \t
+					sb.Append (' '); // \t
 			}
 			
 			layout.Text = sb.ToString ();

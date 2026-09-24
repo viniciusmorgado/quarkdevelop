@@ -205,7 +205,7 @@ namespace MonoDevelop.Projects
 			await FileWatcherService.Remove (workspace);
 		}
 
-		class MockWorkspaceItem : WorkspaceItem
+		sealed class MockWorkspaceItem : WorkspaceItem
 		{
 			public List<MockProject> Children { get; } = new List<MockProject> ();
 
@@ -217,7 +217,7 @@ namespace MonoDevelop.Projects
 			protected override IEnumerable<WorkspaceObject> OnGetChildren () => Children;
 		}
 		
-		class MockProject : Project
+		sealed class MockProject : Project
 		{
 			public List<FilePath> Created { get; } = new List<FilePath> ();
 			public List<FilePath> Deleted { get; } = new List<FilePath> ();

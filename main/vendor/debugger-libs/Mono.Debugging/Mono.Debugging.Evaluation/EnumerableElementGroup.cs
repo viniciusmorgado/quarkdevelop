@@ -31,14 +31,14 @@ using System.Collections.Generic;
 
 namespace Mono.Debugging.Evaluation
 {
-	class EnumerableSource : IObjectValueSource
+	sealed class EnumerableSource : IObjectValueSource
 	{
 		object obj;
 		object objType;
 		EvaluationContext ctx;
 		List<ObjectValue> elements;
 		List<object> values;
-		int currentIndex = 0;
+		int currentIndex;
 		object enumerator;
 		object enumeratorType;
 
@@ -51,7 +51,7 @@ namespace Mono.Debugging.Evaluation
 
 		bool MoveNext ()
 		{
-			return (bool)ctx.Adapter.TargetObjectToObject (ctx, ctx.Adapter.RuntimeInvoke (ctx, enumeratorType, enumerator, "MoveNext", new object[0], new object[0]));
+			return (bool)ctx.Adapter.TargetObjectToObject (ctx, ctx.Adapter.RuntimeInvoke (ctx, enumeratorType, enumerator, "MoveNext", Array.Empty<object> (), Array.Empty<object> ()));
 		}
 
 		void Fetch (int maxIndex)
@@ -59,7 +59,7 @@ namespace Mono.Debugging.Evaluation
 			if (elements == null) {
 				elements = new List<ObjectValue> ();
 				values = new List<object> ();
-				enumerator = ctx.Adapter.RuntimeInvoke (ctx, objType, obj, "GetEnumerator", new object[0], new object[0]);
+				enumerator = ctx.Adapter.RuntimeInvoke (ctx, objType, obj, "GetEnumerator", Array.Empty<object> (), Array.Empty<object> ());
 				enumeratorType = ctx.Adapter.GetImplementedInterfaces (ctx, ctx.Adapter.GetValueType (ctx, enumerator)).First (f => ctx.Adapter.GetTypeName (ctx, f) == "System.Collections.IEnumerator");
 			}
 			while (maxIndex > elements.Count && MoveNext ()) {
@@ -90,7 +90,7 @@ namespace Mono.Debugging.Evaluation
 			if (index < 0)
 				index = 0;
 			if (count == 0)
-				return new ObjectValue[0];
+				return Array.Empty<ObjectValue> ();
 			if (count == -1)
 				count = int.MaxValue;
 			Fetch (index + count);
@@ -100,7 +100,7 @@ namespace Mono.Debugging.Evaluation
 				if (index < elements.Count) {
 					return  elements.Skip (index).Take (System.Math.Min (count, elements.Count - index)).ToArray ();
 				} else {
-					return new ObjectValue[0];
+					return Array.Empty<ObjectValue> ();
 				}
 			}
 		}
@@ -134,7 +134,7 @@ namespace Mono.Debugging.Evaluation
 		}
 	}
 
-	class EnumerableObjectSource : IObjectSource
+	sealed class EnumerableObjectSource : IObjectSource
 	{
 		EnumerableSource enumerableSource;
 		int idx;

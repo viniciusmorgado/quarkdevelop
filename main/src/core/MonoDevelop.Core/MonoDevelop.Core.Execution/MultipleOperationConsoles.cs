@@ -41,8 +41,7 @@ namespace MonoDevelop.Core.Execution
 
 		public MultipleOperationConsoles (params OperationConsole [] consoles)
 		{
-			if (consoles == null)
-				throw new ArgumentNullException (nameof (consoles));
+			ArgumentNullException.ThrowIfNull (consoles);
 			if (consoles.Length == 0)
 				throw new ArgumentOutOfRangeException (nameof (consoles));
 
@@ -99,8 +98,7 @@ namespace MonoDevelop.Core.Execution
 
 			public MultipleTextWriters (params TextWriter [] writers)
 			{
-				if (writers == null)
-					throw new ArgumentNullException (nameof (writers));
+				ArgumentNullException.ThrowIfNull (writers);
 				if (writers.Length == 0)
 					throw new ArgumentOutOfRangeException (nameof (writers));
 

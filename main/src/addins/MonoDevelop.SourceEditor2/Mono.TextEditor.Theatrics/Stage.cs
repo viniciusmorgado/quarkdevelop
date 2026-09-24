@@ -60,8 +60,8 @@ namespace Mono.TextEditor.Theatrics
 
         public Actor<T> this[T target] {
             get {
-                if (actors.ContainsKey (target)) {
-                    return actors[target];
+                if (actors.TryGetValue (target, out var value)) {
+                    return value;
                 }
 
                 return null;

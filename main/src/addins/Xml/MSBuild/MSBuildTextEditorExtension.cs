@@ -166,7 +166,7 @@ namespace MonoDevelop.Xml.MSBuild
 			public IEnumerable<string> BuiltinChildren;
 		}
 
-		bool inferenceQueued = false;
+		bool inferenceQueued;
 		MSBuildResolveContext inferredCompletionData;
 
 		void QueueInference ()

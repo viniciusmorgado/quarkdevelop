@@ -273,7 +273,7 @@ namespace MonoDevelop.Refactoring.SignatureChange
 				sb.Append (part.ToString ());
 			}
 
-			sb.Append ("(");
+			sb.Append ('(');
 			bool first = true;
 			foreach (var p in ParameterList) {
 				if (!first) {
@@ -283,7 +283,7 @@ namespace MonoDevelop.Refactoring.SignatureChange
 				}
 				sb.Append ((p as ExistingParameter)?.Symbol.ToDisplayString (parameterDisplayFormat) ?? p.Name);
 			}
-			sb.Append (")");
+			sb.Append (')');
 			previewEditor.Text = sb.ToString ();
 			UpdateSensitivity ();
 		}

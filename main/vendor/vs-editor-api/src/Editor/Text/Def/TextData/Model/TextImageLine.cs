@@ -16,8 +16,7 @@ namespace Microsoft.VisualStudio.Text
 
         public TextImageLine(ITextImage image, int lineNumber, Span extent, int lineBreakLength)
         {
-            if (image == null)
-                throw new ArgumentNullException(nameof(image));
+            ArgumentNullException.ThrowIfNull(image);
 
             if ((lineNumber < 0) || (lineNumber >= image.LineCount))
                 throw new ArgumentOutOfRangeException(nameof(lineNumber));

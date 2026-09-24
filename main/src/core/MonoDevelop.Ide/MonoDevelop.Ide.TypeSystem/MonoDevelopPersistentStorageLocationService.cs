@@ -42,8 +42,8 @@ namespace MonoDevelop.Ide.TypeSystem
 	{
 		private readonly object _gate = new object ();
 		private WorkspaceId primaryWorkspace = WorkspaceId.Empty;
-		private SolutionId _currentSolutionId = null;
-		private string _currentWorkingFolderPath = null;
+		private SolutionId _currentSolutionId;
+		private string _currentWorkingFolderPath;
 
 		[ImportingConstructor]
 		[Obsolete (MefConstruction.ImportingConstructorMessage, error: true)]

@@ -178,7 +178,6 @@ namespace MonoDevelop.Components.MainToolbar
 
 		LoadingSearchProvidersCategory searchProvidersCategory;
 
-		readonly List<ProviderSearchResult> providerSearchResults;
 
 		public SearchPopupWidget ()
 		{
@@ -824,7 +823,7 @@ namespace MonoDevelop.Components.MainToolbar
 				tooltipSrc.Cancel ();
 		}
 
-		CancellationTokenSource tooltipSrc = null;
+		CancellationTokenSource tooltipSrc;
 		async void ShowTooltip ()
 		{
 			var currentSelectedItem = SelectedItem;

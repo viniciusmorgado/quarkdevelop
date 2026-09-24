@@ -216,7 +216,7 @@ namespace MonoDevelop.Debugger
 
 		[Obsolete]
 		public static string [] EnginePriority {
-			get { return new string [0]; }
+			get { return Array.Empty<string> (); }
 			set {
 			}
 		}
@@ -1445,7 +1445,7 @@ namespace MonoDevelop.Debugger
 			if (model == null)
 				return null;
 
-			int index = identifier.LastIndexOf ("`", System.StringComparison.Ordinal);
+			int index = identifier.LastIndexOf ('`');
 			int arity = 0;
 			if (index != -1) {
 				try {

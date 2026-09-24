@@ -656,7 +656,7 @@ namespace MonoDevelop.Components
 		{
 			var widgets = new Stack<Widget> (new[] { container });
 
-			while (widgets.Any ()) {
+			while (widgets.Count != 0) {
 				var widget = widgets.Pop ();
 				yield return widget;
 

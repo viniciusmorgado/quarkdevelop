@@ -22,8 +22,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the option is enabled, otherwise <c>false</c>.</returns>
         public static bool IsConvertTabsToSpacesEnabled(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultOptions.ConvertTabsToSpacesOptionId);
         }
@@ -35,8 +34,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns>The number of spaces of the tab size.</returns>
         public static int GetTabSize(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultOptions.TabSizeOptionId);
         }
@@ -48,8 +46,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns>The number of spaces of the indent size.</returns>
         public static int GetIndentSize(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultOptions.IndentSizeOptionId);
         }
@@ -61,8 +58,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if the new line character should be duplicated, otherwise <c>false</c>.</returns>
         public static bool GetReplicateNewLineCharacter(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultOptions.ReplicateNewLineCharacterOptionId);
         }
@@ -74,8 +70,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns>A string containing the new line character or characters.</returns>
         public static string GetNewLineCharacter(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultOptions.NewLineCharacterOptionId);
         }
@@ -87,8 +82,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if trailing whitespace should be trimmed, otherwise <c>false</c>.</returns>
         public static bool GetTrimTrailingWhieSpace(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultOptions.TrimTrailingWhiteSpaceOptionId);
         }
@@ -100,8 +94,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns><c>true</c> if a final new line should be inserted, otherwise <c>false</c>.</returns>
         public static bool GetInsertFinalNewLine(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultOptions.InsertFinalNewLineOptionId);
         }
@@ -113,8 +106,7 @@ namespace Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods
         /// <returns>A string containing the appearance category for tooltips originating in this view.</returns>
         public static string GetTooltipAppearanceCategory(this IEditorOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             return options.GetOptionValue(DefaultOptions.TooltipAppearanceCategoryOptionId);
         }

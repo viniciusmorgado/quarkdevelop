@@ -58,7 +58,7 @@ namespace Xwt
 			new KnownBackend { Type = ToolkitType.Wpf, TypeName = "Xwt.WPFBackend.WPFEngine, Xwt.WPF" },
 		};
 
-		class KnownBackend
+		sealed class KnownBackend
 		{
 			public ToolkitType Type { get; set; }
 			public string TypeName { get; set; }
@@ -742,8 +742,7 @@ namespace Xwt
 		/// <exception cref="InvalidOperationException"><paramref name="nativeWidget"/> does not belong to this toolkit.</exception>
 		public Rectangle GetScreenBounds (object nativeWidget)
 		{
-			if (nativeWidget == null)
-				throw new ArgumentNullException (nameof(nativeWidget));
+			ArgumentNullException.ThrowIfNull (nativeWidget);
 			return backend.GetScreenBounds(nativeWidget);
 		}
 
@@ -828,7 +827,7 @@ namespace Xwt
 		internal KeyboardHandler KeyboardHandler;
 	}
 
-	class NativeWindowFrame: WindowFrame
+	sealed class NativeWindowFrame: WindowFrame
 	{
 		public NativeWindowFrame (IWindowFrameBackend backend)
 		{

@@ -412,7 +412,7 @@ namespace MonoDevelop.Projects.MSBuild
 			string unsupportedMessage;
 
 			var relPath = ctx != null && ctx.Solution != null ? new FilePath (fileName).ToRelative (ctx.Solution.BaseDirectory).ToString() : new FilePath (fileName).FileName;
-			var guids = !string.IsNullOrEmpty (unknownTypeGuid) ? unknownTypeGuid.Split (new char[] {';'}, StringSplitOptions.RemoveEmptyEntries) : new string[0];
+			var guids = !string.IsNullOrEmpty (unknownTypeGuid) ? unknownTypeGuid.Split (new char[] {';'}, StringSplitOptions.RemoveEmptyEntries) : Array.Empty<string> ();
 
 			if (!string.IsNullOrEmpty (unknownTypeGuid)) {
 				var projectInfo = MSBuildProjectService.GetUnknownProjectTypeInfo (guids, fileName);
@@ -436,7 +436,7 @@ namespace MonoDevelop.Projects.MSBuild
 			if (loadAsProject) {
 				var project = (Project) CreateUninitializedInstance (typeof(UnknownProject));
 				project.UnsupportedProjectMessage = unsupportedMessage;
-				project.SetCreationContext (Project.CreationContext.Create (typeGuid, new string[0]));
+				project.SetCreationContext (Project.CreationContext.Create (typeGuid, Array.Empty<string> ()));
 				return project;
 			} else
 				return null;
@@ -724,7 +724,7 @@ namespace MonoDevelop.Projects.MSBuild
 					return true;
 				}
 			}
-			return GetUnknownProjectTypeInfo (new string[0], file) != null;
+			return GetUnknownProjectTypeInfo (Array.Empty<string> (), file) != null;
 		}
 		
 		internal static string GetExtensionForItem (SolutionItem item)

@@ -482,7 +482,7 @@ namespace MonoDevelop.VersionControl.Git.Tests
 			await repo2.SwitchToBranchAsync (monitor, "branch1");
 			await AddFileAsync ("file2", "text", true, true);
 			await PostCommit (repo2);
-			Assert.AreEqual (2, (await repo2.GetBranchesAsync ()).Count ());
+			Assert.AreEqual (2, (await repo2.GetBranchesAsync ()).Count);
 			Assert.AreEqual (1, (await repo2.GetRemotesAsync ()).Count ());
 
 			await repo2.RenameRemoteAsync ("origin", "other");

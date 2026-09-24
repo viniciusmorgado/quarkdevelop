@@ -19,10 +19,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public IBufferGraph CreateBufferGraph(ITextBuffer textBuffer)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
             return textBuffer.Properties.GetOrCreateSingletonProperty<BufferGraph>(() => (new BufferGraph(textBuffer, GuardedOperations)));
         }
     }

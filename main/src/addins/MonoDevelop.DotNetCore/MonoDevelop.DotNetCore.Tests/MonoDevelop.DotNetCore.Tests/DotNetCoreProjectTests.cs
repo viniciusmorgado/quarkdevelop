@@ -38,7 +38,7 @@ using UnitTests;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class DotNetCoreProjectExtensionTests : DotNetCoreTestBase
+	sealed class DotNetCoreProjectExtensionTests : DotNetCoreTestBase
 	{
 		Solution solution;
 

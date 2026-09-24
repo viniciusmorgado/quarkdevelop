@@ -58,7 +58,7 @@ namespace MonoDevelop.CSharpBinding.Parser
 			Assert.That (finalized, Is.GreaterThanOrEqualTo (98));
 		}
 
-		class LeakTrackingCSharpParsedDocument : CSharpParsedDocument
+		sealed class LeakTrackingCSharpParsedDocument : CSharpParsedDocument
 		{
 			public LeakTrackingCSharpParsedDocument (ParseOptions options) : base (options, "mock")
 			{

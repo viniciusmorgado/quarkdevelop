@@ -61,10 +61,10 @@ namespace Microsoft.VisualStudio.Utilities.Features.Implementation
         {
             if (string.IsNullOrEmpty(featureName))
                 throw new ArgumentNullException(nameof(featureName));
-            if (!Factory.RelatedDefinitions.ContainsKey(featureName))
+            if (!Factory.RelatedDefinitions.TryGetValue(featureName, out var value))
                 throw new ArgumentOutOfRangeException(nameof(featureName), $"Feature {featureName} is not registered");
 
-            foreach (var definition in Factory.RelatedDefinitions[featureName])
+            foreach (var definition in value)
             {
                 if (Annulations[definition].Count > 0)
                     return false;
@@ -86,8 +86,7 @@ namespace Microsoft.VisualStudio.Utilities.Features.Implementation
         {
             if (string.IsNullOrEmpty(featureName))
                 throw new ArgumentNullException(nameof(featureName));
-            if (controller == null)
-                throw new ArgumentNullException(nameof(controller));
+            ArgumentNullException.ThrowIfNull(controller);
             if (!Factory.RelatedDefinitions.ContainsKey(featureName))
                 throw new ArgumentOutOfRangeException(nameof(featureName), $"Feature {featureName} is not registered");
 
@@ -128,8 +127,7 @@ namespace Microsoft.VisualStudio.Utilities.Features.Implementation
         {
             if (string.IsNullOrEmpty(featureName))
                 throw new ArgumentNullException(nameof(featureName));
-            if (controller == null)
-                throw new ArgumentNullException(nameof(controller));
+            ArgumentNullException.ThrowIfNull(controller);
             if (!Factory.RelatedDefinitions.ContainsKey(featureName))
                 throw new ArgumentOutOfRangeException(nameof(featureName), $"Feature {featureName} is not registered");
 
@@ -157,11 +155,11 @@ namespace Microsoft.VisualStudio.Utilities.Features.Implementation
         {
             if (string.IsNullOrEmpty(featureName))
                 throw new ArgumentNullException(nameof(featureName));
-            if (!Factory.RelatedDefinitions.ContainsKey(featureName))
+            if (!Factory.RelatedDefinitions.TryGetValue(featureName, out var value))
                 throw new ArgumentOutOfRangeException(nameof(featureName), $"Feature {featureName} is not registered");
 
             if (!CookieCache.ContainsKey(featureName))
-                CookieCache[featureName] = new FeatureCookie(featureName, Factory.RelatedDefinitions[featureName], this);
+                CookieCache[featureName] = new FeatureCookie(featureName, value, this);
             return CookieCache[featureName];
         }
 

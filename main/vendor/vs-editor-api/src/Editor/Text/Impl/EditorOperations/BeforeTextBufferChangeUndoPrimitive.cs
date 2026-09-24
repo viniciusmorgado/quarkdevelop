@@ -36,14 +36,8 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
         /// <exception cref="ArgumentNullException"><paramref name="undoHistory"/> is null.</exception>
         public static BeforeTextBufferChangeUndoPrimitive Create(ITextView textView, ITextUndoHistory undoHistory)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
-            if (undoHistory == null)
-            {
-                throw new ArgumentNullException(nameof(undoHistory));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
+            ArgumentNullException.ThrowIfNull(undoHistory);
 
             return new BeforeTextBufferChangeUndoPrimitive(textView, undoHistory);
         }
@@ -134,10 +128,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
 
         public override bool CanMerge(ITextUndoPrimitive older)
         {
-            if (older == null)
-            {
-                throw new ArgumentNullException(nameof(older));
-            }
+            ArgumentNullException.ThrowIfNull(older);
 
             AfterTextBufferChangeUndoPrimitive olderPrimitive = older as AfterTextBufferChangeUndoPrimitive;
             // We can only merge with IUndoPrimitives of AfterTextBufferChangeUndoPrimitive type

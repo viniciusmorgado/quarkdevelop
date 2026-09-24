@@ -81,7 +81,7 @@ namespace Xwt.Formats
 				}
 
 				// Title
-				else if (line.StartsWith ("#")) {
+				else if (line.StartsWith ('#')) {
 					var level = line.TakeWhile (c => c == '#').Count ();
 					buffer.EmitStartHeader (level);
 					ParseInline (buffer, line.Trim (' ', '#'));
@@ -114,7 +114,7 @@ namespace Xwt.Formats
 				}
 
 				// Code blocks
-				else if (line.StartsWith ("\t") || line.StartsWith ("    ") || line.StartsWith ("```")) {
+				else if (line.StartsWith ('\t') || line.StartsWith ("    ") || line.StartsWith ("```")) {
 					bool isFencedCodeBlock = line.StartsWith ("```");
 
 					if (isFencedCodeBlock)
@@ -123,7 +123,7 @@ namespace Xwt.Formats
 					var codeblock = new StringBuilder ();
 					for (; i < lines.Length; i++) {
 						line = lines[i];
-						if (!line.StartsWith ("\t") && !line.StartsWith ("    ") && !isFencedCodeBlock)
+						if (!line.StartsWith ('\t') && !line.StartsWith ("    ") && !isFencedCodeBlock)
 							break;
 						if (isFencedCodeBlock && line.StartsWith ("```")) {
 							i++;
@@ -133,7 +133,7 @@ namespace Xwt.Formats
 						if (isFencedCodeBlock && !line.StartsWith ("```"))
 							codeblock.AppendLine (line);
 						else
-							codeblock.AppendLine (line.StartsWith ("\t") ? line.Substring (1) : line.Substring (4));
+							codeblock.AppendLine (line.StartsWith ('\t') ? line.Substring (1) : line.Substring (4));
 					}
 					i--;
 					if (wasParagraph) {

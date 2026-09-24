@@ -51,7 +51,7 @@ namespace MonoDevelop.AssemblyBrowser
 			readonly StringMatcher matcher;
 			bool fillStepFinished;
 			int currentDefinition;
-			int i = 0;
+			int i;
 			IEnumerator<ITypeDefinition> currentTypeEnumerator;
 
 			public SearchIdleRunner (AssemblyBrowserWidget assemblyBrowserWidget, string pattern, CancellationToken token)

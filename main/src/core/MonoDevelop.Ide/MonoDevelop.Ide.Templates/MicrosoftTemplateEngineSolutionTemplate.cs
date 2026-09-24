@@ -130,9 +130,9 @@ namespace MonoDevelop.Ide.Templates
 						textBuilder.Append ('\\');
 						index++;
 						if (index < description.Length && description [index] == 'n') {
-							textBuilder.Append ("n");
+							textBuilder.Append ('n');
 						} else {
-							textBuilder.Append ("\\");
+							textBuilder.Append ('\\');
 						}
 					}
 				} else {

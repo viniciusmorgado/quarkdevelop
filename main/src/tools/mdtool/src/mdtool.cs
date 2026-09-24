@@ -40,7 +40,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-class MonoDevelopProcessHost
+sealed class MonoDevelopProcessHost
 {
 	[STAThread]
 	public static int Main (string[] args)
@@ -241,7 +241,7 @@ class MonoDevelopProcessHost
 		Console.WriteLine ();
 	}
 
-	class ConsoleSynchronizationContext: SynchronizationContext
+	sealed class ConsoleSynchronizationContext: SynchronizationContext
 	{
 		// This class implements a threading context based on a basic message loop, which emulates the
 		// behavior of a normal UI loop. This is necessary since there is no UI loop when running mdtool.

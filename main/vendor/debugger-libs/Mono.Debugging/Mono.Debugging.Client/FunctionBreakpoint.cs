@@ -146,7 +146,7 @@ namespace Mono.Debugging.Client
 				if (text.Length > 0 && TryParseParameters (text, 0, text.Length, out paramTypes))
 					ParamTypes = paramTypes;
 				else
-					ParamTypes = new string[0];
+					ParamTypes = Array.Empty<string> ();
 			}
 
 			FileName = null;

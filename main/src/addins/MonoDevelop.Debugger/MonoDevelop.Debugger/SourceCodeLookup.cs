@@ -51,8 +51,8 @@ namespace MonoDevelop.Debugger
 		/// <param name="hash">Hash of original file stored in .mdb/.pdb.</param>
 		public static FilePath FindSourceFile (FilePath originalFile, byte[] hash)
 		{
-			if (directMapping.ContainsKey (originalFile))
-				return directMapping [originalFile];
+			if (directMapping.TryGetValue (originalFile, out var value))
+				return value;
 			foreach (var folder in possiblePaths) {
 				//file = /tmp/ci_build/mono/System/Net/Http/HttpClient.cs
 				var relativePath = originalFile.ToRelative (folder.Item1);

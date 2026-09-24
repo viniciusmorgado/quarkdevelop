@@ -431,7 +431,7 @@ namespace MonoDevelop.Core.Instrumentation
 			TotalCount = totalCount;
 			Message = message;
 			this.traces = traces;
-			ThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+			ThreadId = Environment.CurrentManagedThreadId;
 			this.metadata = metadata;
 		}
 

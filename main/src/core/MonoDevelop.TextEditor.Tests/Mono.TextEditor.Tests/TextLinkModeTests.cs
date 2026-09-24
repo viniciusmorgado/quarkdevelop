@@ -35,7 +35,7 @@ using System.Text;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture]
-	class TextLinkModeTests : TextEditorTestBase
+	sealed class TextLinkModeTests : TextEditorTestBase
 	{
 		MonoTextEditor CreateEditorWithLinks (string input, out List<TextLink> links)
 		{

@@ -873,7 +873,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class EvalContextCreationTestExtension : ProjectExtension
+	sealed class EvalContextCreationTestExtension : ProjectExtension
 	{
 		public static string ControlValue = "First";
 

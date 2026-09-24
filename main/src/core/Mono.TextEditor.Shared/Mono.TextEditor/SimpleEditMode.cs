@@ -434,8 +434,8 @@ namespace Mono.TextEditor
 		protected override void HandleKeypress (Gdk.Key key, uint unicodeKey, Gdk.ModifierType modifier)
 		{
 			int keyCode = GetKeyCode (key, modifier);
-			if (keyBindings.ContainsKey (keyCode)) {
-				RunAction (keyBindings [keyCode]);
+			if (keyBindings.TryGetValue (keyCode, out var value)) {
+				RunAction (value);
 			} else if (unicodeKey != 0 && modifier == Gdk.ModifierType.None) {
 				InsertCharacter (unicodeKey);
 			}

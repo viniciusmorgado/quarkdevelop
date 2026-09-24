@@ -70,7 +70,7 @@ namespace MonoDevelop.DotNetCore.Commands
 
 		public override void DeleteMultipleItems ()
 		{
-			int nodeCount = CurrentNodes.Count ();
+			int nodeCount = CurrentNodes.Length;
 			if (nodeCount == 1) {
 				DeleteItem ();
 			} else if (nodeCount > 0) {

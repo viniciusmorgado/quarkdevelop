@@ -52,7 +52,7 @@ namespace MonoDevelop.Components
 
 		static System.Reflection.MethodInfo glibObjectGetProp, glibObjectSetProp;
 
-		public static int GtkMinorVersion = 12, GtkMicroVersion = 0;
+		public static int GtkMinorVersion = 12, GtkMicroVersion;
 
 		static GtkWorkarounds ()
 		{
@@ -612,7 +612,7 @@ namespace MonoDevelop.Components
 			case Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask:
 				return new Gdk.Key [] { Gdk.Key.Meta_R, Gdk.Key.Meta_L };
 			}
-			return new Gdk.Key [0];
+			return Array.Empty<Gdk.Key> ();
 		}
 
 		static void AddIfNotDuplicate<T> (List<T> list, T item) where T : IEquatable<T>

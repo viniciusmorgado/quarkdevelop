@@ -25,7 +25,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Implement
         private JoinableTask<TModel> _lastJoinableTask;
         private CancellationTokenSource _uiCancellation;
 
-        internal TModel RecentModel { get; private set; } = default;
+        internal TModel RecentModel { get; private set; }
 
         /// <summary>
         /// Creates an instance of <see cref="ModelComputation{TModel}"/>

@@ -671,7 +671,7 @@ namespace MonoDevelop.SourceEditor
 //			this.splitContainer.SizeRequested += SplitContainerSizeRequested;
 //		}
 //		
-		MonoDevelop.Components.InfoBar messageBar = null;
+		MonoDevelop.Components.InfoBar messageBar;
 		
 		internal static string EllipsizeMiddle (string str, int truncLen)
 		{
@@ -683,7 +683,7 @@ namespace MonoDevelop.SourceEditor
 			string delimiter = "...";
 			int leftOffset = (truncLen - delimiter.Length) / 2;
 			int rightOffset = str.Length - truncLen + leftOffset + delimiter.Length;
-			return str.Substring (0, leftOffset) + delimiter + str.Substring (rightOffset);
+			return string.Concat (str.AsSpan (0, leftOffset), delimiter, str.AsSpan (rightOffset));
 		}
 		
 		public void ShowFileChangedWarning (bool multiple)
@@ -1072,10 +1072,10 @@ namespace MonoDevelop.SourceEditor
 		#endregion
 		
 		#region Search and Replace
-		Components.RoundedFrame searchAndReplaceWidgetFrame = null;
-		SearchAndReplaceWidget searchAndReplaceWidget = null;
-		Components.RoundedFrame gotoLineNumberWidgetFrame = null;
-		GotoLineNumberWidget   gotoLineNumberWidget   = null;
+		Components.RoundedFrame searchAndReplaceWidgetFrame;
+		SearchAndReplaceWidget searchAndReplaceWidget;
+		Components.RoundedFrame gotoLineNumberWidgetFrame;
+		GotoLineNumberWidget   gotoLineNumberWidget;
 		
 		bool KillWidgets ()
 		{

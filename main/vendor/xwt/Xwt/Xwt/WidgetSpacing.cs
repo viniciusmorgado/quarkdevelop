@@ -156,7 +156,7 @@ namespace Xwt
 	}
 
 	
-	class WidgetSpacingValueConverter: TypeConverter
+	sealed class WidgetSpacingValueConverter: TypeConverter
 	{
 		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
 		{
@@ -169,7 +169,7 @@ namespace Xwt
 		}
 	}
 	
-	class WidgetSpacingValueSerializer: ValueSerializer
+	sealed class WidgetSpacingValueSerializer: ValueSerializer
 	{
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{

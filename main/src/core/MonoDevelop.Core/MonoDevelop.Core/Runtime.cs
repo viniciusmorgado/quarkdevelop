@@ -61,7 +61,7 @@ namespace MonoDevelop.Core
 		static RuntimePreferences preferences = new RuntimePreferences ();
 		static Thread mainThread;
 		static BasicServiceProvider mainServiceProvider = new BasicServiceProvider ();
-		static bool serviceProviderSealed = false;
+		static bool serviceProviderSealed;
 
 		public static void GetAddinRegistryLocation (out string configDir, out string addinsDir, out string databaseDir)
 		{

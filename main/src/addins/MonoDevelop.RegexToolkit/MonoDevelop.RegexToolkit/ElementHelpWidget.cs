@@ -40,7 +40,6 @@ namespace MonoDevelop.RegexToolkit
 	internal partial class ElementHelpWidget : Gtk.Bin
 	{
 		TreeStore elementsStore;
-		DocumentViewContent regexView;
 
 		public ElementHelpWidget (DocumentViewContent regexView, RegexToolkitWidget regexWidget)
 		{

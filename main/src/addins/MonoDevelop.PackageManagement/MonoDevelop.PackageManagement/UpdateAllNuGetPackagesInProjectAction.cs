@@ -113,7 +113,7 @@ namespace MonoDevelop.PackageManagement
 				resolutionContext,
 				context,
 				primarySources,
-				new SourceRepository[0],
+				Array.Empty<SourceRepository> (),
 				cancellationToken);
 
 			if (!actions.Any ()) {

@@ -236,7 +236,7 @@ namespace MonoDevelop.DotNetCore.NodeBuilders
 			if (dependency != null)
 				return GetDependencyNodes (dependenciesNode, dependency);
 
-			return new PackageDependencyNode[0];
+			return Array.Empty<PackageDependencyNode> ();
 		}
 
 		public static IEnumerable<PackageDependencyNode> GetDependencyNodes (

@@ -24,7 +24,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         internal readonly StringRebuilder _right;
 
 #if DEBUG
-        private static int _totalCreated = 0;
+        private static int _totalCreated;
         public static int TotalCreated { get { return _totalCreated; } }
 #endif
 
@@ -163,10 +163,8 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public static StringRebuilder Create(StringRebuilder left, StringRebuilder right)
         {
-            if (left == null)
-                throw new ArgumentNullException(nameof(left));
-            if (right == null)
-                throw new ArgumentNullException(nameof(right));
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             if (left.Length == 0)
                 return right;
@@ -337,8 +335,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public override void Write(TextWriter writer, Span span)
         {
-            if (writer == null)
-                throw new ArgumentNullException(nameof(writer));
+            ArgumentNullException.ThrowIfNull(writer);
             if (span.End > this.Length)
                 throw new ArgumentOutOfRangeException(nameof(span));
 

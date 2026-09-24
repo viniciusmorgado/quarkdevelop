@@ -69,7 +69,7 @@ namespace MonoDevelop.Ide.WelcomePage
 		/// <summary>
 		/// If false the window button isn't inserted into the page bar.
 		/// </summary>
-		public virtual bool IsVisible { 
+		public new virtual bool IsVisible { 
 			get { return true; }
 		}
 

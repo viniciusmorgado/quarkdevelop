@@ -13,7 +13,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense
     [CLSCompliant(false)]
     public class CompletionSet2 : CompletionSet
     {
-        private readonly IReadOnlyList<IIntellisenseFilter> _filters = null;
+        private readonly IReadOnlyList<IIntellisenseFilter> _filters;
 
         /// <summary>
         /// Initializes a new instance of <see cref="CompletionSet2"/>.

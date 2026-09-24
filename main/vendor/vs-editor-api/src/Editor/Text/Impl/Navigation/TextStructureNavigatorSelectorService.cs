@@ -30,10 +30,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
 
         public ITextStructureNavigator GetTextStructureNavigator(ITextBuffer textBuffer)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
             ITextStructureNavigator navigator = null;
 
@@ -53,14 +50,8 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
 
         public ITextStructureNavigator CreateTextStructureNavigator(ITextBuffer textBuffer, IContentType contentType)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
-            if (contentType == null)
-            {
-                throw new ArgumentNullException(nameof(contentType));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
+            ArgumentNullException.ThrowIfNull(contentType);
             return CreateNavigator(textBuffer, contentType);
         }
 

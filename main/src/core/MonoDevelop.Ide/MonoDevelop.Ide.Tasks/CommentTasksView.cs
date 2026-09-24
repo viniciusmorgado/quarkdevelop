@@ -244,9 +244,9 @@ namespace MonoDevelop.Ide.Tasks
 					} else {
 						//prepend the tag if it's not already there
 						if (!desc.StartsWith (tag.Key, StringComparison.Ordinal)) {
-							if (desc.StartsWith (":", StringComparison.Ordinal))
+							if (desc.StartsWith (':'))
 								desc = tag.Key + desc;
-							else if (tag.Key.EndsWith (":", StringComparison.Ordinal))
+							else if (tag.Key.EndsWith (':'))
 								desc = tag.Key + " " + desc;
 							else
 								desc = tag.Key + ": " + desc;

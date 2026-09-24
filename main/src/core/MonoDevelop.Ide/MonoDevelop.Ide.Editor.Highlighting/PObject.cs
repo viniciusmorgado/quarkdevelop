@@ -60,7 +60,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 			case PObjectType.Boolean:
 				return new PBoolean (true);
 			case PObjectType.Data:
-				return new PData (new byte [0]);
+				return new PData (Array.Empty<byte> ());
 			case PObjectType.String:
 				return new PString ("");
 			case PObjectType.Date:
@@ -948,7 +948,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 
 	class PData : PValueObject<byte []>
 	{
-		static readonly byte [] Empty = new byte [0];
+		static readonly byte [] Empty = Array.Empty<byte> ();
 
 #if POBJECT_MONOMAC
 		public override NSObject Convert ()
@@ -1074,8 +1074,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 	{
 		public PString (string value) : base (value)
 		{
-			if (value == null)
-				throw new ArgumentNullException ("value");
+			ArgumentNullException.ThrowIfNull (value);
 		}
 
 		public override PObject Clone ()

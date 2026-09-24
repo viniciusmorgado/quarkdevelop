@@ -46,7 +46,7 @@ namespace Mono.Debugging.Evaluation
 		const int MaxChildCount = 150;
 
 		public ArrayElementGroup (EvaluationContext ctx, ICollectionAdaptor array)
-			: this (ctx, array, new int [0])
+			: this (ctx, array, Array.Empty<int> ())
 		{
 		}
 
@@ -78,20 +78,20 @@ namespace Mono.Debugging.Evaluation
 			for (int i = 0; i < baseIndices.Length; i++) {
 				if (i > 0)
 					sb.Append (", ");
-				sb.Append (baseIndices[i].ToString ());
+				sb.Append (baseIndices[i]);
 			}
 
 			if (IsRange) {
 				if (baseIndices.Length > 0)
 					sb.Append (", ");
 
-				sb.Append (firstIndex.ToString ()).Append ("..").Append (lastIndex.ToString ());
+				sb.Append (firstIndex).Append ("..").Append (lastIndex);
 			}
 
 			if (dimensions.Length > 1 && baseIndices.Length < dimensions.Length)
 				sb.Append (", ...");
 			
-			sb.Append ("]");
+			sb.Append (']');
 			
 			ObjectValue res = ObjectValue.CreateObject (this, new ObjectPath (sb.ToString ()), "", "", ObjectValueFlags.ArrayElement|ObjectValueFlags.ReadOnly|ObjectValueFlags.NoRefresh, null);
 			res.ChildSelector = "";
@@ -243,7 +243,7 @@ namespace Mono.Debugging.Evaluation
 			for (int i = 0; i < indices.Length; i++) {
 				if (i > 0)
 					sb.Append (',');
-				sb.Append (indices[i].ToString ());
+				sb.Append (indices[i]);
 			}
 
 			return sb.ToString ();
@@ -270,10 +270,10 @@ namespace Mono.Debugging.Evaluation
 			for (int i = 0; i < bounds.Length; i++) {
 				if (i > 0)
 					sb.Append (", ");
-				sb.Append (bounds [i].ToString ());
+				sb.Append (bounds [i]);
 			}
 
-			sb.Append ("]");
+			sb.Append (']');
 
 			return sb.ToString ();
 		}
@@ -353,7 +353,7 @@ namespace Mono.Debugging.Evaluation
 		}
 	}
 	
-	class ArrayObjectSource: IObjectSource
+	sealed class ArrayObjectSource: IObjectSource
 	{
 		readonly ICollectionAdaptor source;
 		readonly string path;

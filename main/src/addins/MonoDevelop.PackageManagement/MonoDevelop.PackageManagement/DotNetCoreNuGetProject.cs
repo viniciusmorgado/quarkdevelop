@@ -115,7 +115,7 @@ namespace MonoDevelop.PackageManagement
 			if (msbuildProject == null)
 				return false;
 
-			return msbuildProject.GetReferencedSDKs ().Any ();
+			return msbuildProject.GetReferencedSDKs ().Length != 0;
 		}
 
 		public static NuGetProject Create (DotNetProject project)
@@ -161,7 +161,7 @@ namespace MonoDevelop.PackageManagement
 		{
 			var packageIdentity = new PackageIdentity (packageId, range.MinVersion);
 
-			if (installationContext.SuccessfulFrameworks.Any () && installationContext.UnsuccessfulFrameworks.Any ()) {
+			if (installationContext.SuccessfulFrameworks.Count != 0 && installationContext.UnsuccessfulFrameworks.Count != 0) {
 				return await AddConditionalPackageReference (packageIdentity, nuGetProjectContext, installationContext);
 			}
 

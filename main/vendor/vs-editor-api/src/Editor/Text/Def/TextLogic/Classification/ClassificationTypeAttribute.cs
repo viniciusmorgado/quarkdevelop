@@ -43,10 +43,7 @@ namespace Microsoft.VisualStudio.Text.Classification
             }
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+                ArgumentNullException.ThrowIfNull(value);
                 if (string.IsNullOrEmpty(value))
                 {
                     throw new ArgumentOutOfRangeException(nameof(value));

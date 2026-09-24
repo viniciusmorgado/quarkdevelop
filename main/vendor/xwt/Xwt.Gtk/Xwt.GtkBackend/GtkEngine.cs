@@ -225,8 +225,7 @@ namespace Xwt.GtkBackend
 		
 		public override void InvokeAsync (Action action)
 		{
-			if (action == null)
-				throw new ArgumentNullException ("action");
+			ArgumentNullException.ThrowIfNull (action);
 
 			// Switch to no Invoke(Action) once a gtk# release is done.
 			Gtk.Application.Invoke ((o, args) => {
@@ -236,18 +235,16 @@ namespace Xwt.GtkBackend
 
 		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
 		{
-			if (action == null)
-				throw new ArgumentNullException ("action");
+			ArgumentNullException.ThrowIfNull (action);
 			if (timeSpan.TotalMilliseconds < 0)
-				throw new ArgumentException ("Timer period must be >=0", "timeSpan");
+				throw new ArgumentException ("Timer period must be >=0", nameof (timeSpan));
 
 			return GLib.Timeout.Add ((uint) timeSpan.TotalMilliseconds, action.Invoke);
 		}
 
 		public override void CancelTimerInvoke (object id)
 		{
-			if (id == null)
-				throw new ArgumentNullException ("id");
+			ArgumentNullException.ThrowIfNull (id);
 
 			GLib.Source.Remove ((uint)id);
 		}

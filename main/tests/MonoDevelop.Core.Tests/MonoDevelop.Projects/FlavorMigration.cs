@@ -226,7 +226,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class CustomItemNode<T>: SolutionItemExtensionNode where T:new()
+	sealed class CustomItemNode<T>: SolutionItemExtensionNode where T:new()
 	{
 		public override object CreateInstance ()
 		{
@@ -234,7 +234,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class SimpleMigrator: ProjectMigrationHandler
+	sealed class SimpleMigrator: ProjectMigrationHandler
 	{
 		public MigrationType PromptForMigrationResult { get; set; }
 		public string[] FilesToBackupResult { get; set; }
@@ -261,7 +261,7 @@ namespace MonoDevelop.Projects
 
 		public override IEnumerable<string> FilesToBackup (string filename)
 		{
-			return FilesToBackupResult ?? new string[0];
+			return FilesToBackupResult ?? Array.Empty<string> ();
 		}
 
 		public override Task<MigrationType> PromptForMigration (ProjectLoadProgressMonitor monitor, MSBuildProject project, string fileName, string language)
@@ -270,15 +270,15 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class ObsoleteFlavor: ProjectExtension
+	sealed class ObsoleteFlavor: ProjectExtension
 	{
 	}
 
-	class NewFlavor: ProjectExtension
+	sealed class NewFlavor: ProjectExtension
 	{
 	}
 
-	class CustomProjectLoadProgressMonitor : ProjectLoadProgressMonitor
+	sealed class CustomProjectLoadProgressMonitor : ProjectLoadProgressMonitor
 	{
 		public MigrationType ShouldMigrateValue { get; set; }
 

@@ -763,10 +763,7 @@ namespace Microsoft.VisualStudio.Text.MultiSelection.Implementation
                 return null;
             }
 
-            if (line == null)
-            {
-                throw new ArgumentNullException(nameof(line));
-            }
+            ArgumentNullException.ThrowIfNull(line);
 
             if (line.Snapshot != _currentSnapshot)
             {

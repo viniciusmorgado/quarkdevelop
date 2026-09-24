@@ -40,7 +40,7 @@ namespace Xwt.GtkBackend
 	{
 		Dictionary<CellView,CellInfo> cellViews = new Dictionary<CellView, CellInfo> ();
 
-		class CellInfo {
+		sealed class CellInfo {
 			public CellViewBackend Renderer;
 			public Gtk.TreeViewColumn Column;
 		}
@@ -520,7 +520,7 @@ namespace Xwt.GtkBackend
 		#endregion
 	}
 	
-	class CustomTreeView: Gtk.TreeView
+	sealed class CustomTreeView: Gtk.TreeView
 	{
 		WidgetBackend backend;
 		TreePath delayedSelection;

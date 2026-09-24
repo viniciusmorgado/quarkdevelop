@@ -273,7 +273,7 @@ namespace MonoDevelop.Ide.Projects
 		{
 			RemoveExistingExtraControls ();
 
-			if (controls.Any ())
+			if (controls.Count != 0)
 				AddExtraControlsSeparator ();
 
 			foreach (ProjectConfigurationControl control in controls) {
@@ -283,7 +283,7 @@ namespace MonoDevelop.Ide.Projects
 
 		void RemoveExistingExtraControls ()
 		{
-			if (!extraControlRows.Any ())
+			if (extraControlRows.Count == 0)
 				return;
 
 			for (int i = extraControlRows.Count - 1; i >= 0; i--) {

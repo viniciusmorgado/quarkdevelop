@@ -47,10 +47,7 @@ namespace Microsoft.VisualStudio.Text
             {
                 throw new ArgumentException("The specified VirtualSnapshotPoints belong to different ITextSnapshots.");
             }
-            if (end < start)
-            {
-                throw new ArgumentOutOfRangeException(nameof(end));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(end, start);
 
             _start = start;
             _end = end;
@@ -290,10 +287,7 @@ namespace Microsoft.VisualStudio.Text
         /// </remarks>
         public VirtualSnapshotSpan TranslateTo(ITextSnapshot snapshot, SpanTrackingMode trackingMode)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
 
             if (snapshot.Version.VersionNumber < _start.Position.Snapshot.Version.VersionNumber)
             {

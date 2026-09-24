@@ -12,14 +12,13 @@ namespace Microsoft.VisualStudio.Language.Intellisense
     public class FilteredObservableCollection<T> : IList, IList<T>, INotifyCollectionChanged
     {
         private IList<T> _underlyingList;
-        private bool _isFiltering = false;
+        private bool _isFiltering;
         private Predicate<T> _filterPredicate;
         private List<T> _filteredList = new List<T>();
 
         public FilteredObservableCollection(IList<T> underlyingList)
         {
-            if (underlyingList == null)
-                throw new ArgumentNullException(nameof(underlyingList));
+            ArgumentNullException.ThrowIfNull(underlyingList);
             if (!(underlyingList is INotifyCollectionChanged))
                 throw new ArgumentException("Underlying collection must implement INotifyCollectionChanged", nameof(underlyingList));
             if (!(underlyingList is IList))
@@ -209,8 +208,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense
 
         public void Filter(Predicate<T> filterPredicate)
         {
-            if (filterPredicate == null)
-                throw new ArgumentNullException(nameof(filterPredicate));
+            ArgumentNullException.ThrowIfNull(filterPredicate);
 
             _filterPredicate = filterPredicate;
             _isFiltering = true;

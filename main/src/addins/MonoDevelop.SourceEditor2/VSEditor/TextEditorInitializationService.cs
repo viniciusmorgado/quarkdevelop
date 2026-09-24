@@ -91,7 +91,7 @@ namespace Microsoft.VisualStudio.Text.Editor.Implementation
 
         public event EventHandler<TextViewCreatedEventArgs> TextViewCreated;
 
-        private readonly static ITextViewRoleSet _noRoles = new TextViewRoleSet(new string[0]);
+        private readonly static ITextViewRoleSet _noRoles = new TextViewRoleSet(Array.Empty<string>());
 
         private readonly static ITextViewRoleSet _allRoles = RolesFromParameters(PredefinedTextViewRoles.Analyzable,
                                                                                  PredefinedTextViewRoles.Debuggable,
@@ -116,10 +116,7 @@ namespace Microsoft.VisualStudio.Text.Editor.Implementation
 
         public ITextView CreateTextView(MonoDevelop.Ide.Editor.TextEditor textEditor)
         {
-            if (textEditor == null)
-            {
-                throw new ArgumentNullException("textEditor");
-            }
+            ArgumentNullException.ThrowIfNull(textEditor);
 
             var roles = _defaultRoles;
 

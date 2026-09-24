@@ -104,14 +104,11 @@ namespace Mono.Debugging.Client
 		
 		public Breakpoint Add (string filename, int line, int column, bool activate)
 		{
-			if (filename == null)
-				throw new ArgumentNullException (nameof (filename));
+			ArgumentNullException.ThrowIfNull (filename);
 
-			if (line < 1)
-				throw new ArgumentOutOfRangeException (nameof (line));
+			ArgumentOutOfRangeException.ThrowIfLessThan (line, 1);
 
-			if (column < 1)
-				throw new ArgumentOutOfRangeException (nameof (column));
+			ArgumentOutOfRangeException.ThrowIfLessThan (column, 1);
 
 			if (IsReadOnly)
 				return null;
@@ -129,8 +126,7 @@ namespace Mono.Debugging.Client
 		
 		public bool Add (BreakEvent bp)
 		{
-			if (bp == null)
-				throw new ArgumentNullException (nameof (bp));
+			ArgumentNullException.ThrowIfNull (bp);
 
 			if (IsReadOnly)
 				return false;
@@ -152,8 +148,7 @@ namespace Mono.Debugging.Client
 
 		public Catchpoint AddCatchpoint (string exceptionName, bool includeSubclasses)
 		{
-			if (exceptionName == null)
-				throw new ArgumentNullException (nameof (exceptionName));
+			ArgumentNullException.ThrowIfNull (exceptionName);
 
 			if (IsReadOnly)
 				return null;
@@ -166,8 +161,7 @@ namespace Mono.Debugging.Client
 		
 		public bool Remove (string filename, int line, int column)
 		{
-			if (filename == null)
-				throw new ArgumentNullException (nameof (filename));
+			ArgumentNullException.ThrowIfNull (filename);
 
 			if (IsReadOnly)
 				return false;
@@ -190,8 +184,7 @@ namespace Mono.Debugging.Client
 		
 		public bool RemoveCatchpoint (string exceptionName)
 		{
-			if (exceptionName == null)
-				throw new ArgumentNullException (nameof (exceptionName));
+			ArgumentNullException.ThrowIfNull (exceptionName);
 
 			if (IsReadOnly)
 				return false;
@@ -220,8 +213,7 @@ namespace Mono.Debugging.Client
 		
 		public bool Remove (BreakEvent bp)
 		{
-			if (bp == null)
-				throw new ArgumentNullException (nameof (bp));
+			ArgumentNullException.ThrowIfNull (bp);
 
 
 			if (!IsReadOnly) {
@@ -261,14 +253,11 @@ namespace Mono.Debugging.Client
 
 		public Breakpoint Toggle (string filename, int line, int column)
 		{
-			if (filename == null)
-				throw new ArgumentNullException (nameof (filename));
+			ArgumentNullException.ThrowIfNull (filename);
 
-			if (line < 1)
-				throw new ArgumentOutOfRangeException (nameof (line));
+			ArgumentOutOfRangeException.ThrowIfLessThan (line, 1);
 
-			if (column < 1)
-				throw new ArgumentOutOfRangeException (nameof (column));
+			ArgumentOutOfRangeException.ThrowIfLessThan (column, 1);
 
 			if (IsReadOnly)
 				return null;
@@ -307,8 +296,7 @@ namespace Mono.Debugging.Client
 		
 		public ReadOnlyCollection<Breakpoint> GetBreakpointsAtFile (string filename)
 		{
-			if (filename == null)
-				throw new ArgumentNullException (nameof (filename));
+			ArgumentNullException.ThrowIfNull (filename);
 
 			var list = new List<Breakpoint> ();
 			if (string.IsNullOrEmpty (filename))
@@ -330,8 +318,7 @@ namespace Mono.Debugging.Client
 		
 		public ReadOnlyCollection<Breakpoint> GetBreakpointsAtFileLine (string filename, int line)
 		{
-			if (filename == null)
-				throw new ArgumentNullException (nameof (filename));
+			ArgumentNullException.ThrowIfNull (filename);
 
 			var list = new List<Breakpoint> ();
 			

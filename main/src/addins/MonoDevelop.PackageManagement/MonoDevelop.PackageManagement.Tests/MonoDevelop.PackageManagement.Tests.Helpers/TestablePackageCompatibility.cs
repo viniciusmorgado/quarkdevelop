@@ -29,7 +29,7 @@ using NuGet.Packaging;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestablePackageCompatibility : PackageCompatibility
+	sealed class TestablePackageCompatibility : PackageCompatibility
 	{
 		public TestablePackageCompatibility (
 			NuGetFramework projectTargetFramework,

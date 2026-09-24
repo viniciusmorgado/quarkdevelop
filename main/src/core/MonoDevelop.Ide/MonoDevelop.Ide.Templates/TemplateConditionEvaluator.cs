@@ -49,7 +49,7 @@ namespace MonoDevelop.Ide.Templates
 
 		static string GetNotConditionParameterName (string createCondition)
 		{
-			if (createCondition.StartsWith ("!", StringComparison.Ordinal)) {
+			if (createCondition.StartsWith ('!')) {
 				return createCondition.Substring (1).TrimStart ();
 			}
 

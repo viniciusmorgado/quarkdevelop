@@ -76,8 +76,7 @@ namespace MonoDevelop.Refactoring
 
 		public static Task<RefactoringSymbolInfo> GetSymbolInfoAsync (DocumentContext document, int offset, CancellationToken cancellationToken = default (CancellationToken))
 		{
-			if (document == null)
-				throw new ArgumentNullException (nameof (document));
+			ArgumentNullException.ThrowIfNull (document);
 			if (document.AnalysisDocument == null)
 				return Task.FromResult (RefactoringSymbolInfo.Empty);
 

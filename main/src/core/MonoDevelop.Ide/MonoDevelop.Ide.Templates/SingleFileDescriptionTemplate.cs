@@ -56,8 +56,8 @@ namespace MonoDevelop.Ide.Templates
 		string defaultExtension;
 		bool defaultExtensionDefined;
 		string generatedFile;
-		bool suppressAutoOpen = false;
-		bool addStandardHeader = false;
+		bool suppressAutoOpen;
+		bool addStandardHeader;
 		string dependsOn;
 		string buildAction;
 		string customTool;

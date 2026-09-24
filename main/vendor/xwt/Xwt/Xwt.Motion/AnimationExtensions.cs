@@ -32,7 +32,7 @@ namespace Xwt.Motion
 {
 	public static class AnimationExtensions
 	{
-		class Info
+		sealed class Info
 		{
 			public Easing Easing { get; set; }
 			public uint Rate { get; set; }
@@ -110,10 +110,8 @@ namespace Xwt.Motion
 		public static void Animate<T> (this IAnimatable self, string name, Func<double, T> transform, Action<T> callback, uint rate = 16, uint length = 250, 
 		                               Easing easing = null, Action<T, bool> finished = null, Func<bool> repeat = null)
 		{
-			if (transform == null)
-				throw new ArgumentNullException ("transform");
-			if (callback == null)
-				throw new ArgumentNullException ("callback");
+			ArgumentNullException.ThrowIfNull (transform);
+			ArgumentNullException.ThrowIfNull (callback);
 			if (self == null)
 				throw new ArgumentNullException ("widget");
 			
@@ -152,8 +150,7 @@ namespace Xwt.Motion
 		public static bool AbortAnimation (this IAnimatable self, string handle)
 		{
 			handle += self.GetHashCode ().ToString ();
-			if (animations.ContainsKey (handle)) {
-				Info info = animations [handle];
+			if (animations.TryGetValue (handle, out var info)) {
 				info.tweener.ValueUpdated -= HandleTweenerUpdated;
 				info.tweener.Finished -= HandleTweenerFinished;
 				info.tweener.Stop ();
@@ -163,8 +160,8 @@ namespace Xwt.Motion
 					info.finished (1.0f, true);
 				return true;
 
-			} else if (kinetics.ContainsKey (handle)) {
-				Ticker.Default.Remove (kinetics[handle]);
+			} else if (kinetics.TryGetValue (handle, out var value)) {
+				Ticker.Default.Remove (value);
 				kinetics.Remove (handle);
 			}
 			return false;

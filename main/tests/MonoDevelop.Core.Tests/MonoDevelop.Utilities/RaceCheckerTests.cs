@@ -34,7 +34,7 @@ namespace MonoDevelop.Utilities
 	[TestFixture]
 	public class RaceCheckerTests
 	{
-		class CaptureRaceChecker : RaceChecker
+		sealed class CaptureRaceChecker : RaceChecker
 		{
 			public List<(string, string)> Traces = new List<(string, string)> ();
 

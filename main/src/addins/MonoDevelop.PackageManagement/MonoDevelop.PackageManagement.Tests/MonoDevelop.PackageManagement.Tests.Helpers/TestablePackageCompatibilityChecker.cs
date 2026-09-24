@@ -32,7 +32,7 @@ using NuGet.Packaging;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestablePackageCompatibilityChecker : PackageCompatibilityChecker
+	sealed class TestablePackageCompatibilityChecker : PackageCompatibilityChecker
 	{
 		protected override void GuiDispatch (Action handler)
 		{

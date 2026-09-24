@@ -559,7 +559,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                 _rangelist.Add(cc.GetRangeAt(i));
             }
 
-            _categories.Append(cc._categories.ToString());
+            _categories.Append(cc._categories);
         }
 
         /*

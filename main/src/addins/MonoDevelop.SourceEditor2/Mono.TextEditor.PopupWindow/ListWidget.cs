@@ -42,7 +42,7 @@ namespace Mono.TextEditor.PopupWindow
 		
 		Xwt.Drawing.TextLayout layout;
 		ListWindow<T> win;
-		int selection = 0;
+		int selection;
 		int visibleRows = -1;
 		int rowHeight;
 		bool buttonPressed;

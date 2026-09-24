@@ -39,7 +39,7 @@ namespace Xwt
 
 		EventHandler valueChanged;
 		
-		class ScrollAdjustmentBackendHost: BackendHost<ScrollAdjustment,IScrollAdjustmentBackend>, IScrollAdjustmentEventSink
+		sealed class ScrollAdjustmentBackendHost: BackendHost<ScrollAdjustment,IScrollAdjustmentBackend>, IScrollAdjustmentEventSink
 		{
 			protected override IBackend OnCreateBackend ()
 			{
@@ -220,7 +220,7 @@ namespace Xwt
 		{
 		}
 
-		class DefaultScrollAdjustmentBackend: IScrollAdjustmentBackend
+		sealed class DefaultScrollAdjustmentBackend: IScrollAdjustmentBackend
 		{
 			IScrollAdjustmentEventSink eventSink;
 			double currentValue;

@@ -30,7 +30,7 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableRestorePackagesHandler : RestorePackagesHandler
+	sealed class TestableRestorePackagesHandler : RestorePackagesHandler
 	{
 		CommandInfo info = new CommandInfo ();
 		Project project;

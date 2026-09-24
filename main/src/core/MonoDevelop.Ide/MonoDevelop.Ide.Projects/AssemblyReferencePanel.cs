@@ -47,8 +47,8 @@ namespace MonoDevelop.Ide.Projects
 	internal class AssemblyReferencePanel : VBox, IReferencePanel
 	{
 		SelectReferenceDialog selectDialog;
-		ListStore store = null;
-		private TreeView treeView = null;
+		ListStore store;
+		private TreeView treeView;
 		StringMatcher stringMatcher;
 		List<AssemblyInfo> assemblies = new List<AssemblyInfo> ();
 		FilePath basePath;
@@ -303,7 +303,7 @@ namespace MonoDevelop.Ide.Projects
 				lastPos = pos + 1;
 			}
 			if (lastPos < text.Length)
-				result.Append (GLib.Markup.EscapeText (text.Substring (lastPos, text.Length - lastPos)));
+				result.Append (GLib.Markup.EscapeText (text.Substring (lastPos)));
 			return StringBuilderCache.ReturnAndFree (result);
 		}
 

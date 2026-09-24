@@ -70,12 +70,9 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public void UpdateDiagnosticsForProject (ProjectId projectId, object key, IEnumerable<Diagnostic> items)
 		{
-			if (projectId == null)
-				throw new ArgumentNullException (nameof (projectId));
-			if (key == null)
-				throw new ArgumentNullException (nameof (key));
-			if (items == null)
-				throw new ArgumentNullException (nameof (items));
+			ArgumentNullException.ThrowIfNull (projectId);
+			ArgumentNullException.ThrowIfNull (key);
+			ArgumentNullException.ThrowIfNull (items);
 
 			var diagnostics = items.ToImmutableArray ();
 			lock (_gate) {
@@ -92,8 +89,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public void ClearAllDiagnosticsForProject (ProjectId projectId)
 		{
-			if (projectId == null)
-				throw new ArgumentNullException (nameof (projectId));
+			ArgumentNullException.ThrowIfNull (projectId);
 
 			bool removed;
 			lock (_gate) {
@@ -106,10 +102,8 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public void ClearDiagnosticsForProject (ProjectId projectId, object key)
 		{
-			if (projectId == null)
-				throw new ArgumentNullException (nameof (projectId));
-			if (key == null)
-				throw new ArgumentNullException (nameof (key));
+			ArgumentNullException.ThrowIfNull (projectId);
+			ArgumentNullException.ThrowIfNull (key);
 
 			var raiseEvent = false;
 			lock (_gate) {

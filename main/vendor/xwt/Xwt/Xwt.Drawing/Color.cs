@@ -231,8 +231,7 @@ namespace Xwt.Drawing
 		
 		public static bool TryParse (string name, out Color color)
 		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
+			ArgumentNullException.ThrowIfNull (name);
 
 			if (name.Length == 0) {
 				color = default (Color);
@@ -260,7 +259,7 @@ namespace Xwt.Drawing
 			if (str[0] != '#' || str.Length > 9)
 				return false;
 			
-			if (!uint.TryParse (str.Substring (1), System.Globalization.NumberStyles.HexNumber, null, out val))
+			if (!uint.TryParse (str.AsSpan (1), System.Globalization.NumberStyles.HexNumber, null, out val))
 				return false;
 			
 			val = val << ((9 - str.Length) * 4);
@@ -321,7 +320,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	class ColorValueConverter: TypeConverter
+	sealed class ColorValueConverter: TypeConverter
 	{
 		static readonly ColorValueSerializer serializer = new ColorValueSerializer ();
 
@@ -346,7 +345,7 @@ namespace Xwt.Drawing
 		}
 	}
 	
-	class ColorValueSerializer: ValueSerializer
+	sealed class ColorValueSerializer: ValueSerializer
 	{
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{

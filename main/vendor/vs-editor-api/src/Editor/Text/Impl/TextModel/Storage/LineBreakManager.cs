@@ -64,7 +64,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         internal abstract class LineBreakListManager<T> : IPooledLineBreaksEditor
         {
-            internal static T[] _pooledLineBreaks = null;
+            internal static T[] _pooledLineBreaks;
 
             internal protected T[] LineBreaks;
 
@@ -201,8 +201,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
             public override void Add(int start, int length)
             {
-                if (start < 0)
-                    throw new ArgumentOutOfRangeException(nameof(start));
+                ArgumentOutOfRangeException.ThrowIfNegative(start);
                 if ((length < 1) || (length > 2))
                     throw new ArgumentOutOfRangeException(nameof(length));
 

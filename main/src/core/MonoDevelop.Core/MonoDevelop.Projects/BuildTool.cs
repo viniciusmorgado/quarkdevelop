@@ -43,7 +43,7 @@ namespace MonoDevelop.Projects
 		bool help;
 		string file;
 		string project;
-		string config = null;
+		string config;
 		string command = ProjectService.BuildTarget;
 		string runtime;
 		bool noRestore;
@@ -218,7 +218,7 @@ namespace MonoDevelop.Projects
 			if (argument.StartsWith("--")) {
 				optionValuePair = argument.Substring(2);
 			}
-			else if ((argument.StartsWith("/") || argument.StartsWith("-")) && !File.Exists (argument)) {
+			else if ((argument.StartsWith('/') || argument.StartsWith('-')) && !File.Exists (argument)) {
 				optionValuePair = argument.Substring(1);
 			}
 			else {

@@ -65,7 +65,6 @@ namespace MonoDevelop.Ide
 		static StartupInfo startupInfo;
 		static SmokeTest smokeTest;
 
-		static TimeToCodeMetadata ttcMetadata;
 
 		Task<int> IApplication.Run (string[] args)
 		{
@@ -501,7 +500,7 @@ namespace MonoDevelop.Ide
 					const int maxResponseTime = 10000;
 					Thread.Sleep (waitTimeout); 
 					if ((DateTime.Now - lastIdle).TotalMilliseconds > maxResponseTime) {
-						var pid = Process.GetCurrentProcess ().Id;
+						var pid = Environment.ProcessId;
 						Mono.Unix.Native.Syscall.kill (pid, Mono.Unix.Native.Signum.SIGQUIT); 
 						return;
 					}

@@ -239,7 +239,7 @@ namespace MonoDevelop.Gettext
 				case 'U':
 					uint Uc;
 					if (!TryParseHex (text, i + 1, 8, out Uc) || NeedsEscaping (Uc)) {
-						throw new FormatException ("Invalid escape '\\" + text.Substring (i, 9) + "' in translatable string.");
+						throw new FormatException (string.Concat ("Invalid escape '\\", text.AsSpan (i, 9), "' in translatable string."));
 					}
 					sb.Append (char.ConvertFromUtf32 ((int)Uc));
 					i += 8;
@@ -247,7 +247,7 @@ namespace MonoDevelop.Gettext
 				case 'u':
 					uint uc;
 					if (!TryParseHex (text, i + 1, 4, out uc) || NeedsEscaping (uc)) {
-						throw new FormatException ("Invalid escape '\\" + text.Substring (i, 5) + "' in translatable string.");
+						throw new FormatException (string.Concat ("Invalid escape '\\", text.AsSpan (i, 5), "' in translatable string."));
 					}
 					sb.Append ((char)uc);
 					i += 4;

@@ -38,7 +38,7 @@ using System.Collections.Immutable;
 
 namespace MonoDevelop.DocFood
 {
-	class DocGenerator : MonoDevelop.Projects.Text.DocGenerator
+	sealed class DocGenerator : MonoDevelop.Projects.Text.DocGenerator
 	{
 		public List<Section> sections = new List<Section> ();
 		public Dictionary<string, string> tags = new Dictionary<string, string> ();
@@ -402,8 +402,7 @@ namespace MonoDevelop.DocFood
 
 		void Init (ISymbol member)
 		{
-			if (member == null)
-				throw new ArgumentNullException ("member");
+			ArgumentNullException.ThrowIfNull (member);
 			FillDocumentation (GetBaseDocumentation (member));
 			//			if (provider != null && !member.Location.IsEmpty && member.BodyRegion.EndLine > 1) {
 			//				LineSegment start = data.Document.GetLine (member.Region.BeginLine);
@@ -872,7 +871,7 @@ namespace MonoDevelop.DocFood
 					return irregularVerbs[i, 2];
 			}
 
-			if (str.EndsWith ("e"))
+			if (str.EndsWith ('e'))
 				return str +"d";
 			return str + "ed";
 		}
@@ -890,8 +889,8 @@ namespace MonoDevelop.DocFood
 			wordCount = words.Count;
 			for (int i = 0; i < words.Count; i++) {
 				string lowerWord = words [i].ToLower ();
-				if (DocConfig.Instance.WordExpansions.ContainsKey (lowerWord)) {
-					words [i] = DocConfig.Instance.WordExpansions [lowerWord];
+				if (DocConfig.Instance.WordExpansions.TryGetValue (lowerWord, out var value)) {
+					words [i] = value;
 				} else if (DocConfig.Instance.WordLists ["acronyms"].Contains (words [i].ToUpper ())) {
 					words [i] = words [i].ToUpper ();
 				}
@@ -920,10 +919,10 @@ namespace MonoDevelop.DocFood
 
 			tags ["FirstAsVerbPastParticiple"] = GetPastParticipleVerb (words [0]);
 			if (obj is IMethodSymbol && words.Count > 1) {
-				if (words [0].EndsWith ("s")) {
+				if (words [0].EndsWith ('s')) {
 					words [0] += "es";
-				} else if (words [0].EndsWith ("y")) {
-					words [0] = words [0].Substring (0, words [0].Length - 1) + "ies";
+				} else if (words [0].EndsWith ('y')) {
+					words [0] = string.Concat (words [0].AsSpan (0, words [0].Length - 1), "ies");
 				} else {
 					words [0] += "s";
 				}
@@ -951,7 +950,7 @@ namespace MonoDevelop.DocFood
 				if (char.IsUpper (ch) || wasUnderscore) {
 					wasUnderscore = false;
 					if (result.Length > 0)
-						result.Append (" ");
+						result.Append (' ');
 					if (i + 1 < name.Length && char.IsUpper (name [i + 1])) {
 						int j = i;
 						while (i < name.Length && char.IsUpper (name [i])) {

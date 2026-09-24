@@ -23,8 +23,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <exception cref="ArgumentNullException"><paramref name="spans"/> is null.</exception>
         public BatchedTagsChangedEventArgs(IList<IMappingSpan> spans)
         {
-            if (spans == null)
-                throw new ArgumentNullException(nameof(spans));
+            ArgumentNullException.ThrowIfNull (spans);
 
             //Make a copy of spans so we don't need to worry about it changing.
             _spans = new ReadOnlyCollection<IMappingSpan>(new List<IMappingSpan>(spans));

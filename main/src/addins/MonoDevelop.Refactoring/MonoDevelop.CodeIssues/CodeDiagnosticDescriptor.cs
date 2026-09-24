@@ -88,10 +88,8 @@ namespace MonoDevelop.CodeIssues
 
 		internal CodeDiagnosticDescriptor (string[] languages, Type codeIssueType)
 		{
-			if (languages == null)
-				throw new ArgumentNullException (nameof (languages));
-			if (codeIssueType == null)
-				throw new ArgumentNullException (nameof (codeIssueType));
+			ArgumentNullException.ThrowIfNull (languages);
+			ArgumentNullException.ThrowIfNull (codeIssueType);
 			Languages = languages;
 			diagnosticAnalyzerType = codeIssueType;
 		}

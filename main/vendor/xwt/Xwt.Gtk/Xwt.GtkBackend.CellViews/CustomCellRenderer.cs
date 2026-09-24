@@ -31,7 +31,7 @@ using Xwt.GtkBackend;
 
 namespace Xwt.GtkBackend
 {
-	class CustomCellRenderer: CellViewBackend, ICanvasCellViewBackend
+	sealed class CustomCellRenderer: CellViewBackend, ICanvasCellViewBackend
 	{
 		Rectangle cellArea;
 		Rectangle backgroundArea;
@@ -120,7 +120,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	class CanvasRenderer: GtkCellRendererCustom
+	sealed class CanvasRenderer: GtkCellRendererCustom
 	{
 		public ICanvasCellViewFrontend CellView;
 		public CustomCellRenderer Parent;

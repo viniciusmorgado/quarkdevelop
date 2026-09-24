@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace MonoDevelop.Ide.Gui
 {
-	class MockCompletionView : ICompletionView
+	sealed class MockCompletionView : ICompletionView
 	{
 		IListDataProvider provider;
 		ICompletionViewEventSink eventSink;

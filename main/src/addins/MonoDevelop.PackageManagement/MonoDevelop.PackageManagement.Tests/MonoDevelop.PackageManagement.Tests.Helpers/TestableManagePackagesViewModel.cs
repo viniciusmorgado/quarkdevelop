@@ -32,7 +32,7 @@ using NuGet.PackageManagement.UI;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableManagePackagesViewModel : ManagePackagesViewModel
+	sealed class TestableManagePackagesViewModel : ManagePackagesViewModel
 	{
 		public RecentManagedNuGetPackagesRepository RecentPackagesRepository;
 		public FakeNuGetProjectContext FakeNuGetProjectContext;

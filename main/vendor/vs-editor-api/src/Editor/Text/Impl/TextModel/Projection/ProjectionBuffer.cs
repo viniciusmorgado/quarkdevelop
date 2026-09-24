@@ -712,7 +712,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
         {
             private ProjectionBuffer projBuffer;
             private EditOptions editOptions = EditOptions.None;
-            private object tag = null;
+            private object tag;
             private SpanManager spanManager;
 
             public SpanEdit(ProjectionBuffer projBuffer) : base(projBuffer)
@@ -735,10 +735,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
                 {
                     throw new ArgumentOutOfRangeException(nameof(spansToReplace));
                 }
-                if (spansToInsert == null)
-                {
-                    throw new ArgumentNullException(nameof(spansToInsert));
-                }
+                ArgumentNullException.ThrowIfNull(spansToInsert);
 
                 this.spanManager = new SpanManager(this.projBuffer, position, spansToReplace, spansToInsert, true, (this.projBuffer.bufferOptions & ProjectionBufferOptions.WritableLiteralSpans) != 0);
                 this.editOptions = options;
@@ -812,7 +809,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
                     }
                     if (t < this.spanManager.RawSpansToInsert.Count - 1)
                     {
-                        insertions.Append(",");
+                        insertions.Append(',');
                     }
                 }
                 return string.Format(System.Globalization.CultureInfo.CurrentCulture,

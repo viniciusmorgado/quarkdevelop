@@ -35,15 +35,9 @@ namespace NuGet.PackageManagement.UI
 			bool isSolution,
 			Common.ILogger logger)
 		{
-			if (sourceRepositories == null)
-			{
-				throw new ArgumentNullException(nameof(sourceRepositories));
-			}
+			ArgumentNullException.ThrowIfNull(sourceRepositories);
 
-			if (projects == null)
-			{
-				throw new ArgumentNullException(nameof(projects));
-			}
+			ArgumentNullException.ThrowIfNull(projects);
 			_sourceRepositories = sourceRepositories;
 
 			_localRepository = optionalLocalRepository;
@@ -54,10 +48,7 @@ namespace NuGet.PackageManagement.UI
 
 			_isSolution = isSolution;
 
-			if (logger == null)
-			{
-				throw new ArgumentNullException(nameof(logger));
-			}
+			ArgumentNullException.ThrowIfNull(logger);
 			_logger = logger;
 		}
 

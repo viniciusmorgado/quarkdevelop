@@ -36,10 +36,8 @@ namespace Microsoft.VisualStudio.Text.Differencing.Implementation
 
         internal static DifferenceCollection<T> DifferenceSequences<T>(IList<T> left, IList<T> right, IList<T> originalLeft, IList<T> originalRight, ContinueProcessingPredicate<T> continueProcessingPredicate)
         {
-            if (left == null)
-                throw new ArgumentNullException(nameof(left));
-            if (right == null)
-                throw new ArgumentNullException(nameof(right));
+            ArgumentNullException.ThrowIfNull(left);
+            ArgumentNullException.ThrowIfNull(right);
 
             Microsoft.TeamFoundation.Diff.Copy.IDiffChange[] changes;
             if ((left.Count == 0) || (right.Count == 0))

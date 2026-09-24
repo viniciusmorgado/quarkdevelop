@@ -34,10 +34,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         private static INormalizedTextChangeCollection GetTrivialCollection(IReadOnlyList<TextChange> changes)
         {
-            if (changes == null)
-            {
-                throw new ArgumentNullException(nameof(changes));
-            }
+            ArgumentNullException.ThrowIfNull(changes);
 
             if (changes.Count == 0)
             {

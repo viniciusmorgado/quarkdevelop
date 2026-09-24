@@ -38,11 +38,11 @@ namespace MonoDevelop.Xml.Completion
 	public class XmlSchemaCompletionData : IXmlCompletionProvider
 	{
 		string namespaceUri = String.Empty;
-		XmlSchema schema = null;
+		XmlSchema schema;
 		string fileName = String.Empty;
 		string baseUri = string.Empty;
-		bool readOnly = false;
-		bool loaded = false;
+		bool readOnly;
+		bool loaded;
 		
 		/// <summary>
 		/// Stores attributes that have been prohibited whilst the code
@@ -424,7 +424,7 @@ namespace MonoDevelop.Xml.Completion
 		/// form then no prefix is added.</remarks>
 		public QualifiedName CreateQualifiedName (string name)
 		{
-			int index = name.IndexOf (":");
+			int index = name.IndexOf (':');
 			if (index >= 0) {
 				string prefix = name.Substring (0, index);
 				name = name.Substring (index + 1);

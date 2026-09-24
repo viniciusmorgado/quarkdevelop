@@ -204,14 +204,14 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 
 		class CharacterClass
 		{
-			bool first = true, firstInSubClass = false;
+			bool first = true, firstInSubClass;
 			bool negativeGroup;
 			StringBuilder wordBuilder;
 			StringBuilder unicodeGroupBuilder = new StringBuilder ();
 
 			bool hasLast;
 			bool escape, range, readUnicodeGroup;
-			char lastChar = '\0';
+			char lastChar;
 			char lastPushedChar;
 			int[] table = new int [256];
 			StringBuilder org = new StringBuilder ();
@@ -545,7 +545,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 								break;
 						}
 						if (j - i > 3) {
-							result.Append ("-");
+							result.Append ('-');
 							AddChar (result, (char)(j - 1));
 							i = j - 1;
 						}
@@ -554,7 +554,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 				foreach (var grp in unicodeGroups) {
 					result.Append ("\\p{");
 					result.Append (grp);
-					result.Append ("}");
+					result.Append ('}');
 				}
 				result.Append (']');
 				return result.ToString ();
@@ -768,8 +768,8 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 					recordGroupName = false;
 					if (replaceGroup) {
 						result.Append ("\\k<");
-						result.Append (curGroupName.ToString ());
-						result.Append (">");
+						result.Append (curGroupName);
+						result.Append ('>');
 
 						replaceGroup = false;
 						curGroupName.Length = 0;
@@ -803,7 +803,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 						break;
 					next = regex [i + 1];
 					if (next == '+' || next == '*') {
-						result.Append ("*");
+						result.Append ('*');
 						i++;
 						continue;
 					}

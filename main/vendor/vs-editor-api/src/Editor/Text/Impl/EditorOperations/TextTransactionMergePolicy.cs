@@ -46,15 +46,9 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
         public bool CanMerge(ITextUndoTransaction newTransaction, ITextUndoTransaction oldTransaction)
         {
             // Validate
-            if (newTransaction == null)
-            {
-                throw new ArgumentNullException(nameof(newTransaction));
-            }
+            ArgumentNullException.ThrowIfNull(newTransaction);
 
-            if (oldTransaction == null)
-            {
-                throw new ArgumentNullException(nameof(oldTransaction));
-            }
+            ArgumentNullException.ThrowIfNull(oldTransaction);
 
             TextTransactionMergePolicy oldPolicy = oldTransaction.MergePolicy as TextTransactionMergePolicy;
             TextTransactionMergePolicy newPolicy = newTransaction.MergePolicy as TextTransactionMergePolicy;
@@ -91,10 +85,8 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
 
         public void PerformTransactionMerge(ITextUndoTransaction existingTransaction, ITextUndoTransaction newTransaction)
         {
-            if (existingTransaction == null)
-                throw new ArgumentNullException(nameof(existingTransaction));
-            if (newTransaction == null)
-                throw new ArgumentNullException(nameof(newTransaction));
+            ArgumentNullException.ThrowIfNull(existingTransaction);
+            ArgumentNullException.ThrowIfNull(newTransaction);
 
             // Remove trailing AfterTextBufferChangeUndoPrimitive from previous transaction and skip copying
             // initial BeforeTextBufferChangeUndoPrimitive from newTransaction, as they are unnecessary.
@@ -126,10 +118,7 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
 
         public bool TestCompatiblePolicy(IMergeTextUndoTransactionPolicy other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
+            ArgumentNullException.ThrowIfNull(other);
 
             // Only merge transaction if they are both a text transaction
             return this.GetType() == other.GetType();

@@ -222,7 +222,7 @@ namespace MonoDevelop.Gettext
 				if (this.currentEntry != null) {
 					string[] lines =  textviewComments.Buffer.Text.Split (CatalogParser.LineSplitStrings, System.StringSplitOptions.None);
 					for (int i = 0; i < lines.Length; i++) {
-						if (!lines[i].StartsWith ("#"))
+						if (!lines[i].StartsWith ('#'))
 							lines[i] = "# " + lines[i];
 					}
 					this.currentEntry.Comment = string.Join (System.Environment.NewLine, lines);
@@ -860,7 +860,7 @@ namespace MonoDevelop.Gettext
 		
 			
 		
-		bool IsVisible (TreePath path)
+		new bool IsVisible (TreePath path)
 		{
 			TreePath start, end, cur;
 			this.treeviewEntries.GetVisibleRange (out start, out end);
@@ -930,7 +930,7 @@ namespace MonoDevelop.Gettext
 				ShowPage (i);
 		}
 		
-		bool isUpdating = false;
+		bool isUpdating;
 		void ShowPage (int page)
 		{
 			if (notebookPages.CurrentPage == page || isUpdating)
@@ -1000,7 +1000,7 @@ namespace MonoDevelop.Gettext
 			new StringFormatCatalogEntryRule (),
 			new EndsWithWhitespaceCatalogEntryRule ()
 		};
-		IEnumerable<CatalogEntryRule> rules = new CatalogEntryRule[] {};
+		IEnumerable<CatalogEntryRule> rules = Array.Empty<CatalogEntryRule> ();
 		
 		public void UpdateRules (string country)
 		{
@@ -1036,7 +1036,7 @@ namespace MonoDevelop.Gettext
 		{
 			public override bool EntryFails (CatalogEntry entry)
 			{
-				return entry.String.EndsWith (" ") && !entry.GetTranslation (0).EndsWith (" ");
+				return entry.String.EndsWith (' ') && !entry.GetTranslation (0).EndsWith (' ');
 			}
 			
 			public override string FailReason (CatalogEntry entry)
@@ -1049,7 +1049,7 @@ namespace MonoDevelop.Gettext
 		{
 			public override bool EntryFails (CatalogEntry entry)
 			{
-				return entry.String.EndsWith (".") && !entry.GetTranslation (0).EndsWith (".");
+				return entry.String.EndsWith ('.') && !entry.GetTranslation (0).EndsWith ('.');
 			}
 			
 			public override string FailReason (CatalogEntry entry)
@@ -1076,14 +1076,14 @@ namespace MonoDevelop.Gettext
 		{
 			public override bool EntryFails (CatalogEntry entry)
 			{
-				return entry.String.Contains ("_") && !entry.GetTranslation (0).Contains ("_") ||
-					!entry.String.Contains ("_") && entry.GetTranslation (0).Contains ("_");
+				return entry.String.Contains ('_') && !entry.GetTranslation (0).Contains ('_') ||
+					!entry.String.Contains ('_') && entry.GetTranslation (0).Contains ('_');
 				
 			}
 			
 			public override string FailReason (CatalogEntry entry)
 			{
-				if (entry.String.Contains ("_") && !entry.GetTranslation (0).Contains ("_"))
+				if (entry.String.Contains ('_') && !entry.GetTranslation (0).Contains ('_'))
 					return GettextCatalog.GetString ("Original string '{0}' contains '_', translation doesn't.", entry.String);
 				return GettextCatalog.GetString ("Original string '{0}' doesn't contain '_', translation does.", entry.String);
 			}
@@ -1113,7 +1113,7 @@ namespace MonoDevelop.Gettext
 		
 		List<TaskListEntry> currentTasks = new List<TaskListEntry> ();
 		
-		BackgroundWorker updateTaskThread = null;
+		BackgroundWorker updateTaskThread;
 		
 		void TaskUpdateWorker (object sender, DoWorkEventArgs e)
 		{
@@ -1225,7 +1225,7 @@ namespace MonoDevelop.Gettext
 			}
 		}
 		
-		bool inUndoOperation = false;
+		bool inUndoOperation;
 		public void AddChange (CatalogEntry entry, string oldText, string text, int index)
 		{
 			if (inUndoOperation)

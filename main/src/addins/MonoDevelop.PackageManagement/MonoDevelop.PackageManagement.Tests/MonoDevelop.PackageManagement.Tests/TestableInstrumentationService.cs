@@ -28,7 +28,7 @@ using System.Collections.Generic;
 
 namespace MonoDevelop.PackageManagement.Tests
 {
-	class TestableInstrumentationService : PackageManagementInstrumentationService
+	sealed class TestableInstrumentationService : PackageManagementInstrumentationService
 	{
 		public PackageMetadata InstallPackageMetadata;
 

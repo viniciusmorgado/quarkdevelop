@@ -94,10 +94,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense
             SuggestedActionSetPriority priority = SuggestedActionSetPriority.None,
             Span? applicableToSpan = null)
         {
-            if (actions == null)
-            {
-                throw new ArgumentNullException(nameof(actions));
-            }
+            ArgumentNullException.ThrowIfNull(actions);
 
             this.CategoryName = categoryName ?? PredefinedSuggestedActionCategoryNames.Any;
             this.Actions = actions.ToArray();

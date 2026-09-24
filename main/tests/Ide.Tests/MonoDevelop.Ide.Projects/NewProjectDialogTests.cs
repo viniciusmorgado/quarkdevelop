@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace MonoDevelop.Ide.Projects
 {
-	class NewProjectDialogTests : IdeTestBase
+	sealed class NewProjectDialogTests : IdeTestBase
 	{
 		TestableNewProjectDialogController controller;
 		bool createProjectDirectoryOriginalValue;

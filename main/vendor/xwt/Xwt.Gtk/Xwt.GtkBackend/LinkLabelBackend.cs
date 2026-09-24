@@ -32,7 +32,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	class LinkLabelBackend : LabelBackend, ILinkLabelBackend
+	sealed class LinkLabelBackend : LabelBackend, ILinkLabelBackend
 	{
 		Uri uri;
 

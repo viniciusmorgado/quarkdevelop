@@ -32,8 +32,7 @@ namespace MonoDevelop.SourceEditor.Braces
 
 		public BraceCompletionAdornmentService (ITextView textView)
 		{
-			if (textView == null)
-				throw new ArgumentNullException ("textView");
+			ArgumentNullException.ThrowIfNull (textView);
 
 			_view = textView;
 		}

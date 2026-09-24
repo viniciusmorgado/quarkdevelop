@@ -200,7 +200,7 @@ namespace Xwt.GtkBackend
 
 		public override void SetCurrentEventRow (string path)
 		{
-			if (path.Contains (":")) {
+			if (path.Contains (':')) {
 				path = path.Split (':') [0];
 			}
 			CurrentEventRow = int.Parse (path);

@@ -29,7 +29,7 @@ using MonoDevelop.PackageManagement;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableViewModelBase : ViewModelBase<TestableViewModelBase>
+	sealed class TestableViewModelBase : ViewModelBase<TestableViewModelBase>
 	{
 		public string MyProperty { get; set; }
 	}

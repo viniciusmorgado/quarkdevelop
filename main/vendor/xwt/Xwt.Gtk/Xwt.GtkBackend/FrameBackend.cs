@@ -202,7 +202,7 @@ namespace Xwt.GtkBackend
 		#endregion
 	}
 
-	class FrameWidget: Gtk.Frame, IConstraintProvider
+	sealed class FrameWidget: Gtk.Frame, IConstraintProvider
 	{
 		#if !XWT_GTK3
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)

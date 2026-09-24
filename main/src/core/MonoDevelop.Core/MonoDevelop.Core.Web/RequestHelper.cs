@@ -381,15 +381,9 @@ namespace MonoDevelop.Core.Web
 
 		private static bool ShouldKeepAliveBeUsedInRequest(HttpWebRequest request, IHttpWebResponse response)
 		{
-			if (request == null)
-			{
-				throw new ArgumentNullException("request");
-			}
+			ArgumentNullException.ThrowIfNull(request);
 
-			if (response == null)
-			{
-				throw new ArgumentNullException("response");
-			}
+			ArgumentNullException.ThrowIfNull(response);
 
 			return !request.KeepAlive && IsNtlmOrKerberos(response.AuthType);
 		}

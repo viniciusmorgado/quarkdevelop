@@ -115,7 +115,7 @@ namespace MonoDevelop.Components
 		/// Gets or sets the color of the text color of the pager.
 		/// </summary>
 		Color pagerTextColor;
-		bool pagerColorSet = false;
+		bool pagerColorSet;
 		public Color PagerTextColor {
 			get {
 				if (!pagerColorSet) {

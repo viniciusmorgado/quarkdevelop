@@ -140,20 +140,18 @@ namespace MonoDevelop.Core.Text
 		/// <exception cref="ArgumentOutOfRangeException">offset or length is outside the valid range.</exception>
 		public static string GetTextAt (this ITextSource source, ISegment segment)
 		{
-			if (source == null)
-				throw new ArgumentNullException ("source");
+			ArgumentNullException.ThrowIfNull (source);
 			return source.GetTextAt (segment.Offset, segment.Length);
 		}
 
 
 		public static string GetTextBetween (this ITextSource source, int startOffset, int endOffset)
 		{
-			if (source == null)
-				throw new ArgumentNullException ("source");
+			ArgumentNullException.ThrowIfNull (source);
 			if (startOffset < 0 || startOffset > source.Length)
-				throw new ArgumentNullException ("startOffset");
+				throw new ArgumentNullException (nameof (startOffset));
 			if (endOffset < 0 || endOffset > source.Length)
-				throw new ArgumentNullException ("endOffset");
+				throw new ArgumentNullException (nameof (endOffset));
 			if (startOffset > endOffset)
 				throw new InvalidOperationException ();
 			return source.GetTextAt (startOffset, endOffset - startOffset);
@@ -165,8 +163,7 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public static void WriteTextTo (this ITextSource source, string fileName)
 		{
-			if (source == null)
-				throw new ArgumentNullException ("source");
+			ArgumentNullException.ThrowIfNull (source);
 			TextFileUtility.WriteText (fileName, source);
 		}
 
@@ -175,12 +172,9 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public static void WriteTextTo (this ITextSource source, TextWriter writer, ISegment segment)
 		{
-			if (source == null)
-				throw new ArgumentNullException ("source");
-			if (writer == null)
-				throw new ArgumentNullException ("writer");
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (source);
+			ArgumentNullException.ThrowIfNull (writer);
+			ArgumentNullException.ThrowIfNull (segment);
 			source.WriteTextTo (writer, segment.Offset, segment.Length);
 		}
 
@@ -189,10 +183,8 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public static TextReader CreateReader (this ITextSource source, ISegment segment)
 		{
-			if (source == null)
-				throw new ArgumentNullException ("source");
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (source);
+			ArgumentNullException.ThrowIfNull (segment);
 			return source.CreateReader (segment.Offset, segment.Length);
 		}
 
@@ -202,10 +194,8 @@ namespace MonoDevelop.Core.Text
 		/// </summary>
 		public static ITextSource CreateSnapshot (this ITextSource source, ISegment segment)
 		{
-			if (source == null)
-				throw new ArgumentNullException ("source");
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (source);
+			ArgumentNullException.ThrowIfNull (segment);
 			return source.CreateSnapshot (segment.Offset, segment.Length);
 		}
 	}

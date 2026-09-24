@@ -81,7 +81,7 @@ namespace MonoDevelop.CSharp.Completion
 			this.DisplayFlags |= DisplayFlags.IsImportCompletion;
 		}
 
-		bool initialized = false;
+		bool initialized;
 		bool generateUsing, insertNamespace;
 
 		void Initialize ()
@@ -107,7 +107,7 @@ namespace MonoDevelop.CSharp.Completion
 			return description;
 		}
 
-		string displayDescription = null;
+		string displayDescription;
 		public override string GetDisplayDescription (bool isSelected)
 		{
 			if (displayDescription == null) {
@@ -155,7 +155,7 @@ namespace MonoDevelop.CSharp.Completion
 			var text = StringBuilderCache.Allocate ();
 			text.Append ("using ");
 			text.Append (nsName);
-			text.Append (";");
+			text.Append (';');
 			text.Append (editor.EolMarker);
 
 			editor.InsertText (offset, StringBuilderCache.ReturnAndFree (text));

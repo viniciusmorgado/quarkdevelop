@@ -145,8 +145,7 @@ namespace MonoDevelop.SourceEditor
 		
 		internal SearchAndReplaceWidget (MonoTextEditor textEditor, Widget frame)
 		{
-			if (textEditor == null)
-				throw new ArgumentNullException ("textEditor");
+			ArgumentNullException.ThrowIfNull (textEditor);
 			this.textEditor = textEditor;
 			this.frame = frame;
 			textEditor.SizeAllocated += HandleViewTextEditorhandleSizeAllocated;
@@ -493,7 +492,7 @@ namespace MonoDevelop.SourceEditor
 		}
 
 		int curSearchResult = -1;
-		string curSearchPattern = null;
+		string curSearchPattern;
 
 		private void OnNavigateKeyPressEvent (object o, KeyPressEventArgs args)
 		{
@@ -917,7 +916,7 @@ But I leave it in in the case I've missed something. Mike
 			textEditor.CenterToCaret ();
 		}
 
-		internal static bool inReplaceUpdate = false;
+		internal static bool inReplaceUpdate;
 
 		internal static void FireReplacePatternChanged ()
 		{

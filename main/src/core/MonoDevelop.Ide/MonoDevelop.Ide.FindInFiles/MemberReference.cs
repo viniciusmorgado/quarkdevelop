@@ -60,10 +60,8 @@ namespace MonoDevelop.Ide.FindInFiles
 		
 		public MemberReference (object entity, string fileName, int offset, int length) : base (offset, length)
 		{
-			if (entity == null)
-				throw new System.ArgumentNullException ("entity");
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
+			ArgumentNullException.ThrowIfNull (entity);
+			ArgumentNullException.ThrowIfNull (fileName);
 			EntityOrVariable = entity;
 			this.fileName = fileName;
 		}

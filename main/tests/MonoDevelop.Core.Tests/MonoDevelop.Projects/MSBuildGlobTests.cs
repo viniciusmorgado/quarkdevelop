@@ -1420,7 +1420,7 @@ namespace MonoDevelop.Projects
 			}
 		}
 
-		class SupportImportedProjectFilesProjectExtension : DotNetProjectExtension
+		sealed class SupportImportedProjectFilesProjectExtension : DotNetProjectExtension
 		{
 			internal protected override bool OnGetSupportsImportedItem (IMSBuildItemEvaluated buildItem)
 			{

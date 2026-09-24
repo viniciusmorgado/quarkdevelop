@@ -155,7 +155,7 @@ namespace MonoDevelop.AnalysisCore.Gui
 			enabled = false;
 			DocumentContext.DocumentParsed -= OnDocumentParsed;
 			CancelUpdateTimout ();
-			new ResultsUpdater (this, new Result[0], null, CancellationToken.None).Update ();
+			new ResultsUpdater (this, Array.Empty<Result> (), null, CancellationToken.None).Update ();
 		}
 		
 		CancellationTokenSource src = new CancellationTokenSource ();
@@ -269,7 +269,7 @@ namespace MonoDevelop.AnalysisCore.Gui
 			int oldMarkerIndex;
 			List<IGenericTextSegmentMarker> oldMarkers;
 
-			int curResult = 0;
+			int curResult;
 			readonly IReadOnlyList<Result> results;
 
 			readonly List<IGenericTextSegmentMarker> newMarkers;
@@ -278,10 +278,8 @@ namespace MonoDevelop.AnalysisCore.Gui
 
 			public ResultsUpdater (ResultsEditorExtension ext, IReadOnlyList<Result> results, object resultsId, CancellationToken cancellationToken)
 			{
-				if (ext == null)
-					throw new ArgumentNullException ("ext");
-				if (results == null)
-					throw new ArgumentNullException ("results");
+				ArgumentNullException.ThrowIfNull (ext);
+				ArgumentNullException.ThrowIfNull (results);
 				this.ext = ext;
 				id = resultsId;
 				this.cancellationToken = cancellationToken;

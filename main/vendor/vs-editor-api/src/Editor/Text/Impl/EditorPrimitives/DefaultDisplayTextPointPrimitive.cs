@@ -182,10 +182,7 @@ namespace Microsoft.VisualStudio.Text.EditorPrimitives.Implementation
 
         public override bool InsertText(string text)
         {
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
+            ArgumentNullException.ThrowIfNull(text);
 
             return _bufferPoint.InsertText(text);
         }

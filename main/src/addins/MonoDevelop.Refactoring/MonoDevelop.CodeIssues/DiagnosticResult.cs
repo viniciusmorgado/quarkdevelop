@@ -45,8 +45,7 @@ namespace MonoDevelop.CodeIssues
 
 		public DiagnosticResult (Diagnostic diagnostic) : base (diagnostic.Location.SourceSpan, diagnostic.GetMessage ())
 		{
-			if (diagnostic == null)
-				throw new ArgumentNullException (nameof (diagnostic));
+			ArgumentNullException.ThrowIfNull (diagnostic);
 			this.diagnostic = diagnostic;
 
 			SetSeverity (diagnostic.Severity, GetIssueMarker ()); 

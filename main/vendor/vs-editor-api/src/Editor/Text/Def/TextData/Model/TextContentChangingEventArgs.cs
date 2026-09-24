@@ -37,10 +37,7 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentNullException"><paramref name="beforeSnapshot"/> is null.</exception>
         public TextContentChangingEventArgs(ITextSnapshot beforeSnapshot, object editTag, Action<TextContentChangingEventArgs> cancelAction)
         {
-            if (beforeSnapshot == null)
-            {
-                throw new ArgumentNullException(nameof(beforeSnapshot));
-            }
+            ArgumentNullException.ThrowIfNull(beforeSnapshot);
 
             Canceled = false;
             Before = beforeSnapshot;

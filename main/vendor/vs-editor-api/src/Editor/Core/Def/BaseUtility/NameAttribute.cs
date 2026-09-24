@@ -20,10 +20,7 @@ namespace Microsoft.VisualStudio.Utilities
         /// <exception cref="ArgumentException"><paramref name="name"/> is an empty string.</exception>
         public NameAttribute(string name)
         {
-            if (name == null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+            ArgumentNullException.ThrowIfNull(name);
             if (name.Length == 0)
             {
                 throw new ArgumentException("name must not be empty", nameof(name));

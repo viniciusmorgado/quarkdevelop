@@ -15,10 +15,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
 
         protected BaseIntellisenseSession(ITextView textView)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException("textView");
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             this.textView = textView;
         }

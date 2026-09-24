@@ -30,7 +30,7 @@ using Xwt;
 
 namespace Mono.MHex.Rendering
 {
-	class EmptySpaceMargin : Margin
+	sealed class EmptySpaceMargin : Margin
 	{
 		public override double Width {
 			get { 

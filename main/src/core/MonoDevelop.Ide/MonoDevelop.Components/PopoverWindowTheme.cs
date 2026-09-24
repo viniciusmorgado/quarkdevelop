@@ -115,7 +115,7 @@ namespace MonoDevelop.Components
 		/// Gets or sets the color of the text color of the pager.
 		/// </summary>
 		Cairo.Color pagerTextColor;
-		bool pagerColorSet = false;
+		bool pagerColorSet;
 		public Cairo.Color PagerTextColor {
 			get {
 				if (!pagerColorSet) {

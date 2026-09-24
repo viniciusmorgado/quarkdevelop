@@ -37,7 +37,7 @@ namespace MonoDevelop.Ide.FindInFiles
 {
 	[TestFixture]
 	[RequireService (typeof(TextEditorService))]
-	class SearchResultWidgetTests : IdeTestBase
+	sealed class SearchResultWidgetTests : IdeTestBase
 	{
 		[Test]
 		public void TestSimple ()

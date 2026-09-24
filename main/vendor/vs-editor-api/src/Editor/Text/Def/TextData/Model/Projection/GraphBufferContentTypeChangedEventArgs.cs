@@ -27,18 +27,9 @@ namespace Microsoft.VisualStudio.Text.Projection
         /// or <paramref name="afterContentType"/> is null.</exception>
         public GraphBufferContentTypeChangedEventArgs(ITextBuffer textBuffer, IContentType beforeContentType, IContentType afterContentType)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
-            if (beforeContentType == null)
-            {
-                throw new ArgumentNullException(nameof(beforeContentType));
-            }
-            if (afterContentType == null)
-            {
-                throw new ArgumentNullException(nameof(afterContentType));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
+            ArgumentNullException.ThrowIfNull(beforeContentType);
+            ArgumentNullException.ThrowIfNull(afterContentType);
             this.textBuffer = textBuffer;
             this.beforeContentType = beforeContentType;
             this.afterContentType = afterContentType;

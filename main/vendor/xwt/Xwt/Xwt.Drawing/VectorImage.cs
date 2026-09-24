@@ -30,7 +30,7 @@ using System.Linq;
 
 namespace Xwt.Drawing
 {
-	class VectorImage: DrawingImage
+	sealed class VectorImage: DrawingImage
 	{
 		VectorImageData data;
 
@@ -50,7 +50,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	class VectorImageData
+	sealed class VectorImageData
 	{
 		public DrawingCommand[] Commands;
 		public double[] Doubles;
@@ -100,7 +100,7 @@ namespace Xwt.Drawing
 		End
 	}
 
-	class VectorContextBackend: VectorBackend
+	sealed class VectorContextBackend: VectorBackend
 	{
 		double width;
 		double height;
@@ -145,7 +145,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	class VectorPathBackend: VectorBackend
+	sealed class VectorPathBackend: VectorBackend
 	{
 		public VectorPathBackend (Toolkit toolkit): base (toolkit)
 		{
@@ -224,7 +224,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	class VectorImageRecorderContextHandler: ContextBackendHandler
+	sealed class VectorImageRecorderContextHandler: ContextBackendHandler
 	{
 		Toolkit toolkit;
 

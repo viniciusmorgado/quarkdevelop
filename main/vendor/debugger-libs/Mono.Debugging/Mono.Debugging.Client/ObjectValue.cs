@@ -515,7 +515,7 @@ namespace Mono.Debugging.Client
 		public ObjectValue[] GetAllChildren (EvaluationOptions options)
 		{
 			if (IsEvaluating)
-				return new ObjectValue[0];
+				return Array.Empty<ObjectValue> ();
 			
 			if (IsArray) {
 				GetArrayItem (arrayCount - 1);
@@ -548,12 +548,12 @@ namespace Mono.Debugging.Client
 		public ObjectValue[] GetRangeOfChildren (int index, int count, EvaluationOptions options)
 		{
 			if (IsEvaluating)
-				return new ObjectValue[0];
+				return Array.Empty<ObjectValue> ();
 
 			if (IsArray) {
 				GetArrayItem (arrayCount - 1);
 				if (index >= ArrayCount)
-					return new ObjectValue[0];
+					return Array.Empty<ObjectValue> ();
 				return children.Skip (index).Take (Math.Min (count, ArrayCount - index)).ToArray ();
 			}
 
@@ -575,7 +575,7 @@ namespace Mono.Debugging.Client
 			}
 
 			if (index >= children.Count)
-				return new ObjectValue[0];
+				return Array.Empty<ObjectValue> ();
 
 			return children.Skip (index).Take (Math.Min (count, children.Count - index)).ToArray ();
 		}
@@ -851,7 +851,7 @@ namespace Mono.Debugging.Client
 	}
 
 	// MonoDevelop: no longer a MarshalByRefObject (ADR 0009).
-	class UpdateCallbackProxy: IObjectValueUpdateCallback
+	sealed class UpdateCallbackProxy: IObjectValueUpdateCallback
 	{
 		readonly WeakReference valRef;
 		

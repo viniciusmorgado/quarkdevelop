@@ -97,38 +97,33 @@ namespace Xwt
 
 		public void PackStart (Widget widget)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			Pack (widget, false, WidgetPlacement.Fill, PackOrigin.Start);
 		}
 		
 		public void PackStart (Widget widget, bool expand)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			Pack (widget, expand, WidgetPlacement.Fill, PackOrigin.Start);
 		}
 
 		public void PackStart (Widget widget, bool expand, bool fill)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			WidgetPlacement align = fill ? WidgetPlacement.Fill : WidgetPlacement.Center;
 			Pack (widget, expand, align, PackOrigin.Start);
 		}
 
 		public void PackStart (Widget widget, bool expand = false, WidgetPlacement vpos = WidgetPlacement.Fill, WidgetPlacement hpos = WidgetPlacement.Fill, double marginLeft = -1, double marginTop = -1, double marginRight = -1, double marginBottom = -1, double margin = -1)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			Pack (widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.Start);
 		}
 
 		[Obsolete ("BoxMode is going away")]
 		public void PackStart (Widget widget, BoxMode mode)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			bool expand = (mode & BoxMode.Expand) != 0;
 			bool fill = (mode & BoxMode.Fill) != 0;
 			PackStart (widget, expand, fill);
@@ -136,30 +131,26 @@ namespace Xwt
 		
 		public void PackEnd (Widget widget)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			Pack (widget, false, WidgetPlacement.Fill, PackOrigin.End);
 		}
 		
 		public void PackEnd (Widget widget, bool expand)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			Pack (widget, expand, WidgetPlacement.Fill, PackOrigin.End);
 		}
 
 		public void PackEnd (Widget widget, bool expand, bool fill)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			WidgetPlacement align = fill ? WidgetPlacement.Fill : WidgetPlacement.Center;
 			Pack (widget, expand, align, PackOrigin.End);
 		}
 
 		public void PackEnd (Widget widget, bool expand = false, WidgetPlacement hpos = WidgetPlacement.Fill, WidgetPlacement vpos = WidgetPlacement.Fill, double marginLeft = -1, double marginTop = -1, double marginRight = -1, double marginBottom = -1, double margin = -1)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			Pack (widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.End);
 		}
 
@@ -213,8 +204,7 @@ namespace Xwt
 					widget.HorizontalPlacement = align;
 			}
 
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			var p = new BoxPlacement ((WidgetBackendHost)BackendHost, widget);
 			p.PackOrigin = ptype;
 			children.Add (p);
@@ -222,8 +212,7 @@ namespace Xwt
 		
 		public bool Remove (Widget widget)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			for (int n=0; n<children.Count; n++) {
 				if (children[n].Child == widget) {
 					children.RemoveAt (n);
@@ -472,7 +461,7 @@ namespace Xwt
 		End
 	}
 	
-	class SizeSplitter
+	sealed class SizeSplitter
 	{
 		int rem;
 		int part;

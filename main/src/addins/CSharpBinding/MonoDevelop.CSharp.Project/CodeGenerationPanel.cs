@@ -46,7 +46,7 @@ namespace MonoDevelop.CSharp.Project
 		const int DEBUG_NONE = 4;
 
 		DotNetProjectConfiguration configuration;
-		CSharpCompilerParameters compilerParameters = null;
+		CSharpCompilerParameters compilerParameters;
 		
 		public CodeGenerationPanelWidget ()
 		{

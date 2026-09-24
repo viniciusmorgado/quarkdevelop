@@ -30,14 +30,8 @@ namespace Microsoft.VisualStudio.Utilities
         /// resource type.</param>
         public LocalizedNameAttribute(Type type, string resourceId)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (resourceId == null)
-            {
-                throw new ArgumentNullException(nameof(resourceId));
-            }
+            ArgumentNullException.ThrowIfNull(type);
+            ArgumentNullException.ThrowIfNull(resourceId);
 
             ResourceManager resourceManager = new ResourceManager(type);
             this.localizedName = resourceManager.GetString(resourceId, CultureInfo.CurrentUICulture);
@@ -53,18 +47,9 @@ namespace Microsoft.VisualStudio.Utilities
         /// resource type.</param>
         public LocalizedNameAttribute(Type type, string resourceStreamName, string resourceId)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (resourceStreamName == null)
-            {
-                throw new ArgumentNullException(nameof(resourceStreamName));
-            }
-            if (resourceId == null)
-            {
-                throw new ArgumentNullException(nameof(resourceId));
-            }
+            ArgumentNullException.ThrowIfNull(type);
+            ArgumentNullException.ThrowIfNull(resourceStreamName);
+            ArgumentNullException.ThrowIfNull(resourceId);
 
             ResourceManager resourceManager = new ResourceManager(resourceStreamName, type.Assembly);
             this.localizedName = resourceManager.GetString(resourceId, CultureInfo.CurrentUICulture);

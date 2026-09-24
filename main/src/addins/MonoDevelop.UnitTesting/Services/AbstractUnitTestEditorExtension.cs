@@ -176,8 +176,7 @@ namespace MonoDevelop.UnitTesting
 
 			public UnitTestMarkerHostImpl (AbstractUnitTestTextEditorExtension ext)
 			{
-				if (ext == null)
-					throw new ArgumentNullException (nameof (ext));
+				ArgumentNullException.ThrowIfNull (ext);
 				this.ext = ext;
 			}
 

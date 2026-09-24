@@ -31,7 +31,7 @@ using NuGet.Versioning;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeNuGetProjectAction : NuGetProjectAction
+	sealed class FakeNuGetProjectAction : NuGetProjectAction
 	{
 		public FakeNuGetProjectAction (
 			string packageId,

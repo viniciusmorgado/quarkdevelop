@@ -301,7 +301,7 @@ namespace MonoDevelop.ChangeLogAddIn
 		}
 	}
 	
-	class ChangeLogEntry
+	sealed class ChangeLogEntry
 	{
 		public string File;
 		public string BackupFile;

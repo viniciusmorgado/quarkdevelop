@@ -50,7 +50,7 @@ namespace MonoDevelop.VersionControl.Views
 		
 		string LabelText {
 			get {
-				if (!comparisonWidget.Diff.Any ())
+				if (comparisonWidget.Diff.Count == 0)
 					return GettextCatalog.GetString ("Both files are equal");
 				int added=0, removed=0;
 				foreach (var h in comparisonWidget.Diff) {

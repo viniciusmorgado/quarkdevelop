@@ -156,7 +156,7 @@ namespace MonoDevelop.Ide
 		static string Ellipsize (string str, int maxLength)
 		{
 			if (str != null && str.Length > maxLength)
-				return str.Substring (0, maxLength - 3) + "...";
+				return string.Concat (str.AsSpan (0, maxLength - 3), "...");
 			return str;
 		}
 		

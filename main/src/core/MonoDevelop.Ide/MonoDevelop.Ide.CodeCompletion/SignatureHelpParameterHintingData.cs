@@ -49,8 +49,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 	{
 		public SignatureHelpParameterHintingData (SignatureHelpItem item)
 		{
-			if (item == null)
-				throw new System.ArgumentNullException (nameof (item));
+			ArgumentNullException.ThrowIfNull (item);
 			Item = item;
 		}
 
@@ -106,13 +105,13 @@ namespace MonoDevelop.Ide.CodeCompletion
 				if (i == currentParameter)
 					markup.Append ("<b>");
 				if (p.IsOptional) {
-					markup.Append ("[");
+					markup.Append ('[');
 					col++;
 				}
 				markup.AppendTaggedText (theme, p.DisplayParts);
 				col += p.DisplayParts.GetFullText ().Length;
 				if (p.IsOptional) {
-					markup.Append ("]");
+					markup.Append (']');
 					col++;
 				}
 				if (i == currentParameter)

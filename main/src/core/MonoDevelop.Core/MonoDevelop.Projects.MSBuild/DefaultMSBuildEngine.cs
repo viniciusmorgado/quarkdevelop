@@ -44,14 +44,14 @@ namespace MonoDevelop.Projects.MSBuild
 		Dictionary<FilePath, LoadedProjectInfo> loadedProjects = new Dictionary<FilePath, LoadedProjectInfo> ();
 
 		// For test purposes.
-		internal static Func<MSBuildProject, MSBuildEvaluationContext> GetEvaluationContext = null;
+		internal static Func<MSBuildProject, MSBuildEvaluationContext> GetEvaluationContext;
 
 		class LoadedProjectInfo
 		{
 			public MSBuildProject Project;
 			public DateTime LastWriteTime;
 			public int ReferenceCount = 1;
-			public bool NeedsLoad = false;
+			public bool NeedsLoad;
 			public object LockObject = new object ();
 		}
 
@@ -922,7 +922,7 @@ namespace MonoDevelop.Projects.MSBuild
 				string baseDir = basePath.ToRelative (project.BaseDirectory).ToString ().Replace ('/', '\\');
 				if (baseDir == ".")
 					baseDir = "";
-				else if (!baseDir.EndsWith ("\\", StringComparison.Ordinal))
+				else if (!baseDir.EndsWith ('\\'))
 					baseDir += '\\';
 				var recursiveDir = baseRecursiveDir.IsNullOrEmpty ? FilePath.Null : basePath.ToRelative (baseRecursiveDir);
 				res = FastConcat (res, GetSortedFileSystemEntries (Directory.GetFiles (basePath, path)).Select (f => func (f, baseDir + Path.GetFileName (f), recursiveDir)));

@@ -77,7 +77,7 @@ namespace MonoDevelop.Ide.Gui.Pads
 		ToggleButton logBtn;
 		Label errorBtnLbl, warnBtnLbl, msgBtnLbl, logBtnLbl;
 		SearchEntry searchEntry;
-		string currentSearchPattern = null;
+		string currentSearchPattern;
 		Hashtable tasks = new Hashtable ();
 		int errorCount;
 		int warningCount;
@@ -508,7 +508,7 @@ namespace MonoDevelop.Ide.Gui.Pads
 		async Task OnGoToLog (object o, EventArgs args)
 		{
 			var rows = view.Selection.GetSelectedRows ();
-			if (!rows.Any ())
+			if (rows.Length == 0)
 				return;
 
 			TreeIter iter, sortedIter;
@@ -535,7 +535,7 @@ namespace MonoDevelop.Ide.Gui.Pads
 			get {
 				TreeIter iter;
 				var rows = view.Selection.GetSelectedRows ();
-				if (rows.Any () && view.Model.GetIter (out iter, rows[0]))
+				if (rows.Length != 0 && view.Model.GetIter (out iter, rows[0]))
 					return view.Model.GetValue (iter, DataColumns.Task) as TaskListEntry;
 				return null; // no one selected
 			}
@@ -562,7 +562,7 @@ namespace MonoDevelop.Ide.Gui.Pads
 		void OnTaskCopied (object o, EventArgs args)
 		{
 			var selectedTasks = GetSelectedTasks ().ToArray ();
-			if (!selectedTasks.Any ())
+			if (selectedTasks.Length == 0)
 				return;
 
 			var text = new StringBuilder ();
@@ -575,24 +575,24 @@ namespace MonoDevelop.Ide.Gui.Pads
 				if (!string.IsNullOrEmpty (task.FileName)) {
 					text.Append (task.FileName);
 					if (task.Line >= 1) {
-						text.Append ("(").Append (task.Column);
+						text.Append ('(').Append (task.Column);
 						if (task.Column >= 0)
-							text.Append (",").Append (task.Column);
-						text.Append (")");
+							text.Append (',').Append (task.Column);
+						text.Append (')');
 					}
 					text.Append (": ");
 				}
 				text.Append (task.Severity.ToString ());
 				if (!string.IsNullOrEmpty (task.Code)) {
-					text.Append (" ").Append (task.Code);
+					text.Append (' ').Append (task.Code);
 				}
 				text.Append (": ");
 				text.Append (task.Description);
 				if (task.WorkspaceObject != null)
-					text.Append (" (").Append (task.WorkspaceObject.Name).Append (")");
+					text.Append (" (").Append (task.WorkspaceObject.Name).Append (')');
 
 				if (!string.IsNullOrEmpty (task.Category)) {
-					text.Append (" ").Append (task.Category);
+					text.Append (' ').Append (task.Category);
 				}
 			}
 
@@ -632,7 +632,7 @@ namespace MonoDevelop.Ide.Gui.Pads
 		void OnTaskJumpto (object o, EventArgs args)
 		{
 			var rows = view.Selection.GetSelectedRows ();
-			if (!rows.Any ())
+			if (rows.Length == 0)
 				return;
 
 			TreeIter iter, sortedIter;
@@ -815,7 +815,7 @@ namespace MonoDevelop.Ide.Gui.Pads
 			OnTaskJumpto (null, null);
 		}
 		
-		public CompilerResults CompilerResults = null;
+		public CompilerResults CompilerResults;
 		
 		void FilterChanged (object sender, EventArgs e)
 		{

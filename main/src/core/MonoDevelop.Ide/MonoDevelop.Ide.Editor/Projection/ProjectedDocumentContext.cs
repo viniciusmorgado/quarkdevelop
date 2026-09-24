@@ -63,10 +63,8 @@ namespace MonoDevelop.Ide.Editor.Projection
 
 		public ProjectedDocumentContext (TextEditor projectedEditor, DocumentContext originalContext)
 		{
-			if (projectedEditor == null)
-				throw new ArgumentNullException ("projectedEditor");
-			if (originalContext == null)
-				throw new ArgumentNullException ("originalContext");
+			ArgumentNullException.ThrowIfNull (projectedEditor);
+			ArgumentNullException.ThrowIfNull (originalContext);
 			this.projectedEditor = projectedEditor;
 			this.originalContext = originalContext;
 

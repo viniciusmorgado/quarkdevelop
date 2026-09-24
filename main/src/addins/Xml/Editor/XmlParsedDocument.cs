@@ -26,6 +26,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -73,7 +74,7 @@ namespace MonoDevelop.Xml.Editor
 
 						if (id != null && dt.Region.EndLine - dt.Region.BeginLine > 2) {
 							if (id.Length > 50)
-								id = id.Substring (0, 47) + "...";
+								id = string.Concat (id.AsSpan (0, 47), "...");
 
 							var fr = new FoldingRegion ($"<!DOCTYPE {id}>", dt.Region) {
 								IsFoldedByDefault = true

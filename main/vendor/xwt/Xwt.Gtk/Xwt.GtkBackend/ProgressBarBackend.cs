@@ -37,7 +37,7 @@ namespace Xwt.GtkBackend
 		{
 		}
 
-		uint? timerId = null;
+		uint? timerId;
 
 		public override void Initialize ()
 		{

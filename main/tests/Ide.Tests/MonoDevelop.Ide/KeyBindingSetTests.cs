@@ -88,7 +88,7 @@ namespace MonoDevelop.Ide
 
 			// verify that the set overrides its parent
 			Assert.AreEqual (new string [] { "Alt+1" }, set1.GetBindings (cmd1));
-			Assert.AreEqual (new string [0], set1.GetBindings (cmd2));
+			Assert.AreEqual (System.Array.Empty<string> (), set1.GetBindings (cmd2));
 
 			// cmd3 should be still there
 			Assert.AreEqual (new string [] { "Ctrl+3" }, set1.GetBindings (cmd3));
@@ -204,7 +204,7 @@ namespace MonoDevelop.Ide
 			// verify that set1 has only cmd1 and cmd2 bindings
 			Assert.AreEqual (new string [] { "Ctrl+1" }, set1.GetBindings (cmd1));
 			Assert.AreEqual (new string [] { "Ctrl+2" }, set1.GetBindings (cmd2));
-			Assert.AreEqual (new string [0], set1.GetBindings (cmd3));
+			Assert.AreEqual (System.Array.Empty<string> (), set1.GetBindings (cmd3));
 
 			// verify that set2 has cmd1 binding from set1
 			Assert.AreEqual (set1.GetBindings (cmd1), set2.GetBindings (cmd1));

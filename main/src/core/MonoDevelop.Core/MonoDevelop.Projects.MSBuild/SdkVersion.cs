@@ -183,19 +183,15 @@ namespace MonoDevelop.Projects.MSBuild
 
 		public static bool operator > (SdkVersion a, SdkVersion b)
 		{
-			if ((object)a == null)
-				throw new ArgumentNullException (nameof (a));
-			if ((object)b == null)
-				throw new ArgumentNullException (nameof (b));
+			ArgumentNullException.ThrowIfNull (a);
+			ArgumentNullException.ThrowIfNull (b);
 			return a.CompareTo (b) > 0;
 		}
 
 		public static bool operator < (SdkVersion a, SdkVersion b)
 		{
-			if ((object)a == null)
-				throw new ArgumentNullException (nameof (a));
-			if ((object)b == null)
-				throw new ArgumentNullException (nameof (b));
+			ArgumentNullException.ThrowIfNull (a);
+			ArgumentNullException.ThrowIfNull (b);
 			return a.CompareTo (b) < 0;
 		}
 

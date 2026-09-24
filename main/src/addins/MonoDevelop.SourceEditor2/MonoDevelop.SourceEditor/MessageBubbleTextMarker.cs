@@ -76,7 +76,7 @@ namespace MonoDevelop.SourceEditor
 
 //		int editorAllocHeight = -1;
 //		int lastLineLength = -1;
-		internal double lastHeight = 0;
+		internal double lastHeight;
 
 		public double GetLineHeight (MonoTextEditor editor)
 		{
@@ -158,16 +158,14 @@ namespace MonoDevelop.SourceEditor
 
 		public MessageBubbleTextMarker (MessageBubbleCache cache)
 		{
-			if (cache == null)
-				throw new ArgumentNullException ("cache");
+			ArgumentNullException.ThrowIfNull (cache);
 			this.cache = cache;
 			this.IsVisible = true;
 		}
 
 		internal MessageBubbleTextMarker (MessageBubbleCache cache, TaskListEntry task, bool isError, string errorMessage)
 		{
-			if (cache == null)
-				throw new ArgumentNullException ("cache");
+			ArgumentNullException.ThrowIfNull (cache);
 			this.cache = cache;
 			this.task = task;
 			this.isError = isError;
@@ -387,7 +385,7 @@ namespace MonoDevelop.SourceEditor
 		}
 
 		#region IActionTextMarker implementation
-		int curError = 0;
+		int curError;
 		public bool MousePressed (MonoTextEditor editor, MarginMouseEventArgs args)
 		{
 			if (bubbleDrawX < args.X && args.X < bubbleDrawX + bubbleWidth) {

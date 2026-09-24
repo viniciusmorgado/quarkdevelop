@@ -365,7 +365,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			if (commonSets != null)
 				return commonSets;
 			else
-				return new PolicySet[0];
+				return Array.Empty<PolicySet> ();
 		}
 		
 		bool useParentPolicy;

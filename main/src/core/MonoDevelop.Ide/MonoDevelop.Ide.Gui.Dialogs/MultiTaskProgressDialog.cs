@@ -44,7 +44,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		TextBuffer buffer;
 		TextTag tag;
 		TextTag bold;
-		int ident = 0;
+		int ident;
 		List<TextTag> tags = new List<TextTag> ();
 		Stack<string> indents = new Stack<string> ();
 		CancellationTokenSource asyncOperation;
@@ -52,9 +52,9 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		CellRendererText textRenderer;
 		CellRendererProgress progressRenderer;
 		
-		IDictionary<string, string> taskLabelAliases = null;
+		IDictionary<string, string> taskLabelAliases;
 		
-		bool completed = false;
+		bool completed;
 		bool allowCancel;
 		                                
 		public MultiTaskProgressDialog (bool allowCancel, bool showDetails, IDictionary<string, string> taskLabelAliases)
@@ -126,7 +126,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 		public void WriteText (string text)
 		{
 			AddText (text);
-			if (text.EndsWith ("\n"))
+			if (text.EndsWith ('\n'))
 				detailsTextView.ScrollMarkOnscreen (buffer.InsertMark);
 		}
 		
@@ -158,8 +158,8 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 			if (name != null && name.Length > 0) {
 				Indent ();
 				indents.Push (name);
-				if (taskLabelAliases != null && taskLabelAliases.ContainsKey (name))
-					currentTaskIter = statusStore.AppendValues (name, taskLabelAliases [name], 0);
+				if (taskLabelAliases != null && taskLabelAliases.TryGetValue (name, out var value))
+					currentTaskIter = statusStore.AppendValues (name, value, 0);
 				else
 					currentTaskIter = statusStore.AppendValues (name, name, 0);
 			} else {
@@ -225,7 +225,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 				asyncOperation.Cancel ();
 		}
 		
-		bool destroyed = false;
+		bool destroyed;
 		void OnClose (object sender, EventArgs args)
 		{
 			if (!destroyed) {

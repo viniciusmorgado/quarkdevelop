@@ -38,7 +38,7 @@ namespace MonoDevelop.Core
 		public delegate bool ReaderCallbackWithData (ReadCallbackData data);
 		
 		public class ReadCallbackData {
-			bool skipNextRead = false;
+			bool skipNextRead;
 			public bool SkipNextRead {
 				get { return skipNextRead; }
 				set { skipNextRead = value; }

@@ -253,7 +253,7 @@ namespace MonoDevelop.Ide.CodeTemplates
 				sb.Append (code, lastOffset, match.Index - lastOffset);
 				lastOffset = match.Index + match.Length;
 				if (string.IsNullOrEmpty (name)) { // $$ is interpreted as $
-					sb.Append ("$");
+					sb.Append ('$');
 				} else {
 					switch (name) {
 					case "end":
@@ -316,8 +316,8 @@ namespace MonoDevelop.Ide.CodeTemplates
 					if (functionResult != null && functionResult.Count > 0) {
 						string s = (string)functionResult [functionResult.Count - 1];
 						if (s == null) {
-							if (variableDecarations.ContainsKey (name)) 
-								s = variableDecarations [name].Default;
+							if (variableDecarations.TryGetValue (name, out var value)) 
+								s = value.Default;
 						}
 						if (s != null) {
 							if (!link.IsEditable) {
@@ -573,8 +573,7 @@ namespace MonoDevelop.Ide.CodeTemplates
 
 		public TemplateResult InsertTemplateContents (Document document)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			return InsertTemplateContents (document.Editor, document.DocumentContext);
 		}
 #region I/O

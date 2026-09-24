@@ -41,7 +41,7 @@ namespace MonoDevelop.Ide.Gui.Dialogs
 	internal class GtkAlertDialog : Gtk.Dialog
 	{
 		MessageDescription message;
-		AlertButton resultButton = null;
+		AlertButton resultButton;
 		AlertButton[] buttons;
 		
 		Gtk.HBox  hbox  = new HBox ();

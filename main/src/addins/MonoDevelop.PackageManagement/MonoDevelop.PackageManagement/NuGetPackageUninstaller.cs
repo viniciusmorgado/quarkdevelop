@@ -65,7 +65,7 @@ namespace MonoDevelop.PackageManagement
 				.Where (reference => reference.HintPath.IsChildPathOf (installPath))
 				.ToList ();
 
-			if (references.Any ()) {
+			if (references.Count != 0) {
 				project.References.RemoveRange (references);
 			}
 		}

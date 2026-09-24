@@ -13,7 +13,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         internal SnapshotPoint _anchor;
         internal PointTrackingMode _trackingMode;
         IBufferGraph _graph;
-        internal bool _unmappable = false;
+        internal bool _unmappable;
 
         public static IMappingPoint Create(ITextSnapshot root, SnapshotPoint anchor, PointTrackingMode trackingMode, IBufferGraph graph)
         {
@@ -39,8 +39,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public SnapshotPoint? GetPoint(ITextBuffer targetBuffer, PositionAffinity affinity)
         {
-            if (targetBuffer == null)
-                throw new ArgumentNullException(nameof(targetBuffer));
+            ArgumentNullException.ThrowIfNull(targetBuffer);
             if (_unmappable)
                 return null;
             
@@ -58,8 +57,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public SnapshotPoint? GetPoint(ITextSnapshot targetSnapshot, PositionAffinity affinity)
         {
-            if (targetSnapshot == null)
-                throw new ArgumentNullException(nameof(targetSnapshot));
+            ArgumentNullException.ThrowIfNull(targetSnapshot);
             if (_unmappable)
                 return null;
 
@@ -74,8 +72,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public SnapshotPoint? GetPoint(Predicate<ITextBuffer> match, PositionAffinity affinity)
         {
-            if (match == null)
-                throw new ArgumentNullException(nameof(match));
+            ArgumentNullException.ThrowIfNull(match);
             if (_unmappable)
                 return null;
             
@@ -93,8 +90,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public SnapshotPoint? GetInsertionPoint(Predicate<ITextBuffer> match)
         {
-            if (match == null)
-                throw new ArgumentNullException(nameof(match));
+            ArgumentNullException.ThrowIfNull(match);
             if (_unmappable)
                 return null; 
             

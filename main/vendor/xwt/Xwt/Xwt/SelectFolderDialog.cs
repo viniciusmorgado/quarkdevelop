@@ -38,7 +38,7 @@ namespace Xwt
 		bool canCreateFolders;
 		string title = "";
 		string folder;
-		string[] folders = new string[0];
+		string[] folders = Array.Empty<string> ();
 		
 		public SelectFolderDialog ()
 		{

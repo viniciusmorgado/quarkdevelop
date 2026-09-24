@@ -35,7 +35,7 @@ namespace MonoDevelop.Core.AddIns
 		{
 			string plat = conditionNode.GetAttribute ("value");
 			bool negate = false;
-			if (plat.StartsWith ("!", StringComparison.Ordinal)) {
+			if (plat.StartsWith ('!')) {
 				plat = plat.Substring (1);
 				negate = true;
 			}

@@ -69,7 +69,7 @@ namespace MonoDevelop.PackageManagement
 		}
 
 		public bool IsRunning {
-			get { return pendingQueue.Any () || DispatcherIsDispatching (); }
+			get { return pendingQueue.Count != 0 || DispatcherIsDispatching (); }
 		}
 
 		public IEnumerable<IInstallNuGetPackageAction> PendingInstallActions {
@@ -181,7 +181,7 @@ namespace MonoDevelop.PackageManagement
 		/// </summary>
 		void RemoveCancellationTokenSource ()
 		{
-			if (pendingQueue.Any ())
+			if (pendingQueue.Count != 0)
 				pendingQueue.Dequeue ();
 		}
 
@@ -262,7 +262,7 @@ namespace MonoDevelop.PackageManagement
 		/// </summary>
 		public void Cancel ()
 		{
-			if (!pendingQueue.Any ())
+			if (pendingQueue.Count == 0)
 				return;
 
 			ClearDispatcher ();

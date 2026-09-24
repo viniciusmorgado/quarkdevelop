@@ -58,7 +58,7 @@ namespace MonoDevelop.Projects
 			return p;
 		}
 
-		class CustomLogger : MSBuildEngineLogger
+		sealed class CustomLogger : MSBuildEngineLogger
 		{
 			internal Dictionary<string, int> loadTasks = new Dictionary<string, int> ();
 			internal Dictionary<string, int> evalTasks = new Dictionary<string, int> ();
@@ -1796,7 +1796,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class CustomGlobalPropertyProvider : IMSBuildGlobalPropertyProvider
+	sealed class CustomGlobalPropertyProvider : IMSBuildGlobalPropertyProvider
 	{
 		public event EventHandler GlobalPropertiesChanged { add { } remove { } }
 

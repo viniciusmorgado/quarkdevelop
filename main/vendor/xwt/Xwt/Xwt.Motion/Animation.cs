@@ -70,10 +70,10 @@ namespace Xwt.Motion
 		public Animation AddConcurrent (Animation animation, double beginAt = 0.0f, double finishAt = 1.0f)
 		{
 			if (beginAt < 0 || beginAt > 1)
-				throw new ArgumentOutOfRangeException ("beginAt");
+				throw new ArgumentOutOfRangeException (nameof (beginAt));
 
 			if (finishAt < 0 || finishAt > 1)
-				throw new ArgumentOutOfRangeException ("finishAt");
+				throw new ArgumentOutOfRangeException (nameof (finishAt));
 
 			if (finishAt <= beginAt)
 				throw new ArgumentException ("finishAt must be greater than beginAt");
@@ -87,10 +87,10 @@ namespace Xwt.Motion
 		public Animation AddConcurrent (Action<double> callback, double start = 0.0f, double end = 1.0f, Easing easing = null, double beginAt = 0.0f, double finishAt = 1.0f)
 		{
 			if (beginAt < 0 || beginAt > 1)
-				throw new ArgumentOutOfRangeException ("beginAt");
+				throw new ArgumentOutOfRangeException (nameof (beginAt));
 
 			if (finishAt < 0 || finishAt > 1)
-				throw new ArgumentOutOfRangeException ("finishAt");
+				throw new ArgumentOutOfRangeException (nameof (finishAt));
 
 			if (finishAt <= beginAt)
 				throw new ArgumentException ("finishAt must be greater than beginAt");

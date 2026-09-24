@@ -156,7 +156,7 @@ namespace MonoDevelop.Core
 		}
 	}
 
-	class ChainedProgressMonitor : ProgressMonitor
+	sealed class ChainedProgressMonitor : ProgressMonitor
 	{
 		readonly CustomWriter underlyingLog;
 		public ChainedProgressMonitor (TestSingleThreadSynchronizationContext ctx) : base (ctx)
@@ -170,7 +170,7 @@ namespace MonoDevelop.Core
 			base.OnDispose (disposing);
 		}
 
-		class CustomWriter : System.IO.TextWriter
+		sealed class CustomWriter : System.IO.TextWriter
 		{
 			TestSingleThreadSynchronizationContext ctx;
 			public CustomWriter (TestSingleThreadSynchronizationContext ctx)
@@ -212,7 +212,7 @@ namespace MonoDevelop.Core
 		}
 	}
 
-	class ReportObjectMonitor: ProgressMonitor
+	sealed class ReportObjectMonitor: ProgressMonitor
 	{
 		public List<object> ReportedObjects = new List<object> ();
 

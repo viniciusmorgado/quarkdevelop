@@ -86,7 +86,7 @@ namespace MonoDevelop.Core
 			Assert.AreEqual (result.Version, info.Version.ToString ());
 		}
 
-		class TestLoggingService : ILoggingService
+		sealed class TestLoggingService : ILoggingService
 		{
 			public List<Exception> FatalBuildErrors = new List<Exception> ();
 

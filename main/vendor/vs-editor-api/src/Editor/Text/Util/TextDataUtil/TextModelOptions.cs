@@ -12,7 +12,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         public static int CompressedStorageFileSizeThreshold = 5 * 1024 * 1024; // 5 MB file (typically 10 MB in memory)
         public static int CompressedStoragePageSize = 1 * 1024 * 1024;          // 1 MB per page (so 10 pages at the low end)
         public static int CompressedStorageMaxLoadedPages = 3;                  // at most 3 pages loaded
-        public static bool CompressedStorageGlobalManagement = false;           // per document
+        public static bool CompressedStorageGlobalManagement;           // per document
         public static bool CompressedStorageRetainWeakReferences = true;        // forces worst case decompression for testing purposes
 
         public static int StringRebuilderMaxCharactersToConsolidate = 200;      // Combine adjacent pieces when sum of sizes is less than this and

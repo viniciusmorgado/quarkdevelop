@@ -43,7 +43,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 		List<ToolboxWidgetCategory> categories = new List<ToolboxWidgetCategory> ();
 
 		bool showCategories = true;
-		bool listMode = false;
+		bool listMode;
 		int mouseX, mouseY;
 		Pango.FontDescription desc;
 		Xwt.Drawing.Image discloseDown;
@@ -573,8 +573,8 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 		}
 
 		#region Item selection logic
-		ToolboxWidgetItem selectedItem = null;
-		ToolboxWidgetItem mouseOverItem = null;
+		ToolboxWidgetItem selectedItem;
+		ToolboxWidgetItem mouseOverItem;
 
 		public ToolboxWidgetItem SelectedItem {
 			get {
@@ -775,8 +775,8 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 		#endregion
 
 		#region Scrolling
-		Adjustment hAdjustement = null;
-		Adjustment vAdjustement = null;
+		Adjustment hAdjustement;
+		Adjustment vAdjustement;
 
 		public void ScrollToSelectedItem ()
 		{
@@ -955,7 +955,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 
 		#region Tooltips
 		const int TipTimer = 800;
-		Gtk.Window tooltipWindow = null;
+		Gtk.Window tooltipWindow;
 		ToolboxWidgetItem tipItem;
 		int tipX, tipY;
 		uint tipTimeoutId;
@@ -1068,7 +1068,7 @@ namespace MonoDevelop.DesignerSupport.Toolbox
 			}
 		}
 		public bool CanIconizeItems { get; set; } = true;
-		public bool IsDropTarget { get; set; } = false;
+		public bool IsDropTarget { get; set; }
 		public bool IsSorted { get; set; } = true;
 		public int Priority { get; set; }
 

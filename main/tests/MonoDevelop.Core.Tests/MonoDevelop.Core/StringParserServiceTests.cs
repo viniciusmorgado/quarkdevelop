@@ -33,7 +33,7 @@ namespace MonoDevelop.Core
 	[TestFixture]
 	public class StringParserServiceTests
 	{
-		class UnencodedValueStringTagProvider : StringTagProvider<StringParserServiceTests>
+		sealed class UnencodedValueStringTagProvider : StringTagProvider<StringParserServiceTests>
 		{
 			public override IEnumerable<StringTagDescription> GetTags ()
 			{
@@ -50,7 +50,7 @@ namespace MonoDevelop.Core
 			}
 		}
 
-		class DateTimeStringTagProvider : StringTagProvider<StringParserServiceTests>
+		sealed class DateTimeStringTagProvider : StringTagProvider<StringParserServiceTests>
 		{
 			public static DateTime Value { get; } = new DateTime (2017, 05, 31); // The day the test was written.
 
@@ -103,7 +103,7 @@ namespace MonoDevelop.Core
 			}
 		}
 
-		class TemporaryRegistration : IDisposable
+		sealed class TemporaryRegistration : IDisposable
 		{
 			readonly IStringTagProvider provider;
 			public TemporaryRegistration (IStringTagProvider provider)

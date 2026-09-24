@@ -139,7 +139,7 @@ namespace MonoDevelop.Ide.Codons
 			return (PadContent) Addin.CreateInstance (ClassName, true);
 		}
 		
-		PadUserPrefs preferences = null;
+		PadUserPrefs preferences;
 
 		internal void SetPreferences (PadUserPrefs pi)
 		{

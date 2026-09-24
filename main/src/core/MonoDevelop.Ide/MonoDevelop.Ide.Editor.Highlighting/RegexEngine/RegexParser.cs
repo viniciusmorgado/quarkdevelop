@@ -51,7 +51,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
         internal RegexOptions _options;
         internal List<RegexOptions> _optionsStack;
 
-        internal bool _ignoreNextParen = false;
+        internal bool _ignoreNextParen;
         
         internal const int MaxValueDiv10 = Int32.MaxValue / 10;
         internal const int MaxValueMod10 = Int32.MaxValue % 10;

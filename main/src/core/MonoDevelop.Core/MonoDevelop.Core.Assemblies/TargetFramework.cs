@@ -61,7 +61,7 @@ namespace MonoDevelop.Core.Assemblies
 			this.name = id.Profile == null
 				? string.Format ("{0} {1}", id.Identifier, id.Version)
 				: string.Format ("{0} {1} {2} Profile", id.Identifier, id.Version, id.Profile);
-			Assemblies = new AssemblyInfo [0];
+			Assemblies = Array.Empty<AssemblyInfo> ();
 		}
 
 		public string Name {

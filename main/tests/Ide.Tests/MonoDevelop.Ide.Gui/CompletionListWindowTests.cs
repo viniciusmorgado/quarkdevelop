@@ -41,7 +41,7 @@ namespace MonoDevelop.Ide.Gui
 	[TestFixture()]
 	public class CompletionListWindowTests : IdeTestBase
 	{
-		class TestCompletionWidget : ICompletionWidget 
+		sealed class TestCompletionWidget : ICompletionWidget 
 		{
 			public string CompletedWord {
 				get;
@@ -242,7 +242,7 @@ namespace MonoDevelop.Ide.Gui
 			}
 		}
 
-		class SimulationSettings {
+		sealed class SimulationSettings {
 			public string SimulatedInput { get; set; }
 			public bool AutoSelect { get; set; }
 			public bool CompleteWithSpaceOrPunctuation { get; set; }
@@ -252,7 +252,7 @@ namespace MonoDevelop.Ide.Gui
 			public string[] CompletionData { get; set; }
 		}
 
-		class CompletionCategoryCustom : CompletionCategory
+		sealed class CompletionCategoryCustom : CompletionCategory
 		{
 			public override int CompareTo (CompletionCategory other)
 			{
@@ -327,7 +327,7 @@ namespace MonoDevelop.Ide.Gui
 
 			CompletionCategory currentCategory = null;
 			foreach (var item in settings.CompletionData) {
-				if (item.StartsWith ("[")) {
+				if (item.StartsWith ('[')) {
 					currentCategory = new CompletionCategoryCustom { DisplayText = item };
 					continue;
 				}
@@ -1407,7 +1407,7 @@ namespace MonoDevelop.Ide.Gui
 			Assert.AreEqual (1, completionView.SelectedIndex);
 		}
 
-		class TestMutableCompletionDataList : CompletionDataList, IMutableCompletionDataList
+		sealed class TestMutableCompletionDataList : CompletionDataList, IMutableCompletionDataList
 		{
 			public bool IsChanging { get; set; }
 			public bool IsDisposed { get; set; }
@@ -1464,7 +1464,7 @@ namespace MonoDevelop.Ide.Gui
 			list.AddRange (new [] { "ax", "ax", "ay" });
 			list.FireChanged ();
 
-			AssertCompletionList (new string[0]);
+			AssertCompletionList (Array.Empty<string> ());
 			Assert.AreEqual (-1, listWindow.SelectedItemIndex);
 
 			//check if we add matching items back in, it matches again

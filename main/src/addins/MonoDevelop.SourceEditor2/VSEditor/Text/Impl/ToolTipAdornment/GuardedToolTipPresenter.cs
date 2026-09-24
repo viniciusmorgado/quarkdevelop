@@ -9,7 +9,7 @@
     internal sealed class GuardedToolTipPresenter : IToolTipPresenter
     {
         private readonly IGuardedOperations guardedOperations;
-        private bool isDismissed = false;
+        private bool isDismissed;
 
         public GuardedToolTipPresenter(
             IGuardedOperations guardedOperations,

@@ -52,14 +52,14 @@ namespace Xwt.Backends
 	}
 
 	[BackendType (typeof(IEmbeddedWidgetBackend))]
-	internal class EmbeddedNativeWidget: Widget
+	internal sealed class EmbeddedNativeWidget: Widget
 	{
 		bool reparent;
 		object nativeWidget;
 		Widget sourceWidget;
 		NativeWidgetSizing sizing;
 
-		class EmbeddedNativeWidgetBackendHost: WidgetBackendHost<EmbeddedNativeWidget,IEmbeddedWidgetBackend>
+		sealed class EmbeddedNativeWidgetBackendHost: WidgetBackendHost<EmbeddedNativeWidget,IEmbeddedWidgetBackend>
 		{
 			protected override void OnBackendCreated ()
 			{

@@ -106,7 +106,7 @@ namespace MonoDevelop.PackageManagement
 		bool AnyNuGetAwareProjects ()
 		{
 			nugetAwareProjects = solution.GetAllProjects ().OfType<INuGetAwareProject> ().ToList ();
-			return nugetAwareProjects.Any ();
+			return nugetAwareProjects.Count != 0;
 		}
 
 		public PackageActionType ActionType {
@@ -137,8 +137,8 @@ namespace MonoDevelop.PackageManagement
 			}
 
 			return packagesToRestore?.Any (package => package.IsMissing) == true ||
-				buildIntegratedProjectsToBeRestored?.Any () == true ||
-				nugetAwareProjectsToBeRestored?.Any () == true;
+				buildIntegratedProjectsToBeRestored?.Count > 0 ||
+				nugetAwareProjectsToBeRestored?.Count > 0;
 		}
 
 		public void Execute ()

@@ -117,7 +117,7 @@ namespace MonoDevelop.UnitTesting
 							var testCollection = unitTestGroup.Tests;
 							var singleChildTestGroup = testCollection [0] as UnitTestGroup;
 							if(singleChildTestGroup.CanMergeWithParent && combineNested)
-								stringBuilder.Append (".").Append (singleChildTestGroup.Title);
+								stringBuilder.Append ('.').Append (singleChildTestGroup.Title);
 						unitTestGroup = singleChildTestGroup;
 					} else
 						unitTestGroup = null;
@@ -193,7 +193,7 @@ namespace MonoDevelop.UnitTesting
 				if (leftAngleIndex > -1) {
 					var rightAngleIndex = title.IndexOf ('>', leftAngleIndex);
 					if (rightAngleIndex > -1) {
-						title = title.Substring (0, leftAngleIndex) + title.Substring (rightAngleIndex + 1);
+						title = string.Concat (title.AsSpan (0, leftAngleIndex), title.AsSpan (rightAngleIndex + 1));
 					}
 				}
 			}

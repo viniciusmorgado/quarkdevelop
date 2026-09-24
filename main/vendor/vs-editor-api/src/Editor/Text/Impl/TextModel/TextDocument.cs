@@ -46,22 +46,10 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         internal TextDocument(ITextBuffer textBuffer, string filePath, DateTime lastModifiedTime, TextDocumentFactoryService textDocumentFactoryService, Encoding encoding, bool explicitEncoding = false, bool attemptUtf8Detection = true)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-            if (textDocumentFactoryService == null)
-            {
-                throw new ArgumentNullException(nameof(textDocumentFactoryService));
-            }
-            if (encoding == null)
-            {
-                throw new ArgumentNullException(nameof(encoding));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
+            ArgumentNullException.ThrowIfNull(filePath);
+            ArgumentNullException.ThrowIfNull(textDocumentFactoryService);
+            ArgumentNullException.ThrowIfNull(encoding);
 
             _textBuffer = textBuffer;
             _filePath = filePath;
@@ -121,10 +109,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
             {
                 throw new InvalidOperationException();
             }
-            if (newFilePath == null)
-            {
-                throw new ArgumentNullException(nameof(newFilePath));
-            }
+            ArgumentNullException.ThrowIfNull(newFilePath);
 
             _filePath = newFilePath;
 
@@ -346,10 +331,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
             {
                 throw new InvalidOperationException();
             }
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+            ArgumentNullException.ThrowIfNull(filePath);
 
             PerformSave(overwrite ? FileMode.Create : FileMode.CreateNew, filePath, createFolder);
             UpdateSaveStatus(filePath, !string.Equals(_filePath, filePath, StringComparison.Ordinal));
@@ -361,10 +343,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public void SaveAs(string filePath, bool overwrite, bool createFolder, IContentType newContentType)
         {
-            if (newContentType == null)
-            {
-                throw new ArgumentNullException(nameof(newContentType));
-            }
+            ArgumentNullException.ThrowIfNull(newContentType);
             SaveAs(filePath, overwrite, createFolder);
             // content type won't be changed if the save fails (in which case SaveAs will throw an exception)
             _textBuffer.ChangeContentType(newContentType, null);
@@ -376,10 +355,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
             {
                 throw new ObjectDisposedException("ITextDocument");
             }
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+            ArgumentNullException.ThrowIfNull(filePath);
 
             PerformSave(overwrite ? FileMode.Create : FileMode.CreateNew, filePath, createFolder);
             // Don't update save status
@@ -438,10 +414,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
             }
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+                ArgumentNullException.ThrowIfNull(value);
 
                 Encoding oldEncoding = _encoding;
 

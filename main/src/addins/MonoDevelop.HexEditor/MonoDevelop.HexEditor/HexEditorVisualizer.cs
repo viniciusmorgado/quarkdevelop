@@ -169,7 +169,7 @@ namespace MonoDevelop.HexEditor
 		#endregion
 	}
 
-	class RawStringBuffer : Mono.MHex.Data.IBuffer
+	sealed class RawStringBuffer : Mono.MHex.Data.IBuffer
 	{
 		readonly RawValueString array;
 		long offset;
@@ -201,7 +201,7 @@ namespace MonoDevelop.HexEditor
 			}
 
 			if (count == 0)
-				return new byte[0];
+				return Array.Empty<byte> ();
 
 			count = (int) Math.Min (Length - index, count);
 			var bytes = new byte[count];
@@ -265,7 +265,7 @@ namespace MonoDevelop.HexEditor
 			}
 
 			if (count == 0)
-				return new byte[0];
+				return Array.Empty<byte> ();
 
 			count = (int) Math.Min (Length - index, count);
 			var bytes = new byte[count];
@@ -292,7 +292,7 @@ namespace MonoDevelop.HexEditor
 		#endregion
 	}
 
-	class RawByteArrayBuffer : RawArrayBuffer
+	sealed class RawByteArrayBuffer : RawArrayBuffer
 	{
 		public RawByteArrayBuffer (RawValueArray raw) : base (raw, 1)
 		{
@@ -307,7 +307,7 @@ namespace MonoDevelop.HexEditor
 		}
 	}
 
-	class RawSByteArrayBuffer : RawArrayBuffer
+	sealed class RawSByteArrayBuffer : RawArrayBuffer
 	{
 		public RawSByteArrayBuffer (RawValueArray raw) : base (raw, 1)
 		{
@@ -322,7 +322,7 @@ namespace MonoDevelop.HexEditor
 		}
 	}
 
-	class RawCharArrayBuffer : RawArrayBuffer
+	sealed class RawCharArrayBuffer : RawArrayBuffer
 	{
 		readonly Encoder encoder;
 

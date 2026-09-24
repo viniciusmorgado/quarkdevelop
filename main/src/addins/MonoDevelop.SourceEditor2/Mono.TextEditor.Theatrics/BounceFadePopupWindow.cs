@@ -37,10 +37,10 @@ namespace Mono.TextEditor.Theatrics
 	abstract class BounceFadePopupWindow : Gtk.Window
 	{
 		Stage<BounceFadePopupWindow> stage = new Stage<BounceFadePopupWindow> ();
-		Gdk.Pixbuf textImage = null;
+		Gdk.Pixbuf textImage;
 		MonoTextEditor editor;
 		
-		protected double scale = 0.0;
+		protected double scale;
 		protected double opacity = 1.0;
 		
 		public BounceFadePopupWindow (MonoTextEditor editor) : base (Gtk.WindowType.Popup)
@@ -227,10 +227,10 @@ namespace Mono.TextEditor.Theatrics
 	abstract class BounceFadePopupWidget : Gtk.Widget
 	{
 		Stage<BounceFadePopupWidget> stage = new Stage<BounceFadePopupWidget> ();
-		Gdk.Pixbuf textImage = null;
+		Gdk.Pixbuf textImage;
 		MonoTextEditor editor;
 		
-		protected double scale = 0.0;
+		protected double scale;
 		protected double opacity = 1.0;
 		
 		public BounceFadePopupWidget (MonoTextEditor editor)

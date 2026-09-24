@@ -56,7 +56,7 @@ namespace MonoDevelop.Components.Docking
 		DockContainer container;
 		
 		int handleSize = 1;
-		int handlePadding = 0;
+		int handlePadding;
 		int defaultItemWidth = 300;
 		int defaultItemHeight = 250;
 		uint autoShowDelay = 400;
@@ -646,7 +646,7 @@ namespace MonoDevelop.Components.Docking
 		public string[] Layouts {
 			get {
 				if (layouts.Count == 0)
-					return new string [0];
+					return Array.Empty<string> ();
 				string[] arr = new string [layouts.Count];
 				layouts.Keys.CopyTo (arr, 0);
 				return arr;

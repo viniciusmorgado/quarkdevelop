@@ -166,7 +166,7 @@ namespace MonoDevelop.Ide.FindInFiles
 		}
 
 		ITextBuffer textBuffer;
-		StringBuilder buffer = null;
+		StringBuilder buffer;
 		bool somethingReplaced;
 		ITextEdit textEdit;
 		Encoding encoding;

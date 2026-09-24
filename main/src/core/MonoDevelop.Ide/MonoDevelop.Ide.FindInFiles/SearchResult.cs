@@ -225,7 +225,7 @@ namespace MonoDevelop.Ide.FindInFiles
 			var result = StringBuilderCache.Allocate ();
 			var tab = new string (' ', tabSize);
 			if (trimeStart)
-				result.Append ("…");
+				result.Append ('…');
 			foreach (var ch in str) {
 				if (ch == '\n' || ch == '\r')
 					continue;
@@ -236,7 +236,7 @@ namespace MonoDevelop.Ide.FindInFiles
 				result.Append (ch);
 			}
 			if (trimEnd)
-				result.Append ("…");
+				result.Append ('…');
 			return StringBuilderCache.ReturnAndFree (result);
 		}
 

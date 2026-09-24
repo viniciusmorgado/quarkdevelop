@@ -41,7 +41,7 @@ namespace MonoDevelop.DocFood.Options
 		}
 	}
 	
-	class AcronymsPanel : OptionsPanel
+	sealed class AcronymsPanel : OptionsPanel
 	{
 		AcronymsPanelWidget panel;
 		

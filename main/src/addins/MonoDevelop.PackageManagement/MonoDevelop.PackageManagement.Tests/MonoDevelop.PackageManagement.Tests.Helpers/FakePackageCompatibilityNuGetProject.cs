@@ -35,7 +35,7 @@ using NuGet.Packaging.Core;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakePackageCompatibilityNuGetProject : IPackageCompatibilityNuGetProject
+	sealed class FakePackageCompatibilityNuGetProject : IPackageCompatibilityNuGetProject
 	{
 		public FakePackageCompatibilityNuGetProject ()
 		{

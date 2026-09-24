@@ -194,7 +194,7 @@ namespace Mono.MHex
 			margins.ForEach (margin => margin.PurgeLayoutCache ());
 		}
 		
-		ISegment oldSelection = null;
+		ISegment oldSelection;
 		void HexEditorDataSelectionChanged (object sender, EventArgs e)
 		{
 			ISegment selection = HexEditorData.IsSomethingSelected ? HexEditorData.MainSelection.Segment : null;
@@ -482,7 +482,7 @@ namespace Mono.MHex
 			QueueDraw ();
 		}		
 		
-		Timer caretTimer = null;
+		Timer caretTimer;
 		object lockObject = new object ();
 		
 		public void ResetCaretBlink ()
@@ -525,7 +525,7 @@ namespace Mono.MHex
 		#endregion
 		
 		#region Caret
-		bool requestResetCaretBlink = false;
+		bool requestResetCaretBlink;
 		bool caretBlink = true;
 		public void RequestResetCaretBlink ()
 		{

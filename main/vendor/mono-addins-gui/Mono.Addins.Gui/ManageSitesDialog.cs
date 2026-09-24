@@ -34,7 +34,6 @@ using Gtk;
 using System.Threading;
 
 using Mono.Addins.Setup;
-using Gtk;
 using UI = Gtk.Builder.ObjectAttribute;
 
 

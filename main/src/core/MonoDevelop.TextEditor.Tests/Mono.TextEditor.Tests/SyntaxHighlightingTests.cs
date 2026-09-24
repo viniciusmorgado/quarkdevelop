@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture]
-	class SyntaxHighlightingTests : TextEditorTestBase
+	sealed class SyntaxHighlightingTests : TextEditorTestBase
 	{
 		//[Test]
 		//public void ValidateSyntaxModes ()

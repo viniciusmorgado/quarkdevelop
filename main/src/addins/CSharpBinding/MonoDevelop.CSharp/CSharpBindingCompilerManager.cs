@@ -182,7 +182,7 @@ namespace MonoDevelop.CSharp
 			}
 			
 			sb.AppendLine ("/nologo");
-			sb.Append ("/warn:");sb.Append (compilerParameters.WarningLevel.ToString ());
+			sb.Append ("/warn:");sb.Append (compilerParameters.WarningLevel);
 			sb.AppendLine ();
 			
 			if (configuration.SignAssembly) {
@@ -409,7 +409,7 @@ namespace MonoDevelop.CSharp
 			}
 			if (typeLoadException) {
 				Regex reg  = new Regex (@".*WARNING.*used in (mscorlib|System),.*", RegexOptions.Multiline);
-				if (reg.Match (compilerOutput.ToString ()).Success)
+				if (reg.IsMatch (compilerOutput.ToString ()))
 					result.AddError ("", 0, 0, "", "Error: A referenced assembly may be built with an incompatible CLR version. See the compilation output for more details.");
 				else
 					result.AddError ("", 0, 0, "", "Error: A dependency of a referenced assembly may be missing, or you may be referencing an assembly created with a newer CLR version. See the compilation output for more details.");

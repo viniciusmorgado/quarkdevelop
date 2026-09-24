@@ -36,14 +36,8 @@ namespace Microsoft.VisualStudio.Text.Operations.Implementation
         /// <exception cref="ArgumentNullException"><paramref name="undoHistory"/> is null.</exception>
         public static AfterTextBufferChangeUndoPrimitive Create(ITextView textView, ITextUndoHistory undoHistory)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
-            if (undoHistory == null)
-            {
-                throw new ArgumentNullException(nameof(undoHistory));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
+            ArgumentNullException.ThrowIfNull(undoHistory);
 
             return new AfterTextBufferChangeUndoPrimitive(textView, undoHistory);
 

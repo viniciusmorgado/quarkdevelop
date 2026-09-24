@@ -36,7 +36,7 @@ namespace MonoDevelop.VersionControl.Views
 {
 	public class VersionControlDocumentInfo
 	{
-		bool alreadyStarted = false;
+		bool alreadyStarted;
 		Document document;
 
 		public Document Document {

@@ -36,7 +36,7 @@ namespace Mono.MHex.Data
 		public abstract void AddRedraw (HexEditor editor);
 	}
 	
-	class LineUpdateRequest : UpdateRequest
+	sealed class LineUpdateRequest : UpdateRequest
 	{
 		public long Line {
 			get;
@@ -54,7 +54,7 @@ namespace Mono.MHex.Data
 		}
 	}
 	
-	class MarginLineUpdateRequest : UpdateRequest
+	sealed class MarginLineUpdateRequest : UpdateRequest
 	{
 		public Type MarginType {
 			get;

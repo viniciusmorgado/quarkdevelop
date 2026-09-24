@@ -32,7 +32,7 @@ using NUnit.Framework;
 namespace MonoDevelop.Projects
 {
 	[TestFixture]
-	class SdkVersionTests
+	sealed class SdkVersionTests
 	{
 		[Test]
 		public void Parse_StableVersion ()

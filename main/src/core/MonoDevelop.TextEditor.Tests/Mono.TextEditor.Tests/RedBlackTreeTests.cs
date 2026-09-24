@@ -32,7 +32,7 @@ namespace Mono.TextEditor.Tests
 	[TestFixture()]
 	public class RedBlackTreeTests
 	{
-		class TestNode : IRedBlackTreeNode, IComparable
+		sealed class TestNode : IRedBlackTreeNode, IComparable
 		{
 			int val;
 			

@@ -47,9 +47,9 @@ namespace Mono.TextEditor.Utils
 				colorTable.Append ((int)(255  * color.G));
 				colorTable.Append (@"\blue");
 				colorTable.Append ((int)(255  * color.B));
-				colorTable.Append (";");
+				colorTable.Append (';');
 			}
-			colorTable.Append ("}");
+			colorTable.Append ('}');
 			return StringBuilderCache.ReturnAndFree (colorTable);
 		}
 
@@ -143,13 +143,13 @@ namespace Mono.TextEditor.Utils
 			rtf.AppendLine (@"\f0");
 			try {
 				string fontName = options.Font.ToString ();
-				double fontSize = Double.Parse (fontName.Substring (fontName.LastIndexOf (' ')  + 1), System.Globalization.CultureInfo.InvariantCulture) * 2;
+				double fontSize = Double.Parse (fontName.AsSpan (fontName.LastIndexOf (' ')  + 1), System.Globalization.CultureInfo.InvariantCulture) * 2;
 				rtf.Append (@"\fs");
 				rtf.Append (fontSize);
 			} catch (Exception) {};
 			rtf.AppendLine (@"\cf1");
 			rtf.Append (StringBuilderCache.ReturnAndFree (rtfText));
-			rtf.Append("}");
+			rtf.Append('}');
 			return StringBuilderCache.ReturnAndFree (rtf);
 		}
 	}

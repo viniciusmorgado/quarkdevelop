@@ -35,7 +35,7 @@ namespace Xwt
 	/// Marshal every Task to the Xwt UI thread no matter where it's created
 	/// (as opposed to TaskScheduler.FromCurrentSynchronizationContext)
 	/// </summary>
-	class XwtTaskScheduler : TaskScheduler
+	sealed class XwtTaskScheduler : TaskScheduler
 	{
 		Toolkit toolkit;
 
@@ -66,7 +66,7 @@ namespace Xwt
 		{
 			bool success = true;
 
-			if (Application.UIThread != null && Application.UIThread.ManagedThreadId != Thread.CurrentThread.ManagedThreadId) {
+			if (Application.UIThread != null && Application.UIThread.ManagedThreadId != Environment.CurrentManagedThreadId) {
 				var evt = new ManualResetEvent (false);
 				Xwt.Application.Invoke (() => {
 					success = TryExecuteTask (task);

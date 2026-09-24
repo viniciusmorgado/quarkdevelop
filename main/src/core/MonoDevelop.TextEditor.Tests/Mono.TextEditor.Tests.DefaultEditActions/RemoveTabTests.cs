@@ -32,7 +32,7 @@ using NUnit.Framework;
 namespace Mono.TextEditor.Tests.Actions
 {
 	[TestFixture()]
-	class RemoveTabTests : TextEditorTestBase
+	sealed class RemoveTabTests : TextEditorTestBase
 	{
 		[TestCase(false)]
 		[TestCase(true)]

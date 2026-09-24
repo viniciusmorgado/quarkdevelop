@@ -107,7 +107,7 @@ namespace Mono.Debugging.Evaluation
 		}
 	}
 	
-	class ExpressionValueSource: RemoteFrameObject, IObjectValueSource
+	sealed class ExpressionValueSource: RemoteFrameObject, IObjectValueSource
 	{
 		readonly EvaluationContext ctx;
 		

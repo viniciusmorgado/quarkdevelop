@@ -323,7 +323,7 @@ namespace MonoDevelop.Ide.Desktop
 
 		public virtual IEnumerable<string> GetUpdaterEnviromentFlags ()
 		{
-			return new string[0];
+			return Array.Empty<string> ();
 		}
 
 
@@ -345,7 +345,7 @@ namespace MonoDevelop.Ide.Desktop
 
 		public virtual IEnumerable<DesktopApplication> GetApplications (string filename)
 		{
-			return new DesktopApplication[0];
+			return Array.Empty<DesktopApplication> ();
 		}
 
 		public virtual IEnumerable<DesktopApplication> GetApplications (string filename, DesktopApplicationRole role)

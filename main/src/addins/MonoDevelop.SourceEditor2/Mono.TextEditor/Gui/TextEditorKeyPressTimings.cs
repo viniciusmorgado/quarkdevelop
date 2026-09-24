@@ -61,8 +61,8 @@ namespace Mono.TextEditor
 
 		const int numberOfCountSpaces = 100;
 		readonly TimeSpan [] activeCounts = new TimeSpan [numberOfCountSpaces];
-		int activeCountIndex = 0;
-		int droppedEvents = 0;
+		int activeCountIndex;
+		int droppedEvents;
 
 		readonly IPlatformTelemetryDetails telemetry;
 

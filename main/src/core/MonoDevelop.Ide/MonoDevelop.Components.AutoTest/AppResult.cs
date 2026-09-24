@@ -122,7 +122,7 @@ namespace MonoDevelop.Components.AutoTest
 			PropertyInfo propertyInfo = o.GetType().GetProperty(propertyName,
 				BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
 
-			if (propertyInfo != null && propertyInfo.CanRead && !propertyInfo.GetIndexParameters ().Any ()) {
+			if (propertyInfo != null && propertyInfo.CanRead && propertyInfo.GetIndexParameters ().Length == 0) {
 				propertyInfo.SetValue (o, value);
 			}
 		}
@@ -152,7 +152,7 @@ namespace MonoDevelop.Components.AutoTest
 					BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
 				if (propertyInfo == null)
 					LoggingService.LogError ($"GetPropertyValue : propertyName {propertyName} not found on object {requestedObject}.");
-				if (propertyInfo != null && propertyInfo.CanRead && !propertyInfo.GetIndexParameters ().Any ()) {
+				if (propertyInfo != null && propertyInfo.CanRead && propertyInfo.GetIndexParameters ().Length == 0) {
 					var propertyValue = propertyInfo.GetValue (requestedObject);
 					if (propertyValue != null) {
 						return propertyValue;

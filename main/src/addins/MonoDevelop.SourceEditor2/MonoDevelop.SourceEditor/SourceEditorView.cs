@@ -74,7 +74,7 @@ namespace MonoDevelop.SourceEditor
 	ITextEditorImpl, ITextMarkerFactory, IUndoHandler
 	{
 		readonly SourceEditorWidget widget;
-		bool isDisposed = false;
+		bool isDisposed;
 		internal object MemoryProbe = Counters.SourceViewsInMemory.CreateMemoryProbe ();
 		DebugMarkerPair currentDebugLineMarker;
 		DebugMarkerPair debugStackLineMarker;
@@ -155,7 +155,7 @@ namespace MonoDevelop.SourceEditor
 			});
 		}
 
-		bool loadedInCtor = false;
+		bool loadedInCtor;
 		TextEditorType textEditorType;
 
 		public TextEditorType TextEditorType {
@@ -1012,7 +1012,7 @@ namespace MonoDevelop.SourceEditor
 			});
 		}
 
-		bool warnOverwrite = false;
+		bool warnOverwrite;
 
 		internal void ReplaceContent (string fileName, string content, Encoding enc)
 		{
@@ -1945,10 +1945,8 @@ namespace MonoDevelop.SourceEditor
 
 		public void SetCompletionText (CodeCompletionContext ctx, string partialWord, string completeWord)
 		{
-			if (ctx == null)
-				throw new ArgumentNullException ("ctx");
-			if (completeWord == null)
-				throw new ArgumentNullException ("completeWord");
+			ArgumentNullException.ThrowIfNull (ctx);
+			ArgumentNullException.ThrowIfNull (completeWord);
 			SetCompletionText (ctx, partialWord, completeWord, completeWord.Length);
 		}
 
@@ -1961,7 +1959,7 @@ namespace MonoDevelop.SourceEditor
 			int length = String.IsNullOrEmpty (partialWord) ? 0 : partialWord.Length;
 
 			// for named arguments invoke(arg:<Expr>);
-			if (completeWord.EndsWith (":", StringComparison.Ordinal)) {
+			if (completeWord.EndsWith (':')) {
 				if (data.Length > triggerOffset + length && data.GetCharAt (triggerOffset + length) == ':')
 					length++;
 			}
@@ -2266,7 +2264,7 @@ namespace MonoDevelop.SourceEditor
 
 		System.ComponentModel.ToolboxItemFilterAttribute [] IToolboxConsumer.ToolboxFilterAttributes {
 			get {
-				return new System.ComponentModel.ToolboxItemFilterAttribute [] { };
+				return Array.Empty<System.ComponentModel.ToolboxItemFilterAttribute> ();
 			}
 		}
 
@@ -3001,14 +2999,13 @@ namespace MonoDevelop.SourceEditor
 
 		public EditSession CurrentSession {
 			get {
-				return editSessions.Count () > 0 ? editSessions.Peek () : null;
+				return editSessions.Count > 0 ? editSessions.Peek () : null;
 			}
 		}
 
 		public void StartSession (EditSession session)
 		{
-			if (session == null)
-				throw new ArgumentNullException (nameof (session));
+			ArgumentNullException.ThrowIfNull (session);
 			editSessions.Push (session);
 			session.SessionStarted ();
 		}

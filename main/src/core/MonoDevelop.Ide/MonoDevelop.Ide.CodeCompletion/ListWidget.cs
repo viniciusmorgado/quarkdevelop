@@ -115,7 +115,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 		FontDescription itemFont, noMatchFont, categoryFont;
 		Adjustment vadj;
 
-		int selection = 0;
+		int selection;
 
 		bool buttonPressed;
 

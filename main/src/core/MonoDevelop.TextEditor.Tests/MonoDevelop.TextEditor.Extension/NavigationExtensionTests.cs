@@ -34,7 +34,7 @@ using MonoDevelop.Ide.Editor;
 namespace Mono.TextEditor.Tests.Actions
 {
 	[TestFixture]
-	class NavigationExtensionTests : TextEditorTestBase
+	sealed class NavigationExtensionTests : TextEditorTestBase
 	{
 		[Test]
 		[Category ("Quarantine")]

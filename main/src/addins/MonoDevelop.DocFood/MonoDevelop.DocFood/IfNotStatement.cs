@@ -29,7 +29,7 @@ using Microsoft.CodeAnalysis;
 
 namespace MonoDevelop.DocFood
 {
-	class IfNotStatement : Node
+	sealed class IfNotStatement : Node
 	{
 		public const string XmlTag = "IfNot";
 		

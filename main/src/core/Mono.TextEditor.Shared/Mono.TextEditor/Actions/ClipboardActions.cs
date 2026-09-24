@@ -137,8 +137,8 @@ namespace Mono.TextEditor
 					break;
 				}
 			}
-			bool isLineSelectionMode = false;
-			bool isBlockMode         = false;
+			bool isLineSelectionMode;
+			bool isBlockMode;
 			
 			public void ClipboardGetFunc (Clipboard clipboard, SelectionData selection_data, uint info)
 			{
@@ -320,7 +320,7 @@ namespace Mono.TextEditor
 									offset = delimiterEndOffset;
 								}
 								if (offset < text.Length)
-									lines.Add (text.Substring (offset, text.Length - offset));
+									lines.Add (text.Substring (offset));
 
 								int lineNr = data.Document.OffsetToLineNumber (insertionOffset);
 								int col = insertionOffset - data.Document.GetLine (lineNr).Offset;

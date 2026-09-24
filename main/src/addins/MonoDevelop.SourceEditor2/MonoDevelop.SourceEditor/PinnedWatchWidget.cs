@@ -185,7 +185,7 @@ namespace MonoDevelop.SourceEditor
 
 
 		#region Moving PinWatchWidget inside TextArea
-		bool mousePressed = false;
+		bool mousePressed;
 		double originX, originY;
 
 		[GLib.ConnectBefore]

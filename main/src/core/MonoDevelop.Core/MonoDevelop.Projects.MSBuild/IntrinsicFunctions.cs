@@ -453,10 +453,7 @@ namespace Microsoft.Build.Evaluation
         /// </summary>
         private static RegistryKey GetBaseKeyFromKeyName(string keyName, RegistryView view, out string subKeyName)
         {
-            if (keyName == null)
-            {
-                throw new ArgumentNullException("keyName");
-            }
+            ArgumentNullException.ThrowIfNull (keyName);
 
             string basekeyName;
             int i = keyName.IndexOf('\\');
@@ -501,7 +498,7 @@ namespace Microsoft.Build.Evaluation
             }
             else
             {
-                subKeyName = keyName.Substring(i + 1, keyName.Length - i - 1);
+                subKeyName = keyName.Substring (i + 1);
             }
 
             return basekey;

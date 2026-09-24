@@ -66,7 +66,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			return new LineInfo (this);
 		}
 
-		private class LineInfo : TextLineCollection
+		private new class LineInfo : TextLineCollection
 		{
 			private readonly SnapshotSourceText sourceText;
 
@@ -119,8 +119,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public MonoDevelopSourceText (ITextSource doc)
 		{
-			if (doc == null)
-				throw new ArgumentNullException (nameof (doc));
+			ArgumentNullException.ThrowIfNull (doc);
 			this.doc = doc.CreateSnapshot ();
 		}
 

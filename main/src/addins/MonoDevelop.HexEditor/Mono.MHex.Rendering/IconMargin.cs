@@ -30,7 +30,7 @@ using Xwt;
 
 namespace Mono.MHex.Rendering
 {
-	class IconMargin : Margin
+	sealed class IconMargin : Margin
 	{
 		double marginWidth;
 		public override double Width {

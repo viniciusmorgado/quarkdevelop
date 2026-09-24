@@ -37,7 +37,7 @@ namespace MonoDevelop.Components
 	{
 		WindowTransparencyDecorator decorator;
 		
-		public string LinkColor {
+		public new string LinkColor {
 			get {
 				var color = HslColor.GenerateHighlightColors (this.GetStyleBackgroundColor (State), this.GetStyleTextColor (State), 3)[2];
 				return color.ToPangoString ();

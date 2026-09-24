@@ -36,7 +36,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakeSolutionManager : IMonoDevelopSolutionManager
+	sealed class FakeSolutionManager : IMonoDevelopSolutionManager
 	{
 		public FakeSolutionManager ()
 		{

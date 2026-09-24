@@ -50,10 +50,10 @@ namespace MonoDevelop.Components
 		private Menu menu;
 		private int active_filter_id = -1;
 
-		private uint changed_timeout_id = 0;
+		private uint changed_timeout_id;
 
 		private string empty_message;
-		private bool ready = false;
+		private bool ready;
 
 		private event EventHandler filter_changed;
 		private event EventHandler entry_changed;
@@ -300,7 +300,7 @@ namespace MonoDevelop.Components
 			filter_button.QueueDraw ();
 		}
 
-		private bool toggling = false;
+		private bool toggling;
 		public bool IsCheckMenu { get; set; }
 		private void OnMenuItemToggled (object o, EventArgs args)
 		{
@@ -688,7 +688,7 @@ namespace MonoDevelop.Components
 				get { return id; }
 			}
 
-			public string Label {
+			public new string Label {
 				get { return label; }
 			}
 			/*

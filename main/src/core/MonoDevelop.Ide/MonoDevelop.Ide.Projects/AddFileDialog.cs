@@ -68,7 +68,7 @@ namespace MonoDevelop.Ide.Projects
 			fdiag.ShowHidden = data.ShowHidden;
 			
 			//add a combo that can be used to override the default build action
-			ComboBox combo = new ComboBox (data.BuildActions ?? new string[0]);
+			ComboBox combo = new ComboBox (data.BuildActions ?? Array.Empty<string> ());
 			combo.Sensitive = false;
 			combo.Active = 0;
 			combo.RowSeparatorFunc = delegate (ITreeModel model, TreeIter iter) {

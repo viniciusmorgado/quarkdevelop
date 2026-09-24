@@ -40,7 +40,7 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 			if (Path.DirectorySeparatorChar == '\\')
 				return filePath;
 
-			if (filePath.Contains (":")) {
+			if (filePath.Contains (':')) {
 				filePath = filePath.Replace (":", "_drive");
 				filePath = "/" + filePath;
 			}

@@ -102,7 +102,7 @@ namespace MonoDevelop.Ide.Templates
 
 		public bool HasChildren ()
 		{
-			return templates.Any () || categories.Any ();
+			return templates.Count != 0 || categories.Count != 0;
 		}
 	}
 }

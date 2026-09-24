@@ -42,9 +42,7 @@ using MonoDevelop.Core.Text;
 using MonoDevelop.Ide;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Highlighting;
-using Microsoft.VisualStudio.Platform;
 using Microsoft.VisualStudio.Text.Tagging;
-using Microsoft.VisualStudio.Utilities;
 using MonoDevelop.Ide.Gui.Documents;
 
 namespace Mono.TextEditor
@@ -62,7 +60,7 @@ namespace Mono.TextEditor
 		//HACK ImmutableText buffer;
 		//HACK readonly ILineSplitter splitter;
 
-		ISyntaxHighlighting syntaxMode = null;
+		ISyntaxHighlighting syntaxMode;
 		string mimeType;
 
 		public string MimeType {
@@ -442,8 +440,7 @@ namespace Mono.TextEditor
 
 		public void ApplyTextChanges (IEnumerable<Microsoft.CodeAnalysis.Text.TextChange> changes)
 		{
-			if (changes == null)
-				throw new ArgumentNullException(nameof(changes));
+			ArgumentNullException.ThrowIfNull (changes);
 
 			using (var edit = this.TextBuffer.CreateEdit())
 			{
@@ -927,7 +924,7 @@ namespace Mono.TextEditor
 
 		class KeyboardStackUndo : AtomicUndoOperation
 		{
-			bool isClosed = false;
+			bool isClosed;
 
 			public bool IsClosed {
 				get {
@@ -945,10 +942,10 @@ namespace Mono.TextEditor
 			}
 		}
 
-		bool isInUndo = false;
+		bool isInUndo;
 		Stack<UndoOperation> undoStack = new Stack<UndoOperation> ();
 		Stack<UndoOperation> redoStack = new Stack<UndoOperation> ();
-		AtomicUndoOperation currentAtomicOperation = null;
+		AtomicUndoOperation currentAtomicOperation;
 
 		internal int UndoBeginOffset {
 			get {
@@ -982,7 +979,7 @@ namespace Mono.TextEditor
 			}
 		}
 
-		UndoOperation[] savePoint = null;
+		UndoOperation[] savePoint;
 		public bool IsDirty {
 			get {
 				if (this.currentAtomicOperation != null)
@@ -1185,8 +1182,7 @@ namespace Mono.TextEditor
 
 			public UndoGroup (TextDocument doc, OperationType operationType)
 			{
-				if (doc == null)
-					throw new ArgumentNullException ("doc");
+				ArgumentNullException.ThrowIfNull (doc);
 				doc.BeginAtomicUndo (operationType);
 				this.doc = doc;
 			}
@@ -1438,7 +1434,7 @@ namespace Mono.TextEditor
 		public IEnumerable<FoldSegment> GetFoldingsFromOffset (int offset)
 		{
 			if (offset < 0 || offset >= Length)
-				return new FoldSegment[0];
+				return Array.Empty<FoldSegment> ();
 			return foldSegmentTree.GetSegmentsAt (offset);
 		}
 
@@ -1450,7 +1446,7 @@ namespace Mono.TextEditor
 		public IEnumerable<FoldSegment> GetFoldingContaining (DocumentLine line)
 		{
 			if (line == null)
-				return new FoldSegment[0];
+				return Array.Empty<FoldSegment> ();
 			return foldSegmentTree.GetSegmentsOverlapping (line.Offset, line.Length);
 		}
 
@@ -1605,8 +1601,7 @@ namespace Mono.TextEditor
 
 			public DocumentLineTextSegmentMarker (TextDocument doc, DocumentLine line, TextLineMarker marker) : base (line.Offset, line.Length)
 			{
-				if (marker == null)
-					throw new ArgumentNullException (nameof (marker));
+				ArgumentNullException.ThrowIfNull (marker);
 				this.doc = doc;
 				this.Marker = marker;
 				this.Marker.parent = this;
@@ -1747,7 +1742,7 @@ namespace Mono.TextEditor
 
 #region Text segment markers
 
-		int textSegmentInsertId = 0;
+		int textSegmentInsertId;
 		SegmentTree<TextSegmentMarker> textSegmentMarkerTree = new SegmentTree<TextSegmentMarker> ();
 
 		public static IEnumerable<TextSegmentMarker> OrderTextSegmentMarkersByInsertion (IEnumerable<TextSegmentMarker> enumerable)
@@ -2142,15 +2137,13 @@ namespace Mono.TextEditor
 
 		public void WriteTextTo (TextWriter writer)
 		{
-			if (writer == null)
-				throw new ArgumentNullException ("writer");
+			ArgumentNullException.ThrowIfNull (writer);
 			writer.Write (Text);
 		}
 
 		public void WriteTextTo (TextWriter writer, int offset, int length)
 		{
-			if (writer == null)
-				throw new ArgumentNullException ("writer");
+			ArgumentNullException.ThrowIfNull (writer);
 			writer.Write (GetTextAt (offset, length));
 		}
 
@@ -2389,10 +2382,10 @@ namespace Mono.TextEditor
 			public TextReader CreateReader(int offset, int length)
 			{
 				if ((offset < 0) || (offset > this.Length))
-					throw new ArgumentOutOfRangeException("offset");
+					throw new ArgumentOutOfRangeException(nameof (offset));
 				int end = offset + length;
 				if ((end < offset) || (end > this.Length))
-					throw new ArgumentOutOfRangeException("length");
+					throw new ArgumentOutOfRangeException(nameof (length));
 
 				return new Microsoft.VisualStudio.Platform.NewTextSnapshotToTextReader(this.Span.Snapshot, this.Span.Start + offset, length);
 			}
@@ -2467,14 +2460,11 @@ namespace Mono.TextEditor
 			public override int Read (char[] buffer, int index, int count) {
 				if (currentPosition == -1)
 					throw new ObjectDisposedException("SnapshotSpanToTextReader");
-				if (buffer == null)
-					throw new ArgumentNullException("buffer");
-				if (index < 0)
-					throw new ArgumentOutOfRangeException("index");
-				if (count < 0)
-					throw new ArgumentOutOfRangeException("count");
+				ArgumentNullException.ThrowIfNull (buffer);
+				ArgumentOutOfRangeException.ThrowIfNegative (index);
+				ArgumentOutOfRangeException.ThrowIfNegative (count);
 				if (((index + count) < 0) || ((index + count) > buffer.Length))
-					throw new ArgumentOutOfRangeException("count");
+					throw new ArgumentOutOfRangeException(nameof (count));
 
 				int charactersToRead = System.Math.Min(this.span.Length - currentPosition, count);
 				this.span.Snapshot.CopyTo(this.span.Start.Position + currentPosition, buffer, index, charactersToRead);

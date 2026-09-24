@@ -31,7 +31,7 @@ using NuGet.Packaging;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakePackageFilesReader : IPackageFilesReader
+	sealed class FakePackageFilesReader : IPackageFilesReader
 	{
 		public void Dispose ()
 		{

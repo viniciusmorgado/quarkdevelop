@@ -785,8 +785,7 @@ namespace MonoDevelop.Projects
 		/// <exception cref="T:System.InvalidOperationException">Thrown if ReferenceType != ReferenceType.Project</exception>
 		public Project ResolveProject (Solution inSolution)
 		{
-			if (inSolution == null)
-				throw new ArgumentNullException ("inSolution");
+			ArgumentNullException.ThrowIfNull (inSolution);
 			if (ReferenceType != ReferenceType.Project)
 				throw new InvalidOperationException ("ResolveProject is only definied for Project reference type.");
 			if (!string.IsNullOrEmpty (projectGuid)) {

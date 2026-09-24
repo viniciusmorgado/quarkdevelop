@@ -96,7 +96,7 @@ namespace MonoDevelop.Components
 			Activate ();
 		}
 
-        private bool changing_style = false;
+        private bool changing_style;
         protected override void OnStyleSet(Style previous_style)
         {
             if(changing_style) {

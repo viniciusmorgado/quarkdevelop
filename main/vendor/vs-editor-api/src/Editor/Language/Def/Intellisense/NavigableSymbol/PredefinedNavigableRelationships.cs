@@ -16,7 +16,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense
         [SuppressMessage("Microsoft.Security", "CA2104", Justification = "Read only type")]
         public static readonly INavigableRelationship Definition = new DefinitionRelationship();
 
-        private class DefinitionRelationship : INavigableRelationship
+        private sealed class DefinitionRelationship : INavigableRelationship
         {
             public string Name => "IsDefinedBy";
 

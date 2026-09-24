@@ -150,8 +150,8 @@ namespace MonoDevelop.Components
 	{
 		const int DefaultTopPadding = 2;
 
-		PathEntry[] leftPath  = new PathEntry[0];
-		PathEntry[] rightPath = new PathEntry[0];
+		PathEntry[] leftPath  = Array.Empty<PathEntry> ();
+		PathEntry[] rightPath = Array.Empty<PathEntry> ();
 		Pango.Layout layout;
 		Pango.AttrList boldAtts = new Pango.AttrList ();
 
@@ -264,7 +264,7 @@ namespace MonoDevelop.Components
 			DisposeProxies ();
 			HideMenu ();
 
-			this.Path = path ?? new PathEntry[0];
+			this.Path = path ?? Array.Empty<PathEntry> ();
 			this.leftPath = Path.Where (p => p.Position == EntryPosition.Left).ToArray ();
 			this.rightPath = Path.Where (p => p.Position == EntryPosition.Right).ToArray ();
 			
@@ -865,7 +865,7 @@ namespace MonoDevelop.Components
 		}
 
 		int focusedPathIndex = -1;
-		bool alreadyHaveFocus = false;
+		bool alreadyHaveFocus;
 		protected override bool OnFocused (DirectionType direction)
 		{
 			bool ret = true;

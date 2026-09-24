@@ -140,7 +140,7 @@ namespace Xwt.Backends
 		Uri[] ITransferData.Uris {
 			get {
 				var u = (Uri[]) GetValue (TransferDataType.Uri);
-				return u ?? new Uri [0];
+				return u ?? Array.Empty<Uri> ();
 			}
 		}
 		

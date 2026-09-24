@@ -148,8 +148,7 @@ namespace MonoDevelop.SourceEditor
 
 		public TextEventArgsWrapper (MarginMouseEventArgs args)
 		{
-			if (args == null)
-				throw new ArgumentNullException ("args");
+			ArgumentNullException.ThrowIfNull (args);
 			this.args = args;
 		}
 

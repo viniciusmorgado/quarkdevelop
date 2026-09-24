@@ -28,10 +28,7 @@ namespace Microsoft.VisualStudio.Utilities
             }
             set 
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+                ArgumentNullException.ThrowIfNull(value);
                 if (value.Length == 0)
                 {
                     throw new ArgumentException("Before value must not be empty", nameof(value));
@@ -54,10 +51,7 @@ namespace Microsoft.VisualStudio.Utilities
             }
             set 
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+                ArgumentNullException.ThrowIfNull(value);
                 if (value.Length == 0)
                 {
                     throw new ArgumentException("After value must not be empty", nameof(value));

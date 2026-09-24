@@ -39,7 +39,7 @@ using System.Xml;
 
 namespace MonoDevelop.Projects.MSBuild
 {
-	partial class ProjectBuilder
+	sealed partial class ProjectBuilder
 	{
 		readonly ProjectCollection engine;
 		readonly string file;
@@ -283,7 +283,7 @@ namespace MonoDevelop.Projects.MSBuild
 			int i = str.IndexOf ('%');
 			while (i != -1 && i < str.Length - 2) {
 				int c;
-				if (int.TryParse (str.Substring (i + 1, 2), System.Globalization.NumberStyles.HexNumber, null, out c))
+				if (int.TryParse (str.AsSpan (i + 1, 2), System.Globalization.NumberStyles.HexNumber, null, out c))
 					str = str.Substring (0, i) + (char)c + str.Substring (i + 3);
 				i = str.IndexOf ('%', i + 1);
 			}

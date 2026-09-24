@@ -474,7 +474,7 @@ namespace Xwt
 			}
 		}
 
-		class CellSizeVector
+		sealed class CellSizeVector
 		{
 			internal TablePlacement[] visibleChildren;
 			internal Dictionary<int,double> fixedSizesByCell;

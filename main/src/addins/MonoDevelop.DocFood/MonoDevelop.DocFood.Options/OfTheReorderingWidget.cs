@@ -41,7 +41,7 @@ namespace MonoDevelop.DocFood.Options
 		}
 	}
 	
-	class OfTheReordering : OptionsPanel
+	sealed class OfTheReordering : OptionsPanel
 	{
 		OfTheReorderingWidget panel;
 		

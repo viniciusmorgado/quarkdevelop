@@ -399,7 +399,7 @@ namespace MonoDevelop.PackageManagement.Tests
 			}
 		}
 
-		class TestHttpClientHandler : HttpClientHandler, IHttpCredentialsHandler
+		sealed class TestHttpClientHandler : HttpClientHandler, IHttpCredentialsHandler
 		{
 		}
 	}

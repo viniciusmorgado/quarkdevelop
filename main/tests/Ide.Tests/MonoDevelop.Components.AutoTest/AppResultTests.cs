@@ -57,7 +57,7 @@ namespace MonoDevelop.Components.AutoTest
 			Assert.Throws<NullReferenceException> (() => _ = dProperties ["ToString"]);
 		}
 
-		class MockResult : Results.ObjectResult
+		sealed class MockResult : Results.ObjectResult
 		{
 			public int DisposeCount;
 

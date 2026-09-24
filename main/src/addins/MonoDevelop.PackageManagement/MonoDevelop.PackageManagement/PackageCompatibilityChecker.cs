@@ -111,7 +111,7 @@ namespace MonoDevelop.PackageManagement
 
 		public bool AnyPackagesRequireReinstallation ()
 		{
-			return packagesRequiringReinstallation.Any ();
+			return packagesRequiringReinstallation.Count != 0;
 		}
 
 		public void MarkPackagesForReinstallation ()
@@ -133,7 +133,7 @@ namespace MonoDevelop.PackageManagement
 					}
 				}
 
-				if (packageReferencesToUpdate.Any ()) {
+				if (packageReferencesToUpdate.Count != 0) {
 					UpdatePackageReferences (packageReferenceFileName, packageReferencesToUpdate);
 				}
 			});

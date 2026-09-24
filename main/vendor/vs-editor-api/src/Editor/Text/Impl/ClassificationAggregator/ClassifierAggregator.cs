@@ -35,18 +35,9 @@ namespace Microsoft.VisualStudio.Text.Classification.Implementation
                                       IClassificationTypeRegistryService classificationTypeRegistry)
         {
             // Validate.
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
-            if (bufferTagAggregatorFactory == null)
-            {
-                throw new ArgumentNullException(nameof(bufferTagAggregatorFactory));
-            }
-            if (classificationTypeRegistry == null)
-            {
-                throw new ArgumentNullException(nameof(classificationTypeRegistry));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
+            ArgumentNullException.ThrowIfNull(bufferTagAggregatorFactory);
+            ArgumentNullException.ThrowIfNull(classificationTypeRegistry);
 
             _textBuffer = textBuffer;
             _classificationTypeRegistry = classificationTypeRegistry;
@@ -61,18 +52,9 @@ namespace Microsoft.VisualStudio.Text.Classification.Implementation
                                       IClassificationTypeRegistryService classificationTypeRegistry)
         {
             // Validate.
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
-            if (viewTagAggregatorFactory == null)
-            {
-                throw new ArgumentNullException(nameof(viewTagAggregatorFactory));
-            }
-            if (classificationTypeRegistry == null)
-            {
-                throw new ArgumentNullException(nameof(classificationTypeRegistry));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
+            ArgumentNullException.ThrowIfNull(viewTagAggregatorFactory);
+            ArgumentNullException.ThrowIfNull(classificationTypeRegistry);
 
             _textBuffer = textView.TextBuffer;
             _classificationTypeRegistry = classificationTypeRegistry;

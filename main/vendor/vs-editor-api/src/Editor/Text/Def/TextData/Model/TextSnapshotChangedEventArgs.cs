@@ -29,14 +29,8 @@ namespace Microsoft.VisualStudio.Text
                                                ITextSnapshot afterSnapshot,
                                                object editTag)
         {
-            if (beforeSnapshot == null)
-            {
-                throw new ArgumentNullException(nameof(beforeSnapshot));
-            }
-            if (afterSnapshot == null)
-            {
-                throw new ArgumentNullException(nameof(afterSnapshot));
-            }
+            ArgumentNullException.ThrowIfNull(beforeSnapshot);
+            ArgumentNullException.ThrowIfNull(afterSnapshot);
             this.before = beforeSnapshot;
             this.after = afterSnapshot;
             this.editTag = editTag;

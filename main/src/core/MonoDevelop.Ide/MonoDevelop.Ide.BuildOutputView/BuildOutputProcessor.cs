@@ -115,7 +115,7 @@ namespace MonoDevelop.Ide.BuildOutputView
 			currentNode = currentNode?.Parent;
 		}
 
-		bool disposed = false;
+		bool disposed;
 
 		~BuildOutputProcessor ()
 		{

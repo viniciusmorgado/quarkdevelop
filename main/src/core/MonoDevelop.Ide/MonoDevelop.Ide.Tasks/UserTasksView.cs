@@ -61,7 +61,7 @@ namespace MonoDevelop.Ide.Tasks
 		Gdk.Color highPrioColor, normalPrioColor, lowPrioColor;
 		
 		Clipboard clipboard;
-		bool solutionLoaded = false;
+		bool solutionLoaded;
 		bool updating;
 		string[] priorities = { GettextCatalog.GetString ("High"), GettextCatalog.GetString ("Normal"), GettextCatalog.GetString ("Low")};
 

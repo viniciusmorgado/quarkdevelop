@@ -30,10 +30,7 @@ namespace Microsoft.VisualStudio.Text
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="span"/>.End is greater than <paramref name="snapshot"/>.Length.</exception>
         public SnapshotSpan(ITextSnapshot snapshot, Span span)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
             if (span.End > snapshot.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(span));
@@ -148,10 +145,7 @@ namespace Microsoft.VisualStudio.Text
             }
             else
             {
-                if (targetSnapshot == null)
-                {
-                    throw new ArgumentNullException(nameof(targetSnapshot));
-                }
+                ArgumentNullException.ThrowIfNull(targetSnapshot);
                 if (targetSnapshot.TextBuffer != this.Start.Snapshot.TextBuffer)
                 {
                     throw new ArgumentException(Strings.InvalidSnapshot);

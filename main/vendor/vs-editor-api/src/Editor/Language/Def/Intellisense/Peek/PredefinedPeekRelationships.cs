@@ -16,7 +16,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense
         [SuppressMessage("Microsoft.Security", "CA2104", Justification = "Read only type")]
         public static readonly IPeekRelationship Definitions = new DefinitionRelationship();
 
-        private class DefinitionRelationship : IPeekRelationship
+        private sealed class DefinitionRelationship : IPeekRelationship
         {
             public string Name
             {

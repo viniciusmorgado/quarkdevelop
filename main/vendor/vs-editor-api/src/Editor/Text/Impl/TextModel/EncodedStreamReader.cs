@@ -31,8 +31,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
                                               List<Lazy<IEncodingDetector, IEncodingDetectorMetadata>> encodingDetectorExtensions,
                                               GuardedOperations guardedOperations)
         {
-            if (stream == null)
-                throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream);
 
             long position = stream.Position;
 

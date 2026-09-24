@@ -557,7 +557,7 @@ namespace MonoDevelop.Projects
 						ext.Dispose ();
 				}
 
-				if (loadedNodes.Any ()) {
+				if (loadedNodes.Count != 0) {
 					foreach (var ext in allExtensions.Where (ex => ex.SourceExtensionNode != null)) {
 						if (loadedNodes.Contains (ext.SourceExtensionNode.Id)) {
 							ext.Dispose ();

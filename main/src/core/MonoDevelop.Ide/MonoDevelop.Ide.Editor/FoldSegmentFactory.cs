@@ -33,8 +33,7 @@ namespace MonoDevelop.Ide.Editor
 	{
 		public static IFoldSegment CreateFoldSegment (TextEditor editor, int offset, int length, bool isCollapsed = false, string collapsedText = "...", FoldingType foldingType = FoldingType.Unknown)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
+			ArgumentNullException.ThrowIfNull (editor);
 			var result =  editor.CreateFoldSegment (offset, length, isCollapsed);
 			result.CollapsedText = collapsedText;
 			result.FoldingType = foldingType;
@@ -43,42 +42,34 @@ namespace MonoDevelop.Ide.Editor
 
 		public static IFoldSegment CreateFoldSegment (TextEditor editor, ISegment segment, bool isCollapsed = false, string collapsedText = "...", FoldingType foldingType = FoldingType.Unknown)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (editor);
+			ArgumentNullException.ThrowIfNull (segment);
 			return CreateFoldSegment (editor, segment.Offset, segment.Length, isCollapsed, collapsedText, foldingType);
 		}
 
 		public static IFoldSegment CreateFoldSegment (TextEditor editor, int offset, int length, string collapsedText = "...", FoldingType foldingType = FoldingType.Unknown)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
+			ArgumentNullException.ThrowIfNull (editor);
 			return CreateFoldSegment (editor, offset, length, false, collapsedText, foldingType);
 		}
 
 		public static IFoldSegment CreateFoldSegment (TextEditor editor, ISegment segment, string collapsedText = "...", FoldingType foldingType = FoldingType.Unknown)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (editor);
+			ArgumentNullException.ThrowIfNull (segment);
 			return CreateFoldSegment (editor, segment.Offset, segment.Length, false, collapsedText, foldingType);
 		}
 
 		public static IFoldSegment CreateFoldSegment (TextEditor editor, int offset, int length, FoldingType foldingType = FoldingType.Unknown)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
+			ArgumentNullException.ThrowIfNull (editor);
 			return CreateFoldSegment (editor, offset, length, false, "...", foldingType);
 		}
 
 		public static IFoldSegment CreateFoldSegment (TextEditor editor, ISegment segment, FoldingType foldingType = FoldingType.Unknown)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
-			if (segment == null)
-				throw new ArgumentNullException ("segment");
+			ArgumentNullException.ThrowIfNull (editor);
+			ArgumentNullException.ThrowIfNull (segment);
 			return CreateFoldSegment (editor, segment.Offset, segment.Length, false, "...", foldingType);
 		}
 

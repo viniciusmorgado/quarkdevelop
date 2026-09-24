@@ -328,7 +328,7 @@ namespace MonoDevelop.PackageManagement
 			}
 
 			var buildIntegratedProjects = nuGetProjects.OfType<BuildIntegratedNuGetProject> ().ToList ();
-			if (!buildIntegratedProjects.Any ())
+			if (buildIntegratedProjects.Count == 0)
 				return Task.CompletedTask;
 
 			return RestorePackagesAsync (buildIntegratedProjects, token);

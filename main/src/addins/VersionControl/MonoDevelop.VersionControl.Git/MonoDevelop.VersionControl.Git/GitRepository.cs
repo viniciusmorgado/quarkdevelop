@@ -559,7 +559,7 @@ namespace MonoDevelop.VersionControl.Git
 		}
 
 		DateTime cachedSubmoduleTime = DateTime.MinValue;
-		Tuple<FilePath, LibGit2Sharp.Repository> [] cachedSubmodules = new Tuple<FilePath, LibGit2Sharp.Repository> [0];
+		Tuple<FilePath, LibGit2Sharp.Repository> [] cachedSubmodules = Array.Empty<Tuple<FilePath, LibGit2Sharp.Repository>> ();
 		Tuple<FilePath, LibGit2Sharp.Repository> [] GetCachedSubmodules ()
 		{
 			var submoduleWriteTime = File.GetLastWriteTimeUtc (RootPath.Combine (".gitmodules"));
@@ -815,7 +815,7 @@ namespace MonoDevelop.VersionControl.Git
 			return RunOperationAsync ((token) => {
 				var hc = GetHeadCommit (RootRepository);
 				if (hc == null)
-					return new GitRevision [0];
+					return Array.Empty<GitRevision> ();
 
 				var sinceRev = since != null ? ((GitRevision)since).GetCommit (RootRepository) : null;
 				IEnumerable<Commit> commits = RootRepository.Commits.QueryBy (new CommitFilter { SortBy = CommitSortStrategies.Topological });
@@ -842,7 +842,7 @@ namespace MonoDevelop.VersionControl.Git
 					var author = commit.Author;
 					var shortMessage = commit.MessageShort;
 					if (shortMessage.Length > 50) {
-						shortMessage = shortMessage.Substring (0, 50) + "…";
+						shortMessage = string.Concat (shortMessage.AsSpan (0, 50), "…");
 					}
 
 					var rev = new GitRevision (this, RootRepository.Info.WorkingDirectory, commit, author.When.LocalDateTime, author.Name, commit.Message) {
@@ -861,7 +861,7 @@ namespace MonoDevelop.VersionControl.Git
 			return RunOperationAsync ((token) => {
 				var commit = rev.GetCommit (RootRepository);
 				if (commit == null)
-					return new RevisionPath [0];
+					return Array.Empty<RevisionPath> ();
 
 				var paths = new List<RevisionPath> ();
 				var parent = commit.Parents.FirstOrDefault ();
@@ -911,7 +911,7 @@ namespace MonoDevelop.VersionControl.Git
 				return await GetDirectoryVersionInfoAsync (localDirectory, null, getRemoteStatus, recursive, cancellationToken).ConfigureAwait (false);
 			} catch (Exception e) {
 				LoggingService.LogError ("Failed to get git directory status", e);
-				return new VersionInfo [0];
+				return Array.Empty<VersionInfo> ();
 			}
 		}
 
@@ -1088,7 +1088,7 @@ namespace MonoDevelop.VersionControl.Git
 
 		void AssertIsGitThread ()
 		{
-			if (Thread.CurrentThread.ManagedThreadId != GitScheduler.DedicatedThread.ManagedThreadId)
+			if (Environment.CurrentManagedThreadId != GitScheduler.DedicatedThread.ManagedThreadId)
 				throw new InvalidOperationException ();
 		}
 
@@ -1100,7 +1100,7 @@ namespace MonoDevelop.VersionControl.Git
 			var relativePath = repo.ToGitPath (directory);
 			var status = repo.RetrieveStatus (new StatusOptions {
 				DisablePathSpecMatch = true,
-				PathSpec = relativePath != "." ? new [] { relativePath } : new string[0],
+				PathSpec = relativePath != "." ? new [] { relativePath } : Array.Empty<string> (),
 				IncludeUnaltered = true,
 			});
 
@@ -1522,7 +1522,7 @@ namespace MonoDevelop.VersionControl.Git
 			await RunBlockingOperationAsync ((token) => {
 				try {
 					// Unstage added files not included in the changeSet
-					if (addedFiles.Any ())
+					if (addedFiles.Count != 0)
 						LibGit2Sharp.Commands.Unstage (RootRepository, addedFiles.ToPathStrings ());
 				} catch (Exception ex) {
 					LoggingService.LogInternalError ("Failed to commit.", ex);
@@ -1543,7 +1543,7 @@ namespace MonoDevelop.VersionControl.Git
 					LoggingService.LogInternalError ("Failed to commit.", ex);
 				} finally {
 					// Always at the end, stage again the unstage added files not included in the changeSet
-					if (addedFiles.Any ())
+					if (addedFiles.Count != 0)
 						LibGit2Sharp.Commands.Stage (RootRepository, addedFiles.ToPathStrings ());
 				}
 			}, cancellationToken: monitor.CancellationToken).ConfigureAwait (false);
@@ -1770,7 +1770,7 @@ namespace MonoDevelop.VersionControl.Git
 				await RunBlockingOperationAsync (group.Key, (repository, token) => {
 					var repoFiles = repository.ToGitPath (toCheckout);
 					int progress = 0;
-					if (toCheckout.Any ()) {
+					if (toCheckout.Count != 0) {
 						repository.CheckoutPaths ("HEAD", repoFiles, new CheckoutOptions {
 							OnCheckoutProgress = (path, completedSteps, totalSteps) => OnCheckoutProgress (completedSteps, totalSteps, monitor, ref progress),
 							CheckoutModifiers = CheckoutModifiers.Force,
@@ -1784,7 +1784,7 @@ namespace MonoDevelop.VersionControl.Git
 						LibGit2Sharp.Commands.Stage (repository, repoFiles);
 					}
 
-					if (toUnstage.Any ())
+					if (toUnstage.Count != 0)
 						LibGit2Sharp.Commands.Unstage (repository, repository.ToGitPath (toUnstage).ToArray ());
 				}, monitor.CancellationToken).ConfigureAwait (false);
 				monitor.EndTask ();

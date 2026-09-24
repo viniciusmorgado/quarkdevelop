@@ -28,7 +28,7 @@ using System;
 
 namespace Xwt.Drawing
 {
-	class HslColor
+	sealed class HslColor
 	{
 		public double H {
 			get;

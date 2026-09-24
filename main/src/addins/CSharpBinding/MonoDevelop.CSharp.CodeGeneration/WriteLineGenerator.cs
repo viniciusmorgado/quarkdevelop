@@ -133,10 +133,10 @@ namespace MonoDevelop.CodeGeneration
 					format.Append (GetName (member));
 					format.Append ("={");
 					format.Append (member.ToString ());
-					format.Append ("}");
+					format.Append ('}');
 					i++;
 				}
-				format.Append ("\"");
+				format.Append ('"');
 				var arguments = new List<ArgumentSyntax> ();
 				arguments.Add (SyntaxFactory.Argument (SyntaxFactory.ParseExpression (StringBuilderCache.ReturnAndFree (format))));
 				var node = 

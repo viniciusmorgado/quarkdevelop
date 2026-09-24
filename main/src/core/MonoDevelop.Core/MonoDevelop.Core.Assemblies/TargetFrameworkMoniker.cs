@@ -56,10 +56,10 @@ namespace MonoDevelop.Core.Assemblies
 		public TargetFrameworkMoniker (string identifier, string version, string profile)
 		{
 			if (version == null || version.Length == 0 || (version.Length == 1 && version[0] == 'v'))
-				throw new ArgumentException ("A version must be provided", "version");
+				throw new ArgumentException ("A version must be provided", nameof (version));
 			
 			if (string.IsNullOrEmpty (identifier))
-				throw new ArgumentException ("An identifier must be provided", "identifier");
+				throw new ArgumentException ("An identifier must be provided", nameof (identifier));
 			
 			if (version[0] == 'v')
 				version = version.Substring (1);

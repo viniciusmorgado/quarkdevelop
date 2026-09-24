@@ -32,7 +32,7 @@ using NUnit.Framework;
 namespace MonoDevelop.Projects
 {
 	[TestFixture]
-	class MSBuildSdkProjectTests
+	sealed class MSBuildSdkProjectTests
 	{
 		MSBuildSdkProject project;
 		MSBuildProject msbuildProject;

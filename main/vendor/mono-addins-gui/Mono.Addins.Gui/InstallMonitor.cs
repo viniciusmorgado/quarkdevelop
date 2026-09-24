@@ -35,7 +35,7 @@ using Mono.Addins.Setup;
 using Mono.Addins.Description;
 namespace Mono.Addins.GuiGtk3
 {
-	class InstallMonitor: IProgressStatus, IDisposable
+	sealed class InstallMonitor: IProgressStatus, IDisposable
 	{
 		Label progressLabel;
 		ProgressBar progressBar;

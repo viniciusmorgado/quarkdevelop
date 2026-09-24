@@ -66,7 +66,7 @@ namespace MonoDevelop.DotNetCore
 		//https://docs.microsoft.com/en-us/dotnet/core/tools/global-json
 		public void ResolveSDK (string workingDir = "", bool forceLookUpGlobalJson = false)
 		{
-			if (!SdkVersions.Any ())
+			if (SdkVersions.Length == 0)
 				return;
 					
 			DotNetCoreVersion targetVersion = null;
@@ -93,7 +93,7 @@ namespace MonoDevelop.DotNetCore
 			}
 
 			//if global.json exists and matches returns it
-			targetVersion = SdkVersions.FirstOrDefault (x => x.OriginalString.IndexOf (specificVersion, StringComparison.InvariantCulture) == 0);
+			targetVersion = SdkVersions.FirstOrDefault (x => x.OriginalString.StartsWith (specificVersion, StringComparison.InvariantCulture));
 			if (targetVersion == null) {
 				//if global.json exists and !matches then:
 				if (!string.IsNullOrEmpty (rollForward)) {

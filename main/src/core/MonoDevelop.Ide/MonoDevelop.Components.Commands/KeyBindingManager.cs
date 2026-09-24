@@ -644,10 +644,10 @@ namespace MonoDevelop.Components.Commands
 				}
 				
 				if (newKeyBinding != null && !newKeyBinding.Chord.IsEmpty) {
-					if (!chords.ContainsKey (newKeyBinding.Chord))
+					if (!chords.TryGetValue (newKeyBinding.Chord, out var value))
 						chords.Add (newKeyBinding.Chord, 1);
 					else
-						chords[newKeyBinding.Chord]++;
+						chords[newKeyBinding.Chord] = ++value;
 				}
 			}
 			
@@ -660,13 +660,13 @@ namespace MonoDevelop.Components.Commands
 			}
 			
 			if (newKeyBinding != null) {
-				if (!bindings.ContainsKey (newKeyBinding)) {
+				if (!bindings.TryGetValue (newKeyBinding, out var value)) {
 					list = new List<Command> ();
 					list.Add (command);
 					
 					bindings.Add (newKeyBinding, list);
 				} else {
-					list = bindings[newKeyBinding];
+					list = value;
 					list.Add (command);
 				}
 			}

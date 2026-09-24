@@ -53,10 +53,8 @@ namespace MonoDevelop.Components.Docking
 
 		public CrossfadeIcon (Xwt.Drawing.Image primary, Xwt.Drawing.Image secondary)
 		{
-			if (primary == null)
-				throw new ArgumentNullException ("primary");
-			if (secondary == null)
-				throw new ArgumentNullException ("secondary");
+			ArgumentNullException.ThrowIfNull (primary);
+			ArgumentNullException.ThrowIfNull (secondary);
 
 			this.primary = primary;
 			this.secondary = secondary;

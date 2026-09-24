@@ -31,7 +31,7 @@ using MonoDevelop.Core.Execution;
 namespace MonoDevelop.Projects.MSBuild
 {
 	[MessageDataType]
-	class MSBuildTargetResult
+	sealed class MSBuildTargetResult
 	{
 		public MSBuildTargetResult ()
 		{
@@ -95,41 +95,41 @@ namespace MonoDevelop.Projects.MSBuild
 				sb.Append (File);
 				if (LineNumber > 0) {
 					//(line)
-					sb.Append ("(");
+					sb.Append ('(');
 					sb.Append (LineNumber);
 					if (ColumnNumber > 0) {
 						//(line,col)
-						sb.Append (",");
+						sb.Append (',');
 						sb.Append (ColumnNumber);
 						if (EndColumnNumber > 0) {
 							if (EndLineNumber > 0) {
 								//(line,col,line,col)
-								sb.Append (",");
+								sb.Append (',');
 								sb.Append (EndLineNumber);
-								sb.Append (",");
+								sb.Append (',');
 								sb.Append (EndColumnNumber);
 							} else {
 								//(line,col-col)
-								sb.Append ("-");
+								sb.Append ('-');
 								sb.Append (EndColumnNumber);
 							}
 						}
 					} else if (EndLineNumber > 0) {
 						//(line-line)
-						sb.Append ("-");
+						sb.Append ('-');
 						sb.Append (EndLineNumber);
 					}
-					sb.Append (")");
+					sb.Append (')');
 				}
 				sb.Append (": ");
 			}
 			if (!string.IsNullOrEmpty (Subcategory)) {
 				sb.Append (Subcategory);
-				sb.Append (" ");
+				sb.Append (' ');
 			}
 			sb.Append (IsWarning ? "warning" : "error");
 			if (!string.IsNullOrEmpty (Code)) {
-				sb.Append (" ");
+				sb.Append (' ');
 				sb.Append (Code);
 			}
 			sb.Append (": ");

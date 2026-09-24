@@ -45,9 +45,7 @@ namespace NuGet.Credentials
 		/// NonInteractive requests must not promt the user for credentials.</param>
 		public CustomCredentialService (IEnumerable<ICredentialProvider> providers, bool nonInteractive)
 		{
-			if (providers == null) {
-				throw new ArgumentNullException (nameof (providers));
-			}
+			ArgumentNullException.ThrowIfNull (providers);
 
 			_nonInteractive = nonInteractive;
 			Providers = new List<ICredentialProvider> (providers);
@@ -80,9 +78,7 @@ namespace NuGet.Credentials
 			string message,
 			CancellationToken cancellationToken)
 		{
-			if (uri == null) {
-				throw new ArgumentNullException (nameof (uri));
-			}
+			ArgumentNullException.ThrowIfNull (uri);
 
 			ICredentials creds = null;
 
@@ -167,9 +163,7 @@ namespace NuGet.Credentials
 			bool isProxy,
 			out ICredentials credentials)
 		{
-			if (uri == null) {
-				throw new ArgumentNullException (nameof (uri));
-			}
+			ArgumentNullException.ThrowIfNull (uri);
 
 			credentials = null;
 

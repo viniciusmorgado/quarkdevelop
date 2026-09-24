@@ -35,12 +35,13 @@ using Microsoft.CodeAnalysis.SignatureHelp;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Host.Mef;
 using MonoDevelop.Ide;
+using System;
 
 namespace ICSharpCode.NRefactory6.CSharp.ParameterHinting
 {
 	[Ignore("Fixme")]
 	[TestFixture]
-	class ParameterHintingTests : TestBase
+	sealed class ParameterHintingTests : TestBase
 	{
 		internal static MonoDevelop.Ide.CodeCompletion.ParameterHintingResult CreateProvider(string text, bool force = false)
 		{
@@ -49,10 +50,10 @@ namespace ICSharpCode.NRefactory6.CSharp.ParameterHinting
 			int cursorPosition = text.IndexOf('$');
 			int endPos = text.IndexOf('$', cursorPosition + 1);
 			if (endPos == -1) {
-				parsedText = editorText = text.Substring(0, cursorPosition) + text.Substring(cursorPosition + 1);
+				parsedText = editorText = string.Concat (text.AsSpan(0, cursorPosition), text.AsSpan(cursorPosition + 1));
 			} else {
-				parsedText = text.Substring(0, cursorPosition) + new string(' ', endPos - cursorPosition) + text.Substring(endPos + 1);
-				editorText = text.Substring(0, cursorPosition) + text.Substring(cursorPosition + 1, endPos - cursorPosition - 1) + text.Substring(endPos + 1);
+				parsedText = string.Concat (text.AsSpan(0, cursorPosition), new string(' ', endPos - cursorPosition), text.AsSpan(endPos + 1));
+				editorText = string.Concat (text.AsSpan(0, cursorPosition), text.AsSpan(cursorPosition + 1, endPos - cursorPosition - 1), text.AsSpan(endPos + 1));
 				cursorPosition = endPos - 1; 
 			}
 			

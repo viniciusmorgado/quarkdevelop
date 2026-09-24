@@ -48,7 +48,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		// these 2 are mutable states that must be guarded under the _gate.
 		private readonly object _gate = new object ();
-		private AnalyzerReference _analyzerReference = null;
+		private AnalyzerReference _analyzerReference;
 		private ImmutableArray<Diagnostic> _analyzerLoadErrors = ImmutableArray<Diagnostic>.Empty;
 
 		public MonoDevelopAnalyzer (FilePath fullPath, HostDiagnosticUpdateSource hostDiagnosticUpdateSource, ProjectId projectId, Microsoft.CodeAnalysis.Workspace workspace, IAnalyzerAssemblyLoader loader, string language)

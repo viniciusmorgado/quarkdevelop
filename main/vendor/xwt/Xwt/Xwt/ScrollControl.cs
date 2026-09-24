@@ -34,7 +34,7 @@ namespace Xwt
 	{
 		EventHandler valueChanged;
 		
-		class ScrollAdjustmentBackendHost: BackendHost<ScrollControl,IScrollControlBackend>, IScrollControlEventSink
+		sealed class ScrollAdjustmentBackendHost: BackendHost<ScrollControl,IScrollControlBackend>, IScrollControlEventSink
 		{
 			public void OnValueChanged ()
 			{

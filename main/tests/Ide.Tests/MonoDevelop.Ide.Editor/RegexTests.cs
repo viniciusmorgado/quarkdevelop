@@ -32,7 +32,7 @@ using MonoDevelop.Ide.Editor.Highlighting.RegexEngine;
 namespace MonoDevelop.Ide.Editor
 {
 	[TestFixture]
-	class RegexTests : IdeTestBase
+	sealed class RegexTests : IdeTestBase
 	{
 		[Test]
 		public void TestSimpleMatch ()

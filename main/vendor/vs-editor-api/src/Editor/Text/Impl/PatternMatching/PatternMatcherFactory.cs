@@ -21,10 +21,7 @@ namespace Microsoft.VisualStudio.Text.PatternMatching.Implementation
                 throw new ArgumentException("A non-empty pattern is required to create a pattern matcher", nameof(pattern));
             }
 
-            if (creationOptions == null)
-            {
-                throw new ArgumentNullException(nameof(creationOptions));
-            }
+            ArgumentNullException.ThrowIfNull(creationOptions);
 
             var matcher = linkedMatcher as PatternMatcher;
 

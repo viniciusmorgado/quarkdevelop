@@ -1296,8 +1296,7 @@ namespace Mono.TextEditor
 		
 		public double ColumnToX (DocumentLine line, int column)
 		{
-			if (line == null)
-				throw new ArgumentNullException ("line");
+			ArgumentNullException.ThrowIfNull (line);
 			return TextViewMargin.ColumnToX (line, column);
 		}
 		

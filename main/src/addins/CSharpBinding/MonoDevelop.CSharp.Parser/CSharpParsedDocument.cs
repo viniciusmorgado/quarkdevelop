@@ -313,7 +313,7 @@ namespace MonoDevelop.CSharp.Parser
 			}
 		}
 
-		static readonly Task<IReadOnlyList<FoldingRegion>> foldings  = Task.FromResult((IReadOnlyList<FoldingRegion>)new FoldingRegion[0]);
+		static readonly Task<IReadOnlyList<FoldingRegion>> foldings  = Task.FromResult((IReadOnlyList<FoldingRegion>)Array.Empty<FoldingRegion> ());
 
 		public override Task<IReadOnlyList<FoldingRegion>> GetFoldingsAsync (CancellationToken cancellationToken = default (CancellationToken)) => foldings;
 

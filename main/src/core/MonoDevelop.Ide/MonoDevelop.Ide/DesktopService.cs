@@ -32,7 +32,6 @@ using Microsoft.VisualStudio.Utilities;
 using Mono.Addins;
 using MonoDevelop.Components;
 using MonoDevelop.Components.MainToolbar;
-using System.Threading.Tasks;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Desktop;
 using MonoDevelop.Ide.Fonts;

@@ -15,7 +15,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         private SnapshotSpan _anchor;
         private SpanTrackingMode _trackingMode;
         private IBufferGraph _graph;
-        private bool _unmappable = false;
+        private bool _unmappable;
 
         public static IMappingSpan Create(ITextSnapshot root, SnapshotSpan anchor, SpanTrackingMode trackingMode, IBufferGraph graph)
         {
@@ -41,8 +41,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public NormalizedSnapshotSpanCollection GetSpans(ITextBuffer targetBuffer)
         {
-            if (targetBuffer == null)
-                throw new ArgumentNullException(nameof(targetBuffer));
+            ArgumentNullException.ThrowIfNull(targetBuffer);
 
             if (_unmappable)
                 return NormalizedSnapshotSpanCollection.Empty;
@@ -76,8 +75,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
 
         public NormalizedSnapshotSpanCollection GetSpans(ITextSnapshot targetSnapshot)
         {
-            if (targetSnapshot == null)
-                throw new ArgumentNullException(nameof(targetSnapshot));
+            ArgumentNullException.ThrowIfNull(targetSnapshot);
             if (_unmappable)
                 return NormalizedSnapshotSpanCollection.Empty;
 

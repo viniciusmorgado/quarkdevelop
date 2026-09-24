@@ -42,18 +42,18 @@ namespace MonoDevelop.Ide.RoslynServices
 
 		public void Log (FunctionId functionId, LogMessage logMessage)
 		{
-			roslynLog.WriteLine (string.Format ("[{0}] {1} - {2}", Thread.CurrentThread.ManagedThreadId, functionId.ToString (), logMessage.GetMessage ()));
+			roslynLog.WriteLine (string.Format ("[{0}] {1} - {2}", System.Environment.CurrentManagedThreadId, functionId.ToString (), logMessage.GetMessage ()));
 		}
 
 		public void LogBlockStart (FunctionId functionId, LogMessage logMessage, int uniquePairId, CancellationToken cancellationToken)
 		{
-			roslynLog.WriteLine (string.Format ("[{0}] Start({1}) : {2} - {3}", Thread.CurrentThread.ManagedThreadId, uniquePairId, functionId.ToString (), logMessage.GetMessage ()));
+			roslynLog.WriteLine (string.Format ("[{0}] Start({1}) : {2} - {3}", System.Environment.CurrentManagedThreadId, uniquePairId, functionId.ToString (), logMessage.GetMessage ()));
 		}
 
 		public void LogBlockEnd (FunctionId functionId, LogMessage logMessage, int uniquePairId, int delta, CancellationToken cancellationToken)
 		{
 			var functionString = functionId.ToString () + (cancellationToken.IsCancellationRequested ? " Canceled" : string.Empty);
-			roslynLog.WriteLine (string.Format ("[{0}] End({1}) : [{2}ms] {3}", Thread.CurrentThread.ManagedThreadId, uniquePairId, delta, functionString));
+			roslynLog.WriteLine (string.Format ("[{0}] End({1}) : [{2}ms] {3}", System.Environment.CurrentManagedThreadId, uniquePairId, delta, functionString));
 		}
 	}
 }

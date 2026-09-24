@@ -658,7 +658,7 @@ namespace MonoDevelop.Ide.Projects
 		{
 			var widgetToFocus = widget; 
 			var commandRouter = widget as CommandRouterContainer;
-			if ((commandRouter != null) && commandRouter.Children.Any ()) {
+			if ((commandRouter != null) && commandRouter.Children.Length != 0) {
 				widgetToFocus = commandRouter.Children [0];
 			}
 

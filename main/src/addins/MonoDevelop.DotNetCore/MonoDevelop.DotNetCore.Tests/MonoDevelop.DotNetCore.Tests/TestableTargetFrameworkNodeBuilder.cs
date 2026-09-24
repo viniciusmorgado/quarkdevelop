@@ -31,7 +31,7 @@ using MonoDevelop.Ide.Gui.Components;
 
 namespace MonoDevelop.DotNetCore.Tests
 {
-	class TestableTargetFrameworkNodeBuilder : TargetFrameworkNodeBuilder
+	sealed class TestableTargetFrameworkNodeBuilder : TargetFrameworkNodeBuilder
 	{
 		public List<object> ChildNodes = new List<object> ();
 

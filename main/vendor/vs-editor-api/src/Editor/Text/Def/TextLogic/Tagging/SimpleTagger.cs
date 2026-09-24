@@ -94,8 +94,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <exception cref="ArgumentNullException"><paramref name="span"/> or <paramref name="tag"/> is null.</exception>
         public TrackingTagSpan<T> CreateTagSpan(ITrackingSpan span, T tag)
         {
-            if (span == null)
-                throw new ArgumentNullException(nameof(span));
+            ArgumentNullException.ThrowIfNull(span);
             if (tag == null)
                 throw new ArgumentNullException(nameof(tag));
 
@@ -126,8 +125,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <remarks>This method is safe to use from any thread.</remarks>
         public bool RemoveTagSpan(TrackingTagSpan<T> tagSpan)
         {
-            if (tagSpan == null)
-                throw new ArgumentNullException(nameof(tagSpan));
+            ArgumentNullException.ThrowIfNull(tagSpan);
 
             bool removed = false;
 
@@ -161,8 +159,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <exception cref="ArgumentNullException"><paramref name="match"/> is null.</exception>
         public int RemoveTagSpans(Predicate<TrackingTagSpan<T>> match)
         {
-            if (match == null)
-                throw new ArgumentNullException(nameof(match));
+            ArgumentNullException.ThrowIfNull(match);
 
             int removedCount = 0;
 
@@ -281,10 +278,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
             SimpleTagger<T> _tagger;
             internal Batch(SimpleTagger<T> tagger)
             {
-                if (tagger == null)
-                {
-                    throw new ArgumentNullException(nameof(tagger));
-                }
+                ArgumentNullException.ThrowIfNull(tagger);
                 _tagger = tagger;
                 _tagger.StartBatch();
             }

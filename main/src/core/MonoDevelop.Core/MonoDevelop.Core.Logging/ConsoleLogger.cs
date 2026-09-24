@@ -38,7 +38,7 @@ namespace MonoDevelop.Core.Logging
 	public class ConsoleLogger : IStructuredLogger
 	{
 		EnabledLoggingLevel enabledLevel = EnabledLoggingLevel.UpToInfo;
-		bool useColour = false;
+		bool useColour;
 		static readonly object writeLock = new object ();
 
 		/// <summary>Text (default) or one JSON object per line (<c>MD_LOG_FORMAT=json</c>, ADR 0023).</summary>

@@ -52,10 +52,8 @@ namespace MonoDevelop.Refactoring.Rename
 	{
 		public static async Task<bool> Rename (ISymbol symbol, string newName)
 		{
-			if (symbol == null)
-				throw new ArgumentNullException ("symbol");
-			if (newName == null)
-				throw new ArgumentNullException ("newName");
+			ArgumentNullException.ThrowIfNull (symbol);
+			ArgumentNullException.ThrowIfNull (newName);
 			try {
 				await new RenameRefactoring ().PerformChangesAsync (symbol, new RenameProperties () { NewName = newName });
 				return true;
@@ -230,7 +228,7 @@ namespace MonoDevelop.Refactoring.Rename
 						continue;
 					int idx = oldFileName.IndexOf (type.Name, StringComparison.Ordinal);
 					if (idx >= 0) {
-						newFileName = oldFileName.Substring (0, idx) + newName + oldFileName.Substring (idx + type.Name.Length);
+						newFileName = string.Concat (oldFileName.AsSpan (0, idx), newName, oldFileName.AsSpan (idx + type.Name.Length));
 					} else {
 						newFileName = currentPart != 1 ? newName + currentPart : newName;
 						currentPart++;
@@ -288,8 +286,8 @@ namespace MonoDevelop.Refactoring.Rename
 		{
 			var name = new StringBuilder (fileName);
 			if (tryCount > 0) {
-				name.Append ("_");
-				name.Append (tryCount.ToString ());
+				name.Append ('_');
+				name.Append (tryCount);
 			}
 			if (System.IO.Path.HasExtension (oldFullFileName))
 				name.Append (System.IO.Path.GetExtension (oldFullFileName));

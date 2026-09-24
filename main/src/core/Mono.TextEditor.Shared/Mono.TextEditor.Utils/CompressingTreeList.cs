@@ -124,8 +124,7 @@ namespace Mono.TextEditor.Utils
 		/// A single node may be used to store the multiple values that are considered equal.</param>
 		public CompressingTreeList (IEqualityComparer<T> equalityComparer)
 		{
-			if (equalityComparer == null)
-				throw new ArgumentNullException ("equalityComparer");
+			ArgumentNullException.ThrowIfNull (equalityComparer);
 			this.comparisonFunc = equalityComparer.Equals;
 		}
 
@@ -136,8 +135,7 @@ namespace Mono.TextEditor.Utils
 		/// function returns true, a single node may be used to store the two values.</param>
 		public CompressingTreeList (Func<T, T, bool> comparisonFunc)
 		{
-			if (comparisonFunc == null)
-				throw new ArgumentNullException ("comparisonFunc");
+			ArgumentNullException.ThrowIfNull (comparisonFunc);
 			this.comparisonFunc = comparisonFunc;
 		}
 
@@ -148,9 +146,9 @@ namespace Mono.TextEditor.Utils
 		public void InsertRange (int index, int count, T item)
 		{
 			if (index < 0 || index > Count)
-				throw new ArgumentOutOfRangeException ("index", index, "Value must be between 0 and " + Count);
+				throw new ArgumentOutOfRangeException (nameof (index), index, "Value must be between 0 and " + Count);
 			if (count < 0)
-				throw new ArgumentOutOfRangeException ("count", count, "Value must not be negative");
+				throw new ArgumentOutOfRangeException (nameof (count), count, "Value must not be negative");
 			if (count == 0)
 				return;
 			unchecked {
@@ -199,9 +197,9 @@ namespace Mono.TextEditor.Utils
 		public void RemoveRange (int index, int count)
 		{
 			if (index < 0 || index > Count)
-				throw new ArgumentOutOfRangeException ("index", index, "Value must be between 0 and " + Count);
+				throw new ArgumentOutOfRangeException (nameof (index), index, "Value must be between 0 and " + Count);
 			if (count < 0 || index + count > Count)
-				throw new ArgumentOutOfRangeException ("count", count, "0 <= length, index(" + index + ")+count <= " + Count);
+				throw new ArgumentOutOfRangeException (nameof (count), count, "0 <= length, index(" + index + ")+count <= " + Count);
 			if (count == 0)
 				return;
 
@@ -307,7 +305,7 @@ namespace Mono.TextEditor.Utils
 		public T this [int index] {
 			get {
 				if (index < 0 || index >= Count)
-					throw new ArgumentOutOfRangeException ("index", index, "Value must be between 0 and " + (Count - 1));
+					throw new ArgumentOutOfRangeException (nameof (index), index, "Value must be between 0 and " + (Count - 1));
 				return GetNode (ref index).value;
 			}
 			set {
@@ -341,12 +339,11 @@ namespace Mono.TextEditor.Utils
 
 		public void CopyTo (T[] array, int arrayIndex)
 		{
-			if (array == null)
-				throw new ArgumentNullException ("array");
+			ArgumentNullException.ThrowIfNull (array);
 			if (array.Length < Count)
-				throw new ArgumentException ("The array is too small", "array");
+				throw new ArgumentException ("The array is too small", nameof (array));
 			if (arrayIndex < 0 || arrayIndex + Count > array.Length)
-				throw new ArgumentOutOfRangeException ("arrayIndex", arrayIndex, "Value must be between 0 and " + (array.Length - Count));
+				throw new ArgumentOutOfRangeException (nameof (arrayIndex), arrayIndex, "Value must be between 0 and " + (array.Length - Count));
 			foreach (T v in this) {
 				array [arrayIndex++] = v;
 			}

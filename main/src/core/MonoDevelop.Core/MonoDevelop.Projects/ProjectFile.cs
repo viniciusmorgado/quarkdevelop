@@ -411,7 +411,7 @@ namespace MonoDevelop.Projects
 		}
 
 		public IList<ProjectFile> DependentChildren {
-			get { return ((IList<ProjectFile>)dependentChildren) ?? new ProjectFile[0]; }
+			get { return ((IList<ProjectFile>)dependentChildren) ?? Array.Empty<ProjectFile> (); }
 		}
 
 		internal FilePath DependencyPath {

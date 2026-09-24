@@ -73,7 +73,7 @@ namespace MonoDevelop.Ide.Editor
 			}
 		}
 
-		class TestViewContentWithDocumentReloadPresenter : TestViewContent, IDocumentReloadPresenter
+		sealed class TestViewContentWithDocumentReloadPresenter : TestViewContent, IDocumentReloadPresenter
 		{
 			public void RemoveMessageBar ()
 			{
@@ -86,7 +86,7 @@ namespace MonoDevelop.Ide.Editor
 				OnShowFileChangeWarning (multiple);
 			}
 
-			public async Task Load ()
+			public new async Task Load ()
 			{
 				Document.Editor.Text = (await TextFileUtility.ReadAllTextAsync (FilePath)).Text;
 			}

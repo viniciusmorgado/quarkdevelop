@@ -48,7 +48,7 @@ namespace MonoDevelop.Ide.RoslynServices
 
 	sealed class MonoDevelopDocumentTrackingService : IDocumentTrackingService, IDisposable
 	{
-		Gui.Document activeDocument = null;
+		Gui.Document activeDocument;
 		bool subscribed;
 
 		public MonoDevelopDocumentTrackingService ()

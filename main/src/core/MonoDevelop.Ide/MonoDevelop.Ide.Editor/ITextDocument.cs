@@ -114,29 +114,25 @@ namespace MonoDevelop.Ide.Editor
 	{
 		public static void RemoveText (this ITextDocument document, ISegment segment)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			document.RemoveText (segment.Offset, segment.Length);
 		}
 
 		public static void ReplaceText (this ITextDocument document, ISegment segment, string value)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			document.ReplaceText (segment.Offset, segment.Length, value);
 		}
 
 		public static void ReplaceText (this ITextDocument document, ISegment segment, ITextSource textSource)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			document.ReplaceText (segment.Offset, segment.Length, textSource);
 		}
 
 		public static void Save (this ITextDocument document)
 		{
-			if (document == null)
-				throw new ArgumentNullException ("document");
+			ArgumentNullException.ThrowIfNull (document);
 			document.WriteTextTo (document.FileName); 
 		}
 	}

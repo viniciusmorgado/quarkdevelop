@@ -136,8 +136,7 @@ namespace MonoDevelop.Ide.CodeFormatting
 		public void CorrectIndenting (PolicyContainer policyParent, TextEditor editor, IDocumentLine line)
 		{
 			try {
-				if (line == null)
-					throw new ArgumentNullException (nameof (line));
+				ArgumentNullException.ThrowIfNull (line);
 				formatter.CorrectIndenting (policyParent, editor, line.LineNumber);
 			} catch (Exception e) {
 				LoggingService.LogError ("Error while indenting.", e);

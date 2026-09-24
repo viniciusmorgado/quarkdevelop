@@ -138,7 +138,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 		{
 		}
 
-		public bool IsVisible ()
+		public new bool IsVisible ()
 		{
 			return true;
 		}

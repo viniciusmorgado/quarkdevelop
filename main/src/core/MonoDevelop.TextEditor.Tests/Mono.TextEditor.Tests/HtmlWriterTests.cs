@@ -33,7 +33,7 @@ namespace Mono.TextEditor.Tests
 {
 	[Ignore("Port to new engine")]
 	[TestFixture]
-	class HtmlWriterTests : TextEditorTestBase
+	sealed class HtmlWriterTests : TextEditorTestBase
 	{
 		[Test]
 		public void TestSimpleCSharpHtml ()

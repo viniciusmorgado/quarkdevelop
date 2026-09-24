@@ -56,8 +56,8 @@ namespace MonoDevelop.Gettext
 		
 		public RegexFileScanner (string[] extensions, string[] mimeTypes)
 		{
-			this.extensions = extensions != null ? extensions : new string[0];
-			this.mimeTypes = mimeTypes != null ? mimeTypes : new string[0];
+			this.extensions = extensions != null ? extensions : Array.Empty<string> ();
+			this.mimeTypes = mimeTypes != null ? mimeTypes : Array.Empty<string> ();
 		}
 		
 		public void AddIncludeRegex (string regex, int valueGroupIndex, string regexOptions, StringEscaping.EscapeMode escapeMode)

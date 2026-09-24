@@ -28,8 +28,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// <exception cref="ArgumentException"><paramref name="replaces"/> is an empty string.</exception>
         public ReplacesAttribute(string replaces)
         {
-            if (replaces == null)
-                throw new ArgumentNullException(nameof(replaces));
+            ArgumentNullException.ThrowIfNull (replaces);
             if (replaces.Length == 0)
                 throw new ArgumentException("replaces is an empty string.");
 

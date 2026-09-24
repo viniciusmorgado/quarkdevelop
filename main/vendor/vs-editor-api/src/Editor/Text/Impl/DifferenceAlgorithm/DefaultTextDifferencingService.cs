@@ -61,10 +61,8 @@ namespace Microsoft.VisualStudio.Text.Differencing.Implementation
 
         public IHierarchicalDifferenceCollection DiffStrings(string leftString, string rightString, StringDifferenceOptions differenceOptions)
         {
-            if (leftString == null)
-                throw new ArgumentNullException(nameof(leftString));
-            if (rightString == null)
-                throw new ArgumentNullException(nameof(rightString));
+            ArgumentNullException.ThrowIfNull(leftString);
+            ArgumentNullException.ThrowIfNull(rightString);
 
             StringDifferenceTypes type;
             ITokenizedStringListInternal left;

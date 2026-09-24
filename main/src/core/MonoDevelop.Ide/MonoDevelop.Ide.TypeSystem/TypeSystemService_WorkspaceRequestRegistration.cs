@@ -68,8 +68,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 			internal void Complete (MonoDevelopWorkspace workspace)
 			{
-				if (workspace == null)
-					throw new ArgumentNullException (nameof (workspace));
+				ArgumentNullException.ThrowIfNull (workspace);
 
 				lock (requests) {
 					foreach (var request in requests.ToList ()) {

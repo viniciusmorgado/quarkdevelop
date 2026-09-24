@@ -66,7 +66,7 @@ namespace Xwt
 
 		public override void Send (SendOrPostCallback d, object state)
 		{
-			if (Application.UIThread != null && Application.UIThread.ManagedThreadId != Thread.CurrentThread.ManagedThreadId) {
+			if (Application.UIThread != null && Application.UIThread.ManagedThreadId != Environment.CurrentManagedThreadId) {
 				var evt = new ManualResetEventSlim (false);
 				Exception exception = null;
 				Application.Invoke (() => {

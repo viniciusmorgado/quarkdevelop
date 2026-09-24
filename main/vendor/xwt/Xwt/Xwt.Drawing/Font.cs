@@ -52,8 +52,7 @@ namespace Xwt.Drawing
 			if (toolkit != null)
 				ToolkitEngine = toolkit;
 			handler = ToolkitEngine.FontBackendHandler;
-			if (backend == null)
-				throw new ArgumentNullException ("backend");
+			ArgumentNullException.ThrowIfNull (backend);
 			Backend = backend;
 		}
 
@@ -548,7 +547,7 @@ namespace Xwt.Drawing
 	}
 
 	
-	class FontValueConverter: TypeConverter
+	sealed class FontValueConverter: TypeConverter
 	{
 		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
 		{
@@ -561,7 +560,7 @@ namespace Xwt.Drawing
 		}
 	}
 	
-	class FontValueSerializer: ValueSerializer
+	sealed class FontValueSerializer: ValueSerializer
 	{
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{

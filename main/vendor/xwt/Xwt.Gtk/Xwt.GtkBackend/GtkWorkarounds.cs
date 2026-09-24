@@ -109,8 +109,8 @@ namespace Xwt.GtkBackend
 		
 		static System.Reflection.MethodInfo glibObjectGetProp, glibObjectSetProp;
 		
-		public static int GtkMajorVersion = 2, GtkMinorVersion = 12, GtkMicroVersion = 0;
-		static bool oldMacKeyHacks = false;
+		public static int GtkMajorVersion = 2, GtkMinorVersion = 12, GtkMicroVersion;
+		static bool oldMacKeyHacks;
 		
 		static GtkWorkarounds ()
 		{
@@ -999,7 +999,7 @@ namespace Xwt.GtkBackend
 		}
 
 		//create closure manually so we can apply ConnectBefore
-		class UrlHandlerClosure
+		sealed class UrlHandlerClosure
 		{
 			Action<string> urlHandler;
 
@@ -1020,7 +1020,7 @@ namespace Xwt.GtkBackend
 				label.AddSignalHandler ("activate-link", new EventHandler<ActivateLinkEventArgs> (HandleLink), typeof(ActivateLinkEventArgs));
 			}
 
-			class ActivateLinkEventArgs : GLib.SignalArgs
+			sealed class ActivateLinkEventArgs : GLib.SignalArgs
 			{
 				public string Url { get { return (string)base.Args [0]; } }
 			}
@@ -1092,7 +1092,7 @@ namespace Xwt.GtkBackend
 
 		#if XWT_GTK3
 		// GTK3: Temp workaround, since GTK 3 has gtk_widget_get_scale_factor, but no gtk_icon_set_render_icon_scaled
-		static bool supportsHiResIcons = false;
+		static bool supportsHiResIcons;
 		#else
 		static bool supportsHiResIcons = true;
 		#endif

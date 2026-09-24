@@ -46,7 +46,7 @@ namespace Xwt.GtkBackend
 		/// Stores information about the index of a noda and the GCHandle
 		/// used by the native reference
 		/// </summary>
-		class NodeData
+		sealed class NodeData
 		{
 			public GCHandle Handle;
 			public int Index;

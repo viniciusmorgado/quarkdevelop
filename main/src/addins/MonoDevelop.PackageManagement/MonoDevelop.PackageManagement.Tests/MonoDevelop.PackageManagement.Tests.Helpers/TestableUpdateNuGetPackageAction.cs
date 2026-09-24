@@ -29,7 +29,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableUpdateNuGetPackageAction : UpdateNuGetPackageAction
+	sealed class TestableUpdateNuGetPackageAction : UpdateNuGetPackageAction
 	{
 		public FakeNuGetProjectContext ProjectContext;
 		public FakeNuGetPackageManager PackageManager;

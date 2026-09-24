@@ -395,7 +395,7 @@ namespace MonoDevelop.Gettext
 	internal class LoadParser : CatalogParser
 	{
 		Catalog catalog;
-		bool headerParsed = false;
+		bool headerParsed;
 		
 		public LoadParser (Catalog catalog, string poFile, Encoding encoding) : base (poFile, encoding)
 		{
@@ -436,7 +436,7 @@ namespace MonoDevelop.Gettext
 		                                        string[] references, string comment,
 		                                        string[] autocomments)
 		{
-			CatalogDeletedEntry d = new CatalogDeletedEntry (new string[0]);
+			CatalogDeletedEntry d = new CatalogDeletedEntry (Array.Empty<string> ());
 			if (!String.IsNullOrEmpty (flags))
 				d.Flags = flags;
 			d.SetDeletedLines (deletedLines);

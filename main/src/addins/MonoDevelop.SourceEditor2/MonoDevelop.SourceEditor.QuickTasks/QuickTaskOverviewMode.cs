@@ -454,7 +454,7 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 
 		}
 
-		uint previewPopupTimeout = 0;
+		uint previewPopupTimeout;
 
 		void PositionPreviewWindow (int my)
 		{
@@ -858,7 +858,7 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 			const int minBarHeight = 16;
 			h = Math.Max (minBarHeight, Math.Round (allocH * (vadjustment.PageSize / adjUpper)) - barPadding - barPadding);
 		}
-		double barColorValue = 0.0;
+		double barColorValue;
 		const double barAlphaMax = 0.5;
 		const double barAlphaMin = 0.22;
 		Caret caret;

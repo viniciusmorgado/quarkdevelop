@@ -136,9 +136,7 @@ namespace MonoDevelop.Ide.Navigation
 
 		public void LogNavigationPoint (NavigationPoint point, bool transient = false)
 		{
-			if (point == null) {
-				throw new ArgumentNullException (nameof (point));
-			}
+			ArgumentNullException.ThrowIfNull (point);
 
 			var item = new NavigationHistoryItem (point);
 			

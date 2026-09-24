@@ -146,7 +146,7 @@ namespace MonoDevelop.Gettext.Translator
 			this.radiobuttonKnown.Name = "radiobuttonKnown";
 			this.radiobuttonKnown.DrawIndicator = true;
 			this.radiobuttonKnown.UseUnderline = true;
-			this.radiobuttonKnown.Group = new global::Gtk.RadioButton [0];
+			this.radiobuttonKnown.Group = System.Array.Empty<Gtk.RadioButton> ();
 			this.frame1.LabelWidget = this.radiobuttonKnown;
 			this.vbox3.Add (this.frame1);
 			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.frame1]));

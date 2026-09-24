@@ -268,7 +268,7 @@ namespace MonoDevelop.Core.Assemblies
 			foreach (var rawLine in (output ?? string.Empty).Split ('\n')) {
 				var line = rawLine.Trim ();
 				int open = line.IndexOf (" [", StringComparison.Ordinal);
-				if (open <= 0 || !line.EndsWith ("]", StringComparison.Ordinal))
+				if (open <= 0 || !line.EndsWith (']'))
 					continue;
 				var versionString = line.Substring (0, open);
 				var sdksDir = line.Substring (open + 2, line.Length - open - 3);

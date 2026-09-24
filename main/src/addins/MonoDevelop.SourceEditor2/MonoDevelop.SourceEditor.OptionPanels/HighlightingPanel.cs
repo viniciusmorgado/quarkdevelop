@@ -272,7 +272,7 @@ namespace MonoDevelop.SourceEditor.OptionPanels
 			this.dialog = dialog;
 		}
 
-		public bool IsVisible ()
+		public new bool IsVisible ()
 		{
 			return true;
 		}

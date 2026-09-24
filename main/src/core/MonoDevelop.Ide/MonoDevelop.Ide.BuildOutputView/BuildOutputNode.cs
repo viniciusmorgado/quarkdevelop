@@ -60,9 +60,9 @@ namespace MonoDevelop.Ide.BuildOutputView
 		public virtual DateTime StartTime { get; set; }
 		public virtual DateTime EndTime { get; set; }
 		public BuildOutputNode Parent { get; set; }
-		public virtual bool HasErrors { get; set; } = false;
-		public virtual bool HasWarnings { get; set; } = false;
-		public virtual bool HasData { get; set; } = false;
+		public virtual bool HasErrors { get; set; }
+		public virtual bool HasWarnings { get; set; }
+		public virtual bool HasData { get; set; }
 
 		public virtual string Configuration { get; set; }
 		public virtual string Platform { get; set; }
@@ -267,7 +267,7 @@ namespace MonoDevelop.Ide.BuildOutputView
 	{
 		BuildOutputNode masterNode;
 		bool includeDiagnostics;
-		bool hasBeenFiltered = false;
+		bool hasBeenFiltered;
 
 		public FilteredBuildOutputNode (BuildOutputNode master, bool includeDiagnostics)
 		{

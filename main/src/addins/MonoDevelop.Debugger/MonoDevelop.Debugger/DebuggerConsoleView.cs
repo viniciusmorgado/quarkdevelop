@@ -41,7 +41,7 @@ namespace MonoDevelop.Debugger
 		Gtk.TextMark tokenBeginMark;
 		CodeCompletionContext ctx;
 		Gdk.ModifierType modifier;
-		bool keyHandled = false;
+		bool keyHandled;
 		uint keyValue;
 		char keyChar;
 		Gdk.Key key;

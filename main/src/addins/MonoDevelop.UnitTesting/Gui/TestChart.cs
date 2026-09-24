@@ -70,8 +70,8 @@ namespace MonoDevelop.UnitTesting
 		
 		Serie serieTime;
 		
-		bool timeScale = false;
-		bool singleDayResult = false;
+		bool timeScale;
+		bool singleDayResult;
 		TestChartType type;
 		
 		TimeSpan currentSpan = TimeSpan.FromDays (5);

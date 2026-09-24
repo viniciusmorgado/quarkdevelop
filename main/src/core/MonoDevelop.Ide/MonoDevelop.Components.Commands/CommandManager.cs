@@ -2998,7 +2998,7 @@ namespace MonoDevelop.Components.Commands
 		{
 			MethodInfo mi = (MethodInfo) cmd.HandlerData;
 			if (mi != null)
-				mi.Invoke (target, new object[0] );
+				mi.Invoke (target, Array.Empty<object> ());
 		}
 		
 		public void Run (object target, Command cmd, object data)

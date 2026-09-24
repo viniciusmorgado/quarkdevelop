@@ -35,7 +35,7 @@ namespace MonoDevelop.Ide.Tasks
 	[TestFixture]
 	[RequireService(typeof(RootWorkspace))]
 	[RequireService (typeof (TaskService))]
-	partial class CommentTasksProviderTests : Ide.IdeTestBase
+	sealed partial class CommentTasksProviderTests : Ide.IdeTestBase
 	{
 		static async Task RunTest (Func<Controller, Task> act)
 		{

@@ -33,7 +33,7 @@ using NUnit.Framework;
 namespace Mono.TextEditor.Tests.Actions
 {
 	[TestFixture()]
-	class DeleteActionTests : TextEditorTestBase
+	sealed class DeleteActionTests : TextEditorTestBase
 	{
 		[Test]
 		public void TestBackspace ()

@@ -60,10 +60,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
             object collapsedForm = null,
             object collapsedHintForm = null)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
 
             if (outliningSpan != null && outliningSpan.Value.End > snapshot.Length)
             {

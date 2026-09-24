@@ -33,7 +33,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.Implementation
             {
                 throw new ArgumentException
                     ("Invalid text buffer.  The specified buffer wasn't created by the default signature help presenter",
-                     "textBuffer");
+                     nameof(textBuffer));
             }
 
             _session.Dismissed += this.OnSession_Dismissed;

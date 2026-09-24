@@ -60,8 +60,7 @@ namespace System
 
 		static TSource MaxValue<TSource, TCompare> (this IEnumerable<TSource> source, Func<TSource, TCompare> compareSelector, IComparer<TCompare> comparer, out bool hasValue)
 		{
-			if (source == null)
-				throw new ArgumentNullException (nameof (source));
+			ArgumentNullException.ThrowIfNull (source);
 
 			TSource result = default;
 			TCompare value = default;
@@ -110,8 +109,7 @@ namespace System
 
 		static TSource MinValue<TSource, TCompare> (this IEnumerable<TSource> source, Func<TSource, TCompare> compareSelector, IComparer<TCompare> comparer, out bool hasValue)
 		{
-			if (source == null)
-				throw new ArgumentNullException (nameof (source));
+			ArgumentNullException.ThrowIfNull (source);
 
 			TSource result = default;
 			TCompare value = default;

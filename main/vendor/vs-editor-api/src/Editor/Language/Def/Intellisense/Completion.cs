@@ -16,7 +16,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense
         // copious private state that is never used by the predominant completion implementation.
         // Given the high frequency with which these objects are created, it makes sense to
         // allocate that rarely (never?) used state only on demand.
-        private class CompletionState
+        private sealed class CompletionState
         {
             public string displayText;
             public string insertionText;

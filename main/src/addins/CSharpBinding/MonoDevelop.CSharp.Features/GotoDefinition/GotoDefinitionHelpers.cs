@@ -62,7 +62,7 @@ namespace ICSharpCode.NRefactory6.CSharp.Features.GotoDefinition
 			var preferredSourceLocations = GeneratedCodeRecognitionService.GetPreferredSourceLocations(solution, symbol).ToArray();
 			if (GoToDefinitionService.TryNavigateToSymbol (symbol, project, true))
 				return true;
-			else if (!preferredSourceLocations.Any ())
+			else if (preferredSourceLocations.Length == 0)
 				return false;
 
 			// If we have a single location, then just navigate to it.

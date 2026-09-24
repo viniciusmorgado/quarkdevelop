@@ -31,7 +31,7 @@ using NuGet.Configuration;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class FakePackageSourceProvider : IPackageSourceProvider
+	sealed class FakePackageSourceProvider : IPackageSourceProvider
 	{
 		public List<PackageSource> PackageSources = new List<PackageSource> ();
 		public List<PackageSource> SavedPackageSources;

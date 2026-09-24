@@ -24,8 +24,7 @@ namespace Microsoft.CodeAnalysis
 		/// </remarks>
 		public static IMethodSymbol GetDelegateInvokeMethod (this ITypeSymbol type)
 		{
-			if (type == null)
-				throw new ArgumentNullException (nameof (type));
+			ArgumentNullException.ThrowIfNull (type);
 			if (type.TypeKind == TypeKind.Delegate)
 				return type.GetMembers ("Invoke").OfType<IMethodSymbol> ().FirstOrDefault (m => m.MethodKind == MethodKind.DelegateInvoke);
 			return null;
@@ -113,8 +112,7 @@ namespace Microsoft.CodeAnalysis
 		/// </param>
 		public static System.ComponentModel.EditorBrowsableState GetEditorBrowsableState (this ISymbol symbol)
 		{
-			if (symbol == null)
-				throw new ArgumentNullException ("symbol");
+			ArgumentNullException.ThrowIfNull (symbol);
 			var browsableState = symbol.GetAttributes ().FirstOrDefault (attr => attr.AttributeClass.Name == "EditorBrowsableAttribute" && attr.AttributeClass.ContainingNamespace.MetadataName == "System.ComponentModel");
 			if (browsableState != null && browsableState.ConstructorArguments.Length == 1) {
 				try {
@@ -137,8 +135,7 @@ namespace Microsoft.CodeAnalysis
 		/// </param>
 		public static bool IsEditorBrowsable (this ISymbol symbol)
 		{
-			if (symbol == null)
-				throw new ArgumentNullException ("symbol");
+			ArgumentNullException.ThrowIfNull (symbol);
 			return GetEditorBrowsableState (symbol) != System.ComponentModel.EditorBrowsableState.Never;
 		}
 

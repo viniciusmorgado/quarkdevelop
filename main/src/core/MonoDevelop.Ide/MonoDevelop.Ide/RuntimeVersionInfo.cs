@@ -40,7 +40,7 @@ namespace MonoDevelop.Ide
 			get {
 				var sb = new System.Text.StringBuilder ();
 				sb.AppendLine ("Runtime:");
-				sb.Append ("\t");
+				sb.Append ('\t');
 				sb.Append (GetRuntimeInfo ());
 				sb.AppendLine ();
 				if (Platform.IsMac && IsMono ()) {

@@ -69,7 +69,7 @@ namespace Mono.TextEditor
 			}
 		}
 		
-		EditMode currentMode = null;
+		EditMode currentMode;
 		public EditMode CurrentMode {
 			get {
 				return currentMode;
@@ -351,8 +351,7 @@ namespace Mono.TextEditor
 
 		string ConvertToPangoMarkup (string str, bool replaceTabs = true)
 		{
-			if (str == null)
-				throw new ArgumentNullException ("str");
+			ArgumentNullException.ThrowIfNull (str);
 			var result = StringBuilderCache.Allocate ();
 			foreach (char ch in str) {
 				switch (ch) {
@@ -466,15 +465,15 @@ namespace Mono.TextEditor
 						if (useColors) {
 							result.Append (" foreground=\"");
 							result.Append (chunkStyle.Foreground.ToPangoString ());
-							result.Append ("\"");
+							result.Append ('"');
 						}
 						if (chunkStyle.FontWeight != Xwt.Drawing.FontWeight.Normal)
-							result.Append (" weight=\"").Append (chunkStyle.FontWeight.ToString ()).Append ("\"");
+							result.Append (" weight=\"").Append (chunkStyle.FontWeight.ToString ()).Append ('"');
 						if (chunkStyle.FontStyle != Xwt.Drawing.FontStyle.Normal)
-							result.Append (" style=\"").Append (chunkStyle.FontStyle.ToString ()).Append ("\"");
+							result.Append (" style=\"").Append (chunkStyle.FontStyle.ToString ()).Append ('"');
 						if (chunkStyle.Underline)
 							result.Append (" underline=\"single\"");
-						result.Append (">");
+						result.Append ('>');
 						styleStack.Push (chunkStyle);
 					}
 					result.Append (ConvertToPangoMarkup (doc.GetTextBetween (chunk.Offset, System.Math.Min (chunk.EndOffset, doc.Length)), replaceTabs));
@@ -493,8 +492,7 @@ namespace Mono.TextEditor
 
 		internal async Task<IEnumerable<MonoDevelop.Ide.Editor.Highlighting.ColoredSegment>> GetChunks (DocumentLine line, int offset, int length, CancellationToken cancellationToken = default)
 		{
-			if (line == null)
-				throw new ArgumentNullException (nameof (line));
+			ArgumentNullException.ThrowIfNull (line);
 			if (document == null)
 				throw new InvalidOperationException ("TextEditorData was disposed.");
 			Runtime.AssertMainThread ();
@@ -1244,7 +1242,7 @@ namespace Mono.TextEditor
 		#endregion
 		
 		#region VirtualSpace Manager
-		IndentationTracker indentationTracker = null;
+		IndentationTracker indentationTracker;
 		public bool HasIndentationTracker {
 			get {
 				return indentationTracker != null;	

@@ -83,7 +83,7 @@ namespace MonoDevelop.Core.Collections
 			if (lookupItems.TryGetValue (key, out existingItem)) {
 				if (existingItem.List != null) {
 					existingItem.List.Remove (item);
-					if (!existingItem.List.Any ()) {
+					if (existingItem.List.Count == 0) {
 						lookupItems.Remove (key);
 					}
 				} else {

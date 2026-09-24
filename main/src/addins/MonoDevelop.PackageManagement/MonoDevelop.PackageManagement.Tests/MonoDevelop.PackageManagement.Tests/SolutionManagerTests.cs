@@ -32,7 +32,7 @@ using NUnit.Framework;
 namespace MonoDevelop.PackageManagement.Tests
 {
 	[TestFixture]
-	class SolutionManagerTests
+	sealed class SolutionManagerTests
 	{
 		FakeSolutionManager solutionManager;
 

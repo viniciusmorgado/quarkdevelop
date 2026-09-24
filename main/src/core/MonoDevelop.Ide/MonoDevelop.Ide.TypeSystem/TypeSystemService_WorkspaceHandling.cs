@@ -58,8 +58,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public MonoDevelopWorkspace GetWorkspace (MonoDevelop.Projects.Solution solution)
 		{
-			if (solution == null)
-				throw new ArgumentNullException (nameof (solution));
+			ArgumentNullException.ThrowIfNull (solution);
 			return (MonoDevelopWorkspace) GetWorkspaceInternal (solution);
 		}
 
@@ -209,8 +208,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public DocumentId GetDocumentId (MonoDevelop.Projects.Project project, string fileName)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException (nameof (fileName));
+			ArgumentNullException.ThrowIfNull (fileName);
 
 			fileName = FileService.GetFullPath (fileName);
 
@@ -227,10 +225,8 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public DocumentId GetDocumentId (Microsoft.CodeAnalysis.Workspace workspace, MonoDevelop.Projects.Project project, string fileName)
 		{
-			if (project == null)
-				throw new ArgumentNullException (nameof(project));
-			if (fileName == null)
-				throw new ArgumentNullException (nameof(fileName));
+			ArgumentNullException.ThrowIfNull (project);
+			ArgumentNullException.ThrowIfNull (fileName);
 			fileName = FileService.GetFullPath (fileName);
 			var projectId = ((MonoDevelopWorkspace)workspace).GetProjectId (project);
 			if (projectId != null) {
@@ -244,10 +240,8 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public DocumentId GetDocumentId (ProjectId projectId, string fileName)
 		{
-			if (projectId == null)
-				throw new ArgumentNullException (nameof(projectId));
-			if (fileName == null)
-				throw new ArgumentNullException (nameof(fileName));
+			ArgumentNullException.ThrowIfNull (projectId);
+			ArgumentNullException.ThrowIfNull (fileName);
 			foreach (var w in workspaces) {
 				if (w.Contains (projectId))
 					return w.GetDocumentId (projectId, fileName);
@@ -257,8 +251,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public IEnumerable<DocumentId> GetDocuments (string fileName)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException (nameof(fileName));
+			ArgumentNullException.ThrowIfNull (fileName);
 			fileName = FileService.GetFullPath (fileName);
 			foreach (var w in workspaces) {
 				foreach (var projectId in w.CurrentSolution.ProjectIds) {
@@ -504,8 +497,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public Task<Compilation> GetCompilationAsync (MonoDevelop.Projects.Project project, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			if (project == null)
-				throw new ArgumentNullException (nameof(project));
+			ArgumentNullException.ThrowIfNull (project);
 
 			var roslynProject = GetProject (project, cancellationToken);
 			if (roslynProject != null)
@@ -662,16 +654,14 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		internal bool IsOutputTrackedProject (DotNetProject project)
 		{
-			if (project == null)
-				throw new ArgumentNullException  (nameof(project));
+			ArgumentNullException.ThrowIfNull (project);
 			return outputTrackedProjects.Any (otp => string.Equals (otp.LanguageName, project.LanguageName, StringComparison.OrdinalIgnoreCase)) ||
 				project.GetTypeTags().Any (tag => outputTrackedProjects.Any (otp => string.Equals (otp.ProjectType, tag, StringComparison.OrdinalIgnoreCase)));
 		}
 
 		void CheckProjectOutput (DotNetProject project, bool autoUpdate)
 		{
-			if (project == null)
-				throw new ArgumentNullException (nameof(project));
+			ArgumentNullException.ThrowIfNull (project);
 			if (IsOutputTrackedProject (project)) {
 				if (autoUpdate) {
 					// update documents

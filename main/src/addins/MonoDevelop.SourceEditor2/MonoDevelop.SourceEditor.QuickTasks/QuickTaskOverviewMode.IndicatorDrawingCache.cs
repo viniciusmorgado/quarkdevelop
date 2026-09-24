@@ -53,8 +53,8 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 
 			public List<HashSet<int>> lineCache;
 
-			public int taskIterator = 0;
-			public int usageIterator = 0;
+			public int taskIterator;
+			public int usageIterator;
 
 			public HslColor [] ColorCache = new HslColor [8];
 

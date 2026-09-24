@@ -226,13 +226,13 @@ namespace MonoDevelop.Ide.Gui.DocumentModels
 		}
 	}
 
-	class CustomFileModel : TextFileModel
+	sealed class CustomFileModel : TextFileModel
 	{
-		public static int LiveBackends = 0;
+		public static int LiveBackends;
 
 		protected internal override Type RepresentationType => typeof(CustomFileModelRepresentation);
 
-		class CustomFileModelRepresentation : TextFileModelRepresentation
+		sealed class CustomFileModelRepresentation : TextFileModelRepresentation
 		{
 			string text;
 

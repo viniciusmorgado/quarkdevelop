@@ -33,7 +33,7 @@ using Microsoft.CodeAnalysis;
 
 namespace MonoDevelop.DocFood
 {
-	class Section : Node
+	sealed class Section : Node
 	{
 		public string Name {
 			get;

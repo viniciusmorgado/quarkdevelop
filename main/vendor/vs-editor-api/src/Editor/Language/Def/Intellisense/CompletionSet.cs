@@ -24,7 +24,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense
         private FilteredObservableCollection<Completion> _filteredCompletions;
         private FilteredObservableCollection<Completion> _filteredCompletionBuilders;
         private CompletionMatchType _filterMatchType = CompletionMatchType.MatchDisplayText;
-        private bool _filterCaseSensitive = false;
+        private bool _filterCaseSensitive;
         private string _filterBufferText;
         private int _filterBufferTextVersionNumber = -1;
 
@@ -242,10 +242,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense
             set
             {
                 // The selection status can never be null.
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+                ArgumentNullException.ThrowIfNull(value);
 
                 // If nothing changed, there's no work to do.
                 if (_selectionStatus == value)

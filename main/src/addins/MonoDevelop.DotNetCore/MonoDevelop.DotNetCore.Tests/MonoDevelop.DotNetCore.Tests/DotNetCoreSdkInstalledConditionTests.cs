@@ -33,7 +33,7 @@ using NUnit.Framework;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class DotNetCoreSdkInstalledConditionTests : DotNetCoreVersionsRestorerTestBase
+	sealed class DotNetCoreSdkInstalledConditionTests : DotNetCoreVersionsRestorerTestBase
 	{
 		[TestCase ("<Condition sdkVersion='2.*' />", "2.1.4", "4.8.0", true)]
 		[TestCase ("<Condition sdkVersion='2.*' />", "2.0.3", "5.1.99", true)]
@@ -74,7 +74,7 @@ namespace MonoDevelop.DotNetCore.Tests
 		}
 	}
 
-	class TestConditionNodeElement : NodeElement
+	sealed class TestConditionNodeElement : NodeElement
 	{
 		XmlElement conditionElement;
 

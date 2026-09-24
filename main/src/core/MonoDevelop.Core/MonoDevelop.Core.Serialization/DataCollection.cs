@@ -99,8 +99,7 @@ namespace MonoDevelop.Core.Serialization
 		
 		public void Add (DataNode entry, string itemPath)
 		{
-			if (entry == null)
-				throw new ArgumentNullException ("entry");
+			ArgumentNullException.ThrowIfNull (entry);
 				
 			DataCollection col;
 			FindData (itemPath + "/", out col, true, 0);

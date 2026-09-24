@@ -178,7 +178,7 @@ namespace Mono.TextEditor
 			return true;
 		}
 
-		void Draw (Cairo.Context cr)
+		new void Draw (Cairo.Context cr)
 		{
 			var allocation = Allocation;
 

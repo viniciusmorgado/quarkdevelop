@@ -129,8 +129,7 @@ namespace Xwt
 		/// <param name="backendType">The <see cref="Type.FullName"/> of the backend type.</param>
 		public static void InitializeAsGuest (string backendType)
 		{
-			if (backendType == null)
-				throw new ArgumentNullException ("backendType");
+			ArgumentNullException.ThrowIfNull (backendType);
 			Initialize (backendType);
 			toolkit.ExitUserCode (null);
 		}
@@ -187,8 +186,7 @@ namespace Xwt
 
 		internal static void Invoke (Action action, Toolkit targetToolkit)
 		{
-			if (action == null)
-				throw new ArgumentNullException (nameof (action));
+			ArgumentNullException.ThrowIfNull (action);
 
 			if (targetToolkit == null)
 				targetToolkit = toolkit;
@@ -203,8 +201,7 @@ namespace Xwt
 		/// </summary>
 		public static Task InvokeAsync(Action action)
 		{
-			if (action == null)
-				throw new ArgumentNullException(nameof (action));
+			ArgumentNullException.ThrowIfNull (action);
 
 			// Capture the current toolkit. It will be used in the invocation
 			var targetToolkit = toolkit;
@@ -232,8 +229,7 @@ namespace Xwt
 		/// </summary>
 		public static Task<T> InvokeAsync<T>(Func<T> func)
 		{
-			if (func == null)
-				throw new ArgumentNullException(nameof(func));
+			ArgumentNullException.ThrowIfNull (func);
 
 			// Capture the current toolkit. It will be used in the invocation
 			var targetToolkit = toolkit;
@@ -272,8 +268,7 @@ namespace Xwt
 		/// </remarks>
 		public static IDisposable TimeoutInvoke (int ms, Func<bool> action)
 		{
-			if (action == null)
-				throw new ArgumentNullException ("action");
+			ArgumentNullException.ThrowIfNull (action);
 			if (ms < 0)
 				throw new ArgumentException ("ms can't be negative");
 
@@ -297,8 +292,7 @@ namespace Xwt
 		/// </remarks>
 		public static IDisposable TimeoutInvoke (TimeSpan timeSpan, Func<bool> action)
 		{
-			if (action == null)
-				throw new ArgumentNullException (nameof (action));
+			ArgumentNullException.ThrowIfNull (action);
 			if (timeSpan.Ticks < 0)
 				throw new ArgumentException ("timeSpan can't be negative");
 
@@ -328,7 +322,7 @@ namespace Xwt
 		/// otherwise block or stop the application.</remarks>
 		public static event EventHandler<ExceptionEventArgs> UnhandledException;
 		
-		class Timer: IDisposable
+		sealed class Timer: IDisposable
 		{
 			public object Id;
 			public void Dispose ()
@@ -385,8 +379,7 @@ namespace Xwt
 		/// <param name="action">Action to execute.</param>
 		public void QueueExitAction (Action action)
 		{
-			if (action == null)
-				throw new ArgumentNullException ("action");
+			ArgumentNullException.ThrowIfNull (action);
 			toolkit.QueueExitAction (action);
 		}
 	}

@@ -29,7 +29,7 @@ using System.Threading;
 
 namespace MonoDevelop.UnitTesting.Tests
 {
-	class TestProgressMonitor : ITestProgressMonitor
+	sealed class TestProgressMonitor : ITestProgressMonitor
 	{
 		public CancellationToken CancellationToken { get; set; }
 

@@ -134,8 +134,7 @@ namespace MonoDevelop.Refactoring
 		
 		public static async Task<ImmutableArray<string>> GetUsedNamespacesAsync (Ide.Editor.TextEditor editor, DocumentContext doc, int offset, CancellationToken cancellationToken = default (CancellationToken))
 		{
-			if (editor == null)
-				throw new System.ArgumentNullException (nameof (editor));
+			System.ArgumentNullException.ThrowIfNull (editor);
 			var parsedDocument = doc.ParsedDocument;
 			if (parsedDocument == null)
 				return ImmutableArray<string>.Empty;

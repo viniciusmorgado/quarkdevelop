@@ -100,7 +100,7 @@ namespace MonoDevelop.Components.Commands
 
 		string[] alternateAccelKeys;
 		KeyBinding[] alternateKeyBindings;
-		static readonly KeyBinding[] emptyBindings = new KeyBinding[0];
+		static readonly KeyBinding[] emptyBindings = Array.Empty<KeyBinding> ();
 
 		public string[] AlternateAccelKeys {
 			get { return alternateAccelKeys; }

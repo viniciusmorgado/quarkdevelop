@@ -38,7 +38,7 @@ using System.Collections.Generic;
 
 namespace Mono.Addins.GuiGtk3
 {
-	internal class Services
+	internal sealed class Services
 	{
 		public static bool InApplicationNamespace (SetupService service, string id)
 		{

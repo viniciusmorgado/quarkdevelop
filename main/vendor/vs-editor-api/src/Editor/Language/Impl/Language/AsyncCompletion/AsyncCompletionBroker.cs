@@ -165,7 +165,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Implement
                 return null;
 
             // No source wishes to participate
-            if (!sourcesWithLocations.Any())
+            if (sourcesWithLocations.Count == 0)
                 return null;
 
             // Some of our extensions need to initialize the source providers before they initialize commit manager providers.
@@ -222,7 +222,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Implement
                 return AggregatedCompletionContext.Empty;
 
             // No source wishes to participate
-            if (!sourcesWithLocations.Any())
+            if (sourcesWithLocations.Count == 0)
                 return null;
 
             var aggregatingSession = AsyncCompletionSession.CreateAggregatingSession(applicableToSpan, JoinableTaskContext, sourcesWithLocations, this, textView, telemetry, GuardedOperations);

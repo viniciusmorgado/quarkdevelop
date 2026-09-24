@@ -34,11 +34,11 @@ namespace Microsoft.VisualStudio.Text.Tagging.Implementation
         internal ITextView textView;    // can be null
         internal JoinableTaskHelper joinableTaskHelper;
 
-        internal MappingSpanLink acculumatedSpanLinks = null;
+        internal MappingSpanLink acculumatedSpanLinks;
 
         internal bool disposed;
         internal bool initialized;
-        internal int versionNumber = 0;
+        internal int versionNumber;
 
         public TagAggregator(TagAggregatorFactoryService factory, ITextView textView, IBufferGraph bufferGraph, TagAggregatorOptions options)
         {
@@ -103,8 +103,7 @@ namespace Microsoft.VisualStudio.Text.Tagging.Implementation
 
         public IEnumerable<IMappingTagSpan<T>> GetTags(IMappingSpan span)
         {
-            if (span == null)
-                throw new ArgumentNullException(nameof(span));
+            ArgumentNullException.ThrowIfNull(span);
 
             if (this.disposed)
                 throw new ObjectDisposedException("TagAggregator");
@@ -152,8 +151,7 @@ namespace Microsoft.VisualStudio.Text.Tagging.Implementation
 
         public IEnumerable<IMappingTagSpan<T>> GetAllTags(IMappingSpan span, CancellationToken cancel)
         {
-            if (span == null)
-                throw new ArgumentNullException(nameof(span));
+            ArgumentNullException.ThrowIfNull(span);
 
             if (this.disposed)
                 throw new ObjectDisposedException("TagAggregator");

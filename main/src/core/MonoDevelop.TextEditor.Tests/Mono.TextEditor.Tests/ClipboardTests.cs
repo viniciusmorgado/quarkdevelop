@@ -35,10 +35,10 @@ using System.Threading.Tasks;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture]
-	class ClipboardTests : TextEditorTestBase
+	sealed class ClipboardTests : TextEditorTestBase
 	{
 		#region ITextPasteHandler implementation
-		class TestPasteHandler : TextPasteHandler
+		sealed class TestPasteHandler : TextPasteHandler
 		{
 			public override string FormatPlainText (int offset, string text, byte [] copyData)
 			{

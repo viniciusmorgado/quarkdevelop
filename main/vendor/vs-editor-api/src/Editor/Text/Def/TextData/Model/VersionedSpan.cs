@@ -22,10 +22,7 @@ namespace Microsoft.VisualStudio.Text
 
         public VersionedSpan(ITextImageVersion version, Span span)
         {
-            if (version == null)
-            {
-                throw new ArgumentNullException(nameof(version));
-            }
+            ArgumentNullException.ThrowIfNull(version);
 
             if (span.End > version.Length)
             {
@@ -43,10 +40,7 @@ namespace Microsoft.VisualStudio.Text
 
         public VersionedSpan TranslateTo(ITextImageVersion other, SpanTrackingMode mode)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
+            ArgumentNullException.ThrowIfNull(other);
 
             return new VersionedSpan(other, other.TrackTo(this, mode));
         }

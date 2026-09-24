@@ -52,7 +52,7 @@ namespace MonoDevelop.VersionControl.Git
 			this.radioMD.Active = true;
 			this.radioMD.DrawIndicator = true;
 			this.radioMD.UseUnderline = true;
-			this.radioMD.Group = new global::Gtk.RadioButton [0];
+			this.radioMD.Group = System.Array.Empty<Gtk.RadioButton> ();
 			this.vbox2.Add (this.radioMD);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.radioMD]));
 			w3.Position = 1;

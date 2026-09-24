@@ -30,7 +30,7 @@ namespace Microsoft.VisualStudio.Text.Utilities
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         #region Private Fields
 
-        private bool _disposed = false;
+        private bool _disposed;
         private TData _underlyingDataObject;
         private int _count;
         private WrapperCreator<TData, TWrapper> _wrapperCreator;

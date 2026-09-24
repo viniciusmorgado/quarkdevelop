@@ -19,10 +19,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// <returns><c>true</c> if given <see cref="ITextView"/> is embedded, <c>false</c> otherwise.</returns>
         public static bool IsEmbeddedTextView(this ITextView textView)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             return textView.Roles.Contains(PredefinedTextViewRoles.EmbeddedPeekTextView);
         }
@@ -36,10 +33,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// <returns><c>true</c> if containing <see cref="ITextView"/> was found, <c>false</c> otherwise.</returns>
         public static bool TryGetContainingTextView(this ITextView textView, out ITextView containingTextView)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             // Extra scrutiny because Peek is on a different layer and we cannot just rely on it doing the right thing
             if (textView.IsEmbeddedTextView())
@@ -67,10 +61,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// </remarks>
         public static bool GetInOuterLayout(this ITextView textView)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             return ((ITextView2)textView).InOuterLayout;
         }
@@ -80,10 +71,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// </summary>
         public static IMultiSelectionBroker GetMultiSelectionBroker(this ITextView textView)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             if (textView is ITextView2 textView2)
             {
@@ -105,10 +93,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// </summary>
         public static void QueuePostLayoutAction(this ITextView textView, Action action)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             (textView as ITextView2)?.QueuePostLayoutAction(action);
         }
@@ -118,10 +103,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// </summary>
         public static bool TryGetTextViewLines(this ITextView textView, out ITextViewLineCollection textViewLines)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             if (textView is ITextView2 textView2)
             {
@@ -139,10 +121,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// </summary>
         public static bool TryGetTextViewLineContainingBufferPosition(this ITextView textView, SnapshotPoint bufferPosition, out ITextViewLineCollection textViewLines)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull(textView);
 
             if (textView is ITextView2 textView2)
             {

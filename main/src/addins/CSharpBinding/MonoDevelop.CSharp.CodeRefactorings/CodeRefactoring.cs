@@ -40,7 +40,7 @@ namespace MonoDevelop.CSharp.CodeRefactorings
 
 			if (_actions.Count == 0)
 			{
-				throw new ArgumentException("Actions can not be empty", "actions");
+				throw new ArgumentException("Actions can not be empty", nameof (actions));
 			}
 		}
 	}

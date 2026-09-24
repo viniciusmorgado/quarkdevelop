@@ -99,7 +99,7 @@ namespace MonoDevelop.Projects.MSBuild
 			var it = (MSProjectItem)item;
 			name = it.ItemType;
 			include = it.UnevaluatedInclude;
-			if (it.UnevaluatedInclude.Contains ("*"))
+			if (it.UnevaluatedInclude.Contains ('*'))
 				// MSBuild expands wildcards in the evaluated include. We don't want that, unless we are getting evaluated item info.
 				finalItemSpec = include;
 			else

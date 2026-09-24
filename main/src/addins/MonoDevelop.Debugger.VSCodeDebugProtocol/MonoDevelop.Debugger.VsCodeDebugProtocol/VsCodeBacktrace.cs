@@ -15,7 +15,7 @@ using VsFrameFormat = Microsoft.VisualStudio.Shared.VSCodeDebugProtocol.Messages
 
 namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 {
-	class VSCodeDebuggerBacktrace : IBacktrace
+	sealed class VSCodeDebuggerBacktrace : IBacktrace
 	{
 		readonly VSCodeDebuggerSession session;
 		readonly VsStackFrame[] frames;

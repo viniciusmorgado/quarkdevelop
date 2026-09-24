@@ -36,7 +36,7 @@ namespace MonoDevelop.Debugger
 		CodeCompletionContext ctx;
 
 		Xwt.ModifierKeys modifier;
-		bool keyHandled = false;
+		bool keyHandled;
 		uint keyValue;
 		char keyChar;
 		Key key;

@@ -49,7 +49,7 @@ namespace MonoDevelop.Projects.MSBuild
 
 		public bool HasToolsVersion () => !string.IsNullOrEmpty (ToolsVersion);
 
-		public bool DefaultTargetsSpecified { get; set; } = false;
+		public bool DefaultTargetsSpecified { get; set; }
 
 		public CompileTarget DefaultCompileTarget => defaultCompileTarget;
 
@@ -229,7 +229,7 @@ namespace MonoDevelop.Projects.MSBuild
 				}
 			}
 
-			return new string [0];
+			return Array.Empty<string> ();
 		}
 
 		static void UpdateTargetFrameworks (MSBuildProject project, IEnumerable<string> targetFrameworks)

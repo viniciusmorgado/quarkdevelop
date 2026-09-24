@@ -39,7 +39,7 @@ namespace MonoDevelop.Components.PropertyGrid
 	public class PropertyEditorTypeAttribute : Attribute
 	{
 		private Type type;
-		private bool inherits = false;
+		private bool inherits;
 		
 		public PropertyEditorTypeAttribute (Type type)
 		{

@@ -37,17 +37,17 @@ namespace MonoDevelop.Ide.Templates
 	
 	public class ParentProjectFileTemplateCondition : FileTemplateCondition
 	{
-		bool requireExists = false;
-		string projectType = null;
+		bool requireExists;
+		string projectType;
 		
 		//these specify the paths within the project in which the file may or may not be created
-		string[] permittedCreationPaths = null;
-		string[] excludedCreationPaths = null;
+		string[] permittedCreationPaths;
+		string[] excludedCreationPaths;
 		
 		//these specify the filenames that must or must not exist within the project
 		//filenames are relative to the creation directory, but rooted in the project base directory
-		string[] requiredFiles = null;
-		string[] excludedFiles = null;
+		string[] requiredFiles;
+		string[] excludedFiles;
 		
 		
 		public override void Load (XmlElement element)

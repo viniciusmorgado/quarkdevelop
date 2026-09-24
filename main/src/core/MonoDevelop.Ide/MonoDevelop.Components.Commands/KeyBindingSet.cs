@@ -151,7 +151,7 @@ namespace MonoDevelop.Components.Commands
 		public void SetBinding (Command cmd, params string[] accelKeys)
 		{
 			string key = KeyBindingService.GetCommandKey (cmd);
-			accelKeys = accelKeys?.Distinct ().ToArray () ?? new string [0];
+			accelKeys = accelKeys?.Distinct ().ToArray () ?? Array.Empty<string> ();
 			if (parent == null) {
 				if (accelKeys.Length == 0)
 					bindings.Remove (key);
@@ -194,7 +194,7 @@ namespace MonoDevelop.Components.Commands
 			else if (parent != null)
 				return parent.GetBindings (cmd);
 			else
-				return new string[0];
+				return Array.Empty<string> ();
 		}
 		
 		const string commandAttr = "command";

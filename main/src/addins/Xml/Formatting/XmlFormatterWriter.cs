@@ -149,8 +149,7 @@ namespace MonoDevelop.Xml.Formatting
 
 		public XmlFormatterWriter (TextWriter writer)
 		{
-			if (writer == null)
-				throw new ArgumentNullException ("writer");
+			ArgumentNullException.ThrowIfNull (writer);
 			ignore_encoding = (writer.Encoding == null);
 			Initialize (writer);
 			allow_doc_fragment = true;
@@ -161,8 +160,7 @@ namespace MonoDevelop.Xml.Formatting
 
 		void Initialize (TextWriter writer)
 		{
-			if (writer == null)
-				throw new ArgumentNullException ("writer");
+			ArgumentNullException.ThrowIfNull (writer);
 			XmlNameTable name_table = new NameTable ();
 			this.writer = new TextWriterWrapper (writer, this);
 			if (writer is StreamWriter)
@@ -1223,8 +1221,7 @@ namespace MonoDevelop.Xml.Formatting
 
 		void CheckChunkRange (Array buffer, int index, int count)
 		{
-			if (buffer == null)
-				throw new ArgumentNullException ("buffer");
+			ArgumentNullException.ThrowIfNull (buffer);
 			if (index < 0 || buffer.Length < index)
 				throw ArgumentOutOfRangeError ("index");
 			if (count < 0 || buffer.Length < index + count)
@@ -1249,16 +1246,15 @@ namespace MonoDevelop.Xml.Formatting
 
 		internal static void WriteBinHex (byte [] buffer, int index, int count, TextWriter w)
 		{
-			if (buffer == null)
-				throw new ArgumentNullException ("buffer");
+			ArgumentNullException.ThrowIfNull (buffer);
 			if (index < 0) {
 				throw new ArgumentOutOfRangeException (
-					"index", index,
+					nameof (index), index,
 					"index must be non negative integer.");
 			}
 			if (count < 0) {
 				throw new ArgumentOutOfRangeException (
-					"count", count,
+					nameof (count), count,
 					"count must be non negative integer.");
 			}
 			if (buffer.Length < index + count)
@@ -1614,8 +1610,7 @@ namespace MonoDevelop.Xml.Formatting
 
 		public XmlNamespaceManager (XmlNameTable nameTable)
 		{
-			if (nameTable == null)
-				throw new ArgumentNullException ("nameTable");
+			ArgumentNullException.ThrowIfNull (nameTable);
 			this.nameTable = nameTable;
 
 			nameTable.Add (PrefixXmlns);
@@ -1651,10 +1646,10 @@ namespace MonoDevelop.Xml.Formatting
 		internal virtual void AddNamespace (string prefix, string uri, bool atomizedNames)
 		{
 			if (prefix == null)
-				throw new ArgumentNullException ("prefix", "Value cannot be null.");
+				throw new ArgumentNullException (nameof (prefix), "Value cannot be null.");
 
 			if (uri == null)
-				throw new ArgumentNullException ("uri", "Value cannot be null.");
+				throw new ArgumentNullException (nameof (uri), "Value cannot be null.");
 			if (!atomizedNames) {
 				prefix = nameTable.Add (prefix);
 				uri = nameTable.Add (uri);
@@ -1898,11 +1893,9 @@ namespace MonoDevelop.Xml.Formatting
 
 		internal virtual void RemoveNamespace (string prefix, string uri, bool atomizedNames)
 		{
-			if (prefix == null)
-				throw new ArgumentNullException ("prefix");
+			ArgumentNullException.ThrowIfNull (prefix);
 
-			if (uri == null)
-				throw new ArgumentNullException ("uri");
+			ArgumentNullException.ThrowIfNull (uri);
 			
 			if (count == 0)
 				return;

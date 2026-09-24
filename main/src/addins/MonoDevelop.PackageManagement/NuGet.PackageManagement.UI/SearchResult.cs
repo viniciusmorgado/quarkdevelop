@@ -64,7 +64,7 @@ namespace NuGet.PackageManagement.UI
 
 		public static SearchResult<T> Empty<T>() => new SearchResult<T>
 		{
-			Items = new T[] { },
+			Items = Array.Empty<T>(),
 			SourceSearchStatus = new Dictionary<string, LoadingStatus> { }
 		};
 	}

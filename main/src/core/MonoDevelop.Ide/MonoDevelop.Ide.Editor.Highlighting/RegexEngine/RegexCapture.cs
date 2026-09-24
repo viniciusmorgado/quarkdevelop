@@ -106,7 +106,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
          * The substring to the right of the capture
          */
         internal string GetRightSubstring() {
-			return _text.Substring(_index + _length, _text.Length - _index - _length);
+			return _text.Substring(_index + _length);
         }
 
 #if DBG

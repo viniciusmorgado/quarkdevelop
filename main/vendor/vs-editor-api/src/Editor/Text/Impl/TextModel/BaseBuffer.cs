@@ -211,10 +211,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
                 {
                     throw new ArgumentOutOfRangeException(nameof(position));
                 }
-                if (text == null)
-                {
-                    throw new ArgumentNullException(nameof(text));
-                }
+                ArgumentNullException.ThrowIfNull(text);
 
                 // Check for ReadOnly
                 if (this.baseBuffer.IsReadOnlyImplementation(position, isEdit: true))
@@ -237,10 +234,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
                 {
                     throw new ArgumentOutOfRangeException(nameof(position));
                 }
-                if (characterBuffer == null)
-                {
-                    throw new ArgumentNullException(nameof(characterBuffer));
-                }
+                ArgumentNullException.ThrowIfNull(characterBuffer);
                 if (startIndex < 0 || startIndex > characterBuffer.Length)
                 {
                     throw new ArgumentOutOfRangeException(nameof(startIndex));
@@ -275,10 +269,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
                 {
                     throw new ArgumentOutOfRangeException(nameof(charsToReplace));
                 }
-                if (replaceWith == null)
-                {
-                    throw new ArgumentNullException(nameof(replaceWith));
-                }
+                ArgumentNullException.ThrowIfNull(replaceWith);
 
                 // Check for ReadOnly
                 if (this.baseBuffer.IsReadOnlyImplementation(new Span(startPosition, charsToReplace), isEdit: true))
@@ -301,10 +292,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
                 {
                     throw new ArgumentOutOfRangeException(nameof(replaceSpan));
                 }
-                if (replaceWith == null)
-                {
-                    throw new ArgumentNullException(nameof(replaceWith));
-                }
+                ArgumentNullException.ThrowIfNull(replaceWith);
 
                 // Check for ReadOnly
                 if (this.baseBuffer.IsReadOnlyImplementation(replaceSpan, isEdit: true))
@@ -647,8 +635,8 @@ namespace Microsoft.VisualStudio.Text.Implementation
         protected internal ITextDifferencingService textDifferencingService;
         protected readonly GuardedOperations guardedOperations;
 
-        private static bool eventTracing = false;
-        private static int eventDepth = 0;
+        private static bool eventTracing;
+        private static int eventDepth;
 
         protected BaseBuffer(IContentType contentType, int initialLength, ITextDifferencingService textDifferencingService, GuardedOperations guardedOperations)
         {
@@ -716,10 +704,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public void ChangeContentType(IContentType newContentType, object editTag)
         {
-            if (newContentType == null)
-            {
-                throw new ArgumentNullException(nameof(newContentType));
-            }
+            ArgumentNullException.ThrowIfNull(newContentType);
 
             if (newContentType != this.contentType)
             {

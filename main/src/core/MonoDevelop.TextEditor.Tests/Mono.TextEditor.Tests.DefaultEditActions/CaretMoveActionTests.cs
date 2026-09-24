@@ -31,7 +31,7 @@ using NUnit.Framework;
 namespace Mono.TextEditor.Tests.Actions
 {
 	[TestFixture()]
-	class CaretMoveActionTests : TextEditorTestBase
+	sealed class CaretMoveActionTests : TextEditorTestBase
 	{
 		[Test()]
 		public void TestCaretLeft ()

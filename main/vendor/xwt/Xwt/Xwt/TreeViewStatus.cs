@@ -35,7 +35,7 @@ namespace Xwt
 		int idColumn;
 		List<NodeInfo> state;
 		
-		class NodeInfo {
+		sealed class NodeInfo {
 			public object Id;
 			public bool Expanded;
 			public bool Selected;

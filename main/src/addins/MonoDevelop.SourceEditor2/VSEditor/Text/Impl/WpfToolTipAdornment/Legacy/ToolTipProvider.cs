@@ -53,12 +53,10 @@ namespace Microsoft.VisualStudio.Text.AdornmentLibrary.ToolTip.Implementation
 
         public void ShowToolTip(ITrackingSpan span, object toolTipContent, PopupStyles style)
         {
-            if (span == null)
-                throw new ArgumentNullException("span");
+            ArgumentNullException.ThrowIfNull(span);
             if (span.TextBuffer != _textView.TextBuffer)
                 throw new ArgumentException("Invalid span");
-            if (toolTipContent == null)
-                throw new ArgumentNullException("toolTipContent");
+            ArgumentNullException.ThrowIfNull(toolTipContent);
 
             var element = toolTipContent as Control;
             if (element == null)

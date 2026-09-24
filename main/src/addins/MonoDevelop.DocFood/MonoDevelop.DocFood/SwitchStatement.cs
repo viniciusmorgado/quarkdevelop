@@ -32,7 +32,7 @@ using Microsoft.CodeAnalysis;
 
 namespace MonoDevelop.DocFood
 {
-	class SwitchStatement : Node
+	sealed class SwitchStatement : Node
 	{
 		public const string XmlTag = "Switch";
 		
@@ -97,7 +97,7 @@ namespace MonoDevelop.DocFood
 			return result;
 		}
 		
-		class CaseStatement : Node
+		sealed class CaseStatement : Node
 		{
 			public const string XmlTag = "Case";
 			

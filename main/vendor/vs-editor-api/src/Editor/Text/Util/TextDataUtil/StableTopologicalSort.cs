@@ -30,10 +30,8 @@ namespace Microsoft.VisualStudio.Utilities
             IEnumerable<T> itemsToOrder,
             TopologicalDependencyFunction<T> dependencyFunction)
         {
-            if (itemsToOrder == null)
-                throw new ArgumentNullException(nameof(itemsToOrder));
-            if (dependencyFunction == null)
-                throw new ArgumentNullException(nameof(dependencyFunction));
+            ArgumentNullException.ThrowIfNull(itemsToOrder);
+            ArgumentNullException.ThrowIfNull(dependencyFunction);
 
             var itemsToOrderList = itemsToOrder.ToList();
             if (itemsToOrderList.Count < 2)

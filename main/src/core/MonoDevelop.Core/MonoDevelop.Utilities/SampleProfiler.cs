@@ -86,7 +86,7 @@ namespace MonoDevelop.Utilities
 		ProcessStartInfo GetSampleStartInfo (int seconds, string outputFilePath)
 			=>  new ProcessStartInfo ("sample") {
 				UseShellExecute = false,
-				Arguments = $"{Process.GetCurrentProcess ().Id} {seconds} -file {outputFilePath}"
+				Arguments = $"{Environment.ProcessId} {seconds} -file {outputFilePath}"
 			};
 
 		ProcessStartInfo GetSpinDumpStartInfo (int seconds, string outputFilePath)
@@ -102,7 +102,7 @@ namespace MonoDevelop.Utilities
 			return new ProcessStartInfo ("sudo") {
 				UseShellExecute = false,
 				// Some weird things happen when using -o, so write to stdout and manually pipe the text
-				Arguments = $"-n spindump {Process.GetCurrentProcess ().Id} {seconds} {millisBetweenSamples} -noBinary -onlyRunnable -onlyTarget -o {outputFilePath}",
+				Arguments = $"-n spindump {Environment.ProcessId} {seconds} {millisBetweenSamples} -noBinary -onlyRunnable -onlyTarget -o {outputFilePath}",
 				RedirectStandardOutput = true,
 			};
 		}
@@ -226,12 +226,12 @@ namespace MonoDevelop.Utilities
 						}
 
 						if (ch == '.') {
-							sb.Append ("_");
+							sb.Append ('_');
 							continue;
 						}
 
 						if (ch == '[' && methodSignature[i + 1] == ']') {
-							sb.Append ("*");
+							sb.Append ('*');
 							i++;
 							continue;
 						}
@@ -242,7 +242,7 @@ namespace MonoDevelop.Utilities
 					// Add some data to match format, + 0 is because it doesn't matter, we're not looking at native code.
 					sb.Append ("  (in MonoDevelop.exe) + 0  [");
 					sb.AppendFormat ("0x{0:x}", offset);
-					sb.Append ("]");
+					sb.Append (']');
 
 					// Skip the rest of the block(s) after the method signature until we get a path.
 					input = input.Slice (input.IndexOf ('[') + 1).TrimStart ();

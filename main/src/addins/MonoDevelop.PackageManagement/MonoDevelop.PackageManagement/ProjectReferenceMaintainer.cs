@@ -146,7 +146,7 @@ namespace MonoDevelop.PackageManagement
 
 		bool AnyChanges ()
 		{
-			return removedReferences.Any () || addedReferences.Any () || updatedReferences.Any ();
+			return removedReferences.Count != 0 || addedReferences.Count != 0 || updatedReferences.Count != 0;
 		}
 
 		class UpdatedProjectReference

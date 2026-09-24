@@ -175,7 +175,7 @@ namespace MonoDevelop.Ide.TextEditing
 		{
 			List<FileExtension> list;
  			if (!fileExtensions.TryGetValue (file, out list))
-				return new FileExtension[0];
+				return Array.Empty<FileExtension> ();
 			else
 				return list.ToArray ();
 		}

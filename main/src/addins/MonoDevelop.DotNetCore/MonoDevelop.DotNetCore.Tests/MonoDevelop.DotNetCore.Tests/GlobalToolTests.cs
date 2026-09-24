@@ -34,7 +34,7 @@ using UnitTests;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class GlobalToolTests : TestBase
+	sealed class GlobalToolTests : TestBase
 	{
 		[Test]
 		public void DetectNonInstalledTools ()

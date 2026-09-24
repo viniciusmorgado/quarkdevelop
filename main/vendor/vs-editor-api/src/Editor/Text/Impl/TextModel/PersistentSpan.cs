@@ -19,7 +19,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         private int _startIndex;
         private int _endLine;
         private int _endIndex;
-        private ITextVersion _originalVersion = null;
+        private ITextVersion _originalVersion;
         private Span _originalSpan;             // This is either the span when this was created or when the document was reopened.
                                                 // It is default(Span) if either we were created (on an unopened document) with line/column indices or after the document was closed.
         private bool _useLineIndex;

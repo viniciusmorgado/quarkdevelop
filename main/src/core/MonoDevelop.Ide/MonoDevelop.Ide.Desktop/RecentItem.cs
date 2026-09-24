@@ -141,8 +141,7 @@ namespace MonoDevelop.Ide.Desktop
 		
 		public void RemoveGroup (string group)
 		{
-			if (this.groups.Contains (group)) 
-				this.groups.Remove (group);
+			this.groups.Remove (group);
 		}
 		
 		public void NewTimeStamp ()

@@ -35,10 +35,7 @@ namespace Microsoft.VisualStudio.Text.Editor
             }
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+                ArgumentNullException.ThrowIfNull(value);
                 this.optionName = value;
             }
         }

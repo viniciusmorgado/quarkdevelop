@@ -248,7 +248,7 @@ namespace MonoDevelop.Projects.MSBuild
 					}
 
 					await connection.SendMessage (new InitializeRequest {
-						IdeProcessId = Process.GetCurrentProcess ().Id,
+						IdeProcessId = Environment.ProcessId,
 						BinDir = binDir,
 						CultureName = GettextCatalog.UICulture.Name,
 						GlobalProperties = props
@@ -489,7 +489,7 @@ namespace MonoDevelop.Projects.MSBuild
 			// every time XS is started, removing unused builders. The process id is used
 			// as folder name, so it is easy to check if the folder is currently in use or not.
 
-			var dirId = Process.GetCurrentProcess ().Id.ToString () + "_" + runtime.InternalId;
+			var dirId = Environment.ProcessId.ToString () + "_" + runtime.InternalId;
 			var exesDir = UserProfile.Current.CacheDir.Combine ("MSBuild").Combine (dirId);
 			var originalExe = GetExeLocationInBundle (MSBuildProjectService.ToolsVersion);
 			var originalExeConfig = originalExe + ".config";

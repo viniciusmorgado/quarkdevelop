@@ -51,7 +51,7 @@ namespace Mono.TextEditor
 			// If the textview is closed, this should be a no-op
 			if (!IsClosed) {
 				if ((options & ~(EnsureSpanVisibleOptions.ShowStart | EnsureSpanVisibleOptions.MinimumScroll | EnsureSpanVisibleOptions.AlwaysCenter)) != 0x00)
-					throw new ArgumentOutOfRangeException ("options");
+					throw new ArgumentOutOfRangeException (nameof (options));
 
 				//It is possible that this call is a result of an action that was defered until the view was loaded (& if so, it is possible that the
 				//snapshot changed inbetween).

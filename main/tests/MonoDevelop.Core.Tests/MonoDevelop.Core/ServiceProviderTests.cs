@@ -340,7 +340,7 @@ namespace MonoDevelop.Core
 		}
 	}
 
-	class TestService2 : TestService
+	sealed class TestService2 : TestService
 	{
 		public static bool Initialized2;
 
@@ -367,7 +367,7 @@ namespace MonoDevelop.Core
 		}
 	}
 
-	class ServiceObject2 : ServiceObject
+	sealed class ServiceObject2 : ServiceObject
 	{
 	}
 }

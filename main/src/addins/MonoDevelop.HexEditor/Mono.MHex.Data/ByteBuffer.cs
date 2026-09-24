@@ -32,10 +32,10 @@ namespace Mono.MHex.Data
 	{
 		PieceTable pieceTable = new PieceTable ();
 		ByteAddBuffer addBuffer = new ByteAddBuffer ();
-		IBuffer buffer = new ArrayBuffer (new byte [0]);
+		IBuffer buffer = new ArrayBuffer (Array.Empty<byte> ());
 		long lastChangeOffset;
 
-		class ByteAddBuffer : IBuffer
+		sealed class ByteAddBuffer : IBuffer
 		{
 			public List<byte> Bytes { get; } = new List<byte> ();
 
@@ -82,10 +82,10 @@ namespace Mono.MHex.Data
 		public byte [] GetBytes (long offset, int count)
 		{
 			if (count == 0)
-				return new byte [0];
+				return Array.Empty<byte> ();
 			var node = pieceTable.GetTreeNodeAtOffset (offset);
 			if (node == null)
-				return new byte [0];
+				return Array.Empty<byte> ();
 			long nodeOffset = node.value.CalcOffset (node);
 			long nodeEndOffset = nodeOffset + node.value.Length;
 			if (offset + count < nodeEndOffset)
@@ -165,7 +165,7 @@ namespace Mono.MHex.Data
 		Stack<UndoOperation> redoStack = new Stack<UndoOperation> ();
 		UndoOperation currentAtomicOperation;
 
-		bool isInUndo = false;
+		bool isInUndo;
 		int atomicUndoLevel;
 
 		public bool CanUndo {

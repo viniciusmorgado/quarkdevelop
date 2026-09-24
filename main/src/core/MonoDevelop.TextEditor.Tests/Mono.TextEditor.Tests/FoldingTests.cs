@@ -36,13 +36,13 @@ using MonoDevelop.Ide.Editor;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture()]
-	class FoldingTests
+	sealed class FoldingTests
 	{
 		public static TextEditorData Create (string content)
 		{
-			int caretIndex = content.IndexOf ("$");
+			int caretIndex = content.IndexOf ('$');
 			if (caretIndex >= 0)
-				content = content.Substring (0, caretIndex) + content.Substring (caretIndex + 1);
+				content = string.Concat (content.AsSpan (0, caretIndex), content.AsSpan (caretIndex + 1));
 
 			int selection1 = content.IndexOf ("<-");
 			int selection2 = content.IndexOf ("->");
@@ -50,8 +50,8 @@ namespace Mono.TextEditor.Tests
 			int selectionStart = 0;
 			int selectionEnd = 0;
 			if (0 <= selection1 && selection1 < selection2) {
-				content = content.Substring (0, selection2) + content.Substring (selection2 + 2);
-				content = content.Substring (0, selection1) + content.Substring (selection1 + 2);
+				content = string.Concat (content.AsSpan (0, selection2), content.AsSpan (selection2 + 2));
+				content = string.Concat (content.AsSpan (0, selection1), content.AsSpan (selection1 + 2));
 				selectionStart = selection1;
 				selectionEnd = selection2 - 2;
 				caretIndex = selectionEnd;

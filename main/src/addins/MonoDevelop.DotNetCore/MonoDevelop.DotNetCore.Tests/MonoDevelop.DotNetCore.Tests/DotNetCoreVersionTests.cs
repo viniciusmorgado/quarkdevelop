@@ -31,7 +31,7 @@ using NUnit.Framework;
 namespace MonoDevelop.DotNetCore.Tests
 {
 	[TestFixture]
-	class DotNetCoreVersionTests
+	sealed class DotNetCoreVersionTests
 	{
 		[Test]
 		public void Parse_StableVersion ()

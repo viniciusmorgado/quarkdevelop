@@ -121,7 +121,7 @@ namespace Xwt.GtkBackend
 			Widget.Label = label;
 		}
 
-		class RadioGroup
+		sealed class RadioGroup
 		{
 			public Gtk.RadioButton Group;
 			public Gtk.RadioButton NullRadio;

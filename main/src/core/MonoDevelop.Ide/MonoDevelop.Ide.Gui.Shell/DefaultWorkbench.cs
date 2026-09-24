@@ -85,7 +85,7 @@ namespace MonoDevelop.Ide.Gui
 
 		bool initialized;
 		bool closeAll;
-		bool? fullScreenState = null;
+		bool? fullScreenState;
 
 		Rectangle requestedBounds = Rectangle.Empty;
 		
@@ -183,7 +183,7 @@ namespace MonoDevelop.Ide.Gui
 			get {
 				if (dock != null && dock.CurrentLayout != null) {
 					string s = dock.CurrentLayout;
-					s = s.Substring (s.IndexOf (".") + 1);
+					s = s.Substring (s.IndexOf ('.') + 1);
 					if (s.EndsWith (fullViewModeTag))
 						return s.Substring (0, s.Length - fullViewModeTag.Length);
 					return s;
@@ -632,7 +632,6 @@ namespace MonoDevelop.Ide.Gui
 			}
 		}
 
-		bool closing;
 		void OnClosing (object o, Gtk.DeleteEventArgs e)
 		{
 			// don't allow Gtk to close the workspace, in case Close() leaves the synchronization context
@@ -642,7 +641,7 @@ namespace MonoDevelop.Ide.Gui
 			IdeApp.Exit ().Ignore ();
 		}
 		
-		public void Close()
+		public new void Close()
 		{
 			BrandingService.ApplicationNameChanged -= ApplicationNameChanged;
 
@@ -681,7 +680,7 @@ namespace MonoDevelop.Ide.Gui
 			Destroy ();
 		}
 
-		int activeWindowChangeLock = 0;
+		int activeWindowChangeLock;
 
 		public void LockActiveWindowChangeEvent ()
 		{
@@ -1079,7 +1078,7 @@ namespace MonoDevelop.Ide.Gui
 			return base.OnFocusInEvent (evnt);
 		}
 
-		bool haveFocusedToolbar = false;
+		bool haveFocusedToolbar;
 		protected override bool OnFocused (DirectionType direction)
 		{
 			if (!initialized)
@@ -1301,7 +1300,7 @@ namespace MonoDevelop.Ide.Gui
 			return w;
 		}
 		
-		public bool IsVisible (PadCodon padContent)
+		public new bool IsVisible (PadCodon padContent)
 		{
 			DockItem item = GetDockItem (padContent);
 			if (item != null)

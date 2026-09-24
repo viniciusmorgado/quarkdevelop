@@ -33,9 +33,6 @@ namespace MonoDevelop.Ide.Gui.Documents
 {
 	public class DocumentToolbar
 	{
-		Gtk.Widget frame;
-		Box box;
-		bool empty = true;
 		readonly IShellDocumentToolbar shellToolbar;
 
 		internal DocumentToolbar (IShellDocumentToolbar shellToolbar)

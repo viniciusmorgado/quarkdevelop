@@ -41,14 +41,13 @@ namespace MonoDevelop.JSon
 		internal int thisLineIndent, nextLineIndent;
 		StringBuilder currentIndent;
 		// char previousNewline = '\0';
-		char previousChar = '\0';
+		char previousChar;
 		bool isLineStart;
 		bool isInString;
 
 		public JSonIndentEngine (Ide.Editor.TextEditor editor)
 		{
-			if (editor == null)
-				throw new ArgumentNullException ("editor");
+			ArgumentNullException.ThrowIfNull (editor);
 			this.editor = editor;
 			Reset ();
 		}

@@ -34,8 +34,8 @@ namespace Xwt
 	[BackendType (typeof(IProgressBarBackend))]
 	public class ProgressBar : Widget
 	{
-		double fraction = 0.0;
-		bool indeterminate = false;
+		double fraction;
+		bool indeterminate;
 		
 		public ProgressBar ()
 		{

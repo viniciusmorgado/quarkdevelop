@@ -34,8 +34,7 @@ namespace Microsoft.VisualStudio.Text.EditorOptions.Implementation
         #region IEditorOptionsFactoryService Members
         public IEditorOptions GetOptions(IPropertyOwner scope)
         {
-            if (scope == null)
-                throw new ArgumentNullException(nameof(scope));
+            ArgumentNullException.ThrowIfNull(scope);
 
             return scope.Properties.GetOrCreateSingletonProperty<IEditorOptions>(() => new EditorOptions(this.GlobalOptions as EditorOptions, scope, this));
         }
@@ -68,8 +67,7 @@ namespace Microsoft.VisualStudio.Text.EditorOptions.Implementation
         #region IEditorOptionsFactoryService2 Members
         public bool TryBindToScope(IEditorOptions options, IPropertyOwner scope)
         {
-            if (scope == null)
-                throw new ArgumentNullException(nameof(scope));
+            ArgumentNullException.ThrowIfNull(scope);
 
             var editorOptions = options as EditorOptions;
             if ((editorOptions == null) || (!editorOptions.AllowsLateBinding) || scope.Properties.ContainsProperty(typeof(IEditorOptions)))

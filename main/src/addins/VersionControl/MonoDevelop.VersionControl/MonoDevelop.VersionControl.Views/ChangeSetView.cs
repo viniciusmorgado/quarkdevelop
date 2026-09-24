@@ -23,8 +23,8 @@ namespace MonoDevelop.VersionControl.Views
 		CellRendererDiff diffRenderer;
 		
 		class DiffData {
-			public bool diffRequested = false;
-			public bool diffRunning = false;
+			public bool diffRequested;
+			public bool diffRunning;
 			public Exception diffException;
 			public DiffInfo[] difs;
 		};
@@ -238,7 +238,7 @@ namespace MonoDevelop.VersionControl.Views
 			
 			TreeIter it = filestore.AppendValues (statusicon, lstatus, GLib.Markup.EscapeText (localpath).Split ('\n'), commit, false, n.LocalPath.ToString (), true, hasComment, fileIcon, n.HasLocalChanges, scolor);
 			if (!n.IsDirectory)
-				filestore.AppendValues (it, statusicon, "", new string[0], false, true, n.LocalPath.ToString (), false, false, fileIcon, false, null);
+				filestore.AppendValues (it, statusicon, "", Array.Empty<string> (), false, true, n.LocalPath.ToString (), false, false, fileIcon, false, null);
 			return it;
 		}
 		

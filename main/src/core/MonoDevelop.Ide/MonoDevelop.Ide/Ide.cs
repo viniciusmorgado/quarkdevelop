@@ -487,7 +487,7 @@ namespace MonoDevelop.Ide
 			return false;
 		}
 
-		static int idleActionsDisabled = 0;
+		static int idleActionsDisabled;
 		static Queue<Action> idleActions = new Queue<Action> ();
 
 		/// <summary>

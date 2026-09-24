@@ -59,7 +59,7 @@ namespace Xwt.GtkBackend
 	/// <summary>
 	/// This creates a Pango list and applies attributes to it with *much* less overhead than the GTK# version.
 	/// </summary>
-	internal class FastPangoAttrList : IDisposable
+	internal sealed class FastPangoAttrList : IDisposable
 	{
 		const float PangoScale = 1024;
 
@@ -245,7 +245,7 @@ namespace Xwt.GtkBackend
 	public class TextIndexer
 	{
 		static readonly List<int> emptyList = new List<int> ();
-		static readonly int [] emptyArray = new int [0];
+		static readonly int [] emptyArray = Array.Empty<int> ();
 		int [] indexToByteIndex;
 		List<int> byteIndexToIndex;
 

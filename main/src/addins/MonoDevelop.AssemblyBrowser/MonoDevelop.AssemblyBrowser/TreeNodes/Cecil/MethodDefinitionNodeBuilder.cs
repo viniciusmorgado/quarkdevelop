@@ -125,10 +125,8 @@ namespace MonoDevelop.AssemblyBrowser
 
 		public static Task<List<ReferenceSegment>> DecompileAsync (TextEditor data, AssemblyLoader assemblyLoader, Func<CSharpDecompiler, SyntaxTree> decompile, DecompilerSettings settings = null, DecompileFlags flags = null)
 		{
-			if (data == null) 
-				throw new ArgumentNullException (nameof (data));
-			if (assemblyLoader == null) 
-				throw new ArgumentNullException (nameof (assemblyLoader));
+			ArgumentNullException.ThrowIfNull (data);
+			ArgumentNullException.ThrowIfNull (assemblyLoader);
 
 			return Task.Run (async delegate {
 				settings = settings ?? GetDecompilerSettings (data, publicOnly: flags.PublicOnly);

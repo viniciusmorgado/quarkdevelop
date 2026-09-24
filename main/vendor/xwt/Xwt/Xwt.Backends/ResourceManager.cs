@@ -99,7 +99,7 @@ namespace Xwt.Backends
 			}
 		}
 
-		class ReferenceEqualsEqualityComparer<T> : IEqualityComparer<T> where T : class
+		sealed class ReferenceEqualsEqualityComparer<T> : IEqualityComparer<T> where T : class
 		{
 			public static ReferenceEqualsEqualityComparer<T> Instance = new ReferenceEqualsEqualityComparer<T>();
 

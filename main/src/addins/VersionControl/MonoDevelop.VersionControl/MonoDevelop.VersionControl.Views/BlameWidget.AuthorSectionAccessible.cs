@@ -49,10 +49,8 @@ namespace MonoDevelop.VersionControl.Views
 
 			public AuthorSectionAccessible (BlameRenderer widget, int line, Annotation ann, double y1, double y2)
 			{
-				if (widget is null)
-					throw new ArgumentNullException (nameof (widget));
-				if (ann is null)
-					throw new ArgumentNullException (nameof (ann));
+				ArgumentNullException.ThrowIfNull (widget);
+				ArgumentNullException.ThrowIfNull (ann);
 
 				Accessible = AccessibilityElementProxy.ButtonElementProxy ();
 				Accessible.GtkParent = widget;

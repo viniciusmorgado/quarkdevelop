@@ -2,10 +2,10 @@
 // IsoCodes.cs
 //
 // Author:
-//   David Makovský <yakeen@sannyas-on.net>
+//   David Makovskï¿½ <yakeen@sannyas-on.net>
 //
 // Copyright (C) 1999-2006 Vaclav Slavik (Code and design inspiration - poedit.org)
-// Copyright (C) 2007 David Makovský
+// Copyright (C) 2007 David Makovskï¿½
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -521,15 +521,15 @@ namespace MonoDevelop.Gettext
 		
 		public static IsoCode LookupLanguageCode (string code)
 		{
-			if (isoLanguagesByCode.ContainsKey (code))
-				return isoLanguagesByCode [code];
+			if (isoLanguagesByCode.TryGetValue (code, out var value))
+				return value;
 			return null;
 		}
 		
 		public static IsoCode LookupCountryCode (string code)
 		{
-			if (isoCountriesByCode.ContainsKey (code))
-				return isoCountriesByCode [code];
+			if (isoCountriesByCode.TryGetValue (code, out var value))
+				return value;
 			return null;
 		}
 

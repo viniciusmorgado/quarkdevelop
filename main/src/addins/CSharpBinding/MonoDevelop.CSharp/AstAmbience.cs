@@ -82,7 +82,7 @@ namespace MonoDevelop.CSharp
 			// Missing roslyn formatting option ?
 			//			if (options.GetOption (CSharpFormattingOptions.Spacing ???))
 			//	sb.Append (" ");
-			sb.Append ("(");
+			sb.Append ('(');
 			var hasParameters = parameters != null && parameters.Parameters.Count > 0;
 
 			// Missing roslyn formatting option ?
@@ -95,18 +95,18 @@ namespace MonoDevelop.CSharp
 					if (!first) {
 						//if (options.SpaceBeforeMethodDeclarationParameterComma)
 						//	sb.Append (" ");
-						sb.Append (",");
+						sb.Append (',');
 						//if (options.SpaceAfterMethodDeclarationParameterComma)
-						sb.Append (" ");
+						sb.Append (' ');
 					} else {
 						first = false;
 					}
 					foreach (var mod in param.Modifiers) {
 						sb.Append (mod.ToString ());
-						sb.Append (" ");
+						sb.Append (' ');
 					}
 					AppendEscaped (sb, StripTrivia(param.Type.ToString ()));
-					sb.Append (" ");
+					sb.Append (' ');
 					AppendEscaped (sb, param.Identifier.ToString ());
 				}
 			}
@@ -114,7 +114,7 @@ namespace MonoDevelop.CSharp
 			// Missing roslyn formatting option ?
 			//if (hasParameters && options.SpaceWithinMethodDeclarationParentheses)
 			//	sb.Append (" ");
-			sb.Append (")");
+			sb.Append (')');
 		}
 
 		string StripTrivia (string str)
@@ -217,7 +217,7 @@ namespace MonoDevelop.CSharp
 				AppendParameter (sb, constructor.ParameterList);
 			} else if (e is DestructorDeclarationSyntax) {
 				var destructror = e as DestructorDeclarationSyntax;
-				sb.Append ("~");
+				sb.Append ('~');
 				sb.Append (destructror.Identifier.ToString ());
 				//				if (options.SpaceBeforeMethodDeclarationParentheses)
 				//	sb.Append (" ");
@@ -227,7 +227,7 @@ namespace MonoDevelop.CSharp
 				sb.Append ("this");
 				//if (options.SpaceBeforeIndexerDeclarationBracket)
 				//	sb.Append (" ");
-				sb.Append ("[");
+				sb.Append ('[');
 				//if (options.SpaceWithinIndexerDeclarationBracket)
 				//	sb.Append (" ");
 				
@@ -236,7 +236,7 @@ namespace MonoDevelop.CSharp
 					if (!first) {
 						//if (options.SpaceBeforeIndexerDeclarationParameterComma)
 						//	sb.Append (" ");
-						sb.Append (",");
+						sb.Append (',');
 						//if (options.SpaceAfterIndexerDeclarationParameterComma)
 						//	sb.Append (" ");
 					} else {
@@ -246,7 +246,7 @@ namespace MonoDevelop.CSharp
 				}
 				//if (options.SpaceWithinIndexerDeclarationBracket)
 				//	sb.Append (" ");
-				sb.Append ("]");
+				sb.Append (']');
 			} else if (e is VariableDeclaratorSyntax) {
 				var initializer = (VariableDeclaratorSyntax)e;
 				sb.Append (initializer.Identifier.ToString ());
@@ -266,14 +266,14 @@ namespace MonoDevelop.CSharp
 				var property = (PropertyDeclarationSyntax)e;
 				if (property.ExplicitInterfaceSpecifier != null) {
 					AppendEscaped (sb, property.ExplicitInterfaceSpecifier.ToString ());
-					sb.Append (".");
+					sb.Append ('.');
 				}
 				sb.Append (property.Identifier.ToString ());
 			} else if (e is EventDeclarationSyntax) {
 				var customEvent = (EventDeclarationSyntax)e;
 				if (customEvent.ExplicitInterfaceSpecifier != null) {
 					AppendEscaped (sb, customEvent.ExplicitInterfaceSpecifier.ToString ());
-					sb.Append (".");
+					sb.Append ('.');
 				}
 				sb.Append (customEvent.Identifier.ToString ());
 			} else if (e is EnumDeclarationSyntax) {

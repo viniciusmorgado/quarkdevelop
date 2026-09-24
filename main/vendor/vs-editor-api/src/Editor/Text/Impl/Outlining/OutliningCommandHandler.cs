@@ -246,10 +246,7 @@ namespace Microsoft.VisualStudio.Text.Outlining.Implementation
 
         internal static IEnumerable<ICollapsible> GetInnermostCollapsibles(ITextSnapshot snapshot, IEnumerable<ICollapsible> collapsibles)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+            ArgumentNullException.ThrowIfNull(snapshot);
 
             List<ICollapsible> innermostCollapsibles = null;
 

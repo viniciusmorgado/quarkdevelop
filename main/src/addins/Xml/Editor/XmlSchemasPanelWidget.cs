@@ -376,9 +376,7 @@ namespace MonoDevelop.Xml.Editor
 		
 		TreeIter AddRegisteredSchema (XmlSchemaCompletionData schema)
 		{
-			if (removedSchemas.Contains (schema))
-				removedSchemas.Remove (schema);
-			else
+			if (!removedSchemas.Remove (schema))
 				addedSchemas.Add (schema);
 			
 			return AppendSchemaToStore (schema);

@@ -34,9 +34,9 @@ namespace MonoDevelop.DesignerSupport
 	
 	public class ErrorInFileException : Exception
 	{
-		int line = 0;
-		int column = 0;
-		string fileName = null;
+		int line;
+		int column;
+		string fileName;
 		
 		public ErrorInFileException (DocumentLocation region, string fileName)
 		{

@@ -27,14 +27,8 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
         #region Construction
         public BufferGraph(ITextBuffer topBuffer, GuardedOperations guardedOperations)
         {
-            if (topBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(topBuffer));
-            }
-            if (guardedOperations == null)
-            {
-                throw new ArgumentNullException(nameof(guardedOperations));
-            }
+            ArgumentNullException.ThrowIfNull(topBuffer);
+            ArgumentNullException.ThrowIfNull(guardedOperations);
 
             this.topBuffer = topBuffer;
             this.guardedOperations = guardedOperations;
@@ -67,10 +61,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public Collection<ITextBuffer> GetTextBuffers(Predicate<ITextBuffer> match)
         {
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
             FrugalList<ITextBuffer> buffers = new FrugalList<ITextBuffer>();
             foreach (ITextBuffer buffer in this.importingProjectionBufferMap.Keys)
             {
@@ -106,10 +97,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
             if (affinity < PositionAffinity.Predecessor || affinity > PositionAffinity.Successor)
             {
                 throw new ArgumentOutOfRangeException(nameof(affinity));
@@ -152,10 +140,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
 
             ITextBuffer currentBuffer = position.Snapshot.TextBuffer;
             int currentPosition = position.TranslateTo(currentBuffer.CurrentSnapshot, trackingMode);
@@ -190,10 +175,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (targetBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(targetBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(targetBuffer);
             if (affinity < PositionAffinity.Predecessor || affinity > PositionAffinity.Successor)
             {
                 throw new ArgumentOutOfRangeException(nameof(affinity));
@@ -226,10 +208,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public SnapshotPoint? MapDownToSnapshot(SnapshotPoint position, PointTrackingMode trackingMode, ITextSnapshot targetSnapshot, PositionAffinity affinity)
         {
-            if (targetSnapshot == null)
-            {
-                throw new ArgumentNullException(nameof(targetSnapshot));
-            }
+            ArgumentNullException.ThrowIfNull(targetSnapshot);
 
             SnapshotPoint? result = MapDownToBuffer(position, trackingMode, targetSnapshot.TextBuffer, affinity);
             if (result.HasValue && (result.Value.Snapshot != targetSnapshot))
@@ -248,10 +227,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public SnapshotPoint? MapUpToSnapshot(SnapshotPoint position, PointTrackingMode trackingMode, PositionAffinity affinity, ITextSnapshot targetSnapshot)
         {
-            if (targetSnapshot == null)
-            {
-                throw new ArgumentNullException(nameof(targetSnapshot));
-            }
+            ArgumentNullException.ThrowIfNull(targetSnapshot);
 
             SnapshotPoint? result = MapUpToBuffer(position, trackingMode, affinity, targetSnapshot.TextBuffer);
             if (result.HasValue && (result.Value.Snapshot != targetSnapshot))
@@ -264,10 +240,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public SnapshotPoint? MapUpToFirstMatch(SnapshotPoint point, PointTrackingMode trackingMode, Predicate<ITextSnapshot> match, PositionAffinity affinity)
         {
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
             return CheckedMapUpToBuffer(point, trackingMode, match, affinity);
         }
 
@@ -334,10 +307,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
 
             if (!this.importingProjectionBufferMap.ContainsKey(span.Snapshot.TextBuffer))
             {
@@ -370,10 +340,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public NormalizedSnapshotSpanCollection MapDownToBuffer(SnapshotSpan span, SpanTrackingMode trackingMode, ITextBuffer targetBuffer)
         {
-            if (targetBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(targetBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(targetBuffer);
 
             if (!this.importingProjectionBufferMap.ContainsKey(targetBuffer))
             {
@@ -387,10 +354,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public NormalizedSnapshotSpanCollection MapDownToSnapshot(SnapshotSpan span, SpanTrackingMode trackingMode, ITextSnapshot targetSnapshot)
         {
-            if (targetSnapshot == null)
-            {
-                throw new ArgumentNullException(nameof(targetSnapshot));
-            }
+            ArgumentNullException.ThrowIfNull(targetSnapshot);
 
             NormalizedSnapshotSpanCollection results = MapDownToBuffer(span, trackingMode, targetSnapshot.TextBuffer);
             if ((results.Count > 0) && (results[0].Snapshot != targetSnapshot))
@@ -409,10 +373,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public NormalizedSnapshotSpanCollection MapUpToSnapshot(SnapshotSpan span, SpanTrackingMode trackingMode, ITextSnapshot targetSnapshot)
         {
-            if (targetSnapshot == null)
-            {
-                throw new ArgumentNullException(nameof(targetSnapshot));
-            }
+            ArgumentNullException.ThrowIfNull(targetSnapshot);
 
             NormalizedSnapshotSpanCollection results = MapUpToBuffer(span, trackingMode, targetSnapshot.TextBuffer);
             if ((results.Count > 0) && (results[0].Snapshot != targetSnapshot))
@@ -480,10 +441,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public NormalizedSnapshotSpanCollection MapUpToFirstMatch(SnapshotSpan span, SpanTrackingMode trackingMode, Predicate<ITextSnapshot> match)
         {
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
             return CheckedMapUpToBuffer(span, trackingMode, match);
         }
 

@@ -295,7 +295,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	class LabelLink
+	sealed class LabelLink
 	{
 		public int StartIndex;
 		public int EndIndex;

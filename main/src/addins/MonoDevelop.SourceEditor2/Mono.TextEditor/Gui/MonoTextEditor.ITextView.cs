@@ -59,11 +59,11 @@ namespace Mono.TextEditor
 		ConnectionManager connectionManager;
 
 		TextEditorInitializationService factoryService;
-		int queuedSpaceReservationStackRefresh = 0;    //int so that it can be set via Interlocked.CompareExchange()
+		int queuedSpaceReservationStackRefresh;    //int so that it can be set via Interlocked.CompareExchange()
 
 		//		IEditorFormatMap _editorFormatMap;
 
-		bool hasInitializeBeenCalled = false;
+		bool hasInitializeBeenCalled;
 
 		ITextSelection selection;
 
@@ -87,7 +87,7 @@ namespace Mono.TextEditor
 
 		List<Lazy<ITextViewCreationListener, IDeferrableContentTypeAndTextViewRoleMetadata>> deferredTextViewListeners;
 
-		bool isClosed = false;
+		bool isClosed;
 
 		private PropertyCollection properties = new PropertyCollection ();
 
@@ -542,8 +542,7 @@ namespace Mono.TextEditor
 
 		public IMDSpaceReservationManager GetSpaceReservationManager (string name)
 		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
+			ArgumentNullException.ThrowIfNull (name);
 
 			return _spaceReservationStack.GetOrCreateManager (name);
 		}

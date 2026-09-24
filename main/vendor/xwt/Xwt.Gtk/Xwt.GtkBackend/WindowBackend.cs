@@ -139,7 +139,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	class RootWindowAlignment: Gtk.Alignment, IConstraintProvider
+	sealed class RootWindowAlignment: Gtk.Alignment, IConstraintProvider
 	{
 		WindowBackend backend;
 

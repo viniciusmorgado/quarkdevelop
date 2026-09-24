@@ -80,8 +80,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 			internal SolutionId GetSolutionId (MonoDevelop.Projects.Solution solution)
 			{
-				if (solution == null)
-					throw new ArgumentNullException (nameof (solution));
+				ArgumentNullException.ThrowIfNull (solution);
 
 				lock (solutionIdMap) {
 					if (!solutionIdMap.TryGetValue (solution, out SolutionId result)) {
@@ -399,7 +398,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			void ReloadModifiedProjects ()
 			{
 				lock (workspace.projectModifyLock) {
-					if (!workspace.modifiedProjects.Any ())
+					if (workspace.modifiedProjects.Count == 0)
 						return;
 					var modifiedWhileLoading = workspace.modifiedProjects;
 					workspace.modifiedProjects = new List<MonoDevelop.Projects.DotNetProject> ();
@@ -419,7 +418,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			internal void ReloadModifiedProject (MonoDevelop.Projects.Project project)
 			{
 				lock (workspace.projectModifyLock) {
-					if (!workspace.modifiedProjects.Any ())
+					if (workspace.modifiedProjects.Count == 0)
 						return;
 
 					int removed = workspace.modifiedProjects.RemoveAll (p => p == project);

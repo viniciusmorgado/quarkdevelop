@@ -223,7 +223,7 @@ namespace MonoDevelop.Ide.BuildOutputView
 			metadata.RootNodesCount = projects.Sum (x => x.RootNodes.Count);
 		}
 
-		bool disposed = false;
+		bool disposed;
 
 		~BuildOutput ()
 		{

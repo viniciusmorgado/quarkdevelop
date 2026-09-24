@@ -36,15 +36,11 @@ namespace NuGet.Protocol
 			IHttpCredentialsHandler credentialsHandler,
 			ICredentialService credentialService)
 		{
-			if (packageSource == null) {
-				throw new ArgumentNullException (nameof (packageSource));
-			}
+			ArgumentNullException.ThrowIfNull (packageSource);
 
 			this.packageSource = packageSource;
 
-			if (credentialsHandler == null) {
-				throw new ArgumentNullException (nameof (credentialsHandler));
-			}
+			ArgumentNullException.ThrowIfNull (credentialsHandler);
 
 			this.credentialsHandler = credentialsHandler;
 

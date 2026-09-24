@@ -49,10 +49,8 @@ namespace MonoDevelop.Ide.Editor
 
 		public BraceMatchingResult (ISegment leftSegment, ISegment rightSegment, bool isCaretInLeft, BraceMatchingProperties properties = BraceMatchingProperties.None) : this ()
 		{
-			if (leftSegment == null)
-				throw new ArgumentNullException (nameof (leftSegment));
-			if (rightSegment == null)
-				throw new ArgumentNullException (nameof (rightSegment));
+			ArgumentNullException.ThrowIfNull (leftSegment);
+			ArgumentNullException.ThrowIfNull (rightSegment);
 			LeftSegment = leftSegment;
 			RightSegment = rightSegment;
 			IsCaretInLeft = isCaretInLeft;

@@ -541,7 +541,7 @@ namespace MonoDevelop.Projects.Policies
 					if (removed.Length > 0)
 						removed.Append (' ');
 					if (baseline.UniqueNames && node is DataValue)
-						removed.Append ("@").Append (node.Name);
+						removed.Append ('@').Append (node.Name);
 					else
 						removed.Append (n.ToString (CultureInfo.InvariantCulture));
 				}
@@ -1426,7 +1426,7 @@ namespace MonoDevelop.Projects.Policies
 	
 	class UnknownPolicy: IEquatable<UnknownPolicy>
 	{
-		static int upCount = 0;
+		static int upCount;
 		
 		string scope;
 		public DataNode Data;

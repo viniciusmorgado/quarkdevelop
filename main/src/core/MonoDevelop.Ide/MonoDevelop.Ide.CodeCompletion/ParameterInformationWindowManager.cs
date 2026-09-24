@@ -229,7 +229,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 		
 		public static int X { get; private set; }
 		public static int Y { get; private set; }
-		public static bool wasAbove = false;
+		public static bool wasAbove;
 		/// <summary>
 		/// This stores information about code completion window(not about Parameter information window)
 		/// at time of last showing of Parameter window, so we know if we have reposition

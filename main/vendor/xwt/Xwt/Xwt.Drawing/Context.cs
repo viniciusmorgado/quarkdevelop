@@ -42,7 +42,7 @@ namespace Xwt.Drawing
 		static StyleSet globalStyles = StyleSet.Empty;
 		SavedContext stackTop;
 
-		class SavedContext
+		sealed class SavedContext
 		{
 			public double Alpha;
 			public StyleSet Styles;
@@ -114,7 +114,7 @@ namespace Xwt.Drawing
 		internal void SetStyles (StyleSet styles)
 		{
 			this.styles = this.styles.AddRange (styles.Intersect (RegisteredStyles).ToArray ());
-			this.styles = this.styles.RemoveAll (styles.Where (s => s.StartsWith ("-", StringComparison.Ordinal)).Select (s => s.TrimStart ('-')).ToArray ());
+			this.styles = this.styles.RemoveAll (styles.Where (s => s.StartsWith ('-')).Select (s => s.TrimStart ('-')).ToArray ());
 			handler.SetStyles (Backend, this.styles);
 		}
 

@@ -116,7 +116,7 @@ namespace MonoDevelop.Gettext
 			if (argument.StartsWith("--")) {
 				optionValuePair = argument.Substring(2);
 			}
-			else if (argument.StartsWith("/") || argument.StartsWith("-")) {
+			else if (argument.StartsWith('/') || argument.StartsWith('-')) {
 				optionValuePair = argument.Substring(1);
 			} else
 				return;

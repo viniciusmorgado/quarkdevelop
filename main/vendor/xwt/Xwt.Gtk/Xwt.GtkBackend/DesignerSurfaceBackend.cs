@@ -47,7 +47,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 	
-	class DesignerBox: Gtk.EventBox
+	sealed class DesignerBox: Gtk.EventBox
 	{
 		Gtk.EventBox surface;
 		

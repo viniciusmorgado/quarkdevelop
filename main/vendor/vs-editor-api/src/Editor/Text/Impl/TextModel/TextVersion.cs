@@ -24,15 +24,9 @@ namespace Microsoft.VisualStudio.Text.Implementation
         /// <param name="imageVersion">The <see cref="ITextImageVersion"/> of the associated snapshot.</param>
         public TextVersion(ITextBuffer textBuffer, TextImageVersion imageVersion)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
-            if (imageVersion == null)
-            {
-                throw new ArgumentNullException(nameof(imageVersion));
-            }
+            ArgumentNullException.ThrowIfNull(imageVersion);
 
             this.TextBuffer = textBuffer;
             _textImageVersion = imageVersion;
@@ -170,10 +164,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public ITrackingSpan CreateCustomTrackingSpan(Span span, TrackingFidelityMode trackingFidelity, object customState, CustomTrackToVersion behavior)
         {
-            if (behavior == null)
-            {
-                throw new ArgumentNullException(nameof(behavior));
-            }
+            ArgumentNullException.ThrowIfNull(behavior);
             if (trackingFidelity != TrackingFidelityMode.Forward)
             {
                 throw new NotImplementedException();

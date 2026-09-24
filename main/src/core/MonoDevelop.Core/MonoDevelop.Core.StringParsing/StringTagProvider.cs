@@ -36,7 +36,7 @@ namespace MonoDevelop.Core.StringParsing
 			if (typeof(T).IsAssignableFrom (type))
 				return GetTags ();
 			else
-				return new StringTagDescription [0];
+				return Array.Empty<StringTagDescription> ();
 		}
 		
 		object IStringTagProvider.GetTagValue (object instance, string tag)

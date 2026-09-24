@@ -22,10 +22,7 @@ namespace Microsoft.VisualStudio.Text.Editor
         /// <param name="textView">The <see cref="ITextView"/> that was created.</param>
         public TextViewCreatedEventArgs(ITextView textView)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException(nameof(textView));
-            }
+            ArgumentNullException.ThrowIfNull (textView);
             TextView = textView;
         }
     }

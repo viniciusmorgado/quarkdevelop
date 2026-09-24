@@ -657,12 +657,12 @@ namespace MonoDevelop.Ide.Projects
 							// project is saved because a project reference cannot be resolved until
 							// the project has a parent solution.
 							List<ProjectReference> projectReferences = GetProjectReferences (project);
-							if (projectReferences.Any ())
+							if (projectReferences.Count != 0)
 								project.Items.RemoveRange (projectReferences);
 
 							await IdeApp.ProjectOperations.SaveAsync (eitem);
 
-							if (projectReferences.Any ())
+							if (projectReferences.Count != 0)
 								project.Items.AddRange (projectReferences);
 						}
 					}

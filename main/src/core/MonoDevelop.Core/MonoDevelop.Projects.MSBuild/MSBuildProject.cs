@@ -562,9 +562,9 @@ namespace MonoDevelop.Projects.MSBuild
 			}
 		}
 
-		string[] sdkArray = null;
-		string[] implicitSdkArray = null;
-		string[] explicitSdkArray = null;
+		string[] sdkArray;
+		string[] implicitSdkArray;
+		string[] explicitSdkArray;
 
 		void GenerateSdkArray()
 		{
@@ -614,7 +614,7 @@ namespace MonoDevelop.Projects.MSBuild
 
 		public override string Namespace {
 			get {
-				if (GetReferencedSDKs ().Any ())
+				if (GetReferencedSDKs ().Length != 0)
 					return string.Empty;
 				return Schema;
 			}

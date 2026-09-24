@@ -44,7 +44,7 @@ namespace MonoDevelop.SourceEditor
 	{
 		const string indentString = "\t";
 
-		class TestCase : IDisposable
+		sealed class TestCase : IDisposable
 		{
 			TextEditorExtensionTestCase testCase;
 

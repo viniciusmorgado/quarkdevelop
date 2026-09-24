@@ -212,7 +212,7 @@ namespace MonoDevelop.Ide.Projects
 		}
 
 		[DebuggerDisplay ("Project {Name}")]
-		class ProjectWithExecutionDeps : Project
+		sealed class ProjectWithExecutionDeps : Project
 		{
 			public ProjectWithExecutionDeps (string name) : base ("foo")
 			{
@@ -266,7 +266,7 @@ namespace MonoDevelop.Ide.Projects
 			}
 		}
 
-		class CheckBuildingForExecutionPropertyProject : Project
+		sealed class CheckBuildingForExecutionPropertyProject : Project
 		{
 			public CheckBuildingForExecutionPropertyProject ()
 			{

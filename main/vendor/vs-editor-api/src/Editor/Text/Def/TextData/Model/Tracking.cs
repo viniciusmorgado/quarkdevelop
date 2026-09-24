@@ -21,14 +21,8 @@ namespace Microsoft.VisualStudio.Text
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (currentVersion == null)
-            {
-                throw new ArgumentNullException(nameof(currentVersion));
-            }
-            if (targetVersion == null)
-            {
-                throw new ArgumentNullException(nameof(targetVersion));
-            }
+            ArgumentNullException.ThrowIfNull(currentVersion);
+            ArgumentNullException.ThrowIfNull(targetVersion);
             if (targetVersion.TextBuffer != currentVersion.TextBuffer)
             {
                 throw new ArgumentException("currentVersion and targetVersion must be from the same TextBuffer");
@@ -65,14 +59,8 @@ namespace Microsoft.VisualStudio.Text
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (currentVersion == null)
-            {
-                throw new ArgumentNullException(nameof(currentVersion));
-            }
-            if (targetVersion == null)
-            {
-                throw new ArgumentNullException(nameof(targetVersion));
-            }
+            ArgumentNullException.ThrowIfNull(currentVersion);
+            ArgumentNullException.ThrowIfNull(targetVersion);
             if (targetVersion.Identifier != currentVersion.Identifier)
             {
                 throw new ArgumentException("currentVersion and targetVersion must be from the same ITextImage");
@@ -227,14 +215,8 @@ namespace Microsoft.VisualStudio.Text
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (currentVersion == null)
-            {
-                throw new ArgumentNullException(nameof(currentVersion));
-            }
-            if (targetVersion == null)
-            {
-                throw new ArgumentNullException(nameof(targetVersion));
-            }
+            ArgumentNullException.ThrowIfNull(currentVersion);
+            ArgumentNullException.ThrowIfNull(targetVersion);
             if (targetVersion.TextBuffer != currentVersion.TextBuffer)
             {
                 throw new ArgumentException("currentVersion and targetVersion must be from the same TextBuffer");
@@ -279,14 +261,8 @@ namespace Microsoft.VisualStudio.Text
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (currentVersion == null)
-            {
-                throw new ArgumentNullException(nameof(currentVersion));
-            }
-            if (targetVersion == null)
-            {
-                throw new ArgumentNullException(nameof(targetVersion));
-            }
+            ArgumentNullException.ThrowIfNull(currentVersion);
+            ArgumentNullException.ThrowIfNull(targetVersion);
             if (targetVersion.Identifier != currentVersion.Identifier)
             {
                 throw new ArgumentException("currentVersion and targetVersion must be from the same ITextImage");
@@ -403,14 +379,8 @@ namespace Microsoft.VisualStudio.Text
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (currentVersion == null)
-            {
-                throw new ArgumentNullException(nameof(currentVersion));
-            }
-            if (targetVersion == null)
-            {
-                throw new ArgumentNullException(nameof(targetVersion));
-            }
+            ArgumentNullException.ThrowIfNull(currentVersion);
+            ArgumentNullException.ThrowIfNull(targetVersion);
             if (targetVersion.TextBuffer != currentVersion.TextBuffer)
             {
                 throw new ArgumentException("currentVersion and targetVersion must be from the same TextBuffer");
@@ -445,14 +415,8 @@ namespace Microsoft.VisualStudio.Text
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (currentVersion == null)
-            {
-                throw new ArgumentNullException(nameof(currentVersion));
-            }
-            if (targetVersion == null)
-            {
-                throw new ArgumentNullException(nameof(targetVersion));
-            }
+            ArgumentNullException.ThrowIfNull(currentVersion);
+            ArgumentNullException.ThrowIfNull(targetVersion);
             if (targetVersion.Identifier != currentVersion.Identifier)
             {
                 throw new ArgumentException("currentVersion and targetVersion must be from the same ITextImage");
@@ -490,14 +454,8 @@ namespace Microsoft.VisualStudio.Text
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (currentVersion == null)
-            {
-                throw new ArgumentNullException(nameof(currentVersion));
-            }
-            if (targetVersion == null)
-            {
-                throw new ArgumentNullException(nameof(targetVersion));
-            }
+            ArgumentNullException.ThrowIfNull(currentVersion);
+            ArgumentNullException.ThrowIfNull(targetVersion);
             if (targetVersion.TextBuffer != currentVersion.TextBuffer)
             {
                 throw new ArgumentException("currentVersion and targetVersion must be from the same TextBuffer");
@@ -534,14 +492,8 @@ namespace Microsoft.VisualStudio.Text
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (currentVersion == null)
-            {
-                throw new ArgumentNullException(nameof(currentVersion));
-            }
-            if (targetVersion == null)
-            {
-                throw new ArgumentNullException(nameof(targetVersion));
-            }
+            ArgumentNullException.ThrowIfNull(currentVersion);
+            ArgumentNullException.ThrowIfNull(targetVersion);
             if (targetVersion.Identifier != currentVersion.Identifier)
             {
                 throw new ArgumentException("currentVersion and targetVersion must be from the same ITextImage");

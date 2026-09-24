@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestableMonoDevelopProjectSystem : MonoDevelopMSBuildNuGetProjectSystem
+	sealed class TestableMonoDevelopProjectSystem : MonoDevelopMSBuildNuGetProjectSystem
 	{
 		public string PathPassedToPhysicalFileSystemAddFile;
 		public Stream StreamPassedToPhysicalFileSystemAddFile;
@@ -137,7 +137,7 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 			if (enumeratedDirectories.TryGetValue (path, out directories)) {
 				return directories;
 			}
-			return new string[0];
+			return Array.Empty<string> ();
 		}
 
 		Dictionary<string, IEnumerable<string>> enumeratedFiles = new Dictionary<string, IEnumerable<string>> ();
@@ -155,7 +155,7 @@ namespace MonoDevelop.PackageManagement.Tests.Helpers
 			if (enumeratedFiles.TryGetValue (key, out files)) {
 				return files;
 			}
-			return new string[0];
+			return Array.Empty<string> ();
 		}
 	}
 }

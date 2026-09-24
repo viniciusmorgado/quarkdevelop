@@ -50,7 +50,7 @@ namespace MonoDevelop.VersionControl.Tests
 		protected Repository Repo2;
 		protected string DotDir;
 		protected List<string> AddedItems = new List<string> ();
-		protected int CommitNumber = 0;
+		protected int CommitNumber;
 
 		[SetUp]
 		public virtual Task Setup ()

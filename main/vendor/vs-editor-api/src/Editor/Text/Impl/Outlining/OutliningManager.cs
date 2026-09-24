@@ -271,8 +271,7 @@ namespace Microsoft.VisualStudio.Text.Outlining
 
         internal IEnumerable<ICollapsed> InternalCollapseAll(SnapshotSpan span, Predicate<ICollapsible> match, CancellationToken? cancel)
         {
-            if (match == null)
-                throw new ArgumentNullException(nameof(match));
+            ArgumentNullException.ThrowIfNull(match);
 
             EnsureValid(span);
 
@@ -311,8 +310,7 @@ namespace Microsoft.VisualStudio.Text.Outlining
 
         public IEnumerable<ICollapsible> ExpandAllInternal(bool removalPending, SnapshotSpan span, Predicate<ICollapsed> match)
         {
-            if (match == null)
-                throw new ArgumentNullException(nameof(match));
+            ArgumentNullException.ThrowIfNull(match);
 
             EnsureValid(span);
 
@@ -697,10 +695,7 @@ namespace Microsoft.VisualStudio.Text.Outlining
         {
             EnsureValid();
 
-            if (spans == null)
-            {
-                throw new ArgumentNullException(nameof(spans));
-            }
+            ArgumentNullException.ThrowIfNull(spans);
 
             if (spans.Count == 0)
             {
@@ -747,10 +742,8 @@ namespace Microsoft.VisualStudio.Text.Outlining
 
         public int Compare(ICollapsible x, ICollapsible y)
         {
-            if (x == null)
-                throw new ArgumentNullException(nameof(x));
-            if (y == null)
-                throw new ArgumentNullException(nameof(y));
+            ArgumentNullException.ThrowIfNull(x);
+            ArgumentNullException.ThrowIfNull(y);
 
             ITextSnapshot current = SourceBuffer.CurrentSnapshot;
             SnapshotSpan left = x.Extent.GetSpan(current);

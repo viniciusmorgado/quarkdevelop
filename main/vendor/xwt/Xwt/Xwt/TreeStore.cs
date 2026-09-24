@@ -39,7 +39,7 @@ namespace Xwt
 	{
 		IDataField[] fields;
 		
-		class TreeStoreBackendHost: BackendHost<TreeStore,ITreeStoreBackend>
+		sealed class TreeStoreBackendHost: BackendHost<TreeStore,ITreeStoreBackend>
 		{
 			protected override IBackend OnCreateBackend ()
 			{
@@ -213,7 +213,7 @@ namespace Xwt
 			public int NodeId;
 		}
 		
-		class NodePosition: TreePosition
+		sealed class NodePosition: TreePosition
 		{
 			public NodeList ParentList;
 			public int NodeIndex;
@@ -234,7 +234,7 @@ namespace Xwt
 			}
 		}
 		
-		class NodeList: List<Node>
+		sealed class NodeList: List<Node>
 		{
 			public NodePosition Parent;
 		}

@@ -41,8 +41,7 @@ namespace Microsoft.VisualStudio.Text.Differencing.Implementation
         /// <param name="original">The original string.</param>
         protected TokenizedStringList(string original)
         {
-            if (original == null)
-                throw new ArgumentNullException(nameof(original));
+            ArgumentNullException.ThrowIfNull(original);
 
             this.original = original;
         }

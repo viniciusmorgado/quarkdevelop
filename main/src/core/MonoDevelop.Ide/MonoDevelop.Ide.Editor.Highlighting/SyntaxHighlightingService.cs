@@ -429,7 +429,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 				queueOfPrereadLines.Enqueue (versionLine);
 				var match = jsonNameRegex.Match (nameLine);
 				if (match.Success) {
-					if (jsonVersionRegex.Match (versionLine).Success) {
+					if (jsonVersionRegex.IsMatch (versionLine)) {
 						name = match.Groups [1].Value;
 						format = JSonFormat.OldSyntaxTheme;
 						return true;
@@ -438,7 +438,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 				string line;
 				bool readFileTypes = false;
 				while ((line = queueOfPrereadLines.Count > 0 ? queueOfPrereadLines.Dequeue () : null) != null || (line = file.ReadLine ()) != null) {
-					if (fileTypesRegex.Match (line).Success) {
+					if (fileTypesRegex.IsMatch (line)) {
 						readFileTypes = true;
 						fileTypes = new List<string> ();
 						continue;
@@ -455,7 +455,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 							scopeName = match.Groups [1].Value;
 						}
 					}
-					if (readFileTypes && fileTypesEndRegex.Match (line).Success)
+					if (readFileTypes && fileTypesEndRegex.IsMatch (line))
 						break;
 					if (readFileTypes) {
 						string fileType = ParseFileType (line);
@@ -796,7 +796,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting
 				foreach (var bundle in languageBundles) {
 					foreach (var h in bundle.Highlightings) {
 						foreach (var fe in h.FileTypes) {
-							var uri = fe.StartsWith (".", StringComparison.Ordinal) ? "a" + fe : "a." + fe;
+							var uri = fe.StartsWith ('.') ? "a" + fe : "a." + fe;
 							var mime = IdeServices.DesktopService.GetMimeTypeForUri (uri);
 							if (mimeType == mime) {
 								return h.GetSyntaxHighlightingDefinition ();

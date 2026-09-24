@@ -119,7 +119,7 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 			}
 
 			int drawingStep;
-			int curIndex = 0;
+			int curIndex;
 			IEnumerator<ISegment> searchResults;
 			IEnumerator<Usage> allUsages;
 			IEnumerator<QuickTask> allTasks;

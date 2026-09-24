@@ -26,7 +26,7 @@
 
 namespace MonoDevelop.Ide.Templates
 {
-	class TestableTemplateWizardProvider : TemplateWizardProvider
+	sealed class TestableTemplateWizardProvider : TemplateWizardProvider
 	{
 		public TestableTemplateWizard Wizard = new TestableTemplateWizard ();
 

@@ -34,7 +34,7 @@ namespace MonoDevelop.VersionControl
 			return Task.FromResult ((IReadOnlyList<VersionInfo>)result);
 		}
 
-		protected override Task<VersionInfo []> OnGetDirectoryVersionInfoAsync (FilePath localDirectory, bool getRemoteStatus, bool recursive, CancellationToken cancellationToken) => Task.FromResult(new VersionInfo [0]);
+		protected override Task<VersionInfo []> OnGetDirectoryVersionInfoAsync (FilePath localDirectory, bool getRemoteStatus, bool recursive, CancellationToken cancellationToken) => Task.FromResult(Array.Empty<VersionInfo> ());
 
 		protected override Task<Repository> OnPublishAsync (string serverPath, FilePath localPath, FilePath [] files, string message, ProgressMonitor monitor) => Task.FromResult ((Repository)null);
 
@@ -64,8 +64,8 @@ namespace MonoDevelop.VersionControl
 
 		protected override Task OnUnignoreAsync (FilePath [] localPath, CancellationToken cancellationToken) => Task.CompletedTask;
 		
-		public override Task<Annotation []> GetAnnotationsAsync (FilePath repositoryPath, Revision since, CancellationToken cancellationToken) => Task.FromResult (new Annotation [0]);
+		public override Task<Annotation []> GetAnnotationsAsync (FilePath repositoryPath, Revision since, CancellationToken cancellationToken) => Task.FromResult (Array.Empty<Annotation> ());
 
-		protected override Task<RevisionPath []> OnGetRevisionChangesAsync (Revision revision, CancellationToken cancellationToken = default) => Task.FromResult (new RevisionPath [0]);
+		protected override Task<RevisionPath []> OnGetRevisionChangesAsync (Revision revision, CancellationToken cancellationToken = default) => Task.FromResult (Array.Empty<RevisionPath> ());
 	}
 }

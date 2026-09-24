@@ -32,7 +32,7 @@ using MonoDevelop.Ide.Gui.Components;
 
 namespace MonoDevelop.DotNetCore.Tests
 {
-	class TestableFrameworkReferencesNodeBuilder : FrameworkReferencesNodeBuilder
+	sealed class TestableFrameworkReferencesNodeBuilder : FrameworkReferencesNodeBuilder
 	{
 		public List<object> ChildNodes = new List<object> ();
 

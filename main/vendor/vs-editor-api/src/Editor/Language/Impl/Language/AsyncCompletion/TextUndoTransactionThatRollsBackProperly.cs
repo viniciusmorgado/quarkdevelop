@@ -123,7 +123,7 @@ namespace Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Implement
 
         private class RollbackDetectingUndoPrimitive : ITextUndoPrimitive
         {
-            internal bool UndoCalled = false;
+            internal bool UndoCalled;
 
             public bool CanRedo => true;
 

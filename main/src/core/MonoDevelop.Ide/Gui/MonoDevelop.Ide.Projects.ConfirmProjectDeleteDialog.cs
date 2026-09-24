@@ -58,7 +58,7 @@ namespace MonoDevelop.Ide.Projects
 			this.radioDeleteAll.Name = "radioDeleteAll";
 			this.radioDeleteAll.DrawIndicator = true;
 			this.radioDeleteAll.UseUnderline = true;
-			this.radioDeleteAll.Group = new global::Gtk.RadioButton [0];
+			this.radioDeleteAll.Group = System.Array.Empty<Gtk.RadioButton> ();
 			this.vbox2.Add (this.radioDeleteAll);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.radioDeleteAll]));
 			w3.Position = 1;

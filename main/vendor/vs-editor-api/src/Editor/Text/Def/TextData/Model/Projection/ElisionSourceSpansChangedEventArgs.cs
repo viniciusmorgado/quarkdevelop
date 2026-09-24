@@ -31,14 +31,8 @@ namespace Microsoft.VisualStudio.Text.Projection
                                                   object sourceToken)
             : base(beforeSnapshot, afterSnapshot, EditOptions.None, sourceToken)
         {
-            if (elidedSpans == null)
-            {
-                throw new ArgumentNullException(nameof(elidedSpans));
-            }
-            if (expandedSpans == null)
-            {
-                throw new ArgumentNullException(nameof(expandedSpans));
-            }
+            ArgumentNullException.ThrowIfNull(elidedSpans);
+            ArgumentNullException.ThrowIfNull(expandedSpans);
             this.elidedSpans = elidedSpans;
             this.expandedSpans = expandedSpans;
         }

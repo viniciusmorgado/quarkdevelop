@@ -33,7 +33,7 @@ using Gtk;
 namespace Mono.Addins.GuiGtk3
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	class SearchEntry : EventBox
+	sealed class SearchEntry : EventBox
 	{
 		HBox box = new HBox ();
 		Gtk.Entry entry = new Gtk.Entry ();

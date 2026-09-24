@@ -23,8 +23,7 @@ namespace Microsoft.VisualStudio.Text.Tagging
         /// <exception cref="ArgumentNullException"><paramref name="span"/> is null.</exception>
         public TagsChangedEventArgs(IMappingSpan span)
         {
-            if (span == null)
-                throw new ArgumentNullException(nameof(span));
+            ArgumentNullException.ThrowIfNull (span);
 
             Span = span;
         }

@@ -57,6 +57,6 @@ namespace MonoDevelop.Components
 			return null;
 		}
 
-		public new FileChooserAction Action { get; set; }
+		public FileChooserAction Action { get; set; }
 	}
 }

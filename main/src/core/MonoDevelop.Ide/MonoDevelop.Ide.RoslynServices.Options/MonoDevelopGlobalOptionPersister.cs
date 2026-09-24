@@ -90,8 +90,7 @@ namespace MonoDevelop.Ide.RoslynServices.Options
 
 		internal MonoDevelopGlobalOptionPersister (Lazy<IGlobalOptionService> globalOptionService, RoslynPreferences preferences)
 		{
-			if (globalOptionService == null)
-				throw new ArgumentNullException (nameof (globalOptionService));
+			ArgumentNullException.ThrowIfNull (globalOptionService);
 			this.globalOptionService = globalOptionService;
 
 			this.preferences = preferences ?? IdeApp.Preferences.Roslyn;

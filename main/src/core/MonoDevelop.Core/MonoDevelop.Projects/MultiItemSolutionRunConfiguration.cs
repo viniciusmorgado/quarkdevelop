@@ -115,7 +115,7 @@ namespace MonoDevelop.Projects
 				foreach (var it in Items) {
 					if (sb.Length > 0)
 						sb.Append (", ");
-					sb.Append (it.SolutionItem.Name).Append (" (").Append (it.RunConfiguration.Name).Append (")");
+					sb.Append (it.SolutionItem.Name).Append (" (").Append (it.RunConfiguration.Name).Append (')');
 				}
 				return sb.ToString ();
 			}

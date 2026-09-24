@@ -34,7 +34,7 @@ namespace MonoDevelop.Ide.Gui
 {
 	internal class LayoutComboBox : ToolbarComboBox
 	{
-		bool changingHere = false;
+		bool changingHere;
 	
 		public LayoutComboBox ()
 		{

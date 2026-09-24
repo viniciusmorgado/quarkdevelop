@@ -64,8 +64,8 @@ namespace MonoDevelop.Ide.Projects
 		SolutionFolder parentSolutionFolder;
 		string basePath;
 
-		string userEditedEntryText = null;
-		string previousDefaultEntryText = null;
+		string userEditedEntryText;
+		string previousDefaultEntryText;
 
 		public NewFileDialog (Project parentProject, string basePath, SolutionFolder parentSolutionFolder = null)
 		{
@@ -369,8 +369,8 @@ namespace MonoDevelop.Ide.Projects
 		{
 			var projectTypes = project.GetTypeTags ();
 			foreach (var type in projectTypes) {
-				if (categories.ContainsKey (type))
-					return categories [type];
+				if (categories.TryGetValue (type, out var value))
+					return value;
 			}
 
 			return categories.ContainsKey (FileTemplate.DefaultCategoryKey) ? categories [FileTemplate.DefaultCategoryKey] : "Misc";
@@ -574,7 +574,7 @@ namespace MonoDevelop.Ide.Projects
 				get { return template.Name; }
 			}
 
-			private FileTemplate template = null;
+			private FileTemplate template;
 			public FileTemplate Template {
 				get { return template; }
 			}

@@ -17,7 +17,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         internal readonly HashSet<PersistentSpan> Spans = new HashSet<PersistentSpan>();
         private readonly PersistentSpanFactory Factory;
 
-        private ITextSnapshot _savedSnapshot = null;
+        private ITextSnapshot _savedSnapshot;
 
         internal PersistentSpanSet(FileNameKey filePath, ITextDocument document, PersistentSpanFactory factory)
         {

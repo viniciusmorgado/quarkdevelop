@@ -30,7 +30,7 @@ namespace MonoDevelop.Ide.TypeSystem
 {
 	readonly struct WorkspaceId : IEquatable<WorkspaceId>
 	{
-		static uint n = 0;
+		static uint n;
 
 		public readonly uint     Number;
 		public readonly DateTime DateTime;

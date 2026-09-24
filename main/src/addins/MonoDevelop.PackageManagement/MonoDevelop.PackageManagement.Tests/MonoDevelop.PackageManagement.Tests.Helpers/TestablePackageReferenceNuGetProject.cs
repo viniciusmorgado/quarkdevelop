@@ -29,7 +29,7 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.PackageManagement.Tests.Helpers
 {
-	class TestablePackageReferenceNuGetProject : PackageReferenceNuGetProject
+	sealed class TestablePackageReferenceNuGetProject : PackageReferenceNuGetProject
 	{
 		public TestablePackageReferenceNuGetProject (DotNetProject project)
 			: this (project, new PackageManagementEvents ())

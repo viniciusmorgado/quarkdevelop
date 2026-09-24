@@ -46,7 +46,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
          */
         internal MatchCollection(Regex regex, string input, int beginning, int length, int startat) {
             if (startat < 0 || startat > input.Length)
-                throw new ArgumentOutOfRangeException("startat");
+                throw new ArgumentOutOfRangeException(nameof(startat));
 
             _regex = regex;
             _input = input;
@@ -146,7 +146,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
                 match = GetMatch(i);
 
                 if (match == null)
-                    throw new ArgumentOutOfRangeException("i");
+                    throw new ArgumentOutOfRangeException(nameof(i));
 
                 return match;
             }
@@ -201,7 +201,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
 	[Obsolete ("Old editor")]
 	internal class MatchEnumerator : IEnumerator {
         internal MatchCollection _matchcoll;
-        internal Match _match = null;
+        internal Match _match;
         internal int _curindex;
         internal bool _done;
 

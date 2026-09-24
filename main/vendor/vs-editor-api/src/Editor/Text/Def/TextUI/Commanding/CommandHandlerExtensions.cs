@@ -33,15 +33,9 @@ namespace Microsoft.VisualStudio.Commanding
         /// <returns>A <see cref="CommandState"/> instance that contains information on the availability of the command.</returns>
         public static CommandState GetCommandState<T>(this ICommandHandler commandHandler, T args, Func<CommandState> nextCommandHandler) where T : CommandArgs
         {
-            if (commandHandler == null)
-            {
-                throw new ArgumentNullException(nameof(commandHandler));
-            }
+            ArgumentNullException.ThrowIfNull(commandHandler);
 
-            if (nextCommandHandler == null)
-            {
-                throw new ArgumentNullException(nameof(nextCommandHandler));
-            }
+            ArgumentNullException.ThrowIfNull(nextCommandHandler);
 
             if (commandHandler is ICommandHandler<T> simpleCommandHandler)
             {
@@ -87,15 +81,9 @@ namespace Microsoft.VisualStudio.Commanding
         /// <param name="executionContext">Current command execution context.</param>
         public static void ExecuteCommand<T>(this ICommandHandler commandHandler, T args, Action nextCommandHandler, CommandExecutionContext executionContext) where T : CommandArgs
         {
-            if (commandHandler == null)
-            {
-                throw new ArgumentNullException(nameof(commandHandler));
-            }
+            ArgumentNullException.ThrowIfNull(commandHandler);
 
-            if (nextCommandHandler == null)
-            {
-                throw new ArgumentNullException(nameof(nextCommandHandler));
-            }
+            ArgumentNullException.ThrowIfNull(nextCommandHandler);
 
             if (commandHandler is ICommandHandler<T> simpleCommandHandler)
             {

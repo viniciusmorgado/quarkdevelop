@@ -257,7 +257,7 @@ namespace MonoDevelop.Projects.MSBuild
 		internal int EvaluatedItemCount { get; set; }
 
 		internal bool IsWildcardItem {
-			get { return IsInclusion && EvaluatedItemCount > 1 && (Include.Contains ("*") || Include.Contains (";") || Include.StartsWith ("@(")); }
+			get { return IsInclusion && EvaluatedItemCount > 1 && (Include.Contains ('*') || Include.Contains (';') || Include.StartsWith ("@(")); }
 		}
 
 		public void AddExclude (string excludePath)

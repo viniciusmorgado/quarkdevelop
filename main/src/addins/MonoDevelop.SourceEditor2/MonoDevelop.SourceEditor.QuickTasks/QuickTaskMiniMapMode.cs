@@ -218,7 +218,7 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 				base.OnUnmapped ();
 			}
 
-			BgBufferUpdate curUpdate = null;
+			BgBufferUpdate curUpdate;
 			void SwapBuffer ()
 			{
 				var tmp = backgroundPixbuf;

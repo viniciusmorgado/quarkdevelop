@@ -1,11 +1,7 @@
      14 CA2016
       8 CA1859
-      8 CA1805
       6 SYSLIB0004
       6 SYSLIB0003
-      4 CA1860
-      4 CA1510
       2 VSTHRD003
-      2 CA1829
       2 CA1824
       2 CA1513

@@ -31,7 +31,7 @@ using MonoDevelop.Ide.Editor;
 namespace Mono.TextEditor.Tests
 {
 	[TestFixture()]
-	class BlockSelectionModeTests : TextEditorTestBase
+	sealed class BlockSelectionModeTests : TextEditorTestBase
 	{
 		[Test]
 		public void TestInsertAtCaret ()

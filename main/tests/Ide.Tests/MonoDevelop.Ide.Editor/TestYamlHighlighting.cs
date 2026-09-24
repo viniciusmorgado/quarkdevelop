@@ -31,7 +31,7 @@ namespace MonoDevelop.Ide.Editor
 {
 	[Ignore("Fixme")]
 	[TestFixture]
-	class TestYamlHighlighting : IdeTestBase
+	sealed class TestYamlHighlighting : IdeTestBase
 	{
 		[Test]
 		public void TestComplexHighlighting ()

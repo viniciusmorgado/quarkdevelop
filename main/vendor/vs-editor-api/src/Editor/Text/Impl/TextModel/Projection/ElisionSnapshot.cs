@@ -89,19 +89,13 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public override ITextSnapshot GetMatchingSnapshot(ITextBuffer textBuffer)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
             return this.sourceSnapshot.TextBuffer == textBuffer ? this.sourceSnapshot : null;
         }
 
         public override ITextSnapshot GetMatchingSnapshotInClosure(ITextBuffer textBuffer)
         {
-            if (textBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(textBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(textBuffer);
 
             if (this.sourceSnapshot.TextBuffer == textBuffer)
             {
@@ -119,10 +113,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public override ITextSnapshot GetMatchingSnapshotInClosure(Predicate<ITextBuffer> match)
         {
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
 
             if (match(this.sourceSnapshot.TextBuffer))
             {
@@ -140,10 +131,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
 
         public override ReadOnlyCollection<SnapshotSpan> GetSourceSpans(int startSpanIndex, int count)
         {
-            if (startSpanIndex < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(startSpanIndex));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(startSpanIndex);
             if (count < 0 || startSpanIndex + count > SpanCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(count));

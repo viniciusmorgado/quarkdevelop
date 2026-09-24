@@ -58,7 +58,7 @@ namespace MonoDevelop.VersionControl
 		public abstract string[] SupportedProtocols { get; }
 		
 		public virtual string[] SupportedNonUrlProtocols {
-			get { return new string[0]; }
+			get { return Array.Empty<string> (); }
 		}
 		
 		public virtual bool IsUrlValid (string url)

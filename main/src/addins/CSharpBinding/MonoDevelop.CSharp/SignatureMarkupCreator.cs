@@ -91,8 +91,7 @@ namespace MonoDevelop.CSharp
 
 		public string GetTypeReferenceString (ITypeSymbol type, bool highlight = true)
 		{
-			if (type == null)
-				throw new ArgumentNullException (nameof (type));
+			ArgumentNullException.ThrowIfNull (type);
 			if (type.TypeKind == TypeKind.Error) {
 				var typeSyntax = type.GenerateTypeSyntax ();
 				string generatedTypeSyntaxString;
@@ -114,7 +113,7 @@ namespace MonoDevelop.CSharp
 				return GetTypeReferenceString (((IPointerTypeSymbol)type).PointedAtType, highlight) + "*";
 			if (type.IsTupleType ()) {
 				var sb = StringBuilderCache.Allocate ();
-				sb.Append ("(");
+				sb.Append ('(');
 				foreach (var member in type.GetMembers ().OfType<IFieldSymbol> ()) {
 					if (member.CorrespondingTupleField == null ||
 						member.CorrespondingTupleField == member)
@@ -122,10 +121,10 @@ namespace MonoDevelop.CSharp
 					if (sb.Length > 1)
 						sb.Append (", ");
 					sb.Append (GetTypeReferenceString (member.Type));
-					sb.Append (" ");
+					sb.Append (' ');
 					sb.Append (Ambience.EscapeText (member.Name));
 				}
-				sb.Append (")");
+				sb.Append (')');
 				return StringBuilderCache.ReturnAndFree (sb);
 			}
 			string displayString;
@@ -179,8 +178,7 @@ namespace MonoDevelop.CSharp
 
 		public string GetMarkup (Microsoft.CodeAnalysis.ISymbol entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException ("entity");
+			ArgumentNullException.ThrowIfNull (entity);
 			string result;
 			try {
 				switch (entity.Kind) {
@@ -390,8 +388,7 @@ namespace MonoDevelop.CSharp
 
 		string GetTypeParameterMarkup (ITypeSymbol t)
 		{
-			if (t == null)
-				throw new ArgumentNullException ("t");
+			ArgumentNullException.ThrowIfNull (t);
 			var result = StringBuilderCache.Allocate ();
 			var highlightedTypeName = Highlight (FilterEntityName (t.Name), GetThemeColor (userTypes));
 			result.Append (highlightedTypeName);
@@ -420,10 +417,10 @@ namespace MonoDevelop.CSharp
 				foreach (var bt in tp.ConstraintTypes) {
 					if (!IsObjectOrValueType (bt)) {
 						if (constraints > 0) {
-							result.Append (",");
+							result.Append (',');
 							if (constraints % 5 == 0) {
 								result.AppendLine ();
-								result.Append ("\t");
+								result.Append ('\t');
 							}
 						}
 						constraints++;
@@ -432,7 +429,7 @@ namespace MonoDevelop.CSharp
 				}
 				if (tp.HasConstructorConstraint) {
 					if (constraints > 0)
-						result.Append (",");
+						result.Append (',');
 					result.Append (Highlight ("new", GetThemeColor (keywordOperator)));
 				}
 
@@ -485,8 +482,7 @@ namespace MonoDevelop.CSharp
 
 		string GetTypeMarkup (ITypeSymbol t, bool includeDeclaringTypes = false)
 		{
-			if (t == null)
-				throw new ArgumentNullException ("t");
+			ArgumentNullException.ThrowIfNull (t);
 			if (t.TypeKind == TypeKind.Error)
 				return GettextCatalog.GetString ("Type can not be resolved.");
 			if (t.TypeKind == TypeKind.Delegate)
@@ -586,7 +582,7 @@ namespace MonoDevelop.CSharp
 				if (i > 0) {
 					if (i % 5 == 0) {
 						result.AppendLine (",");
-						result.Append ("\t");
+						result.Append ('\t');
 					} else {
 						result.Append (", ");
 					}
@@ -608,7 +604,7 @@ namespace MonoDevelop.CSharp
 				if (i > 0) {
 					if (i % 5 == 0) {
 						result.AppendLine (",");
-						result.Append ("\t");
+						result.Append ('\t');
 					} else {
 						result.Append (", ");
 					}
@@ -628,8 +624,7 @@ namespace MonoDevelop.CSharp
 
 		public string GetDelegateInfo (ITypeSymbol type)
 		{
-			if (type == null)
-				throw new ArgumentNullException ("type");
+			ArgumentNullException.ThrowIfNull (type);
 			var t = type;
 
 			var result = StringBuilderCache.Allocate ();
@@ -639,7 +634,7 @@ namespace MonoDevelop.CSharp
 			if (BreakLineAfterReturnType) {
 				result.AppendLine ();
 			} else {
-				result.Append (" ");
+				result.Append (' ');
 			}
 
 
@@ -676,7 +671,7 @@ namespace MonoDevelop.CSharp
 			if (BreakLineAfterReturnType) {
 				result.AppendLine ();
 			} else {
-				result.Append (" ");
+				result.Append (' ');
 			}
 
 
@@ -703,8 +698,7 @@ namespace MonoDevelop.CSharp
 
 		string GetLocalVariableMarkup (ILocalSymbol local)
 		{
-			if (local == null)
-				throw new ArgumentNullException ("local");
+			ArgumentNullException.ThrowIfNull (local);
 
 			var result = StringBuilderCache.Allocate ();
 
@@ -715,7 +709,7 @@ namespace MonoDevelop.CSharp
 			if (BreakLineAfterReturnType) {
 				result.AppendLine ();
 			} else {
-				result.Append (" ");
+				result.Append (' ');
 			}
 
 			result.Append (FilterEntityName (local.Name));
@@ -724,7 +718,7 @@ namespace MonoDevelop.CSharp
 				if (options.GetOption (CSharpFormattingOptions.SpacingAroundBinaryOperator) == BinaryOperatorSpacingOptions.Single) {
 					result.Append (" = ");
 				} else {
-					result.Append ("=");
+					result.Append ('=');
 				}
 				AppendConstant (result, local.Type, local.ConstantValue);
 			}
@@ -734,8 +728,7 @@ namespace MonoDevelop.CSharp
 
 		string GetParameterVariableMarkup (IParameterSymbol parameter)
 		{
-			if (parameter == null)
-				throw new ArgumentNullException ("parameter");
+			ArgumentNullException.ThrowIfNull (parameter);
 
 			var result = StringBuilderCache.Allocate ();
 			AppendParameter (result, parameter);
@@ -744,7 +737,7 @@ namespace MonoDevelop.CSharp
 				if (options.GetOption (CSharpFormattingOptions.SpacingAroundBinaryOperator) == BinaryOperatorSpacingOptions.Single) {
 					result.Append (" = ");
 				} else {
-					result.Append ("=");
+					result.Append ('=');
 				}
 				AppendConstant (result, parameter.Type, parameter.ExplicitDefaultValue);
 			}
@@ -755,8 +748,7 @@ namespace MonoDevelop.CSharp
 
 		string GetFieldMarkup (IFieldSymbol field)
 		{
-			if (field == null)
-				throw new ArgumentNullException ("field");
+			ArgumentNullException.ThrowIfNull (field);
 
 			var result = StringBuilderCache.Allocate ();
 			bool isEnum = field.ContainingType.TypeKind == TypeKind.Enum;
@@ -769,7 +761,7 @@ namespace MonoDevelop.CSharp
 			if (BreakLineAfterReturnType) {
 				result.AppendLine ();
 			} else {
-				result.Append (" ");
+				result.Append (' ');
 			}
 
 			result.Append (HighlightSemantically (FilterEntityName (field.Name), GetThemeColor ("entity.name.field.source.cs")));
@@ -795,7 +787,7 @@ namespace MonoDevelop.CSharp
 				if (options.GetOption (CSharpFormattingOptions.SpacingAroundBinaryOperator) == BinaryOperatorSpacingOptions.Single) {
 					result.Append (" = ");
 				} else {
-					result.Append ("=");
+					result.Append ('=');
 				}
 				AppendConstant (result, field.Type, field.ConstantValue, isEnum);
 			}
@@ -805,8 +797,7 @@ namespace MonoDevelop.CSharp
 
 		string GetMethodMarkup (IMethodSymbol method)
 		{
-			if (method == null)
-				throw new ArgumentNullException ("method");
+			ArgumentNullException.ThrowIfNull (method);
 
 			var result = StringBuilderCache.Allocate ();
 			AppendModifiers (result, method);
@@ -814,7 +805,7 @@ namespace MonoDevelop.CSharp
 			if (BreakLineAfterReturnType) {
 				result.AppendLine ();
 			} else {
-				result.Append (" ");
+				result.Append (' ');
 			}
 
 			AppendExplicitInterfaces (result, method.ExplicitInterfaceImplementations.Cast<ISymbol> ());
@@ -851,8 +842,7 @@ namespace MonoDevelop.CSharp
 
 		string GetConstructorMarkup (IMethodSymbol method)
 		{
-			if (method == null)
-				throw new ArgumentNullException ("method");
+			ArgumentNullException.ThrowIfNull (method);
 
 
 			var result = StringBuilderCache.Allocate ();
@@ -869,7 +859,7 @@ namespace MonoDevelop.CSharp
 				AppendParameterList (result, method.ContainingType.GetDelegateInvokeMethod ().Parameters,
 					false /* formattingOptions.SpaceBeforeConstructorDeclarationParameterComma */,
 					false /* formattingOptions.SpaceAfterConstructorDeclarationParameterComma */);
-				result.Append (")");
+				result.Append (')');
 			} else {
 				AppendParameterList (result, method.Parameters,
 					false /* formattingOptions.SpaceBeforeConstructorDeclarationParameterComma */,
@@ -881,18 +871,17 @@ namespace MonoDevelop.CSharp
 
 		string GetDestructorMarkup (IMethodSymbol method)
 		{
-			if (method == null)
-				throw new ArgumentNullException ("method");
+			ArgumentNullException.ThrowIfNull (method);
 
 			var result = StringBuilderCache.Allocate ();
 			AppendModifiers (result, method);
 			if (BreakLineAfterReturnType) {
 				result.AppendLine ();
 			} else {
-				result.Append (" ");
+				result.Append (' ');
 			}
 
-			result.Append ("~");
+			result.Append ('~');
 			result.Append (FilterEntityName (method.ContainingType.Name));
 
 			//			if (formattingOptions.SpaceBeforeConstructorDeclarationParentheses)
@@ -919,15 +908,14 @@ namespace MonoDevelop.CSharp
 
 		string GetPropertyMarkup (IPropertySymbol property)
 		{
-			if (property == null)
-				throw new ArgumentNullException ("property");
+			ArgumentNullException.ThrowIfNull (property);
 			var result = StringBuilderCache.Allocate ();
 			AppendModifiers (result, property);
 			result.Append (GetTypeReferenceString (property.Type));
 			if (BreakLineAfterReturnType) {
 				result.AppendLine ();
 			} else {
-				result.Append (" ");
+				result.Append (' ');
 			}
 
 			AppendExplicitInterfaces (result, property.ExplicitInterfaceImplementations.Cast<ISymbol> ());
@@ -941,29 +929,29 @@ namespace MonoDevelop.CSharp
 			if (property.Parameters.Length > 0) {
 				//				if (formattingOptions.SpaceBeforeIndexerDeclarationBracket)
 				//					result.Append (" ");
-				result.Append ("[");
+				result.Append ('[');
 				AppendParameterList (result, property.Parameters,
 					false /*formattingOptions.SpaceBeforeIndexerDeclarationParameterComma*/,
 					false /*formattingOptions.SpaceAfterIndexerDeclarationParameterComma*/);
-				result.Append ("]");
+				result.Append (']');
 			}
 
 			result.Append (" {");
 			if (property.GetMethod != null && IsAccessibleOrHasSourceCode (property.GetMethod)) {
 				if (property.GetMethod.DeclaredAccessibility != property.DeclaredAccessibility) {
 
-					result.Append (" ");
+					result.Append (' ');
 					AppendAccessibility (result, property.GetMethod);
 				}
-				result.Append (Highlight (" get", GetThemeColor (keywordOther))).Append (";");
+				result.Append (Highlight (" get", GetThemeColor (keywordOther))).Append (';');
 			}
 
 			if (property.SetMethod != null && IsAccessibleOrHasSourceCode (property.SetMethod)) {
 				if (property.SetMethod.DeclaredAccessibility != property.DeclaredAccessibility) {
-					result.Append (" ");
+					result.Append (' ');
 					AppendAccessibility (result, property.SetMethod);
 				}
-				result.Append (Highlight (" set", GetThemeColor (keywordOther))).Append (";");
+				result.Append (Highlight (" set", GetThemeColor (keywordOther))).Append (';');
 			}
 			result.Append (" }");
 
@@ -1543,8 +1531,7 @@ namespace MonoDevelop.CSharp
 
 		string GetEventMarkup (IEventSymbol evt)
 		{
-			if (evt == null)
-				throw new ArgumentNullException ("evt");
+			ArgumentNullException.ThrowIfNull (evt);
 			var result = StringBuilderCache.Allocate ();
 			AppendModifiers (result, evt);
 			result.Append (Highlight ("event ", GetThemeColor (modifierColor)));
@@ -1552,7 +1539,7 @@ namespace MonoDevelop.CSharp
 			if (BreakLineAfterReturnType) {
 				result.AppendLine ();
 			} else {
-				result.Append (" ");
+				result.Append (' ');
 			}
 
 			AppendExplicitInterfaces (result, evt.ExplicitInterfaceImplementations.Cast<ISymbol> ());
@@ -1600,7 +1587,7 @@ namespace MonoDevelop.CSharp
 					if (options.GetOption (CSharpFormattingOptions.SpacingAroundBinaryOperator) == BinaryOperatorSpacingOptions.Single) {
 						result.Append (" = ");
 					} else {
-						result.Append ("=");
+						result.Append ('=');
 					}
 					AppendConstant (result, parameter.Type, parameter.ExplicitDefaultValue);
 					//					GrayOut = false;
@@ -1636,7 +1623,7 @@ namespace MonoDevelop.CSharp
 				result.Append (Highlight ("params ", GetThemeColor (keywordOther)));
 			}
 			result.Append (GetTypeReferenceString (parameter.Type));
-			result.Append (" ");
+			result.Append (' ');
 			result.Append (FilterEntityName (parameter.Name));
 		}
 
@@ -1644,7 +1631,7 @@ namespace MonoDevelop.CSharp
 		{
 			foreach (var implementedInterfaceMember in member) {
 				sb.Append (GetTypeReferenceString (implementedInterfaceMember.ContainingType));
-				sb.Append (".");
+				sb.Append ('.');
 			}
 		}
 
@@ -1681,9 +1668,9 @@ namespace MonoDevelop.CSharp
 				if (constantType.IsValueType) {
 					// structs can never be == null, therefore it's the default value.
 					sb.Append (Highlight ("default", GetThemeColor (keywordOther)))
-					  .Append ("(")
+					  .Append ('(')
 					  .Append (GetTypeReferenceString (constantType))
-					  .Append (")");
+					  .Append (')');
 				} else {
 					sb.Append (Highlight ("null", GetThemeColor (keywordConstant)));
 				}
@@ -1699,7 +1686,7 @@ namespace MonoDevelop.CSharp
 							sb.Append (Highlight (string.Format ("0x{0:X}", field.ConstantValue), GetThemeColor (numericConstants)));
 						} else {
 							sb.Append (GetTypeReferenceString (constantType))
-							  .Append (".")
+							  .Append ('.')
 							  .Append (FilterEntityName (field.Name));
 						}
 						return;
@@ -1726,16 +1713,16 @@ namespace MonoDevelop.CSharp
 								sb.Append (" | ");
 							var field = fields [i];
 							sb.Append (GetTypeReferenceString (constantType))
-							  .Append (".")
+							  .Append ('.')
 							  .Append (FilterEntityName (field.Name));
 						}
 						return;
 					}
 				}
 
-				sb.Append ("(")
+				sb.Append ('(')
 				  .Append (GetTypeReferenceString (constantType))
-				  .Append (")")
+				  .Append (')')
 				  .Append (Highlight (constantValue.ToString (), GetThemeColor (numericConstants)));
 				return;
 			}
@@ -1822,17 +1809,16 @@ namespace MonoDevelop.CSharp
 
 		public string GetArrayIndexerMarkup (IArrayTypeSymbol arrayType)
 		{
-			if (arrayType == null)
-				throw new ArgumentNullException ("arrayType");
+			ArgumentNullException.ThrowIfNull (arrayType);
 			var result = StringBuilderCache.Allocate ();
 			result.Append (GetTypeReferenceString (arrayType.ElementType));
 			if (BreakLineAfterReturnType) {
 				result.AppendLine ();
 			} else {
-				result.Append (" ");
+				result.Append (' ');
 			}
 			result.Append (Highlight ("this", GetThemeColor (keywordOther)));
-			result.Append ("[");
+			result.Append ('[');
 			for (int i = 0; i < arrayType.Rank; i++) {
 				if (i > 0)
 					result.Append (", ");
@@ -1844,15 +1830,15 @@ namespace MonoDevelop.CSharp
 				if (arrayType.Rank == 1)
 					result.Append ("index");
 				else
-					result.Append ("i").Append ((i + 1).ToString ());
+					result.Append ('i').Append (i + 1);
 				if (doHighightParameter)
 					result.Append ("</u>");
 			}
-			result.Append ("]");
+			result.Append (']');
 
 			result.Append (" {");
-			result.Append (Highlight (" get", GetThemeColor (keywordOther))).Append (";");
-			result.Append (Highlight (" set", GetThemeColor (keywordOther))).Append (";");
+			result.Append (Highlight (" get", GetThemeColor (keywordOther))).Append (';');
+			result.Append (Highlight (" set", GetThemeColor (keywordOther))).Append (';');
 			result.Append (" }");
 
 			return StringBuilderCache.ReturnAndFree (result);

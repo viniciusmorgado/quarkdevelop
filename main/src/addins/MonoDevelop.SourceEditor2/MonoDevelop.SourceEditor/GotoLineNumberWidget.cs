@@ -42,7 +42,7 @@ namespace MonoDevelop.SourceEditor
 
 		double vSave, hSave;
 		DocumentLocation caretSave;
-		bool cleanExit = false;
+		bool cleanExit;
 		
 		void HandleViewTextEditorhandleSizeAllocated (object o, SizeAllocatedArgs args)
 		{
@@ -138,9 +138,9 @@ namespace MonoDevelop.SourceEditor
 					var lineNumberText = entryLineNumber.Text.Split (',', ':')[0];
 					line = Int32.Parse (lineNumberText);
 				} catch (OverflowException) {
-					line = entryLineNumber.Text.Trim ().StartsWith ("-", StringComparison.Ordinal) ? int.MinValue : int.MaxValue;
+					line = entryLineNumber.Text.Trim ().StartsWith ('-') ? int.MinValue : int.MaxValue;
 				}
-				bool isRelativeJump = entryLineNumber.Text.Trim ().StartsWith ("-", StringComparison.Ordinal) || entryLineNumber.Text.Trim ().StartsWith ("+", StringComparison.Ordinal);
+				bool isRelativeJump = entryLineNumber.Text.Trim ().StartsWith ('-') || entryLineNumber.Text.Trim ().StartsWith ('+');
 				return isRelativeJump ? this.caretSave.Line + line : line;
 			}
 		}
@@ -155,9 +155,9 @@ namespace MonoDevelop.SourceEditor
 					var lineNumberText = col [1];
 					column = Int32.Parse (lineNumberText);
 				} catch (OverflowException) {
-					column = entryLineNumber.Text.Trim ().StartsWith ("-", StringComparison.Ordinal) ? int.MinValue : int.MaxValue;
+					column = entryLineNumber.Text.Trim ().StartsWith ('-') ? int.MinValue : int.MaxValue;
 				}
-				bool isRelativeJump = entryLineNumber.Text.Trim ().StartsWith ("-", StringComparison.Ordinal) || entryLineNumber.Text.Trim ().StartsWith ("+", StringComparison.Ordinal);
+				bool isRelativeJump = entryLineNumber.Text.Trim ().StartsWith ('-') || entryLineNumber.Text.Trim ().StartsWith ('+');
 				return isRelativeJump ? this.caretSave.Column + column : column;
 			}
 		}

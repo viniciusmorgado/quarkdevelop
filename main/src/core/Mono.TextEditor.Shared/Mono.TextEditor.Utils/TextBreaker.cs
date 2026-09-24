@@ -75,8 +75,7 @@ namespace Mono.TextEditor.Utils
 		/// </param>
 		public static List<ISegment> BreakLinesIntoWords (TextDocument document, int startLine, int lineCount, bool includeDelimiter = true)
 		{
-			if (document is null)
-				throw new ArgumentNullException (nameof (document));
+			ArgumentNullException.ThrowIfNull (document);
 			if (startLine < 1)
 				throw new ArgumentOutOfRangeException (nameof (startLine), "startLine >= 1, was " + startLine);
 			if (startLine - 1 + lineCount > document.LineCount) 

@@ -43,7 +43,7 @@ using Gtk;
 namespace ICSharpCode.NRefactory6.IndentationTests
 {
 	[TestFixture]
-	class TextPasteIndentEngineTests : TextEditorExtensionTestBase
+	sealed class TextPasteIndentEngineTests : TextEditorExtensionTestBase
 	{
 		internal async Task<TextEditorExtensionTestCase> CreateEngine (string text)
 		{

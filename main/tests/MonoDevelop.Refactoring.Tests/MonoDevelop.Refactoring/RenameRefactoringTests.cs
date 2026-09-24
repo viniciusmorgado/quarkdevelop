@@ -42,7 +42,7 @@ using MonoDevelop.Core.Text;
 namespace MonoDevelop.Refactoring.Tests
 {
 	[TestFixture]
-	class RenameRefactoringTests : TextEditorExtensionTestBase
+	sealed class RenameRefactoringTests : TextEditorExtensionTestBase
 	{
 		protected override EditorExtensionTestData GetContentData () => EditorExtensionTestData.CSharp;
 

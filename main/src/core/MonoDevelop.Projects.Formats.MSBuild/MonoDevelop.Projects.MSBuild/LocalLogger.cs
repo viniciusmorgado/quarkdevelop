@@ -32,7 +32,7 @@ using Microsoft.Build.Framework;
 
 namespace MonoDevelop.Projects.MSBuild
 {
-	class TargetLogger: Logger
+	sealed class TargetLogger: Logger
 	{
 		IEventSource eventSource;
 		MSBuildEvent eventFilter;

@@ -695,9 +695,9 @@ namespace MonoDevelop.Xml.Editor
 					string name = el.Name.FullName;
 					var sb = StringBuilderCache.Allocate ();
 					if (currentChar != '/')
-						sb.Append ("/");
+						sb.Append ('/');
 					sb.Append (name);
-					sb.Append (">");
+					sb.Append ('>');
 					completionList.Add (new XmlTagCompletionData (StringBuilderCache.ReturnAndFree (sb), 0, true) {
 						Description = GettextCatalog.GetString ("Closing tag for '{0}'", name)
 					});
@@ -900,8 +900,7 @@ namespace MonoDevelop.Xml.Editor
 
 			public DataProvider (BaseXmlEditorExtension ext)
 			{
-				if (ext == null)
-					throw new ArgumentNullException ("ext");
+				ArgumentNullException.ThrowIfNull (ext);
 				this.ext = ext;
 			}
 

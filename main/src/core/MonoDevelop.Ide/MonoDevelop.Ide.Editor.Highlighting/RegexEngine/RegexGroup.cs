@@ -26,7 +26,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
 	[Obsolete ("Old editor")]
     class Group : Capture {
         // the empty group object
-		internal static Group   _emptygroup = new Group("", new int[0], 0);
+		internal static Group   _emptygroup = new Group("", Array.Empty<int> (), 0);
         
         internal int[] _caps;
         internal int _capcount;
@@ -87,8 +87,7 @@ namespace MonoDevelop.Ide.Editor.Highlighting.RegexEngine {
 #else
         static internal Group Synchronized(Group inner) {
 #endif
-            if (inner == null)
-                throw new ArgumentNullException("inner");
+            ArgumentNullException.ThrowIfNull (inner);
 
             // force Captures to be computed.
 

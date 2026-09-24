@@ -386,7 +386,7 @@ namespace Mono.MHex.Data
 				NodeRotateRight (this, args);
 		}
 
-		public class RedBlackTreeNodeEventArgs : EventArgs
+		public sealed class RedBlackTreeNodeEventArgs : EventArgs
 		{
 			public RedBlackTreeNode Node {
 				get;
@@ -435,7 +435,7 @@ namespace Mono.MHex.Data
 		static bool red   = true;
 		static bool black = false;
 		
-		public class RedBlackTreeNode 
+		public sealed class RedBlackTreeNode 
 		{
 			public RedBlackTreeNode parent;
 			public RedBlackTreeNode left, right;
@@ -510,7 +510,7 @@ namespace Mono.MHex.Data
 			
 		}
 		
-		public class RedBlackTreeIterator : IEnumerator<T>
+		public sealed class RedBlackTreeIterator : IEnumerator<T>
 		{
 			public RedBlackTreeNode startNode;
 			public RedBlackTreeNode node;

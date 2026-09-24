@@ -151,10 +151,10 @@ namespace MonoDevelop.DotNetCore
 			Func<DotNetCoreVersion, string> getSingleVersionString,
 			Func<string> getMultipleVersionsString)
 		{
-			if (!versions.Any ())
+			if (versions.Length == 0)
 				return;
 
-			if (versions.Count () == 1) {
+			if (versions.Length == 1) {
 				description.AppendLine (getSingleVersionString (versions[0]));
 			} else {
 				description.AppendLine (getMultipleVersionsString ());

@@ -123,14 +123,11 @@ namespace Microsoft.VisualStudio.Platform
         {
             if (_currentPosition == -1)
                 throw new ObjectDisposedException("TextSnapshotToTextReader");
-            if (buffer == null)
-                throw new ArgumentNullException("buffer");
-            if (index < 0)
-                throw new ArgumentOutOfRangeException("index");
-            if (count < 0)
-                throw new ArgumentOutOfRangeException("count");
+            ArgumentNullException.ThrowIfNull(buffer);
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
+            ArgumentOutOfRangeException.ThrowIfNegative(count);
             if (((index + count) < 0) || ((index + count) > buffer.Length))
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             int charactersToRead = System.Math.Min(_end - _currentPosition, count);
             _snapshot.CopyTo(_currentPosition, buffer, index, charactersToRead);
@@ -209,8 +206,7 @@ namespace Microsoft.VisualStudio.Platform
         /// <exception cref="ArgumentNullException"><paramref name="textSnapshot"/> is null.</exception>
         public NewTextSnapshotToTextReader(ITextSnapshot textSnapshot)
         {
-            if (textSnapshot == null)
-                throw new ArgumentNullException("textSnapshot");
+            ArgumentNullException.ThrowIfNull(textSnapshot);
 
             _snapshot = textSnapshot;
             _end = textSnapshot.Length;
@@ -218,13 +214,12 @@ namespace Microsoft.VisualStudio.Platform
 
         public NewTextSnapshotToTextReader(ITextSnapshot textSnapshot, int offset, int length)
         {
-            if (textSnapshot == null)
-                throw new ArgumentNullException("textSnapshot");
+            ArgumentNullException.ThrowIfNull(textSnapshot);
             if ((offset < 0) || (offset > textSnapshot.Length))
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             int end = offset + length;
             if ((end < offset) || (end > textSnapshot.Length))
-                throw new ArgumentOutOfRangeException("length");
+                throw new ArgumentOutOfRangeException(nameof(length));
 
             _snapshot = textSnapshot;
             _currentPosition = offset;

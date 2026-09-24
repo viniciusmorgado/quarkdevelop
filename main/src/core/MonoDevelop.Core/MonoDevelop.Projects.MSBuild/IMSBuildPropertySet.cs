@@ -336,12 +336,12 @@ namespace MonoDevelop.Projects.MSBuild
 					return false;
 				name = s.Key.Substring (prefix.Length + 1);
 			} else {
-				if (s.Key.StartsWith ("$", StringComparison.Ordinal))
+				if (s.Key.StartsWith ('$'))
 					return false;
 			}
 
 			string value = s.Value;
-			if (value.StartsWith ("$", StringComparison.Ordinal)) {
+			if (value.StartsWith ('$')) {
 				// New item
 				DataItem child = new DataItem ();
 				child.Name = name;

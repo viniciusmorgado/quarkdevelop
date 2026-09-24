@@ -44,7 +44,7 @@ namespace MonoDevelop.VersionControl.Views
 		Gtk.Label labelCommit;
 
 		List<VersionInfo> statuses;
-		bool remoteStatus = false;
+		bool remoteStatus;
 
 		class DiffData
 		{
@@ -631,7 +631,7 @@ namespace MonoDevelop.VersionControl.Views
 
 			TreeIter it = filestore.AppendValues (statusicon, lstatus, GLib.Markup.EscapeText (localpath).Split ('\n'), rstatus, commit, false, n.LocalPath.ToString (), true, hasComment, fileIcon, n.HasLocalChanges, rstatusicon, scolor, n.HasRemoteChange (VersionStatus.Modified));
 			if (!n.IsDirectory)
-				filestore.AppendValues (it, statusicon, "", new string[0], "", false, true, n.LocalPath.ToString (), false, false, fileIcon, false, null, null, false);
+				filestore.AppendValues (it, statusicon, "", Array.Empty<string> (), "", false, true, n.LocalPath.ToString (), false, false, fileIcon, false, null, null, false);
 			if (expanded)
 				filelist.ExpandRow (filestore.GetPath (it), open_all: false);
 
@@ -890,7 +890,7 @@ namespace MonoDevelop.VersionControl.Views
 		internal static object ParseCommandId (ExtensionNode codon)
 		{
 			string id = codon.Id;
-			if (id.StartsWith ("@", StringComparison.Ordinal))
+			if (id.StartsWith ('@'))
 				return id.Substring (1);
 			else
 				return id;

@@ -102,7 +102,7 @@ namespace MonoDevelop.PackageManagement.Tests
 			action.Execute ();
 
 			Assert.AreEqual (primaryRepositories, packageManager.PreviewUpdatePrimarySources);
-			Assert.AreEqual (new SourceRepository[0], packageManager.PreviewUpdateSecondarySources);
+			Assert.AreEqual (Array.Empty<SourceRepository> (), packageManager.PreviewUpdateSecondarySources);
 			Assert.AreEqual (nugetProject, packageManager.PreviewUpdateProject);
 			Assert.AreEqual ("Test", packageManager.PreviewUpdatePackageId);
 			Assert.IsFalse (packageManager.PreviewUpdateResolutionContext.IncludePrerelease);

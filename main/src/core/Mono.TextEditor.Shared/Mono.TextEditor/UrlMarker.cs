@@ -93,12 +93,9 @@ namespace Mono.TextEditor
 		
 		public override void Draw (MonoTextEditor editor, Cairo.Context cr, LineMetrics metrics)
 		{
-			if (editor is null)
-				throw new ArgumentNullException (nameof (editor));
-			if (cr is null)
-				throw new ArgumentNullException (nameof (cr));
-			if (metrics is null)
-				throw new ArgumentNullException (nameof (metrics));
+			ArgumentNullException.ThrowIfNull (editor);
+			ArgumentNullException.ThrowIfNull (cr);
+			ArgumentNullException.ThrowIfNull (metrics);
 
 			var startOffset = metrics.TextStartOffset;
 			int endOffset = metrics.TextEndOffset;
@@ -122,10 +119,8 @@ namespace Mono.TextEditor
 
 		static (double x1, double x2) CalculateXPositions (int startOffset, int endOffset, double startXPos, double endXPos, TextViewMargin.LayoutWrapper layoutWrapper, LayoutCache.LayoutProxy layout, int markerStart, int markerEnd)
 		{
-			if (layoutWrapper is null)
-				throw new ArgumentNullException (nameof (layoutWrapper));
-			if (layout is null)
-				throw new ArgumentNullException (nameof (layout));
+			ArgumentNullException.ThrowIfNull (layoutWrapper);
+			ArgumentNullException.ThrowIfNull (layout);
 
 			double x1, x2;
 			if (markerStart < startOffset && endOffset < markerEnd) {
@@ -149,12 +144,9 @@ namespace Mono.TextEditor
 
 		void DrawUnderline (MonoTextEditor editor, Cairo.Context cr, double y, TextViewMargin.LayoutWrapper layoutWrapper, int markerStart, double x1, double x2)
 		{
-			if (editor is null)
-				throw new ArgumentNullException (nameof (editor));
-			if (cr is null) 
-				throw new ArgumentNullException (nameof (cr));
-			if (layoutWrapper is null)
-				throw new ArgumentNullException (nameof (layoutWrapper));
+			ArgumentNullException.ThrowIfNull (editor);
+			ArgumentNullException.ThrowIfNull (cr);
+			ArgumentNullException.ThrowIfNull (layoutWrapper);
 
 			x1 = System.Math.Max (x1, editor.TextViewMargin.XOffset);
 			x2 = System.Math.Max (x2, editor.TextViewMargin.XOffset);

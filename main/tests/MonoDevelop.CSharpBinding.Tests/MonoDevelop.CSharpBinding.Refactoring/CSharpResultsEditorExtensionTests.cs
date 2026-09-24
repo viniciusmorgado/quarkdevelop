@@ -98,7 +98,7 @@ class MyClass
 				}
 
 				if (remainingUpdates == 0) {
-					AssertExpectedDiagnostics (new ExpectedDiagnostic [0], doc);
+					AssertExpectedDiagnostics (System.Array.Empty<ExpectedDiagnostic> (), doc);
 				}
 				return Task.CompletedTask;
 			});

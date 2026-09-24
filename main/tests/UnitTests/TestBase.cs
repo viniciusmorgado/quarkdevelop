@@ -86,7 +86,7 @@ namespace UnitTests
 		{
 			foreach (RequireServiceAttribute attribute in Attribute.GetCustomAttributes (GetType (), typeof (RequireServiceAttribute), true)) {
 				var m = typeof (ServiceProvider).GetMethod ("GetService").MakeGenericMethod (attribute.ServiceType);
-				var task = (Task)m.Invoke (Runtime.ServiceProvider, new object [0]);
+				var task = (Task)m.Invoke (Runtime.ServiceProvider, Array.Empty<object> ());
 				await task;
 			}
 		}
@@ -107,7 +107,7 @@ namespace UnitTests
 			//Util.ClearTmpDir ();
 		}
 		
-		static int pcount = 0;
+		static int pcount;
 		
 		public static string GetTempFile (string extension)
 		{

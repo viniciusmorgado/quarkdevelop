@@ -276,8 +276,7 @@ namespace Mono.TextEditor
 
 		public TextViewMargin (MonoTextEditor textEditor)
 		{
-			if (textEditor == null)
-				throw new ArgumentNullException ("textEditor");
+			ArgumentNullException.ThrowIfNull (textEditor);
 
 			// Overwrite the default margin role
 			if (Accessible != null) {
@@ -750,7 +749,7 @@ namespace Mono.TextEditor
 
 		#region Caret blinking
 		internal bool caretBlink = true;
-		uint blinkTimeout = 0;
+		uint blinkTimeout;
 
 		// constants taken from gtk.
 		const int cursorOnMultiplier = 2;
@@ -1504,8 +1503,7 @@ namespace Mono.TextEditor
 
 		public static uint TranslateToUTF8Index (string text, uint textIndex, ref uint curIndex, ref uint byteIndex)
 		{
-			if (text == null)
-				throw new ArgumentNullException (nameof (text));
+			ArgumentNullException.ThrowIfNull (text);
 
 			if (textIndex < 0)
 				throw new ArgumentOutOfRangeException (nameof (textIndex), "should be >=0 it was " + textIndex);
@@ -1520,8 +1518,7 @@ namespace Mono.TextEditor
 			} else {
 				int count = System.Math.Min ((int)(textIndex - curIndex), text.Length - (int)curIndex);
 
-				if (curIndex < 0)
-					throw new ArgumentOutOfRangeException (nameof (curIndex));
+				ArgumentOutOfRangeException.ThrowIfNegative (curIndex);
 
 				if (count - curIndex > text.Length)
 					throw new ArgumentOutOfRangeException (nameof (curIndex));
@@ -1646,7 +1643,7 @@ namespace Mono.TextEditor
 				}
 			}
 
-			List<BackgroundColor> backgroundColors = null;
+			List<BackgroundColor> backgroundColors;
 
 			public List<BackgroundColor> BackgroundColors {
 				get {
@@ -2286,8 +2283,8 @@ namespace Mono.TextEditor
 			return GetPixel ((Gdk.Color) ((HslColor)color));
 		}
 
-		internal bool InSelectionDrag = false;
-		internal bool inDrag = false;
+		internal bool InSelectionDrag;
+		internal bool inDrag;
 		internal DocumentLocation clickLocation;
 		int mouseWordStart, mouseWordEnd;
 		enum MouseSelectionMode
@@ -2511,7 +2508,7 @@ namespace Mono.TextEditor
 			base.MouseReleased (args);
 		}
 
-		CodeSegmentPreviewWindow previewWindow = null;
+		CodeSegmentPreviewWindow previewWindow;
 
 		public bool IsCodeSegmentPreviewWindowShown {
 			get {
@@ -2571,7 +2568,7 @@ namespace Mono.TextEditor
 
 		}
 
-		uint codeSegmentTooltipTimeoutId = 0;
+		uint codeSegmentTooltipTimeoutId;
 
 		internal void ShowCodeSegmentPreviewTooltip (ISegment segment, Rectangle hintRectangle, uint timeout = 650)
 		{
@@ -2856,7 +2853,7 @@ namespace Mono.TextEditor
 			return 1 + (result / tabSize) * tabSize;
 		}
 
-		internal double rulerX = 0;
+		internal double rulerX;
 
 		public double RulerX {
 			get { return this.rulerX; }
@@ -3351,7 +3348,7 @@ namespace Mono.TextEditor
 
 		static double[] verticalShadowAlphaTable = new [] { 0.71, 0.84, 0.95 };
 
-		internal double lastLineRenderWidth = 0;
+		internal double lastLineRenderWidth;
 
 		protected internal override void MouseLeft ()
 		{

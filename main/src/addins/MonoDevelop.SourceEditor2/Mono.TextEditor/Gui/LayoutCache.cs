@@ -40,8 +40,7 @@ namespace Mono.TextEditor
 
 		public LayoutCache (MonoTextEditor widget)
 		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
+			ArgumentNullException.ThrowIfNull (widget);
 			this.widget = widget;
 		}
 
@@ -72,10 +71,8 @@ namespace Mono.TextEditor
 
 			public LayoutProxy (LayoutCache layoutCache, Pango.Layout layout)
 			{
-				if (layoutCache == null)
-					throw new ArgumentNullException ("layoutCache");
-				if (layout == null)
-					throw new ArgumentNullException ("layout");
+				ArgumentNullException.ThrowIfNull (layoutCache);
+				ArgumentNullException.ThrowIfNull (layout);
 				this.layoutCache = layoutCache;
 				this.layout = layout;
 			}

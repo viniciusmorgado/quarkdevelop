@@ -32,7 +32,7 @@ using NUnit.Framework;
 namespace MonoDevelop.PackageManagement.Tests
 {
 	[TestFixture]
-	class PackageLoadContextTests
+	sealed class PackageLoadContextTests
 	{
 		/// <summary>
 		/// Manage NuGet Packages has problems with packages that have no version in the Updates tab

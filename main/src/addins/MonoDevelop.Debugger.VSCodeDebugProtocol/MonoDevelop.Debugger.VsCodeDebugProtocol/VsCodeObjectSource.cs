@@ -333,7 +333,7 @@ namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 						timer.Success = true;
 					}
 				} else {
-					objValChildren = new ObjectValue[0];
+					objValChildren = Array.Empty<ObjectValue> ();
 				}
 			}
 
@@ -425,7 +425,7 @@ namespace MonoDevelop.Debugger.VsCodeDebugProtocol
 			return new string (unquoted, 0, count);
 		}
 
-		class RawString : IRawValueString
+		sealed class RawString : IRawValueString
 		{
 			public RawString (string value)
 			{

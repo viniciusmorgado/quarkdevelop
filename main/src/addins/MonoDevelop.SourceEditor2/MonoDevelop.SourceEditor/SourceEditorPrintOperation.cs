@@ -87,8 +87,8 @@ namespace MonoDevelop.SourceEditor
 			base.OnEndPrint (context);
 		}
 		
-		int headerLines = 0;
-		int footerLines = 0;
+		int headerLines;
+		int footerLines;
 		
 		int totalPages, linesPerPage;
 		double lineHeight;

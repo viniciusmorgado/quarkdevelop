@@ -250,7 +250,7 @@ namespace Mono.TextEditor
 		
 		public static int GetKeyCode (Gdk.Key key)
 		{
-			return (int)(keyMappings.ContainsKey (key) ? keyMappings[key] : key);
+			return (int)(keyMappings.TryGetValue (key, out var value) ? value : key);
 		}
 		
 		public static int GetKeyCode (Gdk.Key key, Gdk.ModifierType modifier)

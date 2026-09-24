@@ -33,7 +33,7 @@ namespace Mono.TextEditor.Tests
 {
 	[Ignore("Port to new engine")]
 	[TestFixture]
-	class RtfWriterTests : TextEditorTestBase
+	sealed class RtfWriterTests : TextEditorTestBase
 	{
 		[Test]
 		public void TestSimpleCSharpRtf ()

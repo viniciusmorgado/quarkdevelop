@@ -260,7 +260,7 @@ namespace MonoDevelop.Core.Execution
 			return msg;
 		}
 
-		class MessageListenerHandler
+		sealed class MessageListenerHandler
 		{
 			RemoteProcessServer server;
 			MessageListener listener;

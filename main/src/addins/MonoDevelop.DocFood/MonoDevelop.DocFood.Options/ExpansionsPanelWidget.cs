@@ -45,7 +45,7 @@ namespace MonoDevelop.DocFood.Options
 	/// <summary>
 	/// Expansions panel.
 	/// </summary>
-	class ExpansionsPanel : OptionsPanel
+	sealed class ExpansionsPanel : OptionsPanel
 	{
 		ExpansionsPanelWidget panel;
 

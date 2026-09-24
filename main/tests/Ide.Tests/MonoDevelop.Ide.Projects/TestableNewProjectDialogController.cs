@@ -29,7 +29,7 @@ using MonoDevelop.Ide.Templates;
 
 namespace MonoDevelop.Ide
 {
-	class TestableNewProjectDialogController : NewProjectDialogController
+	sealed class TestableNewProjectDialogController : NewProjectDialogController
 	{
 		public TestableNewProjectDialogController ()
 		{

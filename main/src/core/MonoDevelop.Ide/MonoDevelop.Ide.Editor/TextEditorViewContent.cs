@@ -186,7 +186,7 @@ namespace MonoDevelop.Ide.Editor
 			UpdateStyleParent (Owner, textEditor.MimeType, editorOptionsUpdateCancellationSource.Token).Ignore ();
 		}
 
-		uint autoSaveTimer = 0;
+		uint autoSaveTimer;
 		Task autoSaveTask;
 		void InformAutoSave ()
 		{

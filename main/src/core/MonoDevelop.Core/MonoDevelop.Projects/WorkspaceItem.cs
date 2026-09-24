@@ -233,7 +233,7 @@ namespace MonoDevelop.Projects
 		[ThreadSafe]
 		public virtual ReadOnlyCollection<string> GetConfigurations ()
 		{
-			return new ReadOnlyCollection<string> (new string [0]);
+			return new ReadOnlyCollection<string> (Array.Empty<string> ());
 		}
 
 		internal void SetParentWorkspace (Workspace workspace)

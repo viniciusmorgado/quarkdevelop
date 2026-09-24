@@ -26,10 +26,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
             {
                 throw new ArgumentOutOfRangeException(nameof(trackingMode));
             }
-            if (bufferGraph == null)
-            {
-                throw new ArgumentNullException(nameof(bufferGraph));
-            }
+            ArgumentNullException.ThrowIfNull(bufferGraph);
             this.anchorPoint = anchorPoint;
             this.trackingMode = trackingMode;
             this.bufferGraph = bufferGraph;
@@ -47,10 +44,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public SnapshotPoint? GetPoint(ITextBuffer targetBuffer, PositionAffinity affinity)
         {
-            if (targetBuffer == null)
-            {
-                throw new ArgumentNullException(nameof(targetBuffer));
-            }
+            ArgumentNullException.ThrowIfNull(targetBuffer);
             ITextBuffer anchorBuffer = this.AnchorBuffer;
             SnapshotPoint currentPoint = this.anchorPoint.TranslateTo(anchorBuffer.CurrentSnapshot, this.trackingMode);
             if (anchorBuffer == targetBuffer)
@@ -85,8 +79,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public SnapshotPoint? GetPoint(ITextSnapshot targetSnapshot, PositionAffinity affinity)
         {
-            if (targetSnapshot == null)
-                throw new ArgumentNullException(nameof(targetSnapshot));
+            ArgumentNullException.ThrowIfNull(targetSnapshot);
 
             SnapshotPoint? result = GetPoint(targetSnapshot.TextBuffer, affinity);
             if (result.HasValue && (result.Value.Snapshot != targetSnapshot))
@@ -99,10 +92,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
 
         public SnapshotPoint? GetPoint(Predicate<ITextBuffer> match, PositionAffinity affinity)
         {
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
             ITextBuffer anchorBuffer = this.AnchorBuffer;
             SnapshotPoint currentPoint = this.anchorPoint.TranslateTo(anchorBuffer.CurrentSnapshot, this.trackingMode);
             if (match(anchorBuffer))
@@ -141,10 +131,7 @@ namespace Microsoft.VisualStudio.Text.Implementation
         public SnapshotPoint? GetInsertionPoint(Predicate<ITextBuffer> match)
         {
             // always maps down
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            ArgumentNullException.ThrowIfNull(match);
             ITextBuffer anchorBuffer = this.AnchorBuffer;
             SnapshotPoint currentPoint = this.anchorPoint.TranslateTo(anchorBuffer.CurrentSnapshot, this.trackingMode);
             return this.bufferGraph.MapDownToInsertionPoint(currentPoint, this.trackingMode, snapshot => (match(snapshot.TextBuffer)));

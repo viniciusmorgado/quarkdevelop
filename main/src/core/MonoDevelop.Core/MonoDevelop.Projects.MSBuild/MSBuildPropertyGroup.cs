@@ -468,7 +468,7 @@ namespace MonoDevelop.Projects.MSBuild
 			}
 		}
 
-		internal bool SkipSerializationOnNoChildren { get; set; } = false;
+		internal bool SkipSerializationOnNoChildren { get; set; }
 
 		internal override bool SkipSerialization {
 			get {

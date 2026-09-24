@@ -89,8 +89,7 @@ namespace Microsoft.CodeAnalysis.Text
 
 			public static TextBufferContainer From (ITextBuffer buffer)
 			{
-				if (buffer == null)
-					throw new ArgumentNullException (nameof (buffer));
+				ArgumentNullException.ThrowIfNull (buffer);
 				return containers.GetValue (buffer, b => new TextBufferContainer (b));
 			}
 

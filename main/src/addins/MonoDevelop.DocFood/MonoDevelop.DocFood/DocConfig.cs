@@ -30,7 +30,7 @@ using MonoDevelop.Core;
 
 namespace MonoDevelop.DocFood
 {
-	class DocConfig
+	sealed class DocConfig
 	{
 		public Dictionary<string, List<string>> WordLists = new Dictionary<string, List<string>> ();
 		public Dictionary<string, string> WordExpansions = new Dictionary<string, string> ();

@@ -214,7 +214,7 @@ namespace Xwt
 		}
 	}
 
-	class ColorImage: DrawingImage
+	sealed class ColorImage: DrawingImage
 	{
 		public ColorImage (Color color)
 		{

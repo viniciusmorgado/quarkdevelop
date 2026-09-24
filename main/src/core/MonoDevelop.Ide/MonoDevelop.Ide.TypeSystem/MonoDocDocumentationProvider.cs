@@ -77,7 +77,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				case 'M':
 					var openIdx = idString.LastIndexOf ('(');
 					var idx = idString.LastIndexOf ('.', openIdx < 0 ? idString.Length - 1 : openIdx);
-					var typeId = "T:" + idString.Substring (2, idx - 2);
+					var typeId = string.Concat ("T:", idString.AsSpan (2, idx - 2));
 					doc = GetHelpXml (helpTree, typeId);
 					if (doc == null)
 						return null;
@@ -114,7 +114,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				case 'F':
 				case 'E':
 					idx = idString.LastIndexOf ('.', idString.Length - 1 );
-					typeId = "T:" + idString.Substring (2, idx - 2);
+					typeId = string.Concat ("T:", idString.AsSpan (2, idx - 2));
 					doc = GetHelpXml (helpTree, typeId);
 					if (doc == null)
 						return null;
@@ -149,8 +149,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		public static string GetDocumentation (ISymbol entity)
 		{
-			if (entity == null)
-				throw new System.ArgumentNullException ("entity");
+			ArgumentNullException.ThrowIfNull (entity);
 
 			// If we had an exception while getting the help xml the monodoc help provider
 			// shouldn't try it again. A corrupt .zip file could cause long tooltip delays otherwise.

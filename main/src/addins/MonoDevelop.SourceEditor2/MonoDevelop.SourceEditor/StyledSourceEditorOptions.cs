@@ -46,8 +46,7 @@ namespace MonoDevelop.SourceEditor
 	
 		public StyledSourceEditorOptions (MonoDevelop.Ide.Editor.ITextEditorOptions optionsCore)
 		{
-			if (optionsCore == null)
-				throw new ArgumentNullException ("optionsCore");
+			ArgumentNullException.ThrowIfNull (optionsCore);
 			this.optionsCore = optionsCore;
 			DefaultSourceEditorOptions.Instance.Changed += HandleChanged;
 		}

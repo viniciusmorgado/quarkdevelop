@@ -46,8 +46,8 @@ namespace Mono.Debugging.Evaluation
 	{
 		Dictionary<string, UpdateCallback> asyncCallbacks = new Dictionary<string, UpdateCallback> ();
 		Dictionary<string, ObjectValue> asyncResults = new Dictionary<string, ObjectValue> ();
-		int asyncCounter = 0;
-		int cancelTimestamp = 0;
+		int asyncCounter;
+		int cancelTimestamp;
 		TimedEvaluator runner = new TimedEvaluator ();
 		
 		public int WaitTime {

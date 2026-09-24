@@ -30,7 +30,7 @@ using NUnit.Framework;
 namespace MonoDevelop.PackageManagement.Tests
 {
 	[TestFixture]
-	class RestoreNuGetPackagesInNuGetIntegratedProjectTests
+	sealed class RestoreNuGetPackagesInNuGetIntegratedProjectTests
 	{
 		RestoreNuGetPackagesInNuGetIntegratedProject action;
 		FakeSolutionManager solutionManager;

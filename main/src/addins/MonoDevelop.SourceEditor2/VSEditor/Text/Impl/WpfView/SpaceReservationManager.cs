@@ -43,14 +43,12 @@ namespace MonoDevelop.SourceEditor
 
         public void UpdatePopupAgent(IMDSpaceReservationAgent agent, ITrackingSpan visualSpan, PopupStyles styles)
         {
-            if (agent == null)
-                throw new ArgumentNullException("agent");
-            if (visualSpan == null)
-                throw new ArgumentNullException("visualSpan");
+            ArgumentNullException.ThrowIfNull(agent);
+            ArgumentNullException.ThrowIfNull(visualSpan);
 
             PopupAgent popupAgent = agent as PopupAgent;
             if (popupAgent == null)
-                throw new ArgumentException("The agent is not a PopupAgent", "agent");
+                throw new ArgumentException("The agent is not a PopupAgent", nameof(agent));
 
             popupAgent.SetVisualSpan(visualSpan);
             popupAgent._style = styles;
@@ -65,8 +63,7 @@ namespace MonoDevelop.SourceEditor
 
         public void AddAgent(IMDSpaceReservationAgent agent)
         {
-            if (agent == null)
-                throw new ArgumentNullException("agent");
+            ArgumentNullException.ThrowIfNull(agent);
 
             _agents.Add(agent);
             this.ChangeAgents(null, agent);
@@ -76,8 +73,7 @@ namespace MonoDevelop.SourceEditor
 
         public bool RemoveAgent(IMDSpaceReservationAgent agent)
         {
-            if (agent == null)
-                throw new ArgumentNullException("agent");
+            ArgumentNullException.ThrowIfNull(agent);
 
             if (_agents.Remove(agent))
             {

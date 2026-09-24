@@ -32,7 +32,7 @@ using UnitTests;
 namespace MonoDevelop.Ide.Editor
 {
 	[TestFixture]
-	class TextMateDocumentIndentEngineTests : IdeTestBase
+	sealed class TextMateDocumentIndentEngineTests : IdeTestBase
 	{
 		[Test]
 		public void TestIncreaseIndent ()

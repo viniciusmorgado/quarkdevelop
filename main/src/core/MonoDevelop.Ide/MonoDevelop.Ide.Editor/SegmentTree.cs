@@ -220,8 +220,7 @@ namespace MonoDevelop.Ide.Editor
 
 		void InternalAdd (TreeSegment node)
 		{
-			if (node == null)
-				throw new ArgumentNullException ("node");
+			ArgumentNullException.ThrowIfNull (node);
 			if (node.segmentTree != null)
 				throw new InvalidOperationException ("Node already attached.");
 

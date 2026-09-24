@@ -407,7 +407,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class DummyControl : Control
+	sealed class DummyControl : Control
 	{
 		public int DisposeCount;
 
@@ -418,7 +418,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class RootDisposableTestController : DocumentController
+	sealed class RootDisposableTestController : DocumentController
 	{
 		public int DisposeCount;
 
@@ -455,7 +455,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class ChildDisposableTestController : DocumentController
+	sealed class ChildDisposableTestController : DocumentController
 	{
 		public int DisposeCount;
 
@@ -501,7 +501,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class LoadTestControllerWithInnerView : LoadTestController
+	sealed class LoadTestControllerWithInnerView : LoadTestController
 	{
 		protected override async Task<DocumentView> OnInitializeView ()
 		{
@@ -511,7 +511,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class LoadTestControllerWithContainer : LoadTestController
+	sealed class LoadTestControllerWithContainer : LoadTestController
 	{
 		protected override async Task<DocumentView> OnInitializeView ()
 		{
@@ -523,7 +523,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class ContentTestController: DocumentController
+	sealed class ContentTestController: DocumentController
 	{
 		List<object> content = new List<object> ();
 
@@ -555,7 +555,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class SomeContent
+	sealed class SomeContent
 	{
 	}
 }

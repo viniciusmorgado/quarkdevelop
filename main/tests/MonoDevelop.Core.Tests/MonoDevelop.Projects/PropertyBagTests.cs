@@ -97,9 +97,9 @@ namespace MonoDevelop.Projects
 	}
 
 
-	class SerializableObject
+	sealed class SerializableObject
 	{
-		public static int CreationCount = 0;
+		public static int CreationCount;
 
 		public SerializableObject ()
 		{

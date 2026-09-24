@@ -113,8 +113,8 @@ namespace MonoDevelop.CSharp.Formatting
 				/// </returns>
 				public IPasteStrategy this [PasteStrategy strategy] {
 					get {
-						if (strategies.ContainsKey (strategy)) {
-							return strategies [strategy];
+						if (strategies.TryGetValue (strategy, out var value)) {
+							return value;
 						}
 
 						return DefaultStrategy;
@@ -395,7 +395,7 @@ namespace MonoDevelop.CSharp.Formatting
 				/// <inheritdoc />
 				public string Encode (string text)
 				{
-					return string.Concat (text.SelectMany (c => encodeReplace.ContainsKey (c) ? encodeReplace [c] : new [] { c }));
+					return string.Concat (text.SelectMany (c => encodeReplace.TryGetValue (c, out var value) ? value : new [] { c }));
 				}
 
 				/// <inheritdoc />

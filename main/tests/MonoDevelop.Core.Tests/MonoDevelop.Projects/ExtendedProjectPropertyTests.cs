@@ -352,7 +352,7 @@ namespace MonoDevelop.Projects
 	}
 
 
-	class MyProjectTypeNode: ProjectTypeNode
+	sealed class MyProjectTypeNode: ProjectTypeNode
 	{
 		public MyProjectTypeNode ()
 		{
@@ -367,7 +367,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class MyEmptyProjectTypeNode: ProjectTypeNode
+	sealed class MyEmptyProjectTypeNode: ProjectTypeNode
 	{
 		public MyEmptyProjectTypeNode ()
 		{
@@ -382,7 +382,7 @@ namespace MonoDevelop.Projects
 		}
 	}
 
-	class MyProject: Project
+	sealed class MyProject: Project
 	{
 		[ItemProperty]
 		public string SimpleData { get; set; }
@@ -394,17 +394,17 @@ namespace MonoDevelop.Projects
 		public MyProjectData DataProperty;
 	}
 
-	class MyProjectData
+	sealed class MyProjectData
 	{
 		[ItemProperty]
 		public string Foo { get; set; }
 	}
 
-	class MyEmptyProject: Project
+	sealed class MyEmptyProject: Project
 	{
 	}
 
-	class FlavorWithData: ProjectExtension
+	sealed class FlavorWithData: ProjectExtension
 	{
 		[ItemProperty]
 		public string SimpleData { get; set; }

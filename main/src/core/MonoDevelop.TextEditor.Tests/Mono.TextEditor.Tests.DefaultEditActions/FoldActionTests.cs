@@ -30,7 +30,7 @@ using System.Linq;
 namespace Mono.TextEditor.Tests.Actions
 {
 	[TestFixture()]
-	class FoldActionTests : TextEditorTestBase
+	sealed class FoldActionTests : TextEditorTestBase
 	{
 		[Test()]
 		public void TestOpenFold ()

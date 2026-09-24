@@ -46,8 +46,8 @@ namespace MonoDevelop.DesignerSupport
 		Frame propGridFrame;
 		Plug designerPlug;
 		Plug propGridPlug;
-		System.Threading.Thread gtkThread = null;
-		bool exceptionOccurred = false;
+		System.Threading.Thread gtkThread;
+		bool exceptionOccurred;
 		
 		public RemoteDesignerProcess ()
 		{
@@ -134,7 +134,7 @@ namespace MonoDevelop.DesignerSupport
 				+ System.Web.HttpUtility.HtmlEncode (e.ToString ());
 			
 			if (gtkThread != null 
-			    && gtkThread.ManagedThreadId != System.Threading.Thread.CurrentThread.ManagedThreadId) {
+			    && gtkThread.ManagedThreadId != Environment.CurrentManagedThreadId) {
 				Gtk.Application.Invoke ((o, args) => {
 					ShowText (err);
 				});
@@ -233,7 +233,7 @@ namespace MonoDevelop.DesignerSupport
 		
 		#endregion plugs
 		
-		bool disposed = false;
+		bool disposed;
 		public override void Dispose ()
 		{
 			if (disposed)

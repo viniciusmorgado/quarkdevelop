@@ -38,8 +38,8 @@ namespace MonoDevelop.Ide.Editor.TextMate
 		readonly TextEditor editor;
 
 		bool increaseNextLine;
-		int indentLevel = 0;
-		int nextLineIndent = 0;
+		int indentLevel;
+		int nextLineIndent;
 		Regex increaseIndentPattern, decreaseIndentPattern, indentNextLinePattern, unIndentedLinePattern;
 
 		public int LineNumber {
@@ -99,10 +99,8 @@ namespace MonoDevelop.Ide.Editor.TextMate
 
 		public void Push (IReadonlyTextDocument sourceText, IDocumentLine line)
 		{
-			if (sourceText == null)
-				throw new ArgumentNullException (nameof (sourceText));
-			if (line == null)
-				throw new ArgumentNullException (nameof (line));
+			ArgumentNullException.ThrowIfNull (sourceText);
+			ArgumentNullException.ThrowIfNull (line);
 			int lineOffset = line.Offset;
 			LineNumber++;
 			CurrentIndent = line.GetIndentation (sourceText);

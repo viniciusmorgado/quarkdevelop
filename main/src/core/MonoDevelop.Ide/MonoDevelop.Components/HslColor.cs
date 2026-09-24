@@ -251,7 +251,7 @@ namespace MonoDevelop.Components
 
 		public static HslColor Parse (string color)
 		{
-			if (color.Length == 9 && color.StartsWith ("#", StringComparison.Ordinal)) {
+			if (color.Length == 9 && color.StartsWith ('#')) {
 				double r = ((double)int.Parse (color.Substring (1, 2), System.Globalization.NumberStyles.HexNumber)) / 255.0;
 				double g = ((double)int.Parse (color.Substring (3, 2), System.Globalization.NumberStyles.HexNumber)) / 255.0;
 				double b = ((double)int.Parse (color.Substring (5, 2), System.Globalization.NumberStyles.HexNumber)) / 255.0;

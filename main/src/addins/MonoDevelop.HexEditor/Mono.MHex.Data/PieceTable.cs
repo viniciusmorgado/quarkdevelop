@@ -28,7 +28,7 @@ using System;
 
 namespace Mono.MHex.Data
 {
-	class PieceTable
+	sealed class PieceTable
 	{
 		public abstract class TreeNode
 		{
@@ -73,7 +73,7 @@ namespace Mono.MHex.Data
 			protected abstract TreeNode InternalSplitRight (long leftLength);
 		}
 		
-		public class OriginalTreeNode : TreeNode, ICloneable
+		public sealed class OriginalTreeNode : TreeNode, ICloneable
 		{
 			long BufferOffset {
 				get;
@@ -108,7 +108,7 @@ namespace Mono.MHex.Data
 			}
 		}
 		
-		public class DataTreeNode : TreeNode, ICloneable
+		public sealed class DataTreeNode : TreeNode, ICloneable
 		{
 			int AddBufferOffset {
 				get;

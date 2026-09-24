@@ -65,7 +65,7 @@ namespace MonoDevelop.PackageManagement
 		void ReportIncompatiblePackages ()
 		{
 			List<PackageIdentity> incompatiblePackages = GetPackagesIncompatibleWithNewProjectTargetFramework ().ToList ();
-			if (incompatiblePackages.Any ()) {
+			if (incompatiblePackages.Count != 0) {
 				writer.WriteLine (GetIncompatiblePackagesWarningMessage ());
 				writer.WriteLine ();
 
@@ -80,7 +80,7 @@ namespace MonoDevelop.PackageManagement
 		void ReportPackagesNeedingReinstall ()
 		{
 			List<PackageIdentity> packagesToReinstall = GetCompatiblePackagesNeedingReinstall ().ToList ();
-			if (packagesToReinstall.Any ()) {
+			if (packagesToReinstall.Count != 0) {
 				writer.WriteLine (GetPackageReinstallationWarningMessage ());
 				writer.WriteLine ();
 

@@ -46,7 +46,7 @@ namespace MonoDevelop.Ide
 		static class EmptyTask<T>
 		{
 			public static readonly Task<T> Instance = Task.FromResult<T>(default(T));
-			public static readonly Task<IEnumerable<T>> EmptyEnumerable = Task.FromResult<IEnumerable<T>>(new T[0]);
+			public static readonly Task<IEnumerable<T>> EmptyEnumerable = Task.FromResult<IEnumerable<T>>(Array.Empty<T> ());
 		}
 
 		public static T WaitAndGetResult<T> (this Task<T> task, CancellationToken cancellationToken = default(CancellationToken))

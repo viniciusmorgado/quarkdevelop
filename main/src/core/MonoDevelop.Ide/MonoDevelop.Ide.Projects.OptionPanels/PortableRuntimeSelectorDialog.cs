@@ -172,7 +172,7 @@ namespace MonoDevelop.Ide.Projects.OptionPanels
 		static bool TryParseProfileID (string profile, out int id)
 		{
 			if (profile != null && profile.StartsWith ("Profile", StringComparison.Ordinal))
-				return int.TryParse (profile.Substring ("Profile".Length), out id);
+				return int.TryParse (profile.AsSpan ("Profile".Length), out id);
 			id = -1;
 			return false;
 		}

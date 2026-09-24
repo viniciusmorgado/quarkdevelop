@@ -17,7 +17,7 @@ namespace Microsoft.VisualStudio.Text.Projection.Implementation
     internal class ProjectionSpanToNormalizedChangeConverter
     {
         private INormalizedTextChangeCollection normalizedChanges;
-        private bool computed = false;
+        private bool computed;
         private int textPosition;
         private ProjectionSpanDiffer differ;
         private ITextSnapshot currentSnapshot;

@@ -58,7 +58,7 @@ namespace MonoDevelop.Ide.Gui.Components
 		readonly Queue<QueuedUpdate> updates = new Queue<QueuedUpdate> ();
 		QueuedTextWrite lastTextWrite;
 		GLib.TimeoutHandler outputDispatcher;
-		bool outputDispatcherRunning = false;
+		bool outputDispatcherRunning;
 		readonly Regex consoleTextSanitizerRegex = new Regex ("(\\e[[0-9]*m)|(\b)", RegexOptions.Compiled);
 
 		const int MAX_BUFFER_LENGTH = 4000 * 1024;
@@ -746,7 +746,7 @@ namespace MonoDevelop.Ide.Gui.Components
 			}
 		}
 
-		bool destroyed = false;
+		bool destroyed;
 		protected override void OnDestroyed ()
 		{
 			lock (updates) {
@@ -836,12 +836,12 @@ namespace MonoDevelop.Ide.Gui.Components
 		}
 
 		internal class IndentTracker {
-			static int trackerID = 0;
+			static int trackerID;
 
 			Stack<TextTag> tags = new Stack<TextTag> ();
 			public TextTag IndentTag;
 
-			int indent = 0;
+			int indent;
 			public TextTag Indent (string name)
 			{
 				TextTag tag;

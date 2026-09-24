@@ -183,7 +183,7 @@ namespace MonoDevelop.Components.Commands.ExtensionNodes
 		internal static object ParseCommandId (ExtensionNode codon)
 		{
 			string id = codon.Id;
-			if (id.StartsWith ("@"))
+			if (id.StartsWith ('@'))
 				return id.Substring (1);
 
 			return id;

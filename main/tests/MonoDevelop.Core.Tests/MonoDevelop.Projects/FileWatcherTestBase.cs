@@ -85,7 +85,7 @@ namespace MonoDevelop.Projects
 					int removedCount = waitingForFileChangeFileNames.RemoveAll (file => {
 						return fileChanges.Any (fileChange => fileChange.FileName == file);
 					});
-					if (removedCount > 0 && !waitingForFileChangeFileNames.Any ()) {
+					if (removedCount > 0 && waitingForFileChangeFileNames.Count == 0) {
 						fileChangesTask.TrySetResult (true);
 					}
 				}
@@ -102,7 +102,7 @@ namespace MonoDevelop.Projects
 					int removedCount = waitingForFilesToBeRemoved.RemoveAll (file => {
 						return filesRemoved.Any (fileChange => fileChange.FileName == file);
 					});
-					if (removedCount > 0 && !waitingForFilesToBeRemoved.Any ()) {
+					if (removedCount > 0 && waitingForFilesToBeRemoved.Count == 0) {
 						fileRemovedTask.TrySetResult (true);
 					}
 				}

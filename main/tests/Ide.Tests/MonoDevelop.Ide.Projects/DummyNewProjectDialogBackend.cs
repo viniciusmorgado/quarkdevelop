@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace MonoDevelop.Ide.Projects
 {
-	class DummyNewProjectDialogBackend : INewProjectDialogBackend
+	sealed class DummyNewProjectDialogBackend : INewProjectDialogBackend
 	{
 		public bool CanMoveToNextPage { get; set; }
 

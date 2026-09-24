@@ -208,7 +208,7 @@ namespace MonoDevelop.SourceEditor.QuickTasks
 		}
 
 
-		uint updateAccessibilityId = 0;
+		uint updateAccessibilityId;
 		void UpdateAccessibility ()
 		{
 			if (!IdeTheme.AccessibilityEnabled) {

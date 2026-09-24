@@ -172,7 +172,7 @@ namespace MonoDevelop.Ide.Gui.Documents
 		}
 	}
 
-	class TestFileDocumentController : FileDocumentController
+	sealed class TestFileDocumentController : FileDocumentController
 	{
 		protected override Type FileModelType => typeof(TextFileModel);
 	}

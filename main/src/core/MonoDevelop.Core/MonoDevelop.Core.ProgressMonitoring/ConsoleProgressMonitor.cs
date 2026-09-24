@@ -33,11 +33,11 @@ namespace MonoDevelop.Core.ProgressMonitoring
 {
 	public class ConsoleProgressMonitor: ProgressMonitor
 	{
-		int columns = 0;
+		int columns;
 		bool leaveOpen;
 		bool indent = true;
-		bool wrap = false;
-		int ilevel = 0;
+		bool wrap;
+		int ilevel;
 		int isize = 3;
 		int col = -1;
 		bool ignoreLogMessages;

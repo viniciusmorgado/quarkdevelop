@@ -64,7 +64,7 @@ namespace MonoDevelop.Components.PropertyGrid
 		public override PropertyDescriptorCollection GetProperties (object component, Attribute[] attributes)
 		{
 			if (component == null)
-				return new PropertyDescriptorCollection (new PropertyDescriptor[] {});
+				return new PropertyDescriptorCollection (Array.Empty<PropertyDescriptor> ());
 			return TypeDescriptor.GetProperties (component);
 		}
 	}

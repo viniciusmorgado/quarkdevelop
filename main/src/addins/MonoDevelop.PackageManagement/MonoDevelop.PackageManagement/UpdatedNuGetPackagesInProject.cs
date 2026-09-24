@@ -62,7 +62,7 @@ namespace MonoDevelop.PackageManagement
 
 		public bool AnyPackages ()
 		{
-			return packages.Any ();
+			return packages.Count != 0;
 		}
 
 		public PackageIdentity GetUpdatedPackage (string packageId)

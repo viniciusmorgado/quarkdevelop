@@ -101,7 +101,7 @@ namespace MonoDevelop.PackageManagement
 		bool AnyNuGetAwareProjects ()
 		{
 			nugetAwareProjects = solution.GetAllProjects ().OfType<INuGetAwareProject> ().ToList ();
-			return nugetAwareProjects.Any ();
+			return nugetAwareProjects.Count != 0;
 		}
 
 		public bool RestorePackagesConfigProjects { get; set; }

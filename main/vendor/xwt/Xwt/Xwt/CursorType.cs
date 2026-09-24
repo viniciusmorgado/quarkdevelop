@@ -67,7 +67,7 @@ namespace Xwt
 		public static readonly CursorType NotAllowed = new CursorType("NotAllowed");
 
 		
-		class CursorTypeValueConverter: TypeConverter
+		sealed class CursorTypeValueConverter: TypeConverter
 		{
 			public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
 			{
@@ -80,7 +80,7 @@ namespace Xwt
 			}
 		}
 		
-		class CursorTypeValueSerializer: ValueSerializer
+		sealed class CursorTypeValueSerializer: ValueSerializer
 		{
 			public override bool CanConvertFromString (string value, IValueSerializerContext context)
 			{
