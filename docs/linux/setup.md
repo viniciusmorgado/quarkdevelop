@@ -14,7 +14,7 @@ cd monodevelop
 ## 2. Enter the toolchain
 
 `./scripts/pm <command>` runs `<command>` in the dev container. The first call builds the image from
-`Containerfile` (≈ 3 minutes); later calls reuse it until `Containerfile` changes.
+`Dockerfile` (≈ 3 minutes); later calls reuse it until `Dockerfile` changes.
 
 ```bash
 ./scripts/pm dotnet --info        # .NET SDK 10.0.x, no Mono
@@ -128,7 +128,7 @@ NuGet, and keeps its settings in `~/.var/app/io.github.viniciusmorgado.MonoDevel
 
 ## 7. Editors
 
-`.devcontainer/devcontainer.json` uses the same `Containerfile` (VS Code Dev Containers with
+`.devcontainer/devcontainer.json` uses the same `Dockerfile` (VS Code Dev Containers with
 `"dev.containers.dockerPath": "podman"`, or JetBrains Rider).
 
 See also [troubleshooting.md](troubleshooting.md).

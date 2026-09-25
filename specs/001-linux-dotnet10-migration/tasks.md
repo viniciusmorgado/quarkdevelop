@@ -20,7 +20,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 
 ## Phase 1: Setup — M0 baseline, M1 specification
 
-- [x] T001 M0: `Containerfile` + `scripts/pm` → `./scripts/pm dotnet --info` shows SDK 10.0.401, no Mono
+- [x] T001 M0: `Dockerfile` + `scripts/pm` → `./scripts/pm dotnet --info` shows SDK 10.0.401, no Mono
 - [x] T002 M0: `scripts/git-commit` (no-reply identity) → `git log -1 --format=%ae`
 - [x] T003 M0: specification layout (constitution, `specs/001-linux-dotnet10-migration/`) → files exist
 - [x] T004 M0: initialize 15 submodules in the container → `git submodule status | grep -c '^ '` = 15

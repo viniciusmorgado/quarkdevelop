@@ -1,6 +1,6 @@
 # Dependency updates (T118). NuGet versions are central (main/Directory.Packages.props, ADR 0004);
 # the lock files are refreshed by the update PRs. Vendored forks in main/vendor are updated by hand
-# (see their UPSTREAM.md). The Containerfile base images are pinned by digest through ARGs, which
+# (see their UPSTREAM.md). The Dockerfile base images are pinned by digest through ARGs, which
 # Dependabot's docker updater does not follow; they are bumped by hand with the .NET SDK (global.json).
 version: 2
 updates:

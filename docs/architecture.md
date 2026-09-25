@@ -110,7 +110,7 @@ add-in loaded in the default `AssemblyLoadContext` ([ADR 0006](adr/0006-mono-add
 ## Build, test and CI
 
 Everything runs inside the dev container through `./scripts/pm`. The container is built from
-`Containerfile`: .NET SDK 10, GTK 3, Xvfb, Weston, netcoredbg.
+`Dockerfile`: .NET SDK 10, GTK 3, Xvfb, Weston, netcoredbg.
 
 | Script | What it does |
 |---|---|

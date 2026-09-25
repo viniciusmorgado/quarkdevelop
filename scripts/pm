@@ -4,17 +4,17 @@
 #   ./scripts/pm dotnet --info
 #   ./scripts/pm bash -lc 'dotnet build main/MonoDevelop.Linux.sln'
 #
-# The image is built from ./Containerfile on first use (tagged by the file's hash),
+# The image is built from ./Dockerfile on first use (tagged by the file's hash),
 # so the command is idempotent. The repository is mounted at the same absolute path
 # it has on the host; for git worktrees the main repository is mounted instead, so
 # the worktree's .git indirection keeps working inside the container.
 #
 # Environment:
-#   PM_IMAGE       use this image instead of building ./Containerfile
+#   PM_IMAGE       use this image instead of building ./Dockerfile
 #   PM_PODMAN_ARGS extra arguments for `podman run` (word-split)
 #   PM_REBUILD=1   force a rebuild of the development image
-#   PM_PROFILE     dev (default): ./Containerfile, image localhost/md-dev
-#                  flatpak: packaging/flatpak/Containerfile, image localhost/md-flatpak, with the
+#   PM_PROFILE     dev (default): ./Dockerfile, image localhost/md-dev
+#                  flatpak: packaging/flatpak/Dockerfile, image localhost/md-flatpak, with the
 #                  podman options flatpak-builder and `flatpak run` need (bubblewrap sandboxes nested
 #                  in the rootless container) and the md-flatpak volume (ADR 0022)
 set -euo pipefail
@@ -34,11 +34,11 @@ fi
 profile_args=()
 case "${PM_PROFILE:-dev}" in
 	dev)
-		containerfile="$here/Containerfile"
+		Dockerfile="$here/Dockerfile"
 		image_name=localhost/md-dev
 		;;
 	flatpak)
-		containerfile="$here/packaging/flatpak/Containerfile"
+		Dockerfile="$here/packaging/flatpak/Dockerfile"
 		image_name=localhost/md-flatpak
 		# bubblewrap (flatpak-builder, flatpak run) mounts a new /proc in its sandbox; the kernel refuses
 		# that while podman masks paths under /proc, hence unmask=/proc/*. Nothing else is needed: no
@@ -57,11 +57,11 @@ esac
 
 image="${PM_IMAGE:-}"
 if [[ -z "$image" ]]; then
-	hash="$(sha256sum "$containerfile" | cut -c1-12)"
+	hash="$(sha256sum "$Dockerfile" | cut -c1-12)"
 	image="$image_name:$hash"
 	if [[ "${PM_REBUILD:-0}" == 1 ]] || ! podman image exists "$image"; then
 		echo "pm: building $image" >&2
-		podman build --pull=newer -t "$image" -f "$containerfile" "$here" >&2
+		podman build --pull=newer -t "$image" -f "$Dockerfile" "$here" >&2
 		podman tag "$image" "$image_name:latest"
 	fi
 fi

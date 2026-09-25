@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Assets/quark_banner.png" alt="QuarkDevelop" width="760">
+  <img src="assets/quark_banner.png" alt="QuarkDevelop" width="760">
 </p>
 
 <p align="center">

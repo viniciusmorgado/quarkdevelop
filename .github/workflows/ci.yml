@@ -1,7 +1,7 @@
 name: ci
 
 # Linux CI (constitution: CI/CD). Every step runs inside the same dev container image that
-# developers use locally through ./scripts/pm, built from ./Containerfile.
+# developers use locally through ./scripts/pm, built from ./Dockerfile.
 
 on:
   push:

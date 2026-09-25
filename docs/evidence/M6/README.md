@@ -43,7 +43,7 @@ total                    392s (budget 900s)
     packages each in their own group;
   - GitHub Actions.
 
-  The `Containerfile` base images are not covered: they are pinned by digest through `ARG`s, which
+  The `Dockerfile` base images are not covered: they are pinned by digest through `ARG`s, which
   Dependabot's docker updater does not follow, so they are updated by hand with `global.json`.
 - `.github/workflows/codeql.yml` runs CodeQL for C# (`build-mode: none`, no container needed) and for the
   workflows (`actions`). It runs on pushes and PRs to `main` and weekly, with `security-events: write` only
@@ -86,7 +86,7 @@ All 12 suites passed in the two-lane run: 3,871 passed, 0 failed. Coverage: Core
 
 First green `ci.yml` run on a GitHub-hosted runner (ubuntu-24.04):
 [run 36091142830](https://github.com/viniciusmorgado/quarkdevelop/actions/runs/36091142830), commit `b23a0a7f4b`.
-- The run was cold: the dev image was built from the `Containerfile` and the NuGet cache started empty.
+- The run was cold: the dev image was built from the `Dockerfile` and the NuGet cache started empty.
 - Every step passed, and the NuGet cache was saved for later runs.
 - The whole job took 13 min 25 s (SC-007 budget: 15 min).
 

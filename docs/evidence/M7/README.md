@@ -9,7 +9,7 @@ Decision record: [ADR 0022](../../adr/0022-flatpak.md). Date: 2026-09-24, commit
 PM_PROFILE=flatpak ./scripts/pm flatpak --version     # Flatpak 1.14.6
 ```
 
-Image `localhost/md-flatpak:<hash>` from `packaging/flatpak/Containerfile` (same pinned .NET SDK
+Image `localhost/md-flatpak:<hash>` from `packaging/flatpak/Dockerfile` (same pinned .NET SDK
 10.0.401 base as the dev image; flatpak 1.14.6, flatpak-builder 1.4.2, bubblewrap 0.9.0, AppStream
 1.0.2). Extra podman option found by elimination: `--security-opt unmask=/proc/*` only.
 

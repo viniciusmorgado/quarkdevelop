@@ -1,8 +1,8 @@
 # M0 evidence — baseline and spikes
 
-All commands ran inside the dev container (`./scripts/pm`, image built from `Containerfile`:
+All commands ran inside the dev container (`./scripts/pm`, image built from `Dockerfile`:
 .NET SDK 10.0.401, runtime 10.0.12, GTK 3.24.41, no Mono).
-
+Containerfile
 | Task | Evidence | Result |
 |---|---|---|
 | T001–T003 container + specification layout | commit `eab706b582` | `dotnet --version` 10.0.401, `git status` works in container |

@@ -42,7 +42,7 @@ Mono.Unix 7.1, NGettext, StreamJsonRpc 2.x, LibGit2Sharp 0.32, Microsoft.VisualS
 (XPlat Code Coverage) + ReportGenerator; GUI smoke under `xvfb-run`; DAP-driven debug test.
 
 **Target Platform**: Linux x86-64 (arm64 desirable), X11 and Wayland, GTK 3.24; reference
-environment = podman container `Containerfile` (Ubuntu 24.04 based .NET SDK image); distribution =
+environment = podman container `Dockerfile` (Ubuntu 24.04 based .NET SDK image); distribution =
 Flatpak on `org.gnome.Platform`.
 
 **Project Type**: Desktop application (IDE) with a plug-in architecture + CLI tool (`mdtool`).
@@ -63,7 +63,7 @@ command runs inside the container; each commit keeps the Linux solution green; L
 
 | # | Principle | Gate for this plan | Status |
 |---|---|---|---|
-| I | Linux-first, container-first | `Containerfile` + `scripts/pm`; all validation commands prefixed with `./scripts/pm` | PASS (T001 done) |
+| I | Linux-first, container-first | `Dockerfile` + `scripts/pm`; all validation commands prefixed with `./scripts/pm` | PASS (T001 done) |
 | II | .NET 10 pinned | `global.json`, `net10.0` SDK-style projects, CPM, no Mono/GAC/dllmap | PASS (planned M2/M3) |
 | III | Reproducible builds | nuget.org only (+ADR-approved feeds), lock files, vendoring in `main/vendor/` | PASS (ADR 0004/0005) |
 | IV | Incremental & reversible | waves W0–W4, one task per commit, UI ported per area | PASS with deviations (see Complexity Tracking) |
@@ -102,7 +102,7 @@ docs/
 ### Source Code (repository root)
 
 ```text
-Containerfile                     # reference dev/CI environment
+Dockerfile                     # reference dev/CI environment
 global.json                       # SDK pin
 scripts/                          # pm (podman wrapper), git-commit, setup/restore/build/test/run/debug/ci/audit/lint/package-flatpak/inventory (contracts/scripts.md)
 spikes/                           # M0 throwaway experiments (not part of the product build)

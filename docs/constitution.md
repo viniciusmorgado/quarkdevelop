@@ -9,7 +9,7 @@ practice found in the repository (autotools, `make`, Mono-only scripts, Mac/Wind
 ### I. Linux-First, Container-First
 
 - Linux is the primary and only required platform for building, running, debugging and developing.
-- The reference environment is the development container defined by the repository `Containerfile`
+- The reference environment is the development container defined by the repository `Dockerfile`
   and executed with rootless podman through `./scripts/pm`. Every documented command MUST work via
   `./scripts/pm <command>` (including its documented profiles, e.g. `PM_PROFILE=flatpak` for the
   Flatpak builder image); the only host prerequisites are `podman` and `git`.
