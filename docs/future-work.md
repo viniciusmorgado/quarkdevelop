@@ -52,7 +52,7 @@ tasks of the migration that were not done.
 - **T149.** source generators, remaining gaps of T147 (ADR 0025): generators from project references (`OutputItemType="Analyzer"`), generated files under the Dependencies node, live (not snapshot) generated documents → a project-reference generator sample has 0 editor errors
 - **T150.** ADR 0011 port helpers to 0 (344 uses of `Gtk3SizeRequest`/`Gtk3ExposeEvent`/`Gtk3BaseSizeRequest`/`Gtk3BaseGetSize`/`Gtk3CompatExtensions` in 93 compiled files on 2026-09-24): native `OnGetPreferredWidth/Height` and `OnDrawn` per widget, with screenshot checks → no ADR 0011 helper left in the compiled files
 - **T151.** Ide.Tests multi-target fixture that needs NuGet packages: `TypeSystemServiceTests.MultiTargetFramework_ReloadProject_TargetFrameworksChanged` restores `main/tests/test-projects/multi-target` (netcoreapp1.1;netstandard1.0 plus Newtonsoft.Json 10.0.1: Microsoft.NETCore.App 1.1 and the netstandard1.x package graph) from nuget.org, which fails with NU1100 under the repository package source mapping and without network in tests → restore it from a local feed of pinned packages (as `DependenciesNodeSdkProjectTests` does; see T143 for the Core fixtures) or retarget the fixture to supported frameworks keeping the target-frameworks change the test makes; the entry leaves quarantine: `./scripts/pm bash -lc 'dotnet build main/tests/Ide.Tests/MonoDevelop.Ide.Tests.csproj -v q && xvfb-run -a dotnet test main/tests/Ide.Tests/MonoDevelop.Ide.Tests.csproj --no-build --filter "FullyQualifiedName~MultiTargetFramework_ReloadProject_TargetFrameworksChanged"'`
-- **T154.** F# language binding (highlighting, completion, build integration) for SDK-style F# projects: the New Project dialog creates F# projects (T152), which load as unsupported projects → a `dotnet new console --language F#` project opens with F# highlighting and completion and builds from the IDE
+- **T154.** F# binding on the current FSharp.Compiler.Service. The binding runs on FCS 31 ([ADR 0027](adr/0027-fsharp-binding.md)): a `dotnet new console --language F#` project opens with F# highlighting and builds from the IDE, but FCS 31 cannot read the F# metadata of FSharp.Core 8 and later, so SDK projects get no type checking in the editor, and syntax after F# 4.7 is not understood → the binding on FCS 43+ and FSharp.Core 10 (which also drops ExtCore and the Fantomas 3 beta); the same project shows completion, tooltips and errors in the editor. The other gaps are listed under "F# binding" below
 
 ## Add-ins to port
 
@@ -70,8 +70,25 @@ GTK 3, tests in the gate).
 - **`MonoDevelop.DesignerSupport.Tests`**: the tests of the Properties pad and Toolbox add-in.
 - **HTML editor**: the HTML completion (tags, attributes, doctypes) of the removed `AspNet` add-in
   (`main/src/addins/AspNet/Html` in the history before 2026-09-25) moves into the Xml add-in, with the XHTML schemas.
-- **F# (T154)**: the upstream binding in `main/external/fsharpbinding` (FSharp.Compiler.Service 31, Paket) is the
-  starting point.
+
+## F# binding
+
+What the minimal port of [ADR 0027](adr/0027-fsharp-binding.md) left, besides the move to the current FCS (T154):
+
+- **F# Interactive pad and commands** are hidden. Their conditions in `FSharpBinding.addin.xml` look for the Mono F# SDK
+  targets (`Microsoft SDKs/F#/<version>/Framework/v4.0/Microsoft.FSharp.Targets`). Scripts run in F# Interactive have no
+  `fsi` object (`FSharp.Compiler.Interactive.Settings`), and values of type System.Drawing.Image are not shown as
+  images.
+- **CodeDOM:** the F# language binding has no CodeDOM provider, so the New Project dialog does not check F# project
+  names against F# keywords, and `ResXFileCodeGenerator` cannot generate `.resx` designer files for F# projects.
+- **Mono-era code** that is dead on Linux: `Environment.runningOnMono`/`getMonoPath`, the .NET Framework compiler
+  locations in `CompilerLocationUtils`, and the portable F# project flavor.
+- **Tests:** `MonoDevelop.FSharp.Tests` runs in `scripts/test.sh`, but the CI test lanes and `scripts/test.sh --parallel`
+  select `*.Tests.csproj` only. Quarantined:
+  - `CompilerArgumentsTests.Only mscorlib referenced`: Mono and .NET Framework reference resolution.
+  - `Template tests.FSharp portable project`: portable class libraries.
+  - `Template tests.Can build netcoreapp11 MVC web app`: a netcoreapp1.1 fixture.
+  - `Interactive send references uses real assemblies #43307`: a .NET Framework 4.5.1 fixture.
 
 ## Parity with the .NET SDK on Linux
 

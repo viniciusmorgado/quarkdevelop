@@ -48,8 +48,8 @@ flowchart TB
 
 The Mac and Windows platforms and the legacy add-ins are removed from the repository
 ([ADR 0017](adr/0017-linux-exclusions.md)). The add-ins that serve .NET on Linux but are not ported yet stay outside
-`main/MonoDevelop.Linux.sln`: `MonoDevelop.AspNetCore`, `TextTemplating`, `MonoDevelop.Packaging` and the F# binding
-(`main/external/fsharpbinding`); see [future work](future-work.md).
+`main/MonoDevelop.Linux.sln`: `MonoDevelop.AspNetCore`, `TextTemplating` and `MonoDevelop.Packaging`; see
+[future work](future-work.md).
 
 ## Add-in model
 
@@ -99,6 +99,9 @@ add-in loaded in the default `AssemblyLoadContext` ([ADR 0006](adr/0006-mono-add
   ([ADR 0010](adr/0010-roslyn-5-publicizer.md)). The IDE's Roslyn workspace gets the source files, analyzers and source
   generators of a project from a design-time run in the builder, and runs the generators itself
   ([ADR 0008](adr/0008-msbuild-hosting.md), [ADR 0025](adr/0025-source-generators-in-the-workspace.md)).
+- **F#:** `main/src/addins/FSharpBinding` registers the F# project type and the editor features on
+  FSharp.Compiler.Service 31. F# Interactive runs in its own process, `MonoDevelop.FSharpInteractive.Service`, started
+  with `dotnet exec` ([ADR 0027](adr/0027-fsharp-binding.md)).
 - **NuGet:** the NuGet add-in compiles against NuGet 7.9 and uses the SDK's NuGet assemblies at run time
   ([ADR 0020](adr/0020-nuget-client-version.md)).
 - **Tests:** the UnitTesting add-in discovers and runs tests through VSTest

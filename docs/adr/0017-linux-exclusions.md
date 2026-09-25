@@ -64,3 +64,8 @@ Windows, macOS or Mono only, and VB.NET and Subversion, which are too little use
   `MonoDevelop.Packaging`, `MonoDevelop.DesignerSupport.Tests` and the F# binding (`main/external/fsharpbinding`).
 - From `AspNet`, the web MIME types (HTML, JavaScript, TypeScript, LESS/SASS/SCSS, Razor) moved into `MonoDevelop.Ide`
   and `xhtml1-strict.xsd` into the Xml add-in, whose tests use it. Its HTML editor is to be ported into the Xml add-in.
+
+## Amendment 2026-09-25: F# binding in the Linux build
+
+The F# binding returns through [ADR 0027](0027-fsharp-binding.md). It moves from `main/external/fsharpbinding` to
+`main/src/addins/FSharpBinding` and joins `main/MonoDevelop.Linux.sln`. `main/external` no longer exists.
