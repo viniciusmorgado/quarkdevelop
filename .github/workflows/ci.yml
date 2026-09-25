@@ -3,10 +3,13 @@ name: ci
 # Linux CI (constitution: CI/CD). Every step runs inside the same dev container image that
 # developers use locally through ./scripts/pm, built from ./Dockerfile.
 
+# Branch flow (ADR 0021): work branches reach develop through pull requests, develop reaches main (the
+# release) through a pull request. Pushes to develop and every pull request into develop or main run it.
 on:
   push:
-    branches: [main, "migration/**", dotnet-linux-migration]
+    branches: [develop]
   pull_request:
+    branches: [develop, main]
   workflow_dispatch:
 
 permissions:

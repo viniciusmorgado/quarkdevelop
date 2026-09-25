@@ -119,8 +119,8 @@ Everything runs inside the dev container through `./scripts/pm`. The container i
 | `scripts/run.sh`, `scripts/debug.sh` | Run the IDE (or `mdtool`), optionally under netcoredbg. |
 | `scripts/ci.sh` | The gate: setup, lint, build `--check`, duplicate-assembly check, tests, `NuGetAudit`, the mdtool smoke, and the GUI smoke tests on X11 (including Errors pad navigation) and Wayland. The budget is 900 s. |
 
-`.github/workflows/ci.yml` runs `scripts/ci.sh` in the same image. `release.yml` publishes from a SemVer tag,
-and `codeql.yml` and Dependabot cover security and updates.
+`.github/workflows/ci.yml` runs `scripts/ci.sh` in the same image, and `release.yml` publishes a release from
+`main` (ADR 0021). Dependencies are updated by hand; `NuGetAudit` and `scripts/audit.sh` flag vulnerable packages.
 
 The IDE's `--smoke-test [sln|csproj]` option starts the IDE, opens and builds the solution, checks
 Errors pad navigation when the build fails, and writes `ide.log` and `screenshot.png`
