@@ -230,7 +230,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T116 [US6] M6: `ci.yml` runs `scripts/ci.sh` in the dev image; artifacts named `<version>+<sha>`; job summary → `actionlint` clean
 - [x] T117 [P] [US6] M6: ADR 0021 versioning (version.config + SHA) and release; `release.yml` on `v*` (least privilege, attaches Flatpak + sha256 + SBOM once M7 exists) → `actionlint` clean
 - [x] T118 [P] [US6] M6: Dependabot (nuget, github-actions, docker) + CodeQL workflow → `actionlint` clean
-- [ ] T119 [US6] M6: evidence → `docs/evidence/M6/` (local `ci.sh` run + timing; hosted run only after push authorization)
+- [x] T119 [US6] M6: evidence → `docs/evidence/M6/` (local `ci.sh` run + timing; hosted run only after push authorization)
 
 ---
 

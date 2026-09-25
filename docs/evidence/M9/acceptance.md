@@ -23,8 +23,8 @@ workstation (x86-64, 12 cores).
 - `./scripts/pm ./scripts/build.sh`: ok in 76 s.
 - `mdtool build` of Hello: exit 0, and the program prints "Hello, MonoDevelop!".
 
-The container image and the NuGet cache volume already existed on the machine. A fully cold run (image build of
-about 3 minutes plus NuGet downloads) is exercised by the hosted CI once pushing is authorized (T119).
+The container image and the NuGet cache volume already existed on the machine. The fully cold path (image build
+plus NuGet downloads on a fresh runner) passed on GitHub in the hosted run of T119 ([M6/README.md](../M6/README.md)).
 
 **SC-002.** All 12 test projects run in the gate. The quarantine record is
 [docs/evidence/M4/quarantine.md](../M4/quarantine.md) and the M8 summary is in [M8/README.md](../M8/README.md).
@@ -74,8 +74,8 @@ Locals pad in front. Any GLib-GObject critical fails the run.
 
 **SC-007.** The full `scripts/ci.sh` run takes 515–645 s of wall-clock time with a warm cache (budget 900 s). It
 covers setup, lint, the Release build with format check, the assembly check, tests with coverage in two lanes, the
-audit, the mdtool smoke and 5 GUI smokes (X11, Errors pad, modern C#, debug, Wayland). The timings are in [M6/README.md](../M6/README.md). A hosted-runner
-measurement needs push authorization (T119).
+audit, the mdtool smoke and 5 GUI smokes (X11, Errors pad, modern C#, debug, Wayland). The timings are in [M6/README.md](../M6/README.md). A hosted run on
+GitHub (cold image and cache) took 13 min 25 s, see [M6/README.md](../M6/README.md) T119.
 
 **SC-008.** [M7/README.md](../M7/README.md). The bundle installs into a fresh Flatpak installation. `--version`
 works, `mdtool build` of Hello succeeds, and the IDE smoke test passes under Xvfb inside the sandbox. It has not

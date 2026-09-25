@@ -81,3 +81,20 @@ Coverage is merged and ratcheted as before. Without `--parallel`, the tests run 
 | two lanes, 2026-09-24 | 383 s | 536 s |
 
 All 12 suites passed in the two-lane run: 3,871 passed, 0 failed. Coverage: Core 66.61%, Ide 20.83%, total 28.92%.
+
+## T119 — hosted CI run (2026-09-25)
+
+First green `ci.yml` run on a GitHub-hosted runner (ubuntu-24.04):
+[run 36091142830](https://github.com/viniciusmorgado/quarkdevelop/actions/runs/36091142830), commit `b23a0a7f4b`.
+- The run was cold: the dev image was built from the `Containerfile` and the NuGet cache started empty.
+- Every step passed, and the NuGet cache was saved for later runs.
+- The whole job took 13 min 25 s (SC-007 budget: 15 min).
+
+The two earlier hosted runs found two problems that a warm local cache had hidden. Both are fixed:
+- **Run 36088701543, failed in `setup`.** The runner's NuGet cache was mounted inside the container home, so
+  podman created `/home/dev/.nuget` as root and `dotnet` could not read its `NuGet.Config`. The cache is now mounted
+  at `/nuget-packages` (`35627c7c51`).
+- **Run 36089278891, failed in `test`: 17 tests with NU1100.** Test helpers wrote a `NuGet.Config` whose only source
+  key, "NuGet v3 Official", was excluded by the repository's package source mapping (`7b6018561d`).
+
+`ci.sh` now prints the failing tests in the job log and the job summary (`a919cb79c5`).
