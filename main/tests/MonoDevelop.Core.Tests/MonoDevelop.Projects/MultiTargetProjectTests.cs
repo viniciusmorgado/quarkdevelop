@@ -83,7 +83,7 @@ namespace MonoDevelop.Projects
 				"<configuration>\r\n" +
 				"  <packageSources>\r\n" +
 				"    <clear />\r\n" +
-				"    <add key=\"NuGet v3 Official\" value=\"https://api.nuget.org/v3/index.json\" />\r\n" +
+				"    <add key=\"nuget.org\" value=\"https://api.nuget.org/v3/index.json\" />\r\n" +
 				"  </packageSources>\r\n" +
 				"</configuration>";
 
