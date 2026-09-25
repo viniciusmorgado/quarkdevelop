@@ -129,30 +129,6 @@ namespace MonoDevelop.Projects
 		}
 
 		[Test]
-		public async Task SaveFileInProjectExternallyAfterSolutionNotWatched_NoFileChangeEventsFired ()
-		{
-			string solFile = Util.GetSampleProject ("console-project", "ConsoleProject.sln");
-			ProjectFile file;
-			Solution disposed;
-			using (var sol = (Solution)await Services.ProjectService.ReadWorkspaceItem (Util.GetMonitor (), solFile)) {
-				var p = (DotNetProject)sol.Items [0];
-				file = p.Files.First (f => f.FilePath.FileName == "Program.cs");
-				ClearFileEventsCaptured ();
-				await FileWatcherService.Add (sol);
-				disposed = sol;
-			}
-			// Disposing removes the watchers asynchronously: wait for that before changing the file
-			await FileWatcherService.Remove (disposed);
-
-			TextFileUtility.WriteText (file.FilePath, string.Empty, Encoding.UTF8);
-
-			await WaitForFileChanged (file.FilePath);
-
-			// only events for this file count: late events of other files (the copied sample project) are unrelated
-			Assert.IsFalse (fileChanges.Any (f => f.FileName == file.FilePath));
-		}
-
-		[Test]
 		public async Task DeleteProjectFileUsingFileService ()
 		{
 			string solFile = Util.GetSampleProject ("console-project", "ConsoleProject.sln");

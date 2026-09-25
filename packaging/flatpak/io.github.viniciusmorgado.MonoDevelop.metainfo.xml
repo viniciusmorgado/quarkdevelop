@@ -5,7 +5,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>LGPL-2.1-only AND MIT</project_license>
 
-  <name>MonoDevelop</name>
+  <name>QuarkDevelop</name>
   <summary>Integrated development environment for C# and .NET</summary>
   <developer id="io.github.viniciusmorgado">
     <name>Vinicius Donatto Morgado</name>
@@ -13,7 +13,7 @@
 
   <description>
     <p>
-      MonoDevelop is an integrated development environment for C# and .NET. This edition runs on
+      QuarkDevelop is an integrated development environment for C# and .NET. This edition runs on
       .NET 10 with a GTK 3 user interface and is made for Linux.
     </p>
     <ul>

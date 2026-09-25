@@ -87,8 +87,9 @@ Options 1 and A.
   `content_rating`, screenshots from `docs/evidence/M5`, `releases`); `main/monodevelop.xml` → `…xml`
   with only `application/x-sln` and `application/x-csproj` (`text/x-csharp` comes from shared-mime-info;
   the legacy MonoDevelop/SharpDevelop, VB.NET and ASP.NET types are dropped); icons from
-  `main/theme-icons/GNOME/monodevelop-<size>.png` (`monodevelop.svg` is a 48 px design and is not
-  installed as a scalable icon).
+  `packaging/flatpak/icons/quarkdevelop-<size>.png`, the QuarkDevelop logo (`Assets/quark_logo.png`)
+  scaled to the hicolor PNG sizes (2026-09-25; before, `main/theme-icons/GNOME/monodevelop-<size>.png`).
+  The menu and AppStream name is QuarkDevelop; the app id stays `io.github.viniciusmorgado.MonoDevelop`.
 - **Packaging container**: `PM_PROFILE=flatpak ./scripts/pm …` builds `packaging/flatpak/Containerfile`
   (the dev image's pinned .NET SDK base + flatpak 1.14, flatpak-builder 1.4, appstream,
   desktop-file-utils, Xvfb). The only extra podman option is `--security-opt unmask=/proc/*`:

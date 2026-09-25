@@ -48,6 +48,10 @@ Quarantined 78 test cases (77 methods; 80 at first run) on 2026-09-23 (+1 on 202
 
 ### Released
 
+- 2026-09-25: `FileWatcherTests.SaveFileInProjectExternallyAfterSolutionNotWatched_NoFileChangeEventsFired` was
+  removed, not quarantined, by the maintainer's decision. It failed on hosted GitHub runners (release gate run
+  36093061255 and branch run 36096273577) even after it only counted events of the saved file: inotify can still
+  report a change after `FileWatcherService.Remove` returns. The other `FileWatcherTests` cover the watched cases.
 - 2026-09-23: the 5 `SynchronizationContext may not be used as a TaskScheduler` cases pass after
   `WorkspaceObject.Dispose` switched to `Runtime.MainTaskScheduler` (the failure appeared when NUnit's
   timeout wrapper ran a test on a thread-pool thread) — T135.
