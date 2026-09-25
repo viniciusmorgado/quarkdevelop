@@ -7,7 +7,7 @@ workstation (x86-64, 12 cores).
 |---|---|---|
 | **SC-001:** fresh clone to successful build with only podman and git | **Met** | Details below |
 | **SC-002:** every test project runs; quarantine ≤ 15%, with reasons | **Met** | Details below |
-| **SC-003:** coverage: core ≥ 60%, whole Linux solution ≥ 40%, with a ratchet | **Not met** (core met, total not) | Details below |
+| **SC-003:** coverage: core ≥ 60% and a ratchet; no global target since 2026-09-25 | **Met** as amended | Details below |
 | **SC-004:** CLI build of the sample project and solution succeeds, the broken sample fails, in every pipeline run | **Met** | Details below |
 | **SC-005:** GUI smoke on X11 and Wayland; start-up ≤ 10 s | **Met** | Details below |
 | **SC-006:** automated debug scenario (breakpoint, locals, step, exit) | **Met** (DAP level); GUI debugging open (T153) | Details below |
@@ -37,12 +37,17 @@ about 3 minutes plus NuGet downloads) is exercised by the hosted CI once pushing
 
 **SC-003.** Coverage ratchet: [docs/evidence/M4/coverage-baseline.txt](../M4/coverage-baseline.txt).
 - MonoDevelop.Core: 66.83% (target 60%).
-- Whole solution (product assemblies): 29.25% (target 40%).
+- Whole solution (product assemblies): 29.25%. The original target was 40%; there is no fixed target since the amendment.
 
 The total is held down by MonoDevelop.Ide at 21.3% of the largest assembly, and by add-ins with little or no GUI test
 coverage: Debugger 0.8%, VersionControl 7.9%, RegexToolkit 0%, DesignerSupport 0%. The ratchet was raised to
-66.5 / 21.0 / 29.0, so coverage cannot fall back. Reaching 40% needs substantial GUI-level test work. The
-maintainer decides between investing in it and amending the target.
+66.5 / 21.0 / 29.0, so coverage cannot fall back.
+
+Amendment of 2026-09-25 (constitution 1.4.0, ADR 0001), decided by the maintainer:
+- The 40% global target is dropped.
+- Tests focus first on the IDE running smoothly: the X11, Wayland, errors, modern-C# and debug smoke tests.
+- After that, they cover critical methods.
+- Existing tests are preserved, and the ratchet stays.
 
 **SC-004.** The `mdtool-smoke` step of `scripts/ci.sh` runs in every pipeline run:
 - it builds Hello, Smoke.sln (with `-p:` project selection) and Modern, and runs the programs;

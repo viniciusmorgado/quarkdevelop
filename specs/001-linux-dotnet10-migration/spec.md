@@ -28,7 +28,7 @@ Flatpak is the first distribution format. Everything runs inside a podman contai
 - Q: May a community fork (DotDevelop) replace the current codebase? → A: No; only useful changes
   are cherry-picked, with their origin recorded.
 - Q: Where do commands run? → A: Only inside the podman development container, never on the host.
-- Q: What coverage targets apply? → A: Core ≥ 60%, whole Linux build ≥ 40% by M4, then a ratchet.
+- Q: What coverage targets apply? → A: Core ≥ 60%, whole Linux build ≥ 40% by M4, then a ratchet. (Amended 2026-09-25: the 40% global target is dropped; see SC-003.)
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -244,8 +244,10 @@ published artifacts.
   quarantined test cases are at most 15% of the test cases discovered (`dotnet test --list-tests`)
   across those projects, excluding tests already `[Ignore]`d upstream; each has a recorded reason,
   and the quarantine count per suite never increases after the suite is first converted.
-- **SC-003**: By M4, line coverage of the core library is at least 60% and of the whole Linux
-  solution at least 40%; afterwards coverage never decreases between accepted changes (ratchet).
+- **SC-003**: Line coverage of the core library is at least 60%. Coverage of the whole Linux solution has no
+  fixed target (amended 2026-09-25, constitution 1.4.0). Beyond the core, tests focus on critical methods and on
+  end-to-end runs of the IDE, and existing tests are never removed. Coverage never decreases between accepted
+  changes (ratchet, on the core and on the whole solution).
   "Whole Linux solution" means the MonoDevelop product assemblies built by it: vendored third-party
   code (`main/vendor`), samples, test projects and test helpers are excluded (coverlet filter in
   `main/msbuild/Linux/Test.targets`); `scripts/test.sh` records it as the `total` line of the

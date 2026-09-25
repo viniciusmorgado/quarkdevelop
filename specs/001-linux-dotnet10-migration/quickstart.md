@@ -50,7 +50,7 @@ ls docs/adr/*.md | wc -l                                                        
 
 ```bash
 ./scripts/pm ./scripts/test.sh                  # TRX in out/tests, coverage summary in out/coverage/Summary.txt
-./scripts/pm cat out/coverage/Summary.txt       # Core ≥ 60 %, total ≥ 40 %
+./scripts/pm cat out/coverage/Summary.txt       # Core ≥ 60 %; total: ratchet only (SC-003)
 cat docs/evidence/M4/quarantine.md              # every excluded test has a reason; ≤ 15 %
 ```
 

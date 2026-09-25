@@ -67,7 +67,7 @@ command runs inside the container; each commit keeps the Linux solution green; L
 | II | .NET 10 pinned | `global.json`, `net10.0` SDK-style projects, CPM, no Mono/GAC/dllmap | PASS (planned M2/M3) |
 | III | Reproducible builds | nuget.org only (+ADR-approved feeds), lock files, vendoring in `main/vendor/` | PASS (ADR 0004/0005) |
 | IV | Incremental & reversible | waves W0–W4, one task per commit, UI ported per area | PASS with deviations (see Complexity Tracking) |
-| V | Quality gates | NUnit + coverlet + format + analyzers; coverage 60%/40% by M4; quarantine record | PASS (M4) |
+| V | Quality gates | NUnit + coverlet + format + analyzers; coverage: Core ≥ 60%, total by ratchet (SC-003 amended); quarantine record | PASS (M4) |
 | VI | Compatibility | add-in paths, sln/csproj formats, mdtool CLI preserved; `docs/BREAKING-CHANGES.md` | PASS |
 | VII | Security | vulnerable packages upgraded; BinaryFormatter/Remoting removed; NuGet audit | PASS (M3) |
 | VIII | Observability | structured logging backend, metrics/tracing where instrumentation exists | PASS (M8) |
@@ -171,7 +171,7 @@ sharpsvn-binary.
 | M1 | Constitution, spec, plan, tasks, ADRs reviewed | M0 | T012–T017 | — | consistency analysis 0 CRITICAL; ≥ 18 ADRs; no `NEEDS CLARIFICATION` | § M1 | `docs/evidence/M1/` |
 | M2 | Pinned .NET 10 toolchain, conventions, scripts, minimal CI | M1 | T018–T032 | R12 | fresh clone builds with podman+git only, twice (idempotent); lint + actionlint clean | § M2 | `docs/evidence/M2/` |
 | M3 | Headless walking skeleton: Core + builder + mdtool + CSharpBinding.Core | M2 | T033–T054, T058–T065 | R2, R3, R4 | quickstart § M3 block passes without Mono; audit clean; runtime tasks have tests | § M3 | `docs/evidence/M3/` |
-| M4 | Tests and coverage for the headless build | M3 | T038–T041, T055–T057 | R6 | all Linux-solution test projects run; quarantine ≤ 15% with reasons; Core ≥ 60%, total ≥ 40% | § M4 | `docs/evidence/M4/` |
+| M4 | Tests and coverage for the headless build | M3 | T038–T041, T055–T057 | R6 | all Linux-solution test projects run; quarantine ≤ 15% with reasons; Core ≥ 60%, total by ratchet (40% target dropped 2026-09-25) | § M4 | `docs/evidence/M4/` |
 | M5a | GUI foundation (Xwt/GTK3 window) | M4 | T066–T069 | R1, R8, R9 | Xwt Gtk3 test app shows a window under Xvfb | § M5 | `docs/evidence/M5/` |
 | M5b | `MonoDevelop.Ide` compiles on GTK3 | M5a | T070–T084 | R1, R2, R10 | pending-area list empty; GTK2-API count 0 in Linux solution | § M5 | `docs/evidence/M5/` |
 | M5c | IDE runs; C# editing, build, Git, NuGet, tests; debug | M5b | T085–T114 | R1, R7 | smoke test exits 0 on X11 and Wayland; debug scenario passes | § M5 | `docs/evidence/M5/` |
