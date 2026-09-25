@@ -1,5 +1,39 @@
 # M8 evidence
 
+T129 has three parts: start-up time, quarantine and warning baselines.
+
+- **Start-up time:** [startup.md](startup.md). The main window appears in 2.2 s on a cold start on an idle
+  machine, and in at most 5.1 s with the machine fully loaded. The NFR-001 target is 10 s.
+- **Quarantine:** 100 → 54 quarantined test cases, detailed in the section below.
+- **Warning baselines:** 29,900 → 23,026 occurrences, detailed in the section below.
+- Security sweep (T127): [security.md](security.md).
+
+## Quarantine (T129, T135)
+
+Date: 2026-09-24. Record: [docs/evidence/M4/quarantine.md](../M4/quarantine.md).
+
+| Suite | Before | After |
+|---|---|---|
+| MonoDevelop.TextEditor.Tests | 16 | 0 |
+| MonoDevelop.CSharpBinding.Tests | 9 | 0 |
+| MonoDevelop.Ide.Tests | 30 | 10 |
+| MonoDevelop.DotNetCore.Tests | 13 | 12 |
+| MonoDevelop.Core.Tests | 31 | 31 |
+| MonoDevelop.PackageManagement.Tests | 1 | 1 |
+| **Total** | **100** | **54** |
+
+The Core count is 31 after its own triage (78 → 31, earlier on 2026-09-24).
+
+No Bug or Flaky entry is left without a follow-up task. What remains falls into three groups:
+- legacy .NET Framework/PCL fixtures (T134);
+- tests that need nuget.org (T099, T100, T143, T151; the tests run offline);
+- Mono-only features (T142).
+
+The gate run after the merge passed 3,958 tests with 0 failures in 544 s (`scripts/ci.sh`).
+
+**Coverage ratchet raised.** Measured: Core 66.83%, Ide 21.29%, total 29.25%. The baseline in
+`docs/evidence/M4/coverage-baseline.txt` goes from 62.8 / 19.0 / 22.0 to 66.5 / 21.0 / 29.0.
+
 ## Warning baselines (T129)
 
 Date: 2026-09-24, base commit `6d1ed3888b`. Policy: [ADR 0018](../../adr/0018-warning-policy.md).
