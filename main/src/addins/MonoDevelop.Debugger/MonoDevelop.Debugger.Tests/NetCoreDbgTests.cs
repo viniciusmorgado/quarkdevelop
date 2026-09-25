@@ -38,7 +38,7 @@ using NUnit.Framework;
 namespace MonoDevelop.Debugger.Tests
 {
 	/// <summary>
-	/// Debugging a .NET 10 console program with netcoredbg over the Debug Adapter Protocol (ADR 0016, T113, SC-006):
+	/// Debugging a .NET 10 console program with netcoredbg over the Debug Adapter Protocol (ADR 0016):
 	/// breakpoint, locals, step over, continue and exit code, and an unhandled exception. The fixture program is
 	/// built once in a temporary directory (outside the repository, so main/Directory.Build.props does not apply).
 	/// </summary>

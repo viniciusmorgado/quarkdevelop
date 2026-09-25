@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Vulnerability gate (constitution VII, SC-009): fails when any package of the Linux solution,
+# Vulnerability gate: fails when any package of the Linux solution,
 # including transitive ones, has a High or Critical advisory. `dotnet list package --vulnerable`
 # itself always exits 0, so its report is parsed here.
 # Usage: ./scripts/pm ./scripts/audit.sh

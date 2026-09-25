@@ -3,14 +3,14 @@ appconfig.xsd
 
 Schema for app.config and web.config files.
 Created by Matt Ward
-GNU General Public License.
+GNU General Public License (LICENSES/GPL-2.0.txt in the repository root).
 
 manifest.xsd
 -------------
 
 Schema for .manifest files.
 Created by Matt Ward
-GNU General Public License.
+GNU General Public License (LICENSES/GPL-2.0.txt in the repository root).
 
 XMLSchema.xsd
 -------------

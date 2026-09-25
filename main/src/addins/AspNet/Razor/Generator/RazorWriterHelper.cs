@@ -36,7 +36,7 @@ namespace MonoDevelop.AspNet.Razor.Generator
 	{
 		// System.Web.Razor.Generator.CSharpCodeWriter.WriteCStyleStringLiteral
 		// Copyright (c) Microsoft Open Technologies, Inc.
-		// Licensed under the Apache License, Version 2.0
+		// Licensed under the Apache License, Version 2.0 (LICENSES/Apache-2.0.txt in the repository root)
 		public static void WriteCStyleStringLiteral (this StringBuilder sb, string literal)
 		{
 			// From CSharpCodeGenerator.QuoteSnippetStringCStyle in CodeDOM

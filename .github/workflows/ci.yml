@@ -1,7 +1,8 @@
 name: ci
 
-# Linux CI (constitution: CI/CD). Every step runs inside the same dev container image that
-# developers use locally through ./scripts/pm, built from ./Containerfile.
+# The Linux CI gate. The workflow is self-contained: it uses no script or support file of the repository. It builds
+# the development container from the Dockerfile below and runs every step inline inside it. It builds and tests the
+# code of the checkout. The release workflow runs it as its gate (workflow_call).
 
 # Branch flow (ADR 0021): work branches reach develop through pull requests, develop reaches main (the
 # release) through a pull request. Pushes to develop and every pull request into develop or main run it.
@@ -11,6 +12,7 @@ on:
   pull_request:
     branches: [develop, main]
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
@@ -22,13 +24,9 @@ concurrency:
 env:
   CI: "true"
   ContinuousIntegrationBuild: "true"
-  # Share the runner's NuGet cache (restored by actions/cache) with the dev container.
-  # The runner's NuGet cache is mounted outside the container home: a mount inside /home/dev made podman create
-  # /home/dev/.nuget as root on a fresh runner, and dotnet could not read its NuGet.Config.
-  PM_PODMAN_ARGS: -v /home/runner/.nuget/packages:/nuget-packages -e NUGET_PACKAGES=/nuget-packages -e CI -e ContinuousIntegrationBuild
 
 jobs:
-  build:
+  gate:
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
@@ -43,38 +41,369 @@ jobs:
           key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', 'main/Directory.Packages.props', 'global.json') }}
           restore-keys: nuget-${{ runner.os }}-
 
-      - name: Build dev image
+      # The development container (.NET SDK 10.0.401 on Ubuntu 24.04, GTK 3, Xvfb, Weston, netcoredbg, shellcheck,
+      # actionlint) and in-container, which runs the script read from its standard input inside it, in the checkout.
+      # The runner's NuGet cache is mounted outside the container home: a mount inside /home/dev made podman
+      # create /home/dev/.nuget as root on a fresh runner, and dotnet could not read its NuGet.Config.
+      - name: Development container
         run: |
-          mkdir -p ~/.nuget/packages
-          ./scripts/pm dotnet --info
+          mkdir -p ~/.nuget/packages "$RUNNER_TEMP/bin"
+          podman build --pull=newer -t localhost/md-dev -f - "$(mktemp -d)" <<'EOF'
+          ARG DOTNET_SDK_IMAGE=mcr.microsoft.com/dotnet/sdk:10.0.401-noble@sha256:35d40304542c8689331f8cab17c65926cdf48fe711e289321d71924b230a7d29
+          FROM ${DOTNET_SDK_IMAGE}
+          ENV DEBIAN_FRONTEND=noninteractive \
+              DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+              DOTNET_NOLOGO=1 \
+              DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+          RUN apt-get update \
+           && apt-get install -y --no-install-recommends \
+                ca-certificates curl unzip xz-utils file \
+                git jq shellcheck python3 gettext \
+                libgtk-3-0t64 libgtk-3-bin librsvg2-common adwaita-icon-theme \
+                fonts-dejavu-core dbus-x11 at-spi2-core \
+                xvfb xauth x11-utils imagemagick weston \
+           && rm -rf /var/lib/apt/lists/*
+          # netcoredbg (Samsung, MIT): the debug adapter of the IDE's .NET debugger (ADR 0016)
+          ARG NETCOREDBG_VERSION=3.2.0-1092
+          ARG NETCOREDBG_SHA256=080eb3b2d2152465f599d3b33d1ee6e747794e11cc0a3773ec689f5e5f2c5afa
+          RUN curl -fsSL -o /tmp/netcoredbg.tgz \
+                "https://github.com/Samsung/netcoredbg/releases/download/${NETCOREDBG_VERSION}/netcoredbg-linux-amd64.tar.gz" \
+           && echo "${NETCOREDBG_SHA256}  /tmp/netcoredbg.tgz" | sha256sum -c - \
+           && tar -xzf /tmp/netcoredbg.tgz -C /opt \
+           && ln -s /opt/netcoredbg/netcoredbg /usr/local/bin/netcoredbg \
+           && rm /tmp/netcoredbg.tgz
+          ARG ACTIONLINT_VERSION=1.7.12
+          ARG ACTIONLINT_SHA256=8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+          RUN curl -fsSL -o /tmp/actionlint.tgz \
+                "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
+           && echo "${ACTIONLINT_SHA256}  /tmp/actionlint.tgz" | sha256sum -c - \
+           && tar -xzf /tmp/actionlint.tgz -C /usr/local/bin actionlint \
+           && rm /tmp/actionlint.tgz
+          RUN git config --system --add safe.directory '*'
+          EOF
+          cat > "$RUNNER_TEMP/bin/in-container" <<'EOF'
+          #!/usr/bin/env bash
+          exec podman run --rm -i --init --userns=keep-id --security-opt label=disable \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -w "$GITHUB_WORKSPACE" \
+            -v md-home:/home/dev -e HOME=/home/dev \
+            -v "$HOME/.nuget/packages:/nuget-packages" -e NUGET_PACKAGES=/nuget-packages \
+            -e CI -e ContinuousIntegrationBuild \
+            localhost/md-dev bash -euo pipefail -s
+          EOF
+          chmod +x "$RUNNER_TEMP/bin/in-container"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+          echo "GATE_START=$(date +%s)" >> "$GITHUB_ENV"
 
-      # setup, lint, build --check, duplicate assemblies, tests + coverage ratchet, audit,
-      # mdtool smoke and GUI smoke (Xvfb): the same gate developers run locally (T115).
-      - name: CI gate (scripts/ci.sh)
-        run: ./scripts/pm ./scripts/ci.sh
+      # The .NET 10 SDK, no Mono, the report generator, and the .NET Framework reference assemblies of the legacy
+      # test fixtures: old-style projects under main/tests/test-projects need a .NETFramework directory,
+      # which Linux does not have. The fixtures find it in ~/.cache/monodevelop/netfx-refasm.
+      - name: Setup
+        run: |
+          in-container <<'EOF'
+          sdk="$(dotnet --version)"
+          case "$sdk" in
+            10.0.*) echo "dotnet SDK $sdk" ;;
+            *) echo "::error::expected a .NET 10 SDK, got $sdk"; exit 1 ;;
+          esac
+          if command -v mono > /dev/null; then echo "::error::Mono must not be present"; exit 1; fi
+          [[ -x "$HOME/.ci-tools/reportgenerator" ]] || dotnet tool install dotnet-reportgenerator-globaltool --version 5.5.11 --tool-path "$HOME/.ci-tools" > /dev/null
+          root="$HOME/.cache/monodevelop/netfx-refasm"
+          mkdir -p "$root/.NETFramework"
+          while read -r moniker version sha; do
+            id="microsoft.netframework.referenceassemblies.$moniker"
+            nupkg="$(mktemp)"
+            curl -fsSL -o "$nupkg" "https://api.nuget.org/v3-flatcontainer/$id/$version/$id.$version.nupkg"
+            echo "$sha  $nupkg" | sha256sum -c --status || { echo "::error::checksum mismatch for $id $version"; exit 1; }
+            tmp="$(mktemp -d)"
+            unzip -q "$nupkg" 'build/.NETFramework/*' -d "$tmp"
+            cp -r "$tmp/build/.NETFramework/." "$root/.NETFramework/"
+            rm -rf "$tmp" "$nupkg"
+          done <<'PACKAGES'
+          net20 1.0.3 7f74997fec338dde70f5a8c9fd09aa6fe21286731e7b133cc133d644e4e3c5e8
+          net40 1.0.3 54d6e20a1b61caf79395d6d71d091265e81f5a5705ac4ae52af45ca143c3c694
+          net45 1.0.3 23a9f94ea3e2cb88cd8341af75b811c6fb5cb82516fc696e95ed4620279128e3
+          net451 1.0.3 770b33dfa64dc430c9d9ba4e1438b920dee905f7ea60791147d70689f68692d3
+          net461 1.0.3 bd52289e5fb8765090bb189b399a06477a350c0863018a455b5e5d9e45298cc9
+          net47 1.0.3 b1e7f2ea457ee84fdacaa67d0b37445b31606e4f75c8939a57bf4a6836001d45
+          net472 1.0.3 ffa0a5570a39f911399164d0581ffddef99b5e3dfbaa5f220e5ce22969bcf57c
+          PACKAGES
+          ls "$root/.NETFramework"
+          EOF
 
-      - name: Job summary
-        if: always()
+      - name: Lint
+        run: |
+          in-container <<'EOF'
+          mapfile -t scripts < <(find scripts -maxdepth 1 -type f \( -name '*.sh' -o -name pm \) 2>/dev/null | sort)
+          if [[ ${#scripts[@]} -gt 0 ]]; then
+            echo "shellcheck: ${#scripts[@]} scripts"
+            shellcheck -x "${scripts[@]}"
+          fi
+          actionlint
+          EOF
+
+      # Release build of the Linux solution, then the whitespace format of the C# files this fork added (relative
+      # to the upstream commit it starts from, ADR 0018).
+      - name: Build
+        run: |
+          in-container <<'EOF'
+          dotnet restore main/MonoDevelop.Linux.sln --locked-mode
+          dotnet build main/MonoDevelop.Linux.sln -c Release --no-restore -nologo
+          base=ba01d2d6d3c84e92a6b5f360dac76ee821547529
+          mapfile -t new_files < <({
+            git diff --diff-filter=A --name-only "$base" -- '*.cs'
+            git ls-files --others --exclude-standard -- '*.cs'
+          } | grep -vE '^(main/external|main/vendor)/' | sort -u || true)
+          if [[ ${#new_files[@]} -gt 0 ]]; then
+            echo "dotnet format whitespace --verify-no-changes (${#new_files[@]} files)"
+            dotnet format whitespace . --folder --verify-no-changes --include "${new_files[@]}"
+          fi
+          EOF
+
+      # No assembly both in main/build/bin and in an add-in directory (two copies would load), and none with the
+      # name of an assembly of the .NET shared framework (the framework copy would win).
+      - name: Assemblies
+        run: |
+          in-container <<'EOF'
+          build=main/build
+          runtime_dir="$(dotnet --list-runtimes | awk '$1 == "Microsoft.NETCore.App" { v = $2; p = $3 } END { gsub(/[][]/, "", p); print p "/" v }')"
+          status=0
+          declare -A in_bin
+          while IFS= read -r f; do in_bin["$(basename "$f")"]=1; done < <(find "$build/bin" -maxdepth 1 -name '*.dll')
+          while IFS= read -r f; do
+            if [[ -n "${in_bin[$(basename "$f")]:-}" ]]; then echo "duplicate: $(basename "$f") in bin and ${f#"$build/"}"; status=1; fi
+          done < <(find "$build/AddIns" -name '*.dll')
+          while IFS= read -r f; do
+            if [[ -f "$runtime_dir/$(basename "$f")" ]]; then echo "shadows the shared framework: ${f#"$build/"}"; status=1; fi
+          done < <(find "$build/bin" "$build/AddIns" -name '*.dll')
+          exit "$status"
+          EOF
+
+      # The test projects in two lanes of similar length: Core, DotNetCore and PackageManagement in one, the
+      # others in the second. One assembly at a time per lane, each lane with its own MonoDevelop profile. Tests in
+      # the Quarantine category are excluded. Then the coverage ratchet: each assembly below keeps at least its line
+      # coverage.
+      - name: Test
+        run: |
+          in-container <<'EOF'
+          out="$PWD/out"
+          rm -rf "$out/tests" "$out/coverage" "$out/test-profile" "$out/test-settings"
+          mkdir -p "$out/tests" "$out/coverage"
+          args=(-m:1 --no-build --logger trx --results-directory "$out/tests" --collect "XPlat Code Coverage" --filter 'Category!=Quarantine')
+          mapfile -t projects < <(dotnet sln main/MonoDevelop.Linux.sln list | sed 's|\\|/|g' | grep -E '\.Tests\.csproj$' | sort)
+          lane_a=() lane_b=()
+          for project in "${projects[@]}"; do
+            case "$project" in
+              */MonoDevelop.Core.Tests.csproj|*/MonoDevelop.DotNetCore.Tests.csproj|*/MonoDevelop.PackageManagement.Tests.csproj) lane_a+=("$project") ;;
+              *) lane_b+=("$project") ;;
+            esac
+          done
+          run_lane() {
+            local lane="$1" lane_status=0 project settings
+            shift
+            mkdir -p "$out/test-settings/$lane"
+            for project in "$@"; do
+              settings="$out/test-settings/$lane/$(basename "$project" .csproj).runsettings"
+              sed "s|out/test-profile/|out/test-profile/$lane/|" "$(dirname "main/$project")/obj/monodevelop.runsettings" > "$settings"
+              xvfb-run -a -s "-screen 0 1280x1024x24" dotnet test "main/$project" --settings "$settings" "${args[@]}" || lane_status=1
+            done
+            return "$lane_status"
+          }
+          status=0
+          run_lane a "${lane_a[@]}" > "$out/tests/lane-a.log" 2>&1 &
+          pid_a=$!
+          run_lane b "${lane_b[@]}" > "$out/tests/lane-b.log" 2>&1 &
+          pid_b=$!
+          wait "$pid_a" || status=1
+          wait "$pid_b" || status=1
+          cat "$out/tests/lane-a.log" "$out/tests/lane-b.log"
+
+          mapfile -t reports < <(find "$out/tests" -name coverage.cobertura.xml)
+          if [[ ${#reports[@]} -eq 0 ]]; then
+            echo "::error::no coverage report: the tests did not run"
+            exit 1
+          fi
+          "$HOME/.ci-tools/reportgenerator" "-reports:$(IFS=';'; echo "${reports[*]}")" "-targetdir:$out/coverage" \
+            "-reporttypes:TextSummary;Cobertura" > /dev/null
+          cat "$out/coverage/Summary.txt"
+          python3 - "$out/coverage/Cobertura.xml" > "$out/coverage/line-coverage.txt" <<'PY'
+          import sys, xml.etree.ElementTree as ET
+          root = ET.parse(sys.argv[1]).getroot()
+          for package in root.iter("package"):
+              print(package.get("name"), "%.2f" % (100 * float(package.get("line-rate"))))
+          print("total", "%.2f" % (100 * float(root.get("line-rate"))))
+          PY
+          while read -r assembly minimum; do
+            actual="$(awk -v a="$assembly" '$1 == a { print $2 }' "$out/coverage/line-coverage.txt")"
+            if [[ -z "$actual" ]] || awk -v a="$actual" -v m="$minimum" 'BEGIN { exit !(a + 0.05 < m) }'; then
+              echo "::error::coverage of $assembly dropped: ${actual:-missing}% < $minimum%"
+              status=1
+            else
+              echo "$assembly $actual% (baseline $minimum%)"
+            fi
+          done <<'BASELINE'
+          MonoDevelop.Core 66.5
+          MonoDevelop.Ide 21.0
+          total 29.0
+          BASELINE
+          exit "$status"
+          EOF
+
+      # No package of the solution, transitive ones included, with a High or Critical advisory.
+      # `dotnet list package --vulnerable` always exits 0, so its report is parsed.
+      - name: Audit
+        run: |
+          in-container <<'EOF'
+          mkdir -p out
+          dotnet list main/MonoDevelop.Linux.sln package --vulnerable --include-transitive > out/audit.txt 2>&1
+          cat out/audit.txt
+          if grep -qE '\b(High|Critical)\b' out/audit.txt; then
+            echo "::error::vulnerable packages with High or Critical severity"
+            exit 1
+          fi
+          EOF
+
+      # mdtool builds the Hello sample and runs it, and builds the C# 8 to 14 sample with no warnings.
+      - name: mdtool smoke
+        run: |
+          in-container <<'EOF'
+          dir="$(mktemp -d)"
+          cp -r main/tests/linux-smoke/. "$dir/"
+          export MONODEVELOP_PROFILE="$dir/.profile" MONO_ADDINS_REGISTRY="$dir/.profile" XDG_CONFIG_HOME="$dir/.profile"
+          dotnet main/build/bin/mdtool.dll build "$dir/Hello/Hello.csproj"
+          dotnet "$dir/Hello/bin/Debug/net10.0/Hello.dll" | grep -q "Hello, MonoDevelop!"
+          dotnet main/build/bin/mdtool.dll build "$dir/Modern/Modern.csproj" | tee "$dir/modern.log"
+          grep -q " 0 Warning(s)" "$dir/modern.log"
+          dotnet "$dir/Modern/bin/Debug/net10.0/Modern.dll" | grep -q "Modern C#: OK"
+          EOF
+
+      # The IDE's --smoke-test under Xvfb: open a copy of Smoke.sln, show the New Project and New File dialogs
+      # with the dotnet new templates, measure the main menus, build with no errors. Screenshots must not be
+      # uniform.
+      - name: GUI smoke
+        run: |
+          in-container <<'EOF'
+          has_content() { awk -v d="$(convert "$1" -colorspace Gray -format '%[fx:standard_deviation]' info: 2>/dev/null || echo 0)" 'BEGIN { exit !(d > 0.02) }'; }
+          dir="$(mktemp -d)"
+          cp -r main/tests/linux-smoke/. "$dir/"
+          smoke="$PWD/out/ci/gui-smoke"
+          XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+            MD_SMOKE_OUT="$smoke" MD_SMOKE_NEW_PROJECT=1 MD_SMOKE_NEW_FILE=1 \
+            xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln"
+          has_content "$smoke/screenshot.png"
+          grep -q "New Project dialog categories: Common, Web, Test, Solution; selected Console App (C#, F#)" "$smoke/ide.log"
+          grep -q "main menus measured: File " "$smoke/ide.log"
+          has_content "$smoke/new-project.png"
+          has_content "$smoke/new-file.png"
+          EOF
+
+      # Debug Hello (Smoke.sln) with netcoredbg to a breakpoint on the first line of Program.cs in the Debug layout
+      # Any GLib-GObject critical fails it.
+      - name: GUI smoke (debug)
+        run: |
+          in-container <<'EOF'
+          dir="$(mktemp -d)"
+          cp -r main/tests/linux-smoke/. "$dir/"
+          smoke="$PWD/out/ci/gui-smoke-debug"
+          XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+            MD_SMOKE_OUT="$smoke" MD_SMOKE_DEBUG=1 \
+            xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln"
+          grep -q "the debugger stopped at the breakpoint" "$smoke/ide.log"
+          EOF
+
+      # Build the Broken project in the IDE; activating the first row of the Errors pad opens Program.cs on the error
+      # line. Expected exit status: 1 (build errors).
+      - name: GUI smoke (errors)
+        run: |
+          in-container <<'EOF'
+          dir="$(mktemp -d)"
+          cp -r main/tests/linux-smoke/. "$dir/"
+          smoke="$PWD/out/ci/gui-smoke-errors"
+          status=0
+          XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+            MD_SMOKE_OUT="$smoke" \
+            xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Broken/Broken.csproj" \
+            || status=$?
+          grep -q "error list navigation opened Program.cs at line 2" "$smoke/ide.log"
+          [[ $status -eq 1 ]]
+          EOF
+
+      # Build the C# 8 to 14 sample in the IDE with no errors or warnings; Patterns.cs parses as C# 14, the
+      # workspace compiles the project with its source-generated documents, and go to definition of the
+      # [GeneratedRegex] method opens the generated file, read-only.
+      - name: GUI smoke (modern C#)
+        run: |
+          in-container <<'EOF'
+          dir="$(mktemp -d)"
+          cp -r main/tests/linux-smoke/. "$dir/"
+          smoke="$PWD/out/ci/gui-smoke-modern"
+          XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+            MD_SMOKE_OUT="$smoke" MD_SMOKE_OPEN=Modern/Patterns.cs MD_SMOKE_GOTO=Word \
+            xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Modern.sln"
+          grep -q "build finished with 0 errors, 0 warnings" "$smoke/ide.log"
+          grep -q "Patterns.cs parses as C# 14.0 with 0 syntax errors" "$smoke/ide.log"
+          grep -Eq "Modern compiles in the workspace with 0 errors, .*\([1-9][0-9]* source-generated documents" "$smoke/ide.log"
+          grep -Eq "go to definition of Word opened RegexGenerator.g.cs at line [0-9]+, read-only: True" "$smoke/ide.log"
+          EOF
+
+      # The GUI smoke on Wayland: a headless Weston compositor, GDK_BACKEND=wayland, no X display. Weston has
+      # no input devices: GDK logs criticals for the missing seat, which the smoke test tolerates.
+      - name: GUI smoke (Wayland)
+        run: |
+          in-container <<'EOF'
+          has_content() { awk -v d="$(convert "$1" -colorspace Gray -format '%[fx:standard_deviation]' info: 2>/dev/null || echo 0)" 'BEGIN { exit !(d > 0.02) }'; }
+          dir="$(mktemp -d)"
+          runtime="$(mktemp -d)"
+          chmod 700 "$runtime"
+          cp -r main/tests/linux-smoke/. "$dir/"
+          smoke="$PWD/out/ci/wayland-smoke"
+          mkdir -p "$smoke"
+          XDG_RUNTIME_DIR="$runtime" weston --backend=headless --socket=wayland-md --width=1600 --height=1000 --idle-time=0 \
+            > "$smoke/weston.log" 2>&1 &
+          weston_pid=$!
+          for _ in $(seq 50); do [[ -S "$runtime/wayland-md" ]] && break; sleep 0.1; done
+          status=0
+          env -u DISPLAY XDG_RUNTIME_DIR="$runtime" WAYLAND_DISPLAY=wayland-md GDK_BACKEND=wayland \
+            XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+            MD_SMOKE_OUT="$smoke" \
+            dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln" || status=$?
+          kill "$weston_pid"
+          grep -q "GDK display wayland-md" "$smoke/ide.log"
+          grep -q "main menus measured: File " "$smoke/ide.log"
+          has_content "$smoke/screenshot.png"
+          exit "$status"
+          EOF
+
+      # The gate (after the container build) takes at most 15 minutes.
+      - name: Time budget
+        run: |
+          elapsed=$(( $(date +%s) - GATE_START ))
+          echo "gate: ${elapsed}s (budget 900s)"
+          if (( elapsed > 900 )); then
+            echo "::error::the gate took ${elapsed}s, over the 900s budget"
+            exit 1
+          fi
+
+      # The failing tests (name, message, first stack lines) and crashed test hosts in the job summary.
+      - name: Failures
+        if: failure()
         run: |
           {
-            echo '### CI gate'; echo '```'; cat out/ci/summary.txt 2>/dev/null || echo 'no summary'; echo '```'
-            if [[ -s out/ci/failures.txt ]]; then
-              echo '### Failures'; echo '```'; cat out/ci/failures.txt; echo '```'
-            fi
+            echo '### Failures'
+            echo '```'
+            grep -ahE -A8 '^ +Failed [^!]|Test host process crashed|Test Run Aborted|The active test run was aborted' \
+              out/tests/lane-*.log 2>/dev/null | head -200 || true
+            echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Version
-        if: always()
-        id: version
-        run: echo "version=$(sed -nE 's/^Version=//p' version.config | head -1)" >> "$GITHUB_OUTPUT"
 
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: monodevelop-ci-${{ steps.version.outputs.version }}+${{ github.sha }}
+          name: ci-${{ github.sha }}
           path: |
             out/ci/
             out/coverage/
+            out/tests/*.log
             out/tests/**/*.trx
+            out/audit.txt
           if-no-files-found: warn

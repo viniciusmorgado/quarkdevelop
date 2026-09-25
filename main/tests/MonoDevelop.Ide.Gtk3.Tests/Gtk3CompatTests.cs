@@ -178,7 +178,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			Assert.AreEqual (minimumWidth, width);
 		}
 
-		/// <summary>A text renderer ported by scripts/tools/gtk3-codemod.py (OnGetSize over the base text sizes).</summary>
+		/// <summary>A text renderer ported from GTK2 (OnGetSize over the base text sizes).</summary>
 		[Test]
 		public void CellRendererComboBoxAcceptsNullSizePointers ()
 		{

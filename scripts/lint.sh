@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Lint the maintained shell scripts (constitution: scripts pass shellcheck).
+# Lint the maintained shell scripts and the workflows.
 # Usage: ./scripts/pm ./scripts/lint.sh
 set -euo pipefail
 # shellcheck source=scripts/lib.sh
@@ -8,9 +8,8 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 cd "$MD_ROOT"
 mapfile -t scripts < <(
 	{
-		printf '%s\n' scripts/pm scripts/git-commit
+		printf '%s\n' scripts/pm
 		find scripts -maxdepth 1 -name '*.sh'
-		find packaging -name '*.sh' 2>/dev/null || true
 	} | sort -u
 )
 md_log "shellcheck ${#scripts[@]} scripts"

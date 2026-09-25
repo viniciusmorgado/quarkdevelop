@@ -33,8 +33,8 @@ using NUnit.Framework;
 namespace MonoDevelop.Ide.Gtk3.Tests
 {
 	/// <summary>
-	/// Task T098: the Gettext add-in without the Autotools and Deployment add-ins reads and writes PO catalogs (its
-	/// catalog editor needs the workbench; docs/evidence/M5/T098-gettext-po-editor.png shows it in the IDE).
+	/// The Gettext add-in without the Autotools and Deployment add-ins reads and writes PO catalogs (its
+	/// catalog editor needs the workbench).
 	/// </summary>
 	[TestFixture]
 	public class GettextTests

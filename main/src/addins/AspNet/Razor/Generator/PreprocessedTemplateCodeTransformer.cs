@@ -188,7 +188,7 @@ namespace MonoDevelop.AspNet.Razor.Generator
 		{
 			// this is based on System.Web.WebPages.WebPageExecutingBase
 			// Copyright (c) Microsoft Open Technologies, Inc.
-			// Licensed under the Apache License, Version 2.0
+			// Licensed under the Apache License, Version 2.0 (LICENSES/Apache-2.0.txt in the repository root)
 			if (values.Length == 0) {
 				// Explicitly empty attribute, so write the prefix and suffix
 				writer.Write (prefix);

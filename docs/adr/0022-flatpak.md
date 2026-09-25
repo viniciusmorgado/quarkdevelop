@@ -90,7 +90,7 @@ Options 1 and A.
   `packaging/flatpak/icons/quarkdevelop-<size>.png`, the QuarkDevelop logo (`Assets/quark_logo.png`)
   scaled to the hicolor PNG sizes (2026-09-25; before, `main/theme-icons/GNOME/monodevelop-<size>.png`).
   The menu and AppStream name is QuarkDevelop; the app id stays `io.github.viniciusmorgado.MonoDevelop`.
-- **Packaging container**: `PM_PROFILE=flatpak ./scripts/pm …` builds `packaging/flatpak/Containerfile`
+- **Packaging container**: `PM_PROFILE=flatpak ./scripts/pm …` builds `packaging/flatpak/Dockerfile`
   (the dev image's pinned .NET SDK base + flatpak 1.14, flatpak-builder 1.4, appstream,
   desktop-file-utils, Xvfb). The only extra podman option is `--security-opt unmask=/proc/*`:
   bubblewrap mounts a new `/proc` for each sandbox, which the kernel refuses while podman masks
@@ -115,7 +115,7 @@ Options 1 and A.
 ### Not included
 
 - netcoredbg: the IDE's netcoredbg engine is not in the build yet (T112); when it is, the adapter can
-  be added to the manifest as a pinned, checksummed archive source (as in the `Containerfile`).
+  be added to the manifest as a pinned, checksummed archive source (as in the `Dockerfile`).
 - An external terminal for "Run in external console" (no host terminal in the sandbox).
 - Compiled translations (`main/po` is not compiled yet; the IDE runs in English).
 - Flathub submission: `flatpak-builder-lint` reports `finish-args-home-filesystem-access` (needs a

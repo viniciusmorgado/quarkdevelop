@@ -1,33 +1,3 @@
 <Project>
-  <!--
-    SDK-style projects (the Linux / .NET 10 build, ADR 0003) only use msbuild/Linux/*.
-    Everything below the Linux import is the legacy Mono/.NET Framework configuration.
-  -->
   <Import Project="$(MSBuildThisFileDirectory)msbuild/Linux/Common.props" Condition="'$(UsingMicrosoftNETSdk)' == 'true'" />
-
-  <Import Project="$(MSBuildThisFileDirectory)msbuild\RoslynVersion.props" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
-
-  <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' != 'true'">
-    <RootDirectory>$(MSBuildThisFileDirectory)</RootDirectory>
-    <PackagesDirectory>$(RootDirectory)packages</PackagesDirectory>
-    <MdAddinsDirectory>$(MSBuildThisFileDirectory)..\..\md-addins\</MdAddinsDirectory>
-    <VSEditorCoreDirectory Condition="'$(VSEditorCoreDirectory)' == ''">$(MdAddinsDirectory)external\vs-editor-core\</VSEditorCoreDirectory>
-    <VSEditorApiDirectory Condition="'$(VSEditorApiDirectory)' == ''">$(MSBuildThisFileDirectory)external\vs-editor-api\</VSEditorApiDirectory>
-    <ReferencesVSEditor Condition=" '$(OS)' == 'Windows_NT' ">$(RootDirectory)\msbuild\ReferencesVSEditor.Windows.props</ReferencesVSEditor>
-    <ReferencesVSEditor Condition=" '$(OS)' != 'Windows_NT' ">$(RootDirectory)\msbuild\ReferencesVSEditor.Mac.props</ReferencesVSEditor>
-    <ReferencesGtk>$(RootDirectory)\msbuild\ReferencesGtk.props</ReferencesGtk>
-    <NuGetVersionAllocationAnalyzer>1.0.0.9</NuGetVersionAllocationAnalyzer>
-    <NuGetVersionCecil>0.10.1</NuGetVersionCecil>
-    <NuGetVersionErrorProneNetStructs>0.1.2</NuGetVersionErrorProneNetStructs>
-    <NuGetVersionMicrosoftTemplateEngine>3.0.0-rc1.19464.2</NuGetVersionMicrosoftTemplateEngine>
-    <NuGetVersionMicrosoftTestPlatform>16.2.0</NuGetVersionMicrosoftTestPlatform>
-    <NuGetVersionMonoDevelopAnalyzers>0.1.0.2</NuGetVersionMonoDevelopAnalyzers>
-    <NuGetVersionNewtonsoftJson>12.0.2</NuGetVersionNewtonsoftJson>
-    <NuGetVersionNuGet>5.4.0</NuGetVersionNuGet>
-    <NuGetVersionNUnit2>2.7.0</NuGetVersionNUnit2>
-    <NuGetVersionNUnit3>3.9.0</NuGetVersionNUnit3>
-    <NuGetVersionVSCodeDebugProtocol>15.8.20719.1</NuGetVersionVSCodeDebugProtocol>
-    <NuGetVersionVSComposition>15.8.112</NuGetVersionVSComposition>
-    <NuGetVersionVSEditor>16.1.28-g2ad4df7366</NuGetVersionVSEditor>
-  </PropertyGroup>
 </Project>

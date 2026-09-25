@@ -2,8 +2,7 @@
 
 This page shows how MonoDevelop is put together after the Linux / .NET 10 migration: which layers
 exist, how add-ins plug in, and what happens when you build, run, test and ship it. The decisions behind
-each part are in [`docs/adr/`](adr/README.md); the migration plan is in
-[`specs/001-linux-dotnet10-migration/`](../specs/001-linux-dotnet10-migration/).
+each part are in [`docs/adr/`](adr/README.md).
 
 ## Layers
 
@@ -110,12 +109,12 @@ add-in loaded in the default `AssemblyLoadContext` ([ADR 0006](adr/0006-mono-add
 ## Build, test and CI
 
 Everything runs inside the dev container through `./scripts/pm`. The container is built from
-`Containerfile`: .NET SDK 10, GTK 3, Xvfb, Weston, netcoredbg.
+`Dockerfile`: .NET SDK 10, GTK 3, Xvfb, Weston, netcoredbg.
 
 | Script | What it does |
 |---|---|
 | `scripts/build.sh` | Runs `dotnet build main/MonoDevelop.Linux.sln`. Warnings are errors, with per-project baselines ([ADR 0018](adr/0018-warning-policy.md)); `--check` also verifies the formatting of files this fork added. |
-| `scripts/test.sh` | Runs `dotnet test`, one test assembly at a time, with `Category!=Quarantine`, coverlet coverage and a ratchet on Core and the product total ([ADR 0015](adr/0015-test-framework.md)). GTK tests run under Xvfb. |
+| `scripts/test.sh` | Runs `dotnet test`, one test assembly at a time, with `Category!=Quarantine`, coverlet coverage ([ADR 0015](adr/0015-test-framework.md)). GTK tests run under Xvfb. |
 | `scripts/run.sh`, `scripts/debug.sh` | Run the IDE (or `mdtool`), optionally under netcoredbg. |
 | `scripts/ci.sh` | The gate: setup, lint, build `--check`, duplicate-assembly check, tests, `NuGetAudit`, the mdtool smoke, and the GUI smoke tests on X11 (including Errors pad navigation) and Wayland. The budget is 900 s. |
 
@@ -123,8 +122,7 @@ Everything runs inside the dev container through `./scripts/pm`. The container i
 `main` (ADR 0021). Dependencies are updated by hand; `NuGetAudit` and `scripts/audit.sh` flag vulnerable packages.
 
 The IDE's `--smoke-test [sln|csproj]` option starts the IDE, opens and builds the solution, checks
-Errors pad navigation when the build fails, and writes `ide.log` and `screenshot.png`
-([contract](../specs/001-linux-dotnet10-migration/contracts/smoke-test.md)).
+Errors pad navigation when the build fails, and writes `ide.log` and `screenshot.png`.
 
 ## Where to look
 

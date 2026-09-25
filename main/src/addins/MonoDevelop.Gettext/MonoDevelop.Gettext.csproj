@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); GTK3 port (T098). -->
+  <!-- Converted from the legacy csproj (ADR 0003); GTK3 port. -->
   <PropertyGroup>
     <AssemblyName>MonoDevelop.Gettext</AssemblyName>
     <RootNamespace>MonoDevelop.Gettext</RootNamespace>

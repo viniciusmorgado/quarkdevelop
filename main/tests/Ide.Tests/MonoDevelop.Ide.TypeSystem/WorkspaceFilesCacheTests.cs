@@ -56,7 +56,8 @@ namespace MonoDevelop.Ide.TypeSystem
 			Project p,
 			ProjectCacheInfo oldCacheInfo)
 		{
-			const int timeout = 10000; // ms
+			// the design-time build that refreshes the cache can take more than 10 s on a busy CI runner
+			const int timeout = 30000; // ms
 			int howLong = 0;
 			const int interval = 200; // ms
 

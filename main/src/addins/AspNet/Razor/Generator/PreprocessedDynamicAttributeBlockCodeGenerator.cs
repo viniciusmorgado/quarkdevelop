@@ -33,7 +33,7 @@ namespace MonoDevelop.AspNet.Razor.Generator
 {
 	// based on base implementation
 	// Copyright (c) Microsoft Open Technologies, Inc.
-	// Licensed under the Apache License, Version 2.0
+	// Licensed under the Apache License, Version 2.0 (LICENSES/Apache-2.0.txt in the repository root)
 	class PreprocessedDynamicAttributeBlockCodeGenerator : DynamicAttributeBlockCodeGenerator
 	{
 		const string ValueWriterName = "__razor_attribute_value_writer";

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003): the IDE test infrastructure
+    Converted from the legacy csproj (ADR 0003): the IDE test infrastructure
     (IdeTestBase, TextEditorExtensionTestBase, mock shell) on NUnit 3 (ADR 0015, T107). GuiTestHost replaces GuiUnit:
     GTK, the runtime and Xwt on the NUnit test thread, which runs the GLib main loop while NUnit waits for async
     tests (NUnitMessagePump.cs). Test projects using it set MDTestSingleThread and call GuiTestHost from a set-up

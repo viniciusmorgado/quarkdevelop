@@ -1,6 +1,6 @@
 ﻿//
 // AspNetCoreRunConfiguration.cs
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See LICENSES/Apache-2.0.txt in the repository root for license information.
 // https://github.com/dotnet/project-system/blob/master/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/Debug/LaunchProfileData.cs
 
 using System;

@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="Assets/quark_banner.png" alt="QuarkDevelop" width="760">
+  <img src="assets/quark_banner.png" alt="QuarkDevelop" width="760">
 </p>
 
 <p align="center">
-  <a href="#history-and-license"><img src="https://img.shields.io/badge/license-MIT%20%2F%20LGPL--2.1-blue" alt="license: MIT / LGPL-2.1"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="license: MIT"></a>
 </p>
 
 ---
@@ -15,10 +15,8 @@ MonoDevelop 8.6: it runs on **.NET 10 LTS** (CoreCLR, no Mono) with a **GTK 3** 
 builds and debugs SDK-style .NET projects with the installed .NET SDK and netcoredbg. macOS and Windows are not
 supported.
 
-- What the first release contains, and its known issues: [`docs/release-notes/v0.1.0-linux.md`](docs/release-notes/v0.1.0-linux.md).
 - Removed and changed features: [`docs/BREAKING-CHANGES.md`](docs/BREAKING-CHANGES.md).
-- Project rules: [`docs/constitution.md`](docs/constitution.md); decisions: [`docs/adr/`](docs/adr/); the migration
-  specification, plan and tasks: [`specs/001-linux-dotnet10-migration/`](specs/001-linux-dotnet10-migration/).
+- Decisions: [`docs/adr/`](docs/adr/); what is left to do: [`docs/future-work.md`](docs/future-work.md).
 
 Build requirements on the host: **podman** and **git** only. Everything runs in the dev container:
 
@@ -61,6 +59,10 @@ upstream repository (`mono/monodevelop`) was archived. This repository starts fr
 keeps the upstream history. The code keeps the MonoDevelop names for now: assemblies, namespaces, the solution
 `main/MonoDevelop.Linux.sln` and the Flatpak id.
 
-Source files carry their own license headers (MIT X11 for the MonoDevelop sources). `main/COPYING` is the LGPL 2.1
-text shipped with the upstream sources, and vendored components record theirs in `main/vendor/*/UPSTREAM.md`. Authors
-are listed in `main/AUTHORS`.
+QuarkDevelop is licensed under the [MIT license](LICENSE), like almost all of the MonoDevelop sources. Each source file
+carries its own license header, and a few keep another license, whose text is in [`LICENSES/`](LICENSES/):
+[LGPL 2.1](LICENSES/LGPL-2.1.txt) for some workbench shell files, [GPL 2.0](LICENSES/GPL-2.0.txt) for two XML schemas of
+the Xml add-in (`appconfig.xsd`, `manifest.xsd`) and [Apache 2.0](LICENSES/Apache-2.0.txt) for code taken from NuGet and
+other .NET projects. Each of these files points to its license text. Vendored components record their licenses in
+`main/vendor/*/UPSTREAM.md`.
+Authors are listed in [`docs/monodevelop/AUTHORS`](docs/monodevelop/AUTHORS).

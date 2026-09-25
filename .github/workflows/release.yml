@@ -1,10 +1,11 @@
 name: release
 
-# Releases what reaches main (develop -> main pull requests, ADR 0021). The version comes from the newest v* tag
-# and the commit subjects since it: "BREAKING CHANGE:" -> major, "feat" -> minor, anything else -> patch. A merge
-# that changes nothing that goes into the Flatpak releases nothing. The build job only reads the repository; the
-# publish job is the only one allowed to write: it creates the tag and the GitHub release together, then
-# fast-forwards develop to main.
+# Releases what reaches main (develop -> main pull requests, ADR 0021). The workflow is self-contained: it uses no
+# script or support file of the repository, only the code it builds and the icons in assets/icons. The version comes
+# from the newest v* tag and the commit subjects since it: "BREAKING CHANGE:" -> major, "feat" -> minor, anything else
+# -> patch. A merge that changes nothing that goes into the Flatpak releases nothing. The gate is the ci workflow; the
+# package job builds the Flatpak, its checksum and SBOM; the publish job, the only one allowed to write, creates the
+# tag and the GitHub release together, then fast-forwards develop to main.
 
 on:
   push:
@@ -21,17 +22,13 @@ concurrency:
 env:
   CI: "true"
   ContinuousIntegrationBuild: "true"
-  # The runner's NuGet cache is mounted outside the container home: a mount inside /home/dev made podman create
-  # /home/dev/.nuget as root on a fresh runner, and dotnet could not read its NuGet.Config.
-  PM_PODMAN_ARGS: -v /home/runner/.nuget/packages:/nuget-packages -e NUGET_PACKAGES=/nuget-packages -e CI -e ContinuousIntegrationBuild
 
 jobs:
-  build:
+  version:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 5
     outputs:
       version: ${{ steps.version.outputs.version }}
-      prerelease: ${{ steps.version.outputs.prerelease }}
       skip: ${{ steps.version.outputs.skip }}
     steps:
       - uses: actions/checkout@v4
@@ -47,7 +44,7 @@ jobs:
             exit 1
           fi
           # only what goes into the Flatpak makes a release
-          if [[ -z "$(git diff --name-only "$last_tag..HEAD" -- main packaging global.json NuGet.config)" ]]; then
+          if [[ -z "$(git diff --name-only "$last_tag..HEAD" -- main assets global.json NuGet.config .github/workflows/release.yml)" ]]; then
             echo "Nothing that goes into the Flatpak changed since $last_tag: nothing to release."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
@@ -71,91 +68,431 @@ jobs:
           version="$major.$minor.$patch"
           echo "Released: $last_tag, bump: $bump, next: $version"
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "prerelease=false" >> "$GITHUB_OUTPUT"
+
+  gate:
+    needs: version
+    if: needs.version.outputs.skip != 'true'
+    uses: ./.github/workflows/ci.yml
+
+  package:
+    needs: [version, gate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      MD_VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: NuGet cache
-        if: steps.version.outputs.skip != 'true'
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
           key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', 'main/Directory.Packages.props', 'global.json') }}
           restore-keys: nuget-${{ runner.os }}-
 
-      - name: Build dev image
-        if: steps.version.outputs.skip != 'true'
+      # The Flatpak files are written here on every release, from the heredocs below: the packaging container,
+      # the manifest, desktop entry, AppStream metadata, MIME types and launcher. The icons come from assets/icons.
+      - name: Flatpak files
         run: |
-          mkdir -p ~/.nuget/packages
-          ./scripts/pm dotnet --info
+          dir=out/flatpak-files
+          mkdir -p "$dir"
 
-      - name: Release gate (scripts/ci.sh)
-        if: steps.version.outputs.skip != 'true'
-        run: ./scripts/pm ./scripts/ci.sh
+          cat > "$dir/Dockerfile" <<'EOF'
+          # Flatpak packaging container (ADR 0022), built by the release workflow.
+          # Same pinned .NET SDK base as the development image (so the SBOM tool and a Release build can run here
+          # too) plus flatpak, flatpak-builder and the desktop/AppStream validators. The Flathub runtimes, the
+          # flatpak-builder state and the test installation live in the podman volume md-flatpak, never in the
+          # host's flatpak installation.
 
-      - name: Gate summary
-        if: always() && steps.version.outputs.skip != 'true'
+          ARG DOTNET_SDK_IMAGE=mcr.microsoft.com/dotnet/sdk:10.0.401-noble@sha256:35d40304542c8689331f8cab17c65926cdf48fe711e289321d71924b230a7d29
+
+          FROM ${DOTNET_SDK_IMAGE}
+
+          ENV DEBIAN_FRONTEND=noninteractive \
+              DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+              DOTNET_NOLOGO=1 \
+              DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+
+          RUN apt-get update \
+           && apt-get install -y --no-install-recommends \
+                ca-certificates curl xz-utils zstd file git jq python3 shellcheck \
+                flatpak flatpak-builder bubblewrap elfutils \
+                appstream desktop-file-utils shared-mime-info \
+                dbus dbus-x11 xvfb xauth x11-utils imagemagick \
+           && rm -rf /var/lib/apt/lists/*
+
+          # Mount point of the md-flatpak volume (the volume copies these permissions on first use).
+          RUN mkdir -p /var/lib/md-flatpak && chmod 1777 /var/lib/md-flatpak
+
+          ENV FLATPAK_USER_DIR=/var/lib/md-flatpak/user
+
+          RUN git config --system --add safe.directory '*'
+
+          WORKDIR /src
+          EOF
+
+          cat > "$dir/io.github.viniciusmorgado.MonoDevelop.yml" <<'EOF'
+          # Flatpak manifest of MonoDevelop for Linux (ADR 0022).
+          #
+          # A "binary" manifest: the IDE is built beforehand by the release workflow (Release -> main/build) and
+          # copied in as a directory source, so
+          # flatpak-builder never needs network access or a NuGet restore. The .NET 10 SDK of the
+          # org.freedesktop.Sdk.Extension.dotnet10 extension is copied into /app/lib/dotnet: it runs the IDE and
+          # builds user projects (MSBuild and NuGet are loaded from it, ADR 0008 and ADR 0020).
+
+          id: io.github.viniciusmorgado.MonoDevelop
+          runtime: org.gnome.Platform
+          runtime-version: '51'
+          sdk: org.gnome.Sdk
+          sdk-extensions:
+            - org.freedesktop.Sdk.Extension.dotnet10
+          command: monodevelop
+
+          finish-args:
+            # NuGet feeds, package downloads, `dotnet new`/workload installs
+            - --share=network
+            - --share=ipc
+            - --socket=wayland
+            - --socket=fallback-x11
+            - --device=dri
+            # Projects live anywhere in the home directory; ~/.nuget and ~/.dotnet are shared with a host SDK.
+            - --filesystem=home
+            - --env=DOTNET_ROOT=/app/lib/dotnet
+            - --env=DOTNET_CLI_TELEMETRY_OPTOUT=1
+            - --env=DOTNET_NOLOGO=1
+
+          build-options:
+            # Prebuilt managed assemblies and Microsoft's signed native .NET host: nothing to strip.
+            no-debuginfo: true
+            strip: false
+
+          modules:
+            - name: dotnet-sdk
+              buildsystem: simple
+              build-commands:
+                - mkdir -p /app/lib/dotnet /app/bin
+                # The whole SDK (install-sdk.sh of the extension leaves out packs/, sdk-manifests/, templates/)
+                - cp -a /usr/lib/sdk/dotnet10/lib/. /app/lib/dotnet/
+                - ln -s ../lib/dotnet/dotnet /app/bin/dotnet
+                # /app is read-only at run time: workloads go to ~/.dotnet (user-local install mode of the SDK).
+                - |
+                  for sdk in /app/lib/dotnet/sdk/*/; do
+                    version="$(basename "$sdk")"
+                    band="${version%.*}.$(( ${version##*.} / 100 * 100 ))"
+                    mkdir -p "/app/lib/dotnet/metadata/workloads/$band"
+                    touch "/app/lib/dotnet/metadata/workloads/$band/userlocal"
+                  done
+
+            - name: monodevelop
+              buildsystem: simple
+              sources:
+                - type: dir
+                  path: ../../main/build
+                  dest: build
+                  skip:
+                    - tests
+                    - samples
+                - type: dir
+                  path: ../../assets/icons
+                  dest: icons
+                - type: file
+                  path: ../../LICENSE
+                - type: dir
+                  path: ../../LICENSES
+                  dest: LICENSES
+                - type: file
+                  path: monodevelop.sh
+                - type: file
+                  path: io.github.viniciusmorgado.MonoDevelop.desktop
+                - type: file
+                  path: io.github.viniciusmorgado.MonoDevelop.metainfo.xml
+                - type: file
+                  path: io.github.viniciusmorgado.MonoDevelop.xml
+              build-commands:
+                - mkdir -p /app/lib/monodevelop
+                - cp -a build/bin build/AddIns build/data build/locale /app/lib/monodevelop/
+                # Keep the native assets of this architecture only (NuGet packages ship every RID).
+                - |
+                  case "$FLATPAK_ARCH" in
+                    aarch64) rid=linux-arm64 ;;
+                    *) rid=linux-x64 ;;
+                  esac
+                  find /app/lib/monodevelop -type d -path '*/runtimes/*' -prune | while read -r dir; do
+                    case "$(basename "$dir")" in
+                      unix|linux|"$rid") ;;
+                      *) rm -rf "$dir" ;;
+                    esac
+                  done
+                - install -Dm755 monodevelop.sh /app/bin/monodevelop
+                - ln -s monodevelop /app/bin/mdtool
+                - install -Dm644 io.github.viniciusmorgado.MonoDevelop.desktop -t /app/share/applications
+                - install -Dm644 io.github.viniciusmorgado.MonoDevelop.metainfo.xml -t /app/share/metainfo
+                - install -Dm644 io.github.viniciusmorgado.MonoDevelop.xml -t /app/share/mime/packages
+                - install -Dm644 LICENSE LICENSES/* -t /app/share/licenses/io.github.viniciusmorgado.MonoDevelop
+                # The QuarkDevelop logo (assets/quark_logo.png) scaled to the hicolor PNG sizes.
+                - |
+                  for size in 16 22 24 32 48 64 128 256 512; do
+                    install -Dm644 "icons/quarkdevelop-$size.png" \
+                      "/app/share/icons/hicolor/${size}x${size}/apps/io.github.viniciusmorgado.MonoDevelop.png"
+                  done
+          EOF
+
+          cat > "$dir/io.github.viniciusmorgado.MonoDevelop.desktop" <<'EOF'
+          [Desktop Entry]
+          Type=Application
+          Name=QuarkDevelop
+          GenericName=Integrated Development Environment
+          GenericName[ja]=統合開発環境
+          GenericName[ru]=Интегрированная среда разработки
+          Comment=Develop .NET applications in an Integrated Development Environment
+          Comment[ja]=.NETアプリケーション開発を行うための統合開発環境
+          Comment[ru]=Создание приложений .NET в Интегрированной среде разработки
+          Keywords=C#;CSharp;.NET;dotnet;IDE;
+          Exec=monodevelop %F
+          TryExec=monodevelop
+          Icon=io.github.viniciusmorgado.MonoDevelop
+          StartupNotify=true
+          Terminal=false
+          MimeType=text/x-csharp;application/x-sln;application/x-csproj;
+          Categories=Development;IDE;GTK;
+          EOF
+
+          cat > "$dir/io.github.viniciusmorgado.MonoDevelop.metainfo.xml" <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!-- AppStream metadata of the Flatpak (ADR 0022). -->
+          <component type="desktop-application">
+            <id>io.github.viniciusmorgado.MonoDevelop</id>
+            <metadata_license>CC0-1.0</metadata_license>
+            <project_license>MIT AND LGPL-2.1-or-later AND GPL-2.0-or-later AND Apache-2.0</project_license>
+
+            <name>QuarkDevelop</name>
+            <summary>Integrated development environment for C# and .NET</summary>
+            <developer id="io.github.viniciusmorgado">
+              <name>Vinicius Donatto Morgado</name>
+            </developer>
+
+            <description>
+              <p>
+                QuarkDevelop is an integrated development environment for C# and .NET. This edition runs on
+                .NET 10 with a GTK 3 user interface and is made for Linux.
+              </p>
+              <ul>
+                <li>C# editor with code completion, navigation and refactoring</li>
+                <li>Build and run SDK-style .NET projects and solutions with the bundled .NET 10 SDK</li>
+                <li>NuGet package management</li>
+                <li>Git status, diff and history</li>
+                <li>Unit test runner</li>
+              </ul>
+            </description>
+
+            <launchable type="desktop-id">io.github.viniciusmorgado.MonoDevelop.desktop</launchable>
+
+            <url type="homepage">https://github.com/viniciusmorgado/quarkdevelop</url>
+            <url type="bugtracker">https://github.com/viniciusmorgado/quarkdevelop/issues</url>
+            <url type="vcs-browser">https://github.com/viniciusmorgado/quarkdevelop</url>
+
+            <screenshots>
+              <screenshot type="default">
+                <caption>A C# solution open in the editor</caption>
+                <image>https://raw.githubusercontent.com/viniciusmorgado/quarkdevelop/main/assets/screenshots/theme-light.png</image>
+              </screenshot>
+              <screenshot>
+                <caption>The dark theme</caption>
+                <image>https://raw.githubusercontent.com/viniciusmorgado/quarkdevelop/main/assets/screenshots/theme-dark.png</image>
+              </screenshot>
+            </screenshots>
+
+            <branding>
+              <color type="primary" scheme_preference="light">#9bcbf0</color>
+              <color type="primary" scheme_preference="dark">#1c4f7a</color>
+            </branding>
+
+            <content_rating type="oars-1.1"/>
+
+            <supports>
+              <control>keyboard</control>
+              <control>pointing</control>
+            </supports>
+            <requires>
+              <display_length compare="ge">768</display_length>
+            </requires>
+
+            <provides>
+              <binary>monodevelop</binary>
+              <binary>mdtool</binary>
+            </provides>
+
+            <releases>
+              <release version="8.6" date="2026-09-24" type="development">
+                <description>
+                  <p>First Linux edition: .NET 10, GTK 3, MSBuild and NuGet from the .NET SDK.</p>
+                </description>
+              </release>
+            </releases>
+          </component>
+          EOF
+
+          cat > "$dir/io.github.viniciusmorgado.MonoDevelop.xml" <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!-- MIME types the Linux build opens (ADR 0022). text/x-csharp comes
+               from shared-mime-info; legacy MonoDevelop/SharpDevelop, VB.NET and ASP.NET Web Forms types are
+               not registered (docs/BREAKING-CHANGES.md). -->
+          <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+            <mime-type type="application/x-sln">
+              <sub-class-of type="text/plain"/>
+              <comment>Visual Studio solution</comment>
+              <glob pattern="*.sln"/>
+            </mime-type>
+            <mime-type type="application/x-csproj">
+              <sub-class-of type="application/xml"/>
+              <comment>C# project</comment>
+              <glob pattern="*.csproj"/>
+            </mime-type>
+          </mime-info>
+          EOF
+
+          cat > "$dir/monodevelop.sh" <<'EOF'
+          #!/bin/sh
+          # Flatpak launcher, installed as /app/bin/monodevelop (ADR 0022). The IDE runs on the .NET 10 SDK
+          # bundled in /app/lib/dotnet, which also builds user projects (MSBuild, NuGet: ADR 0008, ADR 0020).
+          # `flatpak run --command=mdtool io.github.viniciusmorgado.MonoDevelop` runs the command-line tool.
+          set -eu
+
+          tool=MonoDevelop
+          case "$(basename "$0")" in
+          	mdtool) tool=mdtool ;;
+          esac
+
+          export DOTNET_ROOT=/app/lib/dotnet
+          export DOTNET_CLI_TELEMETRY_OPTOUT="${DOTNET_CLI_TELEMETRY_OPTOUT:-1}"
+          export DOTNET_NOLOGO="${DOTNET_NOLOGO:-1}"
+          export MONODEVELOP_LOCALE_PATH="${MONODEVELOP_LOCALE_PATH:-/app/lib/monodevelop/locale}"
+          # .NET global tools (`dotnet tool install -g`) and user-local workloads live in the home directory.
+          export PATH="/app/lib/dotnet:$PATH:${HOME}/.dotnet/tools"
+
+          exec /app/lib/dotnet/dotnet "/app/lib/monodevelop/bin/$tool.dll" "$@"
+          EOF
+          chmod 755 "$dir/monodevelop.sh"
+
+      # The Flatpak container, from the Dockerfile written above, and in-container, which runs the script read from its
+      # standard input inside it, in the checkout. bubblewrap (flatpak-builder) mounts a new /proc in its sandbox; the
+      # kernel refuses that while podman masks paths under /proc, hence unmask=/proc/* (ADR 0022). The Flathub
+      # runtimes and the flatpak-builder state live in the md-flatpak volume.
+      - name: Flatpak container
         run: |
-          {
-            echo '### Release gate'; echo '```'; cat out/ci/summary.txt 2>/dev/null || echo 'no summary'; echo '```'
-            if [[ -s out/ci/failures.txt ]]; then
-              echo '### Failures'; echo '```'; cat out/ci/failures.txt; echo '```'
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
+          mkdir -p ~/.nuget/packages "$RUNNER_TEMP/bin"
+          podman build --pull=newer -t localhost/md-flatpak -f out/flatpak-files/Dockerfile "$(mktemp -d)"
+          cat > "$RUNNER_TEMP/bin/in-container" <<'EOF'
+          #!/usr/bin/env bash
+          exec podman run --rm -i --init --userns=keep-id --security-opt label=disable --security-opt 'unmask=/proc/*' \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -w "$GITHUB_WORKSPACE" \
+            -v md-home:/home/dev -e HOME=/home/dev -v md-flatpak:/var/lib/md-flatpak \
+            -v "$HOME/.nuget/packages:/nuget-packages" -e NUGET_PACKAGES=/nuget-packages \
+            -e CI -e ContinuousIntegrationBuild -e MD_VERSION \
+            localhost/md-flatpak bash -euo pipefail -s
+          EOF
+          chmod +x "$RUNNER_TEMP/bin/in-container"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
 
-      # M7 (T123, ADR 0022): the Flatpak bundle, its sha256 and the CycloneDX SBOM, built in the flatpak
-      # profile of scripts/pm from the Release output of the gate above
-      - name: Package
-        if: steps.version.outputs.skip != 'true'
-        env:
-          PM_PROFILE: flatpak
-          MD_RELEASE_VERSION: ${{ steps.version.outputs.version }}
-          PM_PODMAN_ARGS: ${{ env.PM_PODMAN_ARGS }} -e MD_RELEASE_VERSION
+      # The IDE in Release. ContinuousIntegrationBuild maps source and PDB paths to /_/: the bundle must not carry
+      # the path of the checkout it was built from.
+      - name: Build the IDE
         run: |
-          ./scripts/pm ./scripts/package-flatpak.sh
+          in-container <<'EOF'
+          dotnet restore main/MonoDevelop.Linux.sln --locked-mode
+          dotnet build main/MonoDevelop.Linux.sln -c Release --no-restore -nologo
+          EOF
+
+      - name: Validate the desktop files
+        run: |
+          in-container <<'EOF'
+          app_id=io.github.viniciusmorgado.MonoDevelop
+          desktop-file-validate "out/flatpak-files/$app_id.desktop"
+          # --no-net: the screenshot URLs may not exist yet on the default branch
+          appstreamcli validate --no-net --explain "out/flatpak-files/$app_id.metainfo.xml"
+          python3 -c 'import sys, xml.dom.minidom; xml.dom.minidom.parse(sys.argv[1])' "out/flatpak-files/$app_id.xml"
+          EOF
+
+      # flatpak-builder with the GNOME runtime, SDK and .NET extension from Flathub, exported to a local repository and
+      # bundled in one file; --runtime-repo lets `flatpak install` fetch the runtime from Flathub. No file of the app may
+      # contain the checkout path.
+      - name: Build the Flatpak
+        run: |
+          in-container <<'EOF'
+          app_id=io.github.viniciusmorgado.MonoDevelop
+          store=/var/lib/md-flatpak
+          flathub=https://dl.flathub.org/repo/flathub.flatpakrepo
           mkdir -p out/release
-          cp out/monodevelop.flatpak out/monodevelop.flatpak.sha256 out/monodevelop.cdx.json out/release/
+          flatpak remote-add --user --if-not-exists flathub "$flathub"
+          rm -rf "$store/repo"
+          flatpak-builder --user --install-deps-from=flathub --assumeyes \
+            --disable-rofiles-fuse --force-clean --ccache=false \
+            --state-dir="$store/builder" --repo="$store/repo" \
+            "$store/build-dir" "out/flatpak-files/$app_id.yml"
+          leaked="$(grep -rlF "$PWD" "$store/build-dir/files" || true)"
+          if [[ -n "$leaked" ]]; then
+            echo "::error::$(wc -l <<< "$leaked") files of the bundle contain the checkout path, e.g. $(head -1 <<< "$leaked")"
+            exit 1
+          fi
+          appstreamcli validate --no-net "$store/build-dir/files/share/metainfo/$app_id.metainfo.xml"
+          desktop-file-validate "$store/build-dir/export/share/applications/$app_id.desktop"
+          flatpak build-bundle --runtime-repo="$flathub" "$store/repo" out/release/monodevelop.flatpak "$app_id"
+          (cd out/release && sha256sum monodevelop.flatpak > monodevelop.flatpak.sha256)
+          cat out/release/monodevelop.flatpak.sha256
+          EOF
+
+      # CycloneDX SBOM of the NuGet packages of the shipped projects (tests and development-only packages excluded),
+      # plus the .NET SDK bundled in the Flatpak.
+      - name: SBOM
+        run: |
+          in-container <<'EOF'
+          app_id=io.github.viniciusmorgado.MonoDevelop
+          store=/var/lib/md-flatpak
+          sdk_version="$(basename "$(find "$store/build-dir/files/lib/dotnet/sdk" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)")"
+          [[ -x "$HOME/.ci-tools/dotnet-CycloneDX" ]] || dotnet tool install CycloneDX --version 6.2.0 --tool-path "$HOME/.ci-tools" > /dev/null
+          sbom="$(mktemp -d)"
+          "$HOME/.ci-tools/dotnet-CycloneDX" main/MonoDevelop.Linux.sln --output "$sbom" --filename bom.json --output-format Json \
+            --exclude-test-projects --exclude-dev --disable-package-restore \
+            --set-name QuarkDevelop --set-version "$MD_VERSION"
+          jq --arg sdk "$sdk_version" --arg id "$app_id" '
+            .metadata.component.description = "QuarkDevelop for Linux, Flatpak " + $id
+            | .components += [{
+              "type": "framework",
+              "bom-ref": ("pkg:generic/microsoft/dotnet-sdk@" + $sdk),
+              "supplier": { "name": "Microsoft" },
+              "name": "dotnet-sdk",
+              "version": $sdk,
+              "description": ".NET SDK bundled in /app/lib/dotnet (org.freedesktop.Sdk.Extension.dotnet10)",
+              "licenses": [{ "license": { "id": "MIT" } }],
+              "purl": ("pkg:generic/microsoft/dotnet-sdk@" + $sdk)
+            }]' "$sbom/bom.json" > out/release/monodevelop.cdx.json
+          echo "$(jq '.components | length' out/release/monodevelop.cdx.json) SBOM components"
+          EOF
 
       - name: Release notes
-        if: steps.version.outputs.skip != 'true'
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          mkdir -p out/release
           {
-            echo "QuarkDevelop for Linux on .NET 10, version $VERSION (commit ${GITHUB_SHA::12})."
+            echo "QuarkDevelop for Linux on .NET 10, version $MD_VERSION (commit ${GITHUB_SHA::12})."
             echo
-            # the hand-written notes of this version, when there are any (docs/release-notes/v<version>.md)
-            if [[ -f "docs/release-notes/v$VERSION.md" ]]; then
-              sed '1d' "docs/release-notes/v$VERSION.md"
-              echo
-            fi
-            # the commits since the previous release
             previous="$(git tag --list 'v*' --sort=-v:refname | head -1)"
-            if [[ -n "$previous" ]]; then
-              echo "### Changes since $previous"
-              git log --format='- %s' --no-merges "$previous..HEAD"
-              echo
-            fi
-            echo '```'
-            cat out/ci/summary.txt
-            echo '```'
-            echo
-            sed '1d' docs/BREAKING-CHANGES.md
+            echo "### Changes since $previous"
+            git log --format='- %s' --no-merges "$previous..HEAD"
           } > out/release-notes.md
-          cp out/ci/summary.txt out/release/ci-summary.txt
+          cat out/release-notes.md
 
       - name: Upload release files
-        if: steps.version.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: monodevelop-${{ steps.version.outputs.version }}+${{ github.sha }}
+          name: release-${{ needs.version.outputs.version }}+${{ github.sha }}
           path: |
             out/release/
             out/release-notes.md
           if-no-files-found: error
 
   publish:
-    needs: build
-    if: needs.build.outputs.skip != 'true'
+    needs: [version, package]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -167,20 +504,17 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: monodevelop-${{ needs.build.outputs.version }}+${{ github.sha }}
+          name: release-${{ needs.version.outputs.version }}+${{ github.sha }}
           path: dist
 
-      # gh creates the tag v<VERSION> on the released commit together with the release
+      # gh creates the tag v<version> on the released commit together with the release
       - name: Create the tag and the GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.build.outputs.version }}
-          PRERELEASE: ${{ needs.build.outputs.prerelease }}
+          VERSION: ${{ needs.version.outputs.version }}
         run: |
-          flags=()
-          if [[ "$PRERELEASE" == true ]]; then flags+=(--prerelease); fi
           gh release create "v$VERSION" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-            --title "QuarkDevelop $VERSION" --notes-file dist/release-notes.md "${flags[@]}" dist/release/*
+            --title "QuarkDevelop $VERSION" --notes-file dist/release-notes.md dist/release/*
 
       # After the merge, main is one merge commit ahead of develop: a fast-forward brings develop up to the
       # release. If develop got new commits meanwhile, this step fails and the release stays as it is.

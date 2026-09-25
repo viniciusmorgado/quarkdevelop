@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); GTK3 and LibGit2Sharp 0.32 port (T102). -->
+  <!-- Converted from the legacy csproj (ADR 0003); GTK3 and LibGit2Sharp 0.32 port. -->
   <PropertyGroup>
     <AssemblyName>MonoDevelop.VersionControl.Git</AssemblyName>
     <RootNamespace>MonoDevelop.VersionControl.Git</RootNamespace>
