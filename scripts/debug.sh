@@ -17,7 +17,7 @@ esac
 [[ -f "$dll" ]] || md_die "$dll not built yet; run ./scripts/build.sh"
 
 if ! command -v netcoredbg >/dev/null 2>&1; then
-	md_die "netcoredbg is not installed in this image (added in M2, task T024)"
+	md_die "netcoredbg is not installed in this image (added in M2, task T025)"
 fi
 
 md_log "netcoredbg --interpreter=cli -- dotnet ${dll#"$MD_ROOT"/} $*"

@@ -28,11 +28,12 @@ about 3 minutes plus NuGet downloads) is exercised by the hosted CI once pushing
 
 **SC-002.** All 12 test projects run in the gate. The quarantine record is
 [docs/evidence/M4/quarantine.md](../M4/quarantine.md) and the M8 summary is in [M8/README.md](../M8/README.md).
-- There are 54 quarantined cases out of about 4,030 discovered, which is 1.3%. The largest suite share is DotNetCore
-  at 4.4%.
+- There are 52 quarantined cases out of about 4,030 discovered, which is 1.3%. The largest suite share is DotNetCore
+  at 4.4%. (There were 54 at `e5157bc80e`; T152 removed 2 quarantined Ide cases together with the XML templates
+  they tested.)
 - Every entry has a reason, and every Bug/Flaky entry is fixed or linked to a follow-up task (T135 is done).
-- The full regression with the quarantined tests included (`scripts/test.sh --all`) fails exactly 48 of the 54
-  quarantined cases: Core 26, DotNetCore 12, Ide 10. No test outside the quarantine fails. The other 6 (Core 5,
+- The full regression with the quarantined tests included (`scripts/test.sh --all`) fails exactly 46 of the 52
+  quarantined cases: Core 26, DotNetCore 12, Ide 8. No test outside the quarantine fails. The other 6 (Core 5,
   PackageManagement 1) need nuget.org and pass when the container has network access.
 
 **SC-003.** Coverage ratchet: [docs/evidence/M4/coverage-baseline.txt](../M4/coverage-baseline.txt).
@@ -73,7 +74,7 @@ Locals pad in front. Any GLib-GObject critical fails the run.
 
 **SC-007.** The full `scripts/ci.sh` run takes 515–645 s of wall-clock time with a warm cache (budget 900 s). It
 covers setup, lint, the Release build with format check, the assembly check, tests with coverage in two lanes, the
-audit, the mdtool smoke and 4 GUI smokes. The timings are in [M6/README.md](../M6/README.md). A hosted-runner
+audit, the mdtool smoke and 5 GUI smokes (X11, Errors pad, modern C#, debug, Wayland). The timings are in [M6/README.md](../M6/README.md). A hosted-runner
 measurement needs push authorization (T119).
 
 **SC-008.** [M7/README.md](../M7/README.md). The bundle installs into a fresh Flatpak installation. `--version`

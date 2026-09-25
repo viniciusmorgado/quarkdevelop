@@ -11,8 +11,8 @@
 #   - While the committed docs/evidence/M1/analyze.md (HEAD) reports CRITICAL issues, only commits
 #     that fix analyze findings are accepted: a line "Analyze-fix: <finding IDs>" (or trailer task
 #     T016), or "Analyze-override: <reason>" for emergencies.
-#   Put Coupled:/Format-only:/Analyze-fix: lines in the same paragraph as Tasks: so git reads them as
-#   trailers (`git log --format='%(trailers)'`).
+#   Coupled:/Format-only:/Analyze-fix: lines go in the last paragraph, with Tasks:, so git reads them as
+#   trailers (`git log --format='%(trailers)'`); the script refuses them anywhere else.
 #
 # Usage (inside the container): ./scripts/git-commit -m "message" [git commit args...]
 set -euo pipefail
@@ -25,8 +25,9 @@ message=""
 args=("$@")
 for ((i = 0; i < ${#args[@]}; i++)); do
 	case "${args[i]}" in
-		-m) message+="${args[i + 1]:-}"$'\n' ;;
-		-m*) message+="${args[i]#-m}"$'\n' ;;
+		# git commit joins several -m values as separate paragraphs
+		-m) message+="${message:+$'\n'}${args[i + 1]:-}"$'\n' ;;
+		-m*) message+="${message:+$'\n'}${args[i]#-m}"$'\n' ;;
 	esac
 done
 
@@ -37,6 +38,15 @@ fail() {
 
 trailer="$(grep -E '^Tasks: (none|T[0-9]{3}(, ?T[0-9]{3})*)$' <<< "$message" || true)"
 [[ -n "$trailer" ]] || fail "the message must contain a trailer line 'Tasks: Tnnn[, Tnnn...]' (or 'Tasks: none')"
+
+# git only reads the last paragraph as trailers: Tasks:, Coupled:, Format-only: and Analyze-*: must sit there
+# (otherwise `git log --format='%(trailers:key=Tasks)'` finds nothing).
+parsed_trailers="$(git interpret-trailers --parse <<< "$message")"
+for key in Tasks Coupled Format-only Analyze-fix Analyze-override; do
+	if grep -qE "^$key: " <<< "$message" && ! grep -qE "^$key: " <<< "$parsed_trailers"; then
+		fail "'$key:' must be in the last paragraph of the message, together with 'Tasks:', so git reads it as a trailer"
+	fi
+done
 
 # grep exits 1 for "Tasks: none" (no IDs); with pipefail that aborted the script silently
 task_count="$({ grep -oE 'T[0-9]{3}' <<< "$trailer" || true; } | sort -u | wc -l)"

@@ -9,7 +9,7 @@
 They name the user profile directory (`~/.config/MonoDevelop/8.0`), the add-in compatibility range in
 the Mono.Addins manifests and the add-in repository URLs. The constitution asks for versioned CI
 artifacts (SemVer and SHA) and releases triggered by a tag. The first release of this fork is
-`v0.1.0-linux` (SC-004). How do the product version and the release version relate, and what does a tag
+`v0.1.0-linux` (M9, T131). How do the product version and the release version relate, and what does a tag
 produce?
 
 ## Considered Options

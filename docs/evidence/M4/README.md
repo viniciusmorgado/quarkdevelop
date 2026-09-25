@@ -15,7 +15,9 @@ All runs are in the dev container: `./scripts/pm ./scripts/test.sh`, excluding q
   T134, and the Bug/Flaky entries in T135.
 - **Line coverage** (coverlet + ReportGenerator, product assemblies only, SC-003):
   - `MonoDevelop.Core`: 62.8% (target ≥ 60%).
-  - Product total: 52.4% (target ≥ 40%).
+  - Product total: 52.4% (target ≥ 40% at the time). This total covered only the assemblies exercised by the two
+    suites above. With all 12 suites (M8) it is 29.25%, and the 40% target was dropped on 2026-09-25 (SC-003,
+    constitution 1.4.0). Current figures: [M8/README.md](../M8/README.md) and [coverage-baseline.txt](coverage-baseline.txt).
 
   The ratchet file is [coverage-baseline.txt](coverage-baseline.txt). `scripts/test.sh` fails when
   any listed value drops.

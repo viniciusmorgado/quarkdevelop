@@ -1,26 +1,16 @@
-**NOTICE**
--------------
+# MonoDevelop for Linux on .NET 10
 
-**This project has not been built nor maintained since January 2020 and has been archived**
+MonoDevelop is an integrated development environment for C# and .NET. This repository is a Linux-only
+continuation of MonoDevelop 8.6: it runs on **.NET 10 LTS** (CoreCLR, no Mono) with a **GTK 3** interface on
+X11 and Wayland, and it builds and debugs SDK-style .NET projects with the installed .NET SDK and netcoredbg.
+macOS and Windows are not supported.
 
-If you are interested in working on the project, even when archived you can still create a fork of it.
+- What the first release contains, and its known issues: [`docs/release-notes/v0.1.0-linux.md`](docs/release-notes/v0.1.0-linux.md).
+- Removed and changed features: [`docs/BREAKING-CHANGES.md`](docs/BREAKING-CHANGES.md).
+- Project rules: [`docs/constitution.md`](docs/constitution.md); decisions: [`docs/adr/`](docs/adr/); the migration
+  specification, plan and tasks: [`specs/001-linux-dotnet10-migration/`](specs/001-linux-dotnet10-migration/).
 
-<br/><br/><br/>
-
----
-
-<br/><br/><br/>
-
-
-## Linux / .NET 10 migration (this fork)
-
-This fork is migrating MonoDevelop to **.NET 10 LTS** and **GTK3**, Linux-first
-(macOS and Windows are not supported). Plan, constitution and progress:
-[`specs/001-linux-dotnet10-migration/`](specs/001-linux-dotnet10-migration/),
-decisions in [`docs/adr/`](docs/adr/), removed features in
-[`docs/BREAKING-CHANGES.md`](docs/BREAKING-CHANGES.md).
-
-Build requirements on the host: **podman** and **git** only — everything runs in the dev container:
+Build requirements on the host: **podman** and **git** only. Everything runs in the dev container:
 
 ```bash
 ./scripts/pm ./scripts/setup.sh
@@ -28,18 +18,8 @@ Build requirements on the host: **podman** and **git** only — everything runs 
 ./scripts/pm ./scripts/test.sh
 ```
 
-Full guide: [`docs/linux/setup.md`](docs/linux/setup.md).
-
----
-
-**MonoDevelop** is a full-featured integrated development environment (IDE) for mono using Gtk#.
-
-The MonoDevelop core is also the foundation for Visual Studio for Mac.
-Feel free to file bugs against Visual Studio for Mac here as well.
-
-See http://www.monodevelop.com for more info.
-
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mono/monodevelop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Full guide: [`docs/linux/setup.md`](docs/linux/setup.md). The Flatpak bundle is built with
+`PM_PROFILE=flatpak ./scripts/pm ./scripts/package-flatpak.sh`.
 
 Directory organization
 ----------------------
@@ -63,23 +43,11 @@ Building, running and debugging
 `./scripts/pm dotnet main/build/bin/mdtool.dll build <solution or project>` builds from the command line.
 Problems and their fixes: [`docs/linux/troubleshooting.md`](docs/linux/troubleshooting.md).
 
-References
-----------
+History and license
+-------------------
 
-**[MonoDevelop website](http://www.monodevelop.com)**
-
-**[Gnome Human Interface Guidelines (HIG)](https://developer.gnome.org/hig/stable/)**
-
-**[freedesktop.org standards](http://freedesktop.org/Standards/)**
-
-Discussion, Bugs, Patches
--------------------------
-
-monodevelop-list@lists.ximian.com *(questions and discussion)*
-
-monodevelop-patches-list@lists.ximian.com *(track commits to MonoDevelop)*
-
-monodevelop-bugs@lists.ximian.com *(track MonoDevelop bugzilla component)*
-
-https://github.com/mono/monodevelop/issues/new *(submit bugs and patches here)*
-
+MonoDevelop was developed by the Mono project, Xamarin and Microsoft until 2020, when the upstream repository
+(`mono/monodevelop`) was archived. This repository continues from its last version, 8.6; the upstream history is
+kept. Source files carry their own license headers (MIT X11 for the MonoDevelop sources); `main/COPYING` is the LGPL 2.1
+text shipped with the upstream sources, and vendored components record theirs in `main/vendor/*/UPSTREAM.md`. Authors are
+listed in `main/AUTHORS`.

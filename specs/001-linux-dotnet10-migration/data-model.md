@@ -32,8 +32,18 @@ process artifacts whose shape the migration must define or preserve.
 - **State transitions**: `NotStarted → Running ⇄ Paused → Exited(exitCode)`; cancel → `Exited`.
 
 ## QuarantinedTest
-- **Fields**: fully-qualified test name, suite, reason category (`Mono-only`, `net4x-fixture`,
-  `GTK2`, `Flaky`, `Bug`), note, owner, date added, linked task/issue.
+- **Fields**: fully-qualified test name, suite, reason category, note, owner, date added, linked
+  task/issue.
+- **Reason categories** (as used in `docs/evidence/M4/quarantine.md`):
+  - `Mono-only`: tests a Mono feature with no .NET/Linux equivalent (GAC, Mono runtime).
+  - `net4x-fixture`: needs an old-style .NET Framework fixture project to build on Linux (T134).
+  - `legacy-fixture`: PCL, Xamarin or netstandard1.x fixture; these target frameworks are not supported
+    (`docs/BREAKING-CHANGES.md`, T134).
+  - `network`: needs nuget.org or another network resource; tests run offline (T143, T151).
+  - `excluded`: needs an add-in excluded from the Linux build (ADR 0017).
+  - `SDK-change`: MSBuild/.NET SDK behaviour differs from Mono's MSBuild.
+  - `Bug`: a product bug, with a follow-up task.
+  - `Flaky`: fails intermittently, with a follow-up task (none left after T135).
 - **Rules**: marked `[Category("Quarantine")]` in code and listed in
   `docs/evidence/M4/quarantine.md` (later suites append to the same file); per suite, the count may
   not increase after the suite is first converted (ratchet).

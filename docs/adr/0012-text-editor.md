@@ -10,9 +10,16 @@ bridge to the VS text model) and the newer `MonoDevelop.TextEditor` built on the
 Cocoa/WPF. The VS editor packages (16.1.28) came from a dead feed; vs-editor-api also ships "FPF"
 clones named `WindowsBase`/`PresentationCore`, which collide with .NET's own `WindowsBase` facade.
 
+## Considered Options
+
+1. Mono.TextEditor + SourceEditor2, ported to GTK3/Cairo, over a vendored text-only subset of vs-editor-api.
+2. The VS editor for Cocoa/WPF (`MonoDevelop.TextEditor`) with the VS editor 17.x packages.
+3. AvalonEdit.
+4. GtkSourceView.
+
 ## Decision Outcome
 
-Keep Mono.TextEditor + SourceEditor2, ported to GTK3/Cairo, over a vendored **text-only** subset of
+Chosen: option 1. Keep Mono.TextEditor + SourceEditor2, ported to GTK3/Cairo, over a vendored **text-only** subset of
 vs-editor-api (`main/vendor/vs-editor-api/`: Text.Data, Text.Logic, implementation pieces required by
 SourceEditor2 and Roslyn EditorFeatures), without FPF assemblies. The Cocoa/WPF editor is excluded.
 Alternatives rejected: AvalonEdit (WPF), GtkSourceView (full rewrite of editor integrations),

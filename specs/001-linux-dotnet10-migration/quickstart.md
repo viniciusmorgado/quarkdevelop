@@ -23,7 +23,7 @@ Every command below runs from the repository root. `./scripts/pm` builds the dev
 ```bash
 test -f docs/constitution.md
 ! grep -q "NEEDS CLARIFICATION" specs/001-linux-dotnet10-migration/spec.md
-ls docs/adr/*.md | wc -l                                                         # ≥ 17
+ls docs/adr/0*.md | wc -l                                                        # 26 ADRs (≥ 18 at M1)
 ```
 
 ## M2 — Toolchain
@@ -57,7 +57,7 @@ cat docs/evidence/M4/quarantine.md              # every excluded test has a reas
 ## M5 — GUI, run & debug (US3, US4)
 
 ```bash
-./scripts/pm xvfb-run -a dotnet run --project main/vendor/xwt/TestApps/Gtk3Test          # M5a: Xwt/GTK3 window
+./scripts/pm bash -lc 'timeout 10 xvfb-run -a dotnet main/build/samples/xwt/Gtk3Test.dll; [ $? -eq 124 ]'   # M5a: the Xwt/GTK3 sample gallery still runs after 10 s
 ./scripts/pm xvfb-run -a dotnet main/build/bin/MonoDevelop.dll --smoke-test main/tests/linux-smoke/Smoke.sln   # exit 0
 ./scripts/pm xvfb-run -a dotnet test main/tests/Ide.Tests
 ./scripts/pm dotnet test main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests --filter FullyQualifiedName~NetCoreDbg

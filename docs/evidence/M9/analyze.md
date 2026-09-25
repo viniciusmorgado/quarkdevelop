@@ -218,3 +218,42 @@ No open task is an undocumented gap, and none blocks the release.
 
 All the other MEDIUM and LOW findings can follow the release. No open task blocks it. This analysis is read-only,
 and it closes T131 once committed, together with the release-notes changes of condition 3.
+
+## Resolution (2026-09-25)
+
+The findings were fixed after this analysis. H1 was fixed in `b2520b31b8`. The rest are fixed in the change that
+adds this section. That change was validated with:
+- `./scripts/lint.sh`: exit 0.
+- `./scripts/build.sh --check`: exit 0, format check over 128 new files.
+- A relative-link check of the changed Markdown files: no broken link.
+- The test runs named below.
+
+| ID | Status | How |
+|---|---|---|
+| H1 | **Resolved** | `b2520b31b8` remapped 74 citations to the rewritten commits. The last one, `8146056932` in the plan's line-ending row, is now `9b98f7cde3`. No cited hash outside other repositories is missing from the branch history |
+| M1 | **Resolved** | `README.md` now opens with a description of this Linux/.NET 10 MonoDevelop and links the release notes, BREAKING-CHANGES, `docs/constitution.md`, the ADRs and the spec. The archived notice, Visual Studio for Mac, Gitter and mailing-list text are gone. It ends with a short history and license note |
+| M2 | **Resolved** | `M9/acceptance.md`: 52 quarantined cases, 46 of 52 fail under `--all` (Ide 8), 5 GUI smokes. `M4/quarantine.md` and `M8/README.md` state 52 |
+| M3 | **Resolved** | `plan.md`: "the justified deviations"; ADRs `0001..0026` plus the docs tree; the real `msbuild/Linux` files; ADR table rows 0018–0026; the milestone table lists T132–T155; the M4/M5 overlap row quotes 66.83% / 29.25% under the amended SC-003; Complexity Tracking row 3 names all 11 multi-task commits made before `Coupled:`; the pre-fork `Main.sln` is marked (L10) |
+| M4 | **Resolved** | `contracts/smoke-test.md` documents all 8 `MD_SMOKE_*` variables, the outputs, the exit codes and their order, the GLib-GObject rule, and the 5 CI uses |
+| M5 | **Resolved** | `contracts/scripts.md` lists every script and tool, the `pm` variables, the `test.sh` options (including `--allow-lower`) and the `git-commit` rules |
+| M6 | **Resolved** | `docs/release-notes/v0.1.0-linux.md` "Known issues" adds: T140 (add-in MSBuild import paths), T141 (SDK resolver and `global.json` in the evaluator), T134 (PCL, Xamarin, netstandard1.x and old-style .NET Framework projects), `.slnx` solutions, and the About dialog showing 8.6 |
+| M7 | **Open** | Needs the maintainer's push authorization. Push, get a green hosted `ci.yml` run, record it as T119, then tag |
+| M8 | **Resolved** | New checked task T155 names `3656ebf5c7` and ADR 0024 (M5c row of the plan) |
+| M9 | **Resolved** | [M8/fr-009-git.md](../M8/fr-009-git.md): `VersionControl.Git.Tests` 62 passed, 0 failed, 10 ignored upstream. [M8/fr-014-logging.md](../M8/fr-014-logging.md): the JSON `startup` record with the versions, the level filter and the text format. Both are linked from `M8/README.md` |
+| M10 | **Resolved** | `data-model.md` defines the 8 reason categories in use; BREAKING-CHANGES says PCL, Xamarin and netstandard1.x projects are not supported |
+| M11 | **Resolved** | `scripts/test.sh --update-baseline` refuses any lower or missing value (exit 1, file unchanged) unless `--allow-lower` is given; `--allow-lower` alone is an error. The comparison is `md_coverage_lower` in `scripts/lib.sh`. Tested: the function against higher, equal, lower and missing fixtures; a real filtered run (`--all --update-baseline --filter FullyQualifiedName~MonoDevelop.Core.FilePathTests`) refused Core 2.15 < 66.5 and left the baseline byte-identical; `--allow-lower` alone exits 1 |
+| M12 | **Resolved** | New Complexity Tracking row: tests of the removed XML templates were deleted with the feature and replaced by `DotNetNewTemplateTests`, `DotNetNewTemplatingTests` and the template-dialog smoke; T142 follows the same terms |
+| L1 | **Resolved** | `scripts/git-commit` refuses `Tasks:`, `Coupled:`, `Format-only:` and `Analyze-*:` outside the last paragraph (`git interpret-trailers --parse`). Checked against the messages of `7e1cc35027` and `d5dbc51358` (refused) and `ccac779958`, `b2520b31b8` and `f7f2366f43` (accepted) |
+| L2 | **Open** (optional) | Restoring the partial line endings needs a `Format-only:` commit of its own; left to the maintainer |
+| L3 | **Resolved** | `tasks.md`: T109's proof says the helpers moved to T150; T013 notes the later ADRs; T011 and T120 have "→" proofs; "T139 was not assigned" |
+| L4 | **Resolved** | `M4/README.md` explains the 52.4% scope and points to M8 and the amended SC-003 |
+| L5 | **Resolved** | `CONTRIBUTING.md` documents the `git-commit` rules and that `docs/evidence/M1/analyze.md` stays the gate input |
+| L6 | **Resolved** | ADR 0021 cites M9/T131 instead of SC-004. ADR 0012 and 0017 have "Considered Options". ADR 0017's stale `MonoDevelop.TextEditor.Tests` row is corrected. "B35" is replaced by a `docs/future-work.md` entry (evaluation through `ProjectInstance`) in ADR 0008, research.md and plan.md |
+| L7 | **Open** (by decision) | Actions stay pinned by tag; Dependabot updates them |
+| L8 | **Resolved** | `setup.md` wording, the `debug.sh` message (T025), and the commit rules in `CONTRIBUTING.md` |
+| L9 | **Resolved** | quickstart § M5a uses the verified `Gtk3Test.dll` command (run again: still running after 10 s, exit 124 from `timeout`); § M1 counts 26 ADRs |
+| L10 | **Resolved** | `plan.md:57` marks `Main.sln` as pre-fork, removed in T108 |
+
+**After resolution: 0 CRITICAL, 0 HIGH, 1 MEDIUM open (M7, waiting for push authorization), 2 LOW open (L2, L7,
+both optional).** The verdict stands, and its conditions 1 and 3 are met. Condition 2 remains: push, get a green
+hosted CI run and record it as T119, then tag.

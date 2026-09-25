@@ -4,9 +4,12 @@ T129 has three parts: start-up time, quarantine and warning baselines.
 
 - **Start-up time:** [startup.md](startup.md). The main window appears in 2.2 s on a cold start on an idle
   machine, and in at most 5.1 s with the machine fully loaded. The NFR-001 target is 10 s.
-- **Quarantine:** 100 → 54 quarantined test cases, detailed in the section below.
+- **Quarantine:** 100 → 54 quarantined test cases, detailed in the section below (52 since T152 removed 2 with the
+  XML templates, `../M4/quarantine.md`).
 - **Warning baselines:** 29,900 → 23,026 occurrences, detailed in the section below.
 - Security sweep (T127): [security.md](security.md).
+- Stored runs for requirements whose proof was a test suite or a command (final analysis, M9): FR-009 Git
+  [fr-009-git.md](fr-009-git.md), FR-014 structured logs [fr-014-logging.md](fr-014-logging.md).
 
 ## Quarantine (T129, T135)
 

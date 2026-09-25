@@ -50,6 +50,7 @@ distribution packages of MonoDevelop 8.6:
 | Mono soft debugger, GDB debugger | replaced by netcoredbg for .NET programs |
 | F#, VB.NET, IL assembler, T4 text templating | deferred |
 | Building .NET Framework-only projects | not supported (no Mono/.NET Framework on Linux) |
+| Portable Class Library (PCL), Xamarin and netstandard1.x projects | not supported: these target frameworks are retired; such projects are not tested, and their test fixtures are quarantined (`legacy-fixture`, T134). Retarget to `netstandard2.0` or `net10.0` |
 | `mdtool run-md-tests` | replaced by `dotnet test` |
 | mdhost, mdmonitor, performance diagnostics | removed |
 | UI automation (AutoTest) tests | removed |

@@ -14,6 +14,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - Each task = one or more commits via `./scripts/git-commit`; evidence under `docs/evidence/Mx/`.
 - `[P]` = parallelizable; `[USn]` = user story from spec.md; `Mx` = milestone.
 - "→" = the command or artifact that proves the task is done.
+- Task IDs are never reused; T139 was not assigned.
 
 ---
 
@@ -29,9 +30,9 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [x] T008 [P] M0: Roslyn IVT + Publicizer spikes `spikes/roslyn-*` → "roslyn-publicizer: OK"
 - [x] T009 [P] M0: legacy Mono baseline attempt → `docs/evidence/M0/T009-legacy-baseline.md`
 - [x] T010 [P] M0: DotDevelop prior-art review → `docs/evidence/M0/T010-dotdevelop.md`
-- [x] T011 M0: spike outcomes in `research.md` + `docs/evidence/M0/README.md`
+- [x] T011 M0: spike outcomes → `research.md` (spike results) + `docs/evidence/M0/README.md`
 - [x] T012 M1: constitution + spec + plan + research + data-model + contracts + quickstart + tasks → `docs/constitution.md`, files under `specs/001-linux-dotnet10-migration/`
-- [x] T013 [P] M1: ADRs 0001–0017 + index → `ls docs/adr/*.md | wc -l` ≥ 18
+- [x] T013 [P] M1: ADRs 0001–0017 + index (0018–0026 came with later tasks) → `ls docs/adr/*.md | wc -l` ≥ 18
 - [x] T014 [P] M1: `docs/BREAKING-CHANGES.md` → file lists every ADR 0017 exclusion
 - [x] T015 M1: three independent reviews (analyze, feasibility, traceability) → `docs/evidence/M1/review-{A,B,C}.md`
 - [x] T016 M1: apply review findings (this revision, constitution 1.2.0 and its amendments in ADR 0001, ADR fixes, spec SC-002/003/005/007, quickstart/contract fixes) and re-run the consistency analysis → `docs/evidence/M1/analyze.md` with 0 CRITICAL
@@ -196,7 +197,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T106 [US3] M5c: main-loop stall probe during `MonoDevelop.Linux.sln` load (≤ 1 s) → evidence
 - [x] T107 [US3] M5c: `Ide.Tests`, `IdeUnitTests`, `MonoDevelop.CSharpBinding.Tests` on NUnit 3.14 under Xvfb; quarantine per suite → `docs/evidence/M4/quarantine.md` updated
 - [x] T108 [US3] M5c: `Main.sln` replaced by `MonoDevelop.Linux.sln` (ADR 0002); legacy build files removed or marked obsolete → `docs/BREAKING-CHANGES.md` updated
-- [x] T109 [US3] M5c: evidence → `docs/evidence/M5/` (smoke logs, screenshots X11 + Wayland, grep = 0 for GTK2 APIs and for the ADR 0011 port helpers, startup time)
+- [x] T109 [US3] M5c: evidence → `docs/evidence/M5/` (smoke logs, screenshots X11 + Wayland, grep = 0 for GTK2 APIs, count of the ADR 0011 port helpers (their removal moved to T150 by the ADR 0011 amendment), startup time)
 - [x] T138 [US3] M5c: modern C# (8–14) highlighting and CLI-generated test projects → `main/tests/linux-smoke/Modern` (`dotnet new console`/`sln`) builds with 0 warnings (dotnet, mdtool, IDE smoke `gui-smoke-modern`); C# grammar and Roslyn classification scopes tested (`ModernCSharpHighlightingTests`, `RoslynClassificationScopeTests`); net10.0 parse options are C# 14 (`ModernLanguageVersionTests`) → `docs/evidence/M5/README.md`
 - [ ] T144 [US3] M5c: intermittent crash of the GTK test host ("Gdk-WARNING: losing last reference to undestroyed window", 1 in ~20 runs of MonoDevelop.Ide.Gtk3.Tests, never caught by `--blame-crash`; seen before and after the toggle-reference workaround, ADR 0024) → root cause found and fixed, 50 consecutive runs green. T153 found a probable cause (a GdkWindow freed while its widget was realized, reproduced with an offscreen window in `ToplevelReferenceTests`); the 50-run check is still open
 - [x] T145 [US6] M6: CI time: split the GUI test assemblies (Ide, CSharpBinding, Xml, TextEditor, Gtk3, Git, Refactoring) into a CI job/step that runs in parallel with the Core tests (830 s of the 900 s budget used on 2026-09-24) → each job ≤ 600 s, `scripts/ci.sh` keeps a sequential local mode
@@ -209,6 +210,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T152 [US3] M5c: New Project and New File templates from `dotnet new` (ADR 0026): the templates of the installed SDK, its workloads and `dotnet new install` are read in process with Microsoft.TemplateEngine (cached per SDK version, loaded off the UI thread) and created with the CLI (`dotnet new <short> -o -n [--language F#]`, `dotnet new sln --format sln`, `dotnet sln add`); C# and F# only, Windows-only templates (WinForms, WPF, `webconfig`) hidden by tags, categories from the first tag segment, items in New File; the `*.xpt.xml` / `*.xft.xml` templates, their assets and registrations, the in-process template instantiation, the DotNetCore template wizard and the 2017 template packages removed (`docs/BREAKING-CHANGES.md`) → `DotNetNewTemplateTests` (fixture: `dotnet new list` of SDK 10.0.401) and `DotNetNewTemplatingTests` pass; `MD_SMOKE_NEW_PROJECT=1`/`MD_SMOKE_NEW_FILE=1` screenshots in `docs/evidence/M5/`
 - [x] T153 [US4] M5c: starting a debug session crashed the IDE (SIGSEGV) or logged `g_object_remove_toggle_ref` / `g_object_unref: assertion 'G_IS_OBJECT (object)' failed` when the Debug layout opened the Locals and Watch pads (11 of 15 debug smoke runs). Root cause: the wrapper made by the `Gdk.Window` constructor in `TextArea.OnRealized` held GDK's own reference as its uncounted toggle reference (ADR 0024) and was collected while the editor was realized. Fix: GdkWindows get a floating reference for their wrapper (ADR 0024 amendment), `DockContainer` no longer releases its window twice, and the smoke test fails on GLib-GObject criticals → `ToplevelReferenceTests` reproduce it; CI step `gui-smoke-debug` green in 20 consecutive runs; `docs/evidence/M5/README.md`
 - [ ] T154 [US3] F# language binding (highlighting, completion, build integration) for SDK-style F# projects: the New Project dialog creates F# projects (T152), which load as unsupported projects → a `dotnet new console --language F#` project opens with F# highlighting and completion and builds from the IDE
+- [x] T155 [US3] M5c: GtkSharp toggle-reference workaround: toplevels and GdkWindows created from C# stay alive while GTK still uses them (ADR 0024; `MD_GTK_REFERENCE_DIAGNOSTICS=1` logs each repair). Commit `3656ebf5c7`, made with `Tasks: none` and recorded here for traceability; amended by T153 → `ToplevelReferenceTests` (Xvfb) pass; full `scripts/ci.sh` passed (596 s)
 
 ---
 
@@ -234,7 +236,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 
 ## Phase 8: User Story 5 — Flatpak (P3) — M7
 
-- [x] T120 [US5] M7: ADR 0022 Flatpak (app id `io.github.viniciusmorgado.MonoDevelop`, runtime `org.gnome.Platform`, .NET 10 SDK extension, SDK access strategy, bundled deps)
+- [x] T120 [US5] M7: ADR 0022 Flatpak (app id `io.github.viniciusmorgado.MonoDevelop`, runtime `org.gnome.Platform`, .NET 10 SDK extension, SDK access strategy, bundled deps) → `docs/adr/0022-flatpak.md`
 - [x] T121 [US5] M7: `PM_PROFILE=flatpak` in `scripts/pm` (flatpak-builder image, required podman flags) → `PM_PROFILE=flatpak ./scripts/pm flatpak --version`
 - [x] T122 [US5] M7: `packaging/flatpak/io.github.viniciusmorgado.MonoDevelop.yml` + launcher; desktop entry, icon, AppStream, MIME from `main/monodevelop.{desktop,appdata.xml,xml}` → `appstreamcli validate` / `desktop-file-validate` pass
 - [x] T123 [US5] M7: `scripts/package-flatpak.sh` → `out/monodevelop.flatpak` + `out/monodevelop.flatpak.sha256` + CycloneDX SBOM `out/monodevelop.cdx.json` (names used by `release.yml`)

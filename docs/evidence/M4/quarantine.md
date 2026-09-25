@@ -4,8 +4,9 @@ Tests excluded from the gate with `[Category ("Quarantine")]` (constitution V). 
 
 Totals on 2026-09-24: 100 quarantined cases before the T135 triage of the IDE suites (TextEditor 16, Ide 30,
 CSharpBinding 9, DotNetCore 13, Core 31, PackageManagement 1), 54 after (Core 31, Ide 10, DotNetCore 12,
-PackageManagement 1): 46 released. No `Bug` or `Flaky` entry is left without a follow-up task; every suite is under
-5%.
+PackageManagement 1): 46 released. On 2026-09-25, T152 removed 2 Ide cases with the XML templates they tested, which
+leaves **52** (Core 31, Ide 8, DotNetCore 12, PackageManagement 1). No `Bug` or `Flaky` entry is left without a
+follow-up task; every suite is under 5%.
 
 ## MonoDevelop.Core.Tests
 

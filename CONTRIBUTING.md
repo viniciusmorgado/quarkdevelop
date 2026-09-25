@@ -16,12 +16,25 @@ project constitution ([`docs/constitution.md`](docs/constitution.md)); read it o
    something structural, an ADR in `docs/adr/` (MADR format).
 2. **Small, reversible commits.** One task per commit by default. Every commit message ends with a
    `Tasks: Tnnn[, Tnnn]` trailer (or `Tasks: none` for chores). Use `./scripts/pm ./scripts/git-commit -m "…"`;
-   it enforces the trailer and the project's commit identity.
+   it enforces the trailer and the project's commit identity, and refuses:
+   - several tasks without a `Coupled: <reason>` line saying why they cannot be committed separately;
+   - line-ending rewrites of files that predate the fork, unless the commit is whitespace-only and says
+     `Format-only: <reason>`;
+   - task commits while the committed consistency analysis `docs/evidence/M1/analyze.md` reports CRITICAL issues,
+     unless the commit fixes findings (`Analyze-fix: <finding IDs>`) or says `Analyze-override: <reason>`.
+
+   Put these lines in the last paragraph of the message, together with `Tasks:`, so git reads them as trailers.
+   `docs/evidence/M1/analyze.md` stays the gate input of `git-commit`; later analyses (e.g. the final one in
+   `docs/evidence/M9/analyze.md`) are recorded per milestone and must be reflected in it if they find a CRITICAL
+   issue.
 3. **Keep the Linux solution green.** `./scripts/pm ./scripts/build.sh --check` and
    `./scripts/pm ./scripts/test.sh` must pass before a commit.
 4. **Tests with behaviour changes.** A change in behaviour ships with a test in the same commit.
    Failing legacy tests are quarantined only with `[Category("Quarantine")]` and an entry in
-   `docs/evidence/M4/quarantine.md`.
+   `docs/evidence/M4/quarantine.md`. Coverage may not drop (constitution V):
+   `./scripts/pm ./scripts/test.sh --update-baseline` rewrites `docs/evidence/M4/coverage-baseline.txt` but refuses
+   lower values. `--allow-lower` is for a deliberate exception only, justified in the commit and in the plan's
+   Complexity Tracking table.
 5. **Evidence.** When a task's proof is a command, store its output under `docs/evidence/Mx/`.
 
 ## Converting a legacy project

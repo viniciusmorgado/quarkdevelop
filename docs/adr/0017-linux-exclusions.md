@@ -8,9 +8,17 @@
 The maintainer set a Linux-only focus; macOS/Windows may break. Some features depend on technologies
 with no .NET 10/Linux equivalent.
 
+## Considered Options
+
+1. Port every project of `Main.sln` before the first Linux release.
+2. Exclude the projects that serve only macOS or Windows, or depend on technologies with no .NET 10/Linux equivalent,
+   list them for users, and let deferred ones return through an ADR.
+3. Delete the excluded code from the repository.
+
 ## Decision Outcome
 
-Not part of `main/MonoDevelop.Linux.sln` (code stays in the repository until removed deliberately):
+Chosen: option 2 (option 1 would block the release on dead technologies; option 3 loses code that a later ADR may
+bring back). Not part of `main/MonoDevelop.Linux.sln` (code stays in the repository until removed deliberately):
 
 | Group | Projects / directories | Reason |
 |---|---|---|
@@ -26,7 +34,7 @@ Not part of `main/MonoDevelop.Linux.sln` (code stays in the repository until rem
 | Legacy build tooling | `msbuild/MDBuildTasks` (DownloadNupkg for the legacy build), `tools/AssemblyInfoWriter` | replaced by SDK restore / `GenerateAssemblyInfo` |
 | Superseded test runners | `MonoDevelop.UnitTesting.NUnit` (+ `NUnitRunner`, `NUnit3Runner`, Remoting-based) | IDE test running goes through VSTest (`MonoDevelop.UnitTesting` + DotNetCore) |
 | Mac/VS-specific services | `MonoDevelop.ConnectedServices` | VS for Mac Azure services |
-| Editor tests of excluded editor | `core/MonoDevelop.TextEditor.Tests` | tests the Cocoa/WPF editor |
+| Editor tests of excluded editor | ~~`core/MonoDevelop.TextEditor.Tests`~~: back in the Linux solution since T085/T107 as the converted Mono.TextEditor suite (`docs/evidence/M5/README.md`) | — |
 | Deferred (post-MVP, may return by ADR) | `Deployment` (+ `Deployment.Linux`), `MonoDevelop.AspNetCore`, `MonoDevelop.Packaging`, `MonoDeveloperExtensions` | not needed for the C# desktop/console MVP |
 
 Deferred items may return through a new ADR. All exclusions are listed for users in

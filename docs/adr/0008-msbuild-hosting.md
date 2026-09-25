@@ -14,7 +14,7 @@ MSBuild bin directory and patching `exe.config`.
 
 1. Locator + in-proc custom evaluator + out-of-proc net10 builder (chosen)
 2. In-proc builds inside the IDE (assembly conflicts, node reuse issues, UI stalls)
-3. Replace the evaluator with `ProjectInstance` now (larger change; backlog B35)
+3. Replace the evaluator with `ProjectInstance` now (larger change; not scheduled, see `docs/future-work.md`)
 4. Shell out to `dotnet build` (loses structured results and cancellation)
 
 ## Decision Outcome
@@ -22,8 +22,8 @@ MSBuild bin directory and patching `exe.config`.
 - Reference `Microsoft.Build*` 18.x (≤ the SDK MSBuild, 18.9.6 today) with `ExcludeAssets=runtime`; call
   `MSBuildLocator.RegisterInstance` (SDK instance) first thing in `mdtool`, `MonoDevelop.Startup` and
   the builder, before any MSBuild type is loaded.
-- Evaluation stays in-process in the custom evaluator for now (backlog: switch to
-  `ProjectInstance`, B35); an evaluation-diff test against `dotnet msbuild -getItem` guards drift.
+- Evaluation stays in-process in the custom evaluator for now (a later switch to
+  `ProjectInstance` is recorded in `docs/future-work.md`); an evaluation-diff test against `dotnet msbuild -getItem` guards drift.
 - The builder targets `net10.0`, is launched with `dotnet exec`, receives SDK paths via environment
   (`MSBUILD_EXE_PATH`, `MSBuildExtensionsPath`, `MSBUILDADDITIONALSDKRESOLVERSFOLDER`), no longer
   copies MSBuild or patches config; cancellation uses `BuildManager.CancelAllSubmissions` instead of

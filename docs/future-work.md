@@ -30,3 +30,14 @@ These items are decided but belong after the Linux / .NET 10 migration. They are
 - A proof of concept of one pad or dialog in Avalonia hosted next to the GTK workbench, or a clear reason why
   that is not practical.
 - An ADR with the decision.
+
+## MSBuild evaluation through `ProjectInstance`
+
+- **Recorded:** 2026-09-23 (ADR 0008, research D7), named here on 2026-09-25.
+- **Precondition:** a case where MonoDevelop's own evaluator diverges from `dotnet msbuild` in a way that the
+  evaluation-diff test (T063) or a user report shows, or T141 (the .NET SDK resolver) needs more than loading the
+  resolver.
+- **Goal:** evaluate projects with MSBuild's `ProjectInstance` instead of MonoDevelop's custom evaluator, so that
+  evaluation follows SDK 10 semantics exactly (SDK resolution, `global.json`, property functions).
+- **Expected outputs:** an ADR amending ADR 0008, the evaluator behind the project model's evaluation interface,
+  and the evaluation-diff and SDK tests green with it.

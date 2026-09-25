@@ -1,7 +1,7 @@
 # Linux setup guide
 
-MonoDevelop is being migrated to .NET 10 LTS and GTK3 on Linux
-(see `specs/001-linux-dotnet10-migration/`). All commands run inside a development container; the
+MonoDevelop runs on .NET 10 LTS and GTK3 on Linux
+(migration record: `specs/001-linux-dotnet10-migration/`). All commands run inside a development container; the
 host needs only **podman** (rootless) and **git**.
 
 ## 1. Get the sources
@@ -32,7 +32,7 @@ The container runs as your user (`--userns=keep-id`), so files it creates belong
 | Build | `./scripts/pm ./scripts/build.sh` (`-c Release`, `--check` for formatting) |
 | Test + coverage | `./scripts/pm ./scripts/test.sh` → `out/tests`, `out/coverage/Summary.txt` |
 | Lint scripts/workflows | `./scripts/pm ./scripts/lint.sh` |
-| Run the IDE headless | `./scripts/pm ./scripts/run.sh --headless` (available from milestone M5) |
+| Run the IDE headless | `./scripts/pm ./scripts/run.sh --headless` (Xvfb; add `--smoke-test` for the smoke test) |
 | Debug | `./scripts/pm ./scripts/debug.sh ide\|mdtool` (netcoredbg) |
 | Commit (fixed identity) | `./scripts/pm ./scripts/git-commit -m "…"` |
 
