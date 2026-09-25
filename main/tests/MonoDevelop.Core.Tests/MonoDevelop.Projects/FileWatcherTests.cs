@@ -148,7 +148,8 @@ namespace MonoDevelop.Projects
 
 			await WaitForFileChanged (file.FilePath);
 
-			Assert.AreEqual (0, fileChanges.Count);
+			// only events for this file count: late events of other files (the copied sample project) are unrelated
+			Assert.IsFalse (fileChanges.Any (f => f.FileName == file.FilePath));
 		}
 
 		[Test]

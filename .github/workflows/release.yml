@@ -62,6 +62,16 @@ jobs:
       - name: Release gate (scripts/ci.sh)
         run: ./scripts/pm ./scripts/ci.sh
 
+      - name: Gate summary
+        if: always()
+        run: |
+          {
+            echo '### Release gate'; echo '```'; cat out/ci/summary.txt 2>/dev/null || echo 'no summary'; echo '```'
+            if [[ -s out/ci/failures.txt ]]; then
+              echo '### Failures'; echo '```'; cat out/ci/failures.txt; echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
       # M7 (T123, ADR 0022): the Flatpak bundle, its sha256 and the CycloneDX SBOM, built in the flatpak
       # profile of scripts/pm from the Release output of the gate above
       - name: Package
