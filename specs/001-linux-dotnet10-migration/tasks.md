@@ -34,7 +34,7 @@ tasks are split one project per task, new tasks for gaps found in review.
 - [x] T013 [P] M1: ADRs 0001–0017 + index → `ls docs/adr/*.md | wc -l` ≥ 18
 - [x] T014 [P] M1: `docs/BREAKING-CHANGES.md` → file lists every ADR 0017 exclusion
 - [x] T015 M1: three independent reviews (analyze, feasibility, traceability) → `docs/evidence/M1/review-{A,B,C}.md`
-- [ ] T016 M1: apply review findings (this revision, constitution 1.2.0 and its amendments in ADR 0001, ADR fixes, spec SC-002/003/005/007, quickstart/contract fixes) and re-run the consistency analysis → `docs/evidence/M1/analyze.md` with 0 CRITICAL
+- [x] T016 M1: apply review findings (this revision, constitution 1.2.0 and its amendments in ADR 0001, ADR fixes, spec SC-002/003/005/007, quickstart/contract fixes) and re-run the consistency analysis → `docs/evidence/M1/analyze.md` with 0 CRITICAL
 - [x] T017 [P] M1: ADR 0018 warning policy (TreatWarningsAsErrors + per-project `WarningsNotAsErrors` baseline) → `docs/adr/0018-warning-policy.md`
 
 ---
@@ -249,7 +249,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T127 [P] M8: security sweep (Remoting/BinaryFormatter grep = 0 in the Linux solution, `Process` with shell, audit) → `docs/evidence/M8/security.md`
 - [x] T128 [P] M8: `docs/architecture.md` (layers, add-in model, build/run flow), README refresh → markdown link check passes
 - [x] T129 M8: start-up time ≤ 10 s measured; quarantine reduced; warning baselines shrunk → `docs/evidence/M8/README.md`
-- [ ] T130 M9: full regression (`./scripts/test.sh --all` informational + gate run), acceptance checklist SC-001…SC-009 → `docs/evidence/M9/acceptance.md`
+- [x] T130 M9: full regression (`./scripts/test.sh --all` informational + gate run), acceptance checklist SC-001…SC-009 → `docs/evidence/M9/acceptance.md`
 - [ ] T131 M9: final consistency analysis, release notes (BREAKING-CHANGES) → tag/release only with maintainer authorization
 
 ---
