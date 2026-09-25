@@ -317,6 +317,111 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			AssertNoCriticals ();
 		}
 
+		// Realizes a WindowedWidget in <paramref name="toplevel"/> and returns the finalization token of its GdkWindow. The
+		// window is looked up without a wrapper: only the one made by the Gdk.Window constructor in OnRealized exists,
+		// and nothing but its toggle reference keeps it alive, as for Mono.TextEditor.TextArea.
+		[MethodImpl (MethodImplOptions.NoInlining)]
+		static IntPtr Realize (Gtk.Window toplevel, WindowedWidget widget)
+		{
+			toplevel.Add (widget);
+			toplevel.ShowAll ();
+			Iterate (50);
+			Assert.IsTrue (widget.IsRealized);
+			return WatchFinalization (gtk_widget_get_window (widget.Handle));
+		}
+
+		static Gtk.Window CreateToplevel (bool offscreen)
+		{
+			return offscreen ? new Gtk.OffscreenWindow () : new Gtk.Window (Gtk.WindowType.Toplevel);
+		}
+
+		[TestCase (false)]
+		[TestCase (true)]
+		public void GdkWindowCreatedFromCSharpLivesWhileItsWidgetIsRealized (bool offscreen)
+		{
+			// T153/T144: nothing referenced the wrapper made by the Gdk.Window constructor once OnRealized returned. Its
+			// toggle reference was the reference GDK keeps for the window (gdk_window_new), so the wrapper was collectable
+			// and releasing it freed the GdkWindow while the widget still used it: "losing last reference to undestroyed
+			// window", then g_object_unref/g_object_remove_toggle_ref on freed memory or a crash (the debugger's pads
+			// open while the source editor is realized, with a garbage collection in between).
+			var toplevel = CreateToplevel (offscreen);
+			var widget = new WindowedWidget ();
+			var token = Realize (toplevel, widget);
+			CollectWrappers ();
+			Assert.IsFalse (finalized.Contains (token), "the GdkWindow of a realized widget was freed when its wrapper was collected");
+			Assert.IsTrue (widget.IsRealized);
+
+			toplevel.Destroy ();
+			toplevel.Dispose ();
+			AssertFreed (token, "the GdkWindow was not freed after the widget was unrealized");
+			AssertNoCriticals ();
+		}
+
+		[MethodImpl (MethodImplOptions.NoInlining)]
+		static void WrapAndDrop (Gtk.Widget widget)
+		{
+			Assert.IsNotNull (widget.Window);
+		}
+
+		[TestCase (false)]
+		[TestCase (true)]
+		public void GdkWindowCreatedFromCSharpIsFreedOnceAfterItWasWrappedAgain (bool offscreen)
+		{
+			// Code that asks the widget for its window later (TextArea does it all the time) gets a wrapper of its own
+			// once the first one was collected; each wrapper must release only its own reference.
+			var toplevel = CreateToplevel (offscreen);
+			var widget = new WindowedWidget ();
+			var token = Realize (toplevel, widget);
+			CollectWrappers ();
+			WrapAndDrop (widget);
+			CollectWrappers ();
+			Assert.IsFalse (finalized.Contains (token), "the GdkWindow of a realized widget was freed when its wrappers were collected");
+
+			toplevel.Destroy ();
+			toplevel.Dispose ();
+			AssertFreed (token, "the GdkWindow was not freed after the widget was unrealized");
+			AssertNoCriticals ();
+		}
+
+		[Test]
+		public void GdkWindowCreatedByGtkIsFreedWithItsWidget ()
+		{
+			// The GdkWindows GTK creates for its own widgets have no wrapper: they must not be kept alive.
+			var toplevel = new Gtk.Window (Gtk.WindowType.Toplevel);
+			var box = new Gtk.EventBox ();
+			toplevel.Add (box);
+			toplevel.ShowAll ();
+			Iterate (50);
+			var token = WatchFinalization (gtk_widget_get_window (box.Handle));
+			toplevel.Destroy ();
+			toplevel.Dispose ();
+			AssertFreed (token, "the GdkWindow of a GTK widget leaked");
+			AssertNoCriticals ();
+		}
+
+		[Test]
+		public void GdkWindowCreatedByGtkAndWrappedLaterIsFreed ()
+		{
+			// GLib.Object.GetObject on a window GTK has just created (as a Realized handler does) must not take the
+			// reference of the wrapper from GDK either.
+			var toplevel = new Gtk.Window (Gtk.WindowType.Toplevel);
+			var box = new Gtk.EventBox ();
+			Gdk.Window wrapped = null;
+			box.Realized += (o, args) => wrapped = ((Gtk.Widget)o).Window;
+			toplevel.Add (box);
+			toplevel.ShowAll ();
+			Assert.IsNotNull (wrapped);
+			var token = WatchFinalization (wrapped.Handle);
+			Iterate (50);
+			wrapped = null;
+			CollectWrappers ();
+			Assert.IsFalse (finalized.Contains (token), "the GdkWindow of a realized widget was freed when its wrapper was collected");
+			toplevel.Destroy ();
+			toplevel.Dispose ();
+			AssertFreed (token, "the GdkWindow leaked");
+			AssertNoCriticals ();
+		}
+
 		[DllImport (LibGObject)]
 		static extern void g_object_set_qdata_full (IntPtr obj, uint quark, IntPtr data, DestroyNotify destroy);
 
@@ -328,5 +433,8 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 
 		[DllImport (LibGtk)]
 		static extern void gtk_widget_destroy (IntPtr widget);
+
+		[DllImport (LibGtk)]
+		static extern IntPtr gtk_widget_get_window (IntPtr widget);
 	}
 }

@@ -1,6 +1,6 @@
 # 0024 — Toplevels and GDK windows created from C# kept alive by the IDE (GtkSharp toggle-reference workaround)
 
-- Status: Accepted
+- Status: Accepted (amended 2026-09-24, T153: GdkWindows)
 - Date: 2026-09-24
 
 ## Context and Problem Statement
@@ -89,3 +89,49 @@ two managed transitions to every GObject (CSS nodes, styles, ...). Installed by 
   their constructor returns (none found; see the diagnostics switch).
 - Neutral: to be removed when GtkSharp counts the reference itself (upstream issue to be filed; the package is
   unmaintained since 2024).
+
+## Amendment (2026-09-24, T153): GdkWindows counted from construction
+
+**Problem.** The repair above works only while the wrapper that took over GTK's reference is still alive when the
+instance is disposed. The IDE keeps its toplevels in fields, but not the GdkWindows of custom widgets: a widget creates
+its window in `OnRealized` (`GdkWindow = new Gdk.Window (...)`, e.g. `Mono.TextEditor.TextArea`) and keeps no reference
+to the wrapper. The wrapper's toggle reference is then the only reference counted on the window, so GtkSharp holds the
+wrapper weakly and a garbage collection can collect it while the widget is still realized. Releasing that toggle
+reference drops GDK's reference, which frees the window while the widget still uses it. GDK logs "losing last reference
+to undestroyed window" for an offscreen window right away; an X11 window is freed once the X server confirms its
+destruction. A later unref then hits freed memory: GDK's own, or the toggle reference of a second wrapper that
+`Gtk.Widget.Window` created in the meantime. `MD_GTK_REFERENCE_DIAGNOSTICS=1` logged no repair in those runs, because the
+wrapper was already gone when GDK let go.
+
+When a debug session starts, the Debug layout reparents the source editor while the debugger pads allocate a lot of
+memory. In 11 of 15 debug smoke runs this crashed the IDE (SIGSEGV) or logged `g_object_remove_toggle_ref` /
+`g_object_unref: assertion 'G_IS_OBJECT (object)' failed`.
+
+**Decision.** The constructed hook gives every GdkWindow (and only GdkWindows) an extra reference, marked floating with
+`g_object_force_floating`. GtkSharp sinks a floating reference instead of adding one, both in `GLib.Object.Raw` (the
+`Gdk.Window` constructor) and in `GLib.Object.GetObject`. The first wrapper therefore owns that reference, whichever way
+it is made. Its toggle reference is counted, the wrapper stays alive while GDK holds the window, and GDK's reference is
+dropped by `gdk_window_destroy` as designed. A second reference, owned by the workaround, keeps each new window valid
+until an idle handler of high priority runs on the next main-loop iteration. That handler sinks and releases the
+floating reference of the windows no wrapper claimed (GDK created them for GTK's own widgets), then releases its own.
+
+The weak notification stays for GtkWindow and GtkInvisible, and for GdkWindows as a safety net. Toplevels do not get the
+floating reference: before `gtk_widget_destroy` on a toplevel it believes undestroyed, `Gtk.Widget.Dispose` takes a
+reference to make up for the uncounted one, and with a counted reference that extra one would leak the window.
+
+`DockContainer.OnUnrealized` had its own double release: it destroyed its window and cleared `HasWindow` before chaining
+up, so GTK then unreffed the window a second time, treating it as a reference to a parent's window. The override is
+removed; GTK unregisters and destroys the window itself.
+
+**Consequences.**
+
+- Good: `ToplevelReferenceTests` reproduces the failure with the collected wrapper of a realized widget, in a toplevel
+  and in an offscreen window, with and without a second wrapper made afterwards. Before the fix they failed, and the
+  test host crashed. GdkWindows that GTK creates for its own widgets, wrapped or not, are still freed. The new `gui-smoke-debug`
+  CI step debugs to a breakpoint; the smoke test fails on GLib-GObject criticals (see `docs/evidence/M5/README.md`,
+  T153).
+- Good: this is a probable cause of T144 (the GTK test host's "losing last reference to undestroyed window").
+- Bad: it relies on more GObject and GtkSharp behaviour: the floating flag on a type that is not `GInitiallyUnowned`, and
+  GtkSharp's handling of floating references in `Raw` and `GetObject`. Suppose `GetObject` is called with an owned
+  reference on a GdkWindow in the same main-loop iteration that created it. GtkSharp then prints "Unexpected owned
+  floating reference" and one reference leaks. No such call is known in the IDE.

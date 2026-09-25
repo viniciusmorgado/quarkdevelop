@@ -41,7 +41,8 @@ namespace MonoDevelop.Ide
 	/// 0 (built with no errors and no unhandled exception), 1 (build errors) or 2 (start-up/load failure or timeout).
 	/// MD_SMOKE_OPEN=&lt;file&gt; (relative to the solution's directory) opens that file in the editor before the screenshot,
 	/// and fails the run if the IDE's workspace sees errors in it or in its project. MD_SMOKE_GOTO=&lt;method&gt; then goes
-	/// to the definition of that partial method, which a source generator implements (T147).
+	/// to the definition of that partial method, which a source generator implements (T147). A critical of the GLib-GObject
+	/// domain fails the run with 2 as well (T153).
 	/// </summary>
 	sealed class SmokeTest
 	{
@@ -56,6 +57,7 @@ namespace MonoDevelop.Ide
 		FileLogger logger;
 		Timer watchdog;
 		int unhandledExceptions;
+		int gobjectCriticals;
 
 		SmokeTest (FilePath solution, FilePath outputDirectory)
 		{
@@ -64,6 +66,12 @@ namespace MonoDevelop.Ide
 		}
 
 		public int UnhandledExceptions => unhandledExceptions;
+
+		/// <summary>
+		/// GLib-GObject criticals logged so far (T153): a toggle reference removed from a freed instance, an unref of an
+		/// invalid instance... They precede crashes, so the smoke test fails on them.
+		/// </summary>
+		string GObjectCriticalsFailure => gobjectCriticals > 0 ? gobjectCriticals + " GLib-GObject criticals were logged" : null;
 
 		/// <summary>
 		/// Takes the solution out of <paramref name="args"/> (the smoke test opens it itself) and starts the log and
@@ -88,6 +96,7 @@ namespace MonoDevelop.Ide
 				Interlocked.Increment (ref test.unhandledExceptions);
 				return previousHandler != null ? previousHandler (reportCrashes, ex, willShutDown) : reportCrashes;
 			};
+			Gui.GLibLogging.GObjectCriticalLogged += () => Interlocked.Increment (ref test.gobjectCriticals);
 
 			if (!int.TryParse (Environment.GetEnvironmentVariable ("MD_SMOKE_TIMEOUT"), out int timeout) || timeout <= 0)
 				timeout = 600;
@@ -136,6 +145,8 @@ namespace MonoDevelop.Ide
 					SaveScreenshot ();
 					if (loadedOpenFailure != null)
 						Exit (ExitFailure, "MD_SMOKE_OPEN: " + loadedOpenFailure);
+					else if (GObjectCriticalsFailure != null)
+						Exit (ExitFailure, GObjectCriticalsFailure);
 					else
 						Exit (unhandledExceptions > 0 ? ExitFailure : ExitSuccess, "loaded (MD_SMOKE_NO_BUILD)");
 					return;
@@ -166,6 +177,8 @@ namespace MonoDevelop.Ide
 					Exit (ExitFailure, "MD_SMOKE_OPEN: " + openFailure);
 				else if (debugFailure != null)
 					Exit (ExitFailure, "debugging: " + debugFailure);
+				else if (GObjectCriticalsFailure != null)
+					Exit (ExitFailure, GObjectCriticalsFailure);
 				else if (errors > 0)
 					Exit (ExitBuildErrors, errors + " build errors");
 				else if (unhandledExceptions > 0)
@@ -246,6 +259,11 @@ namespace MonoDevelop.Ide
 			if (active?.FileName != program.FilePath || active.Editor?.CaretLine != 1)
 				return $"stopped, but the active document is {active?.FileName.ToString () ?? "none"}:{active?.Editor?.CaretLine}";
 			LoggingService.LogInfo ("Smoke test: the debugger stopped at the breakpoint {0}:1", program.FilePath.FileName);
+			// T153: show the Locals pad (a GtkObjectValueTreeView) rather than the Breakpoints pad in front of it
+			var locals = IdeApp.Workbench.Pads.FirstOrDefault (p => p.Id == "MonoDevelop.Debugger.LocalsPad");
+			if (locals == null)
+				return "no Locals pad";
+			locals.BringToFront ();
 			// let the debug pads (call stack, locals) fill before the screenshot
 			await Task.Delay (3000);
 			return null;

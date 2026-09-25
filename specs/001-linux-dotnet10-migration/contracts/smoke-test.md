@@ -22,3 +22,10 @@ Command: `xvfb-run -a dotnet main/build/bin/MonoDevelop.dll --smoke-test <soluti
    the project, which a source generator implements. The editor must open the read-only copy of the generated
    document; the log says `go to definition of <method> opened <file> at line <n>, read-only: <bool>`, and a failure
    gives exit code `2` (T147).
+9. `MD_SMOKE_DEBUG=1` (off by default; needs a build with 0 errors): set a breakpoint on the first line of the
+   startup project's `Program.cs`, start debugging (netcoredbg) and wait until the debugger stops there; the log
+   says `the debugger stopped at the breakpoint Program.cs:1`. The Locals pad is brought to the front, and the
+   screenshot is taken while the debugger is stopped. A failure gives exit code `2` (T112, T153).
+10. A critical or error of the `GLib-GObject` log domain (e.g. `g_object_remove_toggle_ref` or `g_object_unref` on
+    a freed instance) gives exit code `2`; the log says `<n> GLib-GObject criticals were logged` (T153). Criticals
+    of other domains (the Wayland run logs `Gdk` criticals for its missing seat) do not change the exit code.

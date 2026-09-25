@@ -396,6 +396,10 @@ namespace MonoDevelop.Components.Docking
 			RegisterWindow (GdkWindow);
 
 			StyleContext.Background = GdkWindow;
+			// GTK unregisters and destroys this window when the widget is unrealized (gtk_widget_real_unrealize). An
+			// OnUnrealized override that destroyed it and cleared HasWindow released it twice (T153): gdk_window_destroy
+			// drops the reference of gdk_window_new, and GTK then unrefs the window of a widget without a window of its
+			// own as a reference to its parent's window.
 			HasWindow = true;
 
 			//GdkWindow.SetBackPixmap (null, true);
@@ -404,16 +408,6 @@ namespace MonoDevelop.Components.Docking
 			OverrideBackgroundColor (StateFlags.Normal, Styles.DockFrameBackground.ToCairoColor ().ToGdkRgba ());
 		}
 
-		protected override void OnUnrealized ()
-		{
-			if (this.GdkWindow != null) {
-				UnregisterWindow (this.GdkWindow);
-				this.GdkWindow.Destroy ();
-				HasWindow = false;
-			}
-			base.OnUnrealized ();
-		}
-		
 		internal void ShowPlaceholder (DockItem draggedItem)
 		{
 			padTitleWindow = new PadTitleWindow (frame, draggedItem);

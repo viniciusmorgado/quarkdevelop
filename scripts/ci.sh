@@ -3,7 +3,8 @@
 # Steps (each timed; the first failure stops the run):
 #   setup, lint, build --check (Release), duplicate-assembly check, tests + coverage ratchet,
 #   vulnerability audit, mdtool smoke (build linux-smoke/Hello and linux-smoke/Modern and run them), GUI smoke
-#   (the IDE's --smoke-test under Xvfb and Wayland: Smoke.sln, the Broken project, the C# 8 to 14 Modern.sln).
+#   (the IDE's --smoke-test under Xvfb and Wayland: Smoke.sln, the Broken project, the C# 8 to 14 Modern.sln, and a
+#   debug session of Smoke.sln stopped at a breakpoint).
 # Writes out/ci/summary.txt (step, status, seconds) and fails when the total exceeds the SC-007
 # budget of 15 minutes (MD_CI_BUDGET_SECONDS overrides).
 # Usage: ./scripts/pm ./scripts/ci.sh
@@ -79,6 +80,23 @@ gui_smoke() {
 	return "$status"
 }
 
+gui_smoke_debug() {
+	# T153: debug Hello (Smoke.sln) with netcoredbg to a breakpoint on the first line of Program.cs (MD_SMOKE_DEBUG, T112).
+	# The Debug layout opens the Locals, Watch and Call Stack pads while the source editor is reparented; that crashed
+	# the IDE or logged GLib-GObject criticals (toggle references on freed GdkWindows), which fail the smoke test.
+	local dir
+	dir="$(mktemp -d)"
+	cp -r main/tests/linux-smoke/. "$dir/"
+	local status=0
+	XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
+		MD_SMOKE_OUT="$ci_out/gui-smoke-debug" MD_SMOKE_DEBUG=1 \
+		xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln" \
+		|| status=$?
+	rm -rf "$dir"
+	grep -q "the debugger stopped at the breakpoint" "$ci_out/gui-smoke-debug/ide.log" || return 1
+	return "$status"
+}
+
 gui_smoke_errors() {
 	# T105: build the Broken project in the IDE; the smoke test activates the first row of the Errors pad and
 	# checks that the editor opens Program.cs on the error line. Expected exit status: 1 (build errors).
@@ -149,6 +167,7 @@ step test ./scripts/test.sh --no-build --parallel
 step audit ./scripts/audit.sh
 step mdtool-smoke mdtool_smoke
 step gui-smoke gui_smoke
+step gui-smoke-debug gui_smoke_debug
 step gui-smoke-errors gui_smoke_errors
 step gui-smoke-modern gui_smoke_modern
 step wayland-smoke wayland_smoke

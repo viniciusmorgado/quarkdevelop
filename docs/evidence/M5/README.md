@@ -667,3 +667,67 @@ Wayland image scores 0.193.
 Replacing them means rewriting the size negotiation and drawing of 93 widgets in native GTK 3 form. That carries a
 high risk of visual regressions and brings no user-visible gain now. The ADR 0011 amendment of 2026-09-24 therefore
 moves this metric from the M5c exit criteria to task T150, where it is tracked until it reaches 0.
+
+## T153 — debugger pads
+
+**Symptom.** In the debug smoke test (`MD_SMOKE_DEBUG=1`), the IDE debugs Hello from Smoke.sln with netcoredbg to a
+breakpoint on the first line of Program.cs. Within a second of the Debug layout opening the Locals and Watch pads, one
+of two things happened:
+
+- the IDE crashed with a segmentation fault, before the debugger stopped;
+- GObject logged `g_object_remove_toggle_ref: assertion 'G_IS_OBJECT (object)' failed` (from
+  `GLib.ToggleRef.PerformQueuedUnrefs`) or `g_object_unref: assertion 'G_IS_OBJECT (object)' failed` (from the main
+  loop).
+
+After a critical the smoke test still exited with 0.
+
+**Root cause.** The fault was not in the pads. With `MD_GTK_REFERENCE_DIAGNOSTICS=1` and temporary logging of every
+instance whose last reference was released through GtkSharp's finalizer queue, the failing runs showed two GdkX11Windows
+of the source editor being freed that way. One was the window that `Mono.TextEditor.TextArea.OnRealized` creates with
+`new Gdk.Window (...)`. Both were already destroyed, and no repair was logged.
+
+ADR 0024 explains why the wrapper made by the `Gdk.Window` constructor holds GDK's own reference: its toggle reference is
+not counted. Its repair runs when GDK drops that reference, and it needs the wrapper to be alive at that moment. But
+TextArea keeps no reference to the wrapper. Because the wrapper's toggle reference is the only one counted, GtkSharp
+holds the wrapper weakly, and the garbage collections at the start of a debug session collect it. The Debug layout also
+moves the editor, which unrealizes and realizes it again. Releasing the collected wrapper's toggle reference therefore
+drops a reference that GDK or a second wrapper still counts on (`Gtk.Widget.Window` makes a new wrapper once the first
+is gone). The window is freed while it is still used, and the next unref hits freed memory.
+
+`ToplevelReferenceTests` reproduces this without the debugger: a realized custom widget whose GdkWindow wrapper is
+collected, in a toplevel and in an offscreen window, with and without a second wrapper. Before the fix these tests
+failed and crashed the test host. For the offscreen window, this is the "losing last reference to undestroyed window"
+of T144.
+
+**Fix.** Three changes:
+
+- GdkWindows get a floating reference when they are constructed; the first wrapper, made by the constructor or by
+  `GetObject`, sinks it, so its toggle reference is counted (ADR 0024 amendment).
+- `DockContainer` no longer destroys its window before GTK does. GTK then released the window a second time.
+- The smoke test exits with 2 when a critical of the `GLib-GObject` domain is logged, and while stopped it brings the
+  Locals pad to the front.
+
+The four existing GUI smokes (`gui-smoke`, `gui-smoke-errors`, `gui-smoke-modern`, `wayland-smoke`) log no
+GLib-GObject critical, so the rule covers the whole domain. The Wayland run's `Gdk` criticals for its missing seat are
+not affected.
+
+**Failure rate** (debug smoke, Xvfb, fresh profile per run, 2026-09-24):
+
+| Build | Runs | Segfault | GLib-GObject critical | Clean |
+|---|---|---|---|---|
+| before (HEAD e5157bc80e) | 10 | 2 | 4 (exit code 0) | 4 |
+| before, with the smoke test failing on criticals | 5 | 2 | 3 (exit code 2) | 0 |
+| after | 10 | 0 | 0 | 10 |
+| after, `gui-smoke-debug` CI step (Breakpoints pad in front) | 20 in a row | 0 | 0 | 20 |
+| after, final `gui-smoke-debug` (Locals pad in front) | 20 in a row | 0 | 0 | 20 |
+
+Before the fix, 11 of 15 runs failed; after it, 0 of 50. The new CI step `gui-smoke-debug` takes 15 to 22 s. It
+expects exit code 0 and the log line `the debugger stopped at the breakpoint Program.cs:1`.
+
+The IDE stopped at the breakpoint, with the Locals pad showing `args`:
+
+![Debugger stopped at the breakpoint, Locals pad](T153-debugger.png)
+
+Open: T144 needs its 50-run check of `MonoDevelop.Ide.Gtk3.Tests` to confirm that this was its cause. Toplevels keep
+the dispose-time repair of ADR 0024: a toplevel wrapper collected while its window is shown is still not covered, but
+the IDE keeps its toplevels in fields and no failure was seen.

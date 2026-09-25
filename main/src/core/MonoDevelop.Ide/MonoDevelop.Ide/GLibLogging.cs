@@ -213,6 +213,12 @@ namespace MonoDevelop.Ide.Gui
 		static int RemainingBytes = 1 * 1024 * 1024;
 		static readonly string[] domains = new string[] {"Gtk", "Gdk", "GLib", "GLib-GObject", "Pango", "GdkPixbuf" };
 		static uint[] handles;
+
+		/// <summary>
+		/// Raised for each critical or error of the GLib-GObject domain (reference counting and type checks: a freed or
+		/// invalid instance), also once the log size limit is reached. The smoke test fails on them (T153).
+		/// </summary>
+		internal static event Action GObjectCriticalLogged;
 		
 		public static bool Enabled
 		{
@@ -238,6 +244,10 @@ namespace MonoDevelop.Ide.Gui
 		
 		static void LoggerMethod (IntPtr logDomainPtr, LogLevelFlags logLevel, IntPtr messagePtr)
 		{
+			if ((logLevel & (LogLevelFlags.Critical | LogLevelFlags.Error)) != 0 && GObjectCriticalLogged != null
+				&& GLib.Marshaller.Utf8PtrToString (logDomainPtr) == "GLib-GObject")
+				GObjectCriticalLogged ();
+
 			if (RemainingBytes < 0)
 				return;
 
