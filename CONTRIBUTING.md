@@ -9,6 +9,17 @@ project constitution ([`docs/constitution.md`](docs/constitution.md)); read it o
 - Every command runs in the development container: `./scripts/pm <command>` (see
   [docs/linux/setup.md](docs/linux/setup.md)). Scripts refuse to run on the host.
 
+## Branches and releases
+
+`develop` is the default branch (ADR 0021):
+
+1. Branch off `develop` (`fix/…`, `feat/…`, `ci/…`, `docs/…`) and open a pull request into `develop`. Nobody
+   pushes to `develop` or `main` directly.
+2. A release is a pull request from `develop` into `main`. Merging it runs the `release` workflow: it works out
+   the version, publishes the GitHub release with the Flatpak and brings `develop` up to `main`.
+3. Commit subjects use the conventional form, since they decide the version: `feat: …` (minor), `fix: …` or
+   `chore: …` (patch), `BREAKING CHANGE: …` (major).
+
 ## Workflow
 
 1. **Spec first.** Work items live in `specs/001-linux-dotnet10-migration/tasks.md`. New features or
