@@ -46,12 +46,9 @@ namespace MonoDevelop.Ide.Templates
 		List<TemplateWizard> projectTemplateWizards = new List<TemplateWizard> ();
 		List<ImageCodon> projectTemplateImages = new List<ImageCodon> ();
 
-		MicrosoftTemplateEngineItemTemplatingProvider itemTemplatingProvider;
-
 		public TemplatingService ()
 		{
 			RecentTemplates = new RecentTemplates ();
-			itemTemplatingProvider = new MicrosoftTemplateEngineItemTemplatingProvider ();
 			AddinManager.AddExtensionNodeHandler ("/MonoDevelop/Ide/ProjectTemplateCategories", OnTemplateCategoriesChanged);
 			AddinManager.AddExtensionNodeHandler ("/MonoDevelop/Ide/ProjectTemplatingProviders", OnTemplatingProvidersChanged);
 			AddinManager.AddExtensionNodeHandler ("/MonoDevelop/Ide/ProjectTemplateWizards", OnProjectTemplateWizardsChanged);
@@ -106,7 +103,7 @@ namespace MonoDevelop.Ide.Templates
 		public IEnumerable<TemplateCategory> GetProjectTemplateCategories (Predicate<SolutionTemplate> match)
 		{
 			List<Exception> errors = null;
-			var templateCategorizer = new ProjectTemplateCategorizer (projectTemplateCategories, match);
+			var templateCategorizer = new ProjectTemplateCategorizer (GetCategories (), match);
 			foreach (IProjectTemplatingProvider provider in templateProviders) {
 				try {
 					templateCategorizer.CategorizeTemplates (provider.GetTemplates ());
@@ -123,6 +120,24 @@ namespace MonoDevelop.Ide.Templates
 			}
 
 			return templateCategorizer.GetCategorizedTemplates ();
+		}
+
+		/// <summary>
+		/// The categories of the add-ins, then those of the templating providers that define their own (the .NET
+		/// category of the dotnet new templates, T152).
+		/// </summary>
+		List<TemplateCategory> GetCategories ()
+		{
+			var categories = new List<TemplateCategory> ();
+			foreach (var provider in templateProviders.OfType<IProjectTemplateCategoryProvider> ()) {
+				try {
+					categories.AddRange (provider.GetCategories ());
+				} catch (Exception ex) {
+					LoggingService.LogError ("Unable to load template categories from provider: " + provider.GetType ().FullName, ex);
+				}
+			}
+			categories.AddRange (projectTemplateCategories);
+			return categories;
 		}
 
 		static void ShowProjectTemplateLoadError (IEnumerable<Exception> errors)
@@ -201,25 +216,10 @@ namespace MonoDevelop.Ide.Templates
 			return null;
 		}
 
-		public IEnumerable<ItemTemplate> GetItemTemplates ()
-		{
-			return itemTemplatingProvider.GetTemplates ();
-		}
-
 		public SolutionTemplate GetSolutionTemplate (string templateId)
 		{
 			var categories = GetProjectTemplateCategories (template => template.Id == templateId);
 			return GetTemplate (categories, templateId);
-		}
-
-		public IEnumerable<ItemTemplate> GetItemTemplates (Predicate<ItemTemplate> match)
-		{
-			return GetItemTemplates ().Where (template => match (template));
-		}
-
-		public Task ProcessTemplate (ItemTemplate template, Project project, NewItemConfiguration config)
-		{
-			return itemTemplatingProvider.ProcessTemplate (template, project, config);
 		}
 
 		public RecentTemplates RecentTemplates { get; private set; }

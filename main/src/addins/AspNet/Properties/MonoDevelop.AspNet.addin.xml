@@ -12,75 +12,12 @@
 		<Import file = "Html/Schemas/xhtml1-strict.xsd" />
 		<Import file = "Html/Schemas/xhtml1-transitional.xsd" />
 
-		<Import file = "Templates/WebForms/MasterPage-CodeBehind.xft.xml"/>
-		<Import file = "Templates/WebForms/MasterPage-Empty.xft.xml"/>
-		<Import file = "Templates/WebForms/NestedMasterPage-CodeBehind.xft.xml"/>
-		<Import file = "Templates/WebForms/NestedMasterPage.xft.xml"/>
-		<Import file = "Templates/WebForms/WebContentForm-CodeBehind.xft.xml"/>
-		<Import file = "Templates/WebForms/WebContentForm.xft.xml"/>
-		<Import file = "Templates/WebForms/WebControl-CodeBehind.xft.xml"/>
-		<Import file = "Templates/WebForms/WebControl-Empty.xft.xml"/>
-		<Import file = "Templates/WebForms/WebForm-CodeBehind.xft.xml"/>
-		<Import file = "Templates/WebForms/WebForm-Empty.xft.xml"/>
-		<Import file = "Templates/WebForms/WebHandler-CodeBehind.xft.xml"/>
-		<Import file = "Templates/WebForms/WebHandler-Empty.xft.xml"/>
-		<Import file = "Templates/WebForms/WebService-CodeBehind.xft.xml"/>
-		<Import file = "Templates/WebForms/WebService-Empty.xft.xml"/>
-
-		<Import file = "Templates/Mvc/Controller.xft.xml"/>
-		<Import file = "Templates/Mvc/LayoutPage.xft.xml" />
-		<Import file = "Templates/Mvc/PartialViewPageRazor.xft.xml" />
-		<Import file = "Templates/Mvc/UserControl.xft.xml"/>
-		<Import file = "Templates/Mvc/ViewContentPage.xft.xml"/>
-		<Import file = "Templates/Mvc/ViewMasterPage.xft.xml" />
-		<Import file = "Templates/Mvc/ViewPage.xft.xml"/>
-		<Import file = "Templates/Mvc/ViewPageRazor.xft.xml" />
-		<Import file = "Templates/Mvc/WebConfigViews.xft.xml"/>
-
-		<Import file = "Templates/Projects/EmptyProject.xpt.xml" />
-		<Import file = "Templates/Projects/MvcProject.xpt.xml" />
-		<Import file = "Templates/Projects/WebFormsProject.xpt.xml"/>
-
-		<Import file = "Templates/Projects/Files/Default.aspx"/>
-		<Import file = "Templates/Projects/Files/Default.aspx.cs"/>
-		<Import file = "Templates/Projects/Files/Default.aspx.designer.cs"/>
-
-		<Import file = "Templates/MvcCommon/Error.cshtml"/>
-		<Import file = "Templates/MvcCommon/HomeController.cs"/>
-		<Import file = "Templates/MvcCommon/HomeControllerTest.cs"/>
-		<Import file = "Templates/MvcCommon/Index.cshtml"/>
-		<Import file = "Templates/MvcCommon/ViewPageRazor.cshtml"/>
-		<Import file = "Templates/MvcCommon/_Layout.cshtml"/>
-		<Import file = "Templates/MvcCommon/_ViewStart.cshtml"/>
-
-		<Import file = "Templates/EmptyCssFile.xft.xml"/>
-		<Import file = "Templates/EmptyLessFile.xft.xml"/>
-		<Import file = "Templates/EmptyScssFile.xft.xml"/>
-		<Import file = "Templates/EmptyJsonFile.xft.xml"/>
-		<Import file = "Templates/EmptyJavaScriptFile.xft.xml"/>
-		<Import file = "Templates/EmptyTypeScriptFile.xft.xml"/>
-		<Import file = "Templates/GlobalAsax.xft.xml"/>
-		<Import file = "Templates/JsonFileTemplate.json"/>
-		<Import file = "Templates/TypeScriptFileTemplate.ts"/>
-		<Import file = "Templates/PreprocessedRazorTemplate.xft.xml" />
-		<Import file = "Templates/RouteConfig.cs"/>
-		<Import file = "Templates/StylesheetTemplate.css"/>
-		<Import file = "Templates/StylesheetTemplate.less"/>
-		<Import file = "Templates/StylesheetTemplate.scss"/>
-		<Import file = "Templates/WebApiConfig.cs"/>
-		<Import file = "Templates/WebConfig-Application.xft.xml"/>
-		<Import file = "Templates/WebConfig-SubDir.xft.xml"/>
-
 		<Import file = "CodeTemplates/CSharp/AddController/ControllerWithEmptyReadAndWriteActions.tt" />
 		<Import file = "CodeTemplates/CSharp/AddController/Empty.tt" />
 		<Import file = "CodeTemplates/CSharp/AddView/Aspx/Empty.tt" />
 		<Import file = "CodeTemplates/CSharp/AddView/Razor/Empty.tt" />
 
 		<Import file = "Razor/Razor-templates.xml" />
-		
-		<Import file = "Templates/npmConfigurationFile.xft.xml" />
-		<Import file = "Templates/npmConfigurationFile.json" />
-
 	</Runtime>
 
 	<ExtensionPoint path = "/MonoDevelop/Html/DocTypes">
@@ -90,98 +27,6 @@
 	<ExtensionPoint path = "/MonoDevelop/Asp/CompletionBuilders">
 		<ExtensionNode name="Class" />
 	</ExtensionPoint>
-
-	<Extension path = "/MonoDevelop/Ide/ProjectTemplates">
-		<ProjectTemplate id   = "MonoDevelop.AspNet.EmptyProject"
-		                 file = "Templates/Projects/EmptyProject.xpt.xml" />
-		<ProjectTemplate id   = "MonoDevelop.AspNet.MvcProject"
-		                 file = "Templates/Projects/MvcProject.xpt.xml" />
-		<ProjectTemplate id   = "MonoDevelop.AspNet.WebApplication"
-		                 file = "Templates/Projects/WebFormsProject.xpt.xml"/>
-	</Extension>
-
-	<Extension path = "/MonoDevelop/Ide/FileTemplates">
-		<FileTemplate id   = "WebForm-Empty"
-		              file = "Templates/WebForms/WebForm-Empty.xft.xml"/>
-		<FileTemplate id   = "WebForm-CodeBehind"
-		              file = "Templates/WebForms/WebForm-CodeBehind.xft.xml"/>
-
-		<FileTemplate id   = "WebHandler-Empty"
-		              file = "Templates/WebForms/WebHandler-Empty.xft.xml"/>
-		<FileTemplate id   = "WebHandler-CodeBehind"
-		              file = "Templates/WebForms/WebHandler-CodeBehind.xft.xml"/>
-
-		<FileTemplate id   = "WebControl-Empty"
-		              file = "Templates/WebForms/WebControl-Empty.xft.xml"/>
-		<FileTemplate id   = "WebControl-CodeBehind"
-		              file = "Templates/WebForms/WebControl-CodeBehind.xft.xml"/>
-
-		<FileTemplate id   = "WebService-Empty"
-		              file = "Templates/WebForms/WebService-Empty.xft.xml"/>
-		<FileTemplate id   = "WebService-CodeBehind"
-		              file = "Templates/WebForms/WebService-CodeBehind.xft.xml"/>
-
-		<FileTemplate id   = "MasterPage-Empty"
-		              file = "Templates/WebForms/MasterPage-Empty.xft.xml" />
-		<FileTemplate id   = "MasterPage-CodeBehind"
-		              file = "Templates/WebForms/MasterPage-CodeBehind.xft.xml" />
-
-		<FileTemplate id   = "NestedMasterPage"
-		              file = "Templates/WebForms/NestedMasterPage.xft.xml" />
-		<FileTemplate id   = "NestedMasterPage-CodeBehind"
-		              file = "Templates/WebForms/NestedMasterPage-CodeBehind.xft.xml" />
-
-		<FileTemplate id   = "GlobalAsax"
-		              file = "Templates/GlobalAsax.xft.xml" />
-
-		<FileTemplate id   = "WebConfig-Application"
-		              file = "Templates/WebConfig-Application.xft.xml" />
-		<FileTemplate id   = "WebConfig-SubDir"
-		              file = "Templates/WebConfig-SubDir.xft.xml" />
-
-		<FileTemplate id   = "WebContentForm-CodeBehind"
-		              file = "Templates/WebForms/WebContentForm-CodeBehind.xft.xml" />
-		<FileTemplate id   = "WebContentForm"
-		              file = "Templates/WebForms/WebContentForm.xft.xml" />
-
-		<FileTemplate id       = "AspMvcController"
-		              file     = "Templates/Mvc/Controller.xft.xml"/>
-		<FileTemplate id       = "AspMvcViewPage"
-		              file     = "Templates/Mvc/ViewPage.xft.xml"/>
-		<FileTemplate id       = "AspMvcViewContentPage"
-		              file     = "Templates/Mvc/ViewContentPage.xft.xml"/>
-		<FileTemplate id       = "AspMvcUserControl"
-		              file     = "Templates/Mvc/UserControl.xft.xml"/>
-		<FileTemplate id       = "AspMvcViewMasterPage"
-		              file     = "Templates/Mvc/ViewMasterPage.xft.xml" />
-		<FileTemplate id       = "AspMvcWebConfigViews"
-		              file     = "Templates/Mvc/WebConfigViews.xft.xml" />
-		<FileTemplate id       = "AspMvcViewPageRazor"
-		              file     = "Templates/Mvc/ViewPageRazor.xft.xml" />
-		<FileTemplate id       = "AspMvcLayoutPage"
-		              file     = "Templates/Mvc/LayoutPage.xft.xml" />
-		<FileTemplate id       = "AspMvcPartialViewPageRazor"
-		              file     = "Templates/Mvc/PartialViewPageRazor.xft.xml" />
-		<FileTemplate id       = "PreprocessedRazorTemplate"
-		              file     = "Templates/PreprocessedRazorTemplate.xft.xml" />
-
-		<FileTemplate id   = "EmptyCSSFile"
-		              file = "Templates/EmptyCssFile.xft.xml"/>
-		<FileTemplate id   = "EmptyLESSFile"
-		              file = "Templates/EmptyLessFile.xft.xml"/>
-		<FileTemplate id   = "EmptySCSSFile"
-		              file = "Templates/EmptyScssFile.xft.xml"/>
-		<FileTemplate id   = "EmptyJSONFile"
-		              file = "Templates/EmptyJsonFile.xft.xml"/>
-		<FileTemplate id   = "EmptyJavaScriptFile"
-		              file = "Templates/EmptyJavaScriptFile.xft.xml"/>
-		<FileTemplate id   = "EmptyTypeScriptFile"
-		              file = "Templates/EmptyTypeScriptFile.xft.xml"/>
-		
-		<FileTemplate id   = "npmConfigurationFile"
-		              file = "Templates/npmConfigurationFile.xft.xml"/>		
-		
-	</Extension>
 
 	<Extension path = "/MonoDevelop/Ide/FileTemplateTypes">
 		<FileTemplateType name = "AspNetMasterContentFile" class = "MonoDevelop.AspNet.WebForms.MasterContentFileDescriptionTemplate"/>
@@ -418,11 +263,6 @@
 		<Class id="MonoDevelop.AspNet.ProjectTemplateWizard" class="MonoDevelop.AspNet.Projects.AspNetProjectTemplateWizard" />
 	</Extension>
 
-	<Extension path="/MonoDevelop/Ide/TemplateImages">
-		<Image id="md-aspnet-empty-project" resource="aspnet-sidebar.png" />
-	</Extension>
-	
 	<Extension path="/MonoDevelop/Core/StockIcons">
-		<StockIcon stockid="md-aspnet-empty-project" resource="aspnet-project.png" size="Dnd" />
 	</Extension>
 </ExtensionModel>

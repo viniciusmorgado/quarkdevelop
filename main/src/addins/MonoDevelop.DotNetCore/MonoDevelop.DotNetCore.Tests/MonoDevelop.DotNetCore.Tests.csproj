@@ -10,7 +10,6 @@
     <Compile Include="Properties/AssemblyInfo.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreTestSetUp.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/DependenciesNodeSdkProjectTests.cs" />
-    <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreSdkTemplatesTests.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreProjectTests.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreVersionTests.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreSdkTests.cs" />
@@ -18,8 +17,6 @@
     <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreSdkInstalledConditionTests.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreVersionsRestorerTestBase.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreProjectSupportedTargetFrameworksTests.cs" />
-    <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreProjectTemplateWizardTests.cs" />
-    <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreProjectTemplateStringTagProviderTests.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/DependencyNodeTests.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/DotNetCoreSDKResolverTests.cs" />
     <Compile Include="MonoDevelop.DotNetCore.Tests/TestableDependenciesNodeBuilder.cs" />
@@ -36,11 +33,10 @@
   </ItemGroup>
 
   <!--
-    Not compiled:
-    - MonoDevelop.DotNetCore.Tests/DotNetCoreProjectTemplateTests.cs, TemplateDependencyChecker.cs and the linked
-      MonoDevelop.Ide.Templates/TemplateParameter.cs: they derive from ProjectTemplateTest (tests/IdeUnitTests, not ported
-      yet: T107) and create every .NET Core 1.x-3.1 template, restoring its packages from nuget.org (no network in tests).
-      DotNetCoreSdkTemplatesTests checks that the templates of the installed SDK 10 are listed.
+    Removed with the add-in's templates (T152, ADR 0026): the template tests (DotNetCoreProjectTemplateTests,
+    DotNetCoreProjectTemplateWizardTests, DotNetCoreProjectTemplateStringTagProviderTests, DotNetCoreSdkTemplatesTests).
+    The dotnet new templates are tested in MonoDevelop.Ide.Gtk3.Tests (DotNetNewTemplateTests) and
+    MonoDevelop.Ide.Tests (DotNetNewTemplatingTests).
   -->
 
   <ItemGroup>

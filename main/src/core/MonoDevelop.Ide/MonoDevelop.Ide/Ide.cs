@@ -294,6 +294,9 @@ namespace MonoDevelop.Ide
 			// Start initializing the type system service in the background
 			Runtime.GetService<TypeSystemService> ().Ignore ();
 
+			// Read the dotnet new templates for the New Project and New File dialogs (T152)
+			MonoDevelop.Ide.Templates.DotNetNewTemplateCatalog.Default.LoadInBackground ();
+
 			// The ide is now initialized
 			OnInitialized ();
 		}

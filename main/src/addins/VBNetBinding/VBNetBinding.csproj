@@ -64,12 +64,7 @@
     <Compile Include="Project\VBNetParsedDocument.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="templates\EmptyVBFile.xft.xml" />
-    <EmbeddedResource Include="templates\EmptyVBProject.xpt.xml" />
-    <EmbeddedResource Include="templates\VBConsoleApplicationProject.xpt.xml" />
-    <EmbeddedResource Include="templates\VBGtkSharp2Project.xpt.xml" />
     <EmbeddedResource Include="VBNetBinding.addin.xml" />
-    <EmbeddedResource Include="templates\AssemblyInfo.xft.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -757,11 +757,16 @@
     <Compile Include="MonoDevelop.Ide.Projects/GtkProjectFolderPreviewWidget.cs" />
     <Compile Include="MonoDevelop.Ide.Projects/GtkProjectConfigurationWidget.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/TemplatingService.cs" />
+    <Compile Include="MonoDevelop.Ide.Templates/DotNetNewCli.cs" />
+    <Compile Include="MonoDevelop.Ide.Templates/DotNetNewItemTemplates.cs" />
+    <Compile Include="MonoDevelop.Ide.Templates/DotNetNewListParser.cs" />
+    <Compile Include="MonoDevelop.Ide.Templates/DotNetNewProjectTemplatingProvider.cs" />
+    <Compile Include="MonoDevelop.Ide.Templates/DotNetNewTemplate.cs" />
+    <Compile Include="MonoDevelop.Ide.Templates/DotNetNewTemplateCatalog.cs" />
     <Compile Include="MonoDevelop.Ide.Codons/TemplateCategoryCodon.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/ProjectTemplateCategorizer.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/DefaultSolutionTemplate.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/IProjectTemplatingProvider.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/ProjectTemplatingProvider.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/TemplateCategoryPath.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/ProcessedTemplateResult.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/DefaultProcessedTemplateResult.cs" />
@@ -991,10 +996,6 @@
     <Compile Include="MonoDevelop.Ide.CodeCompletion/CompletionTriggerReason.cs" />
     <Compile Include="MonoDevelop.Ide.CodeCompletion/CompletionSelectionStatus.cs" />
     <Compile Include="MonoDevelop.Ide.TypeSystem/EditorNotificationServiceFactory.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngineProjectTemplatingProvider.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngineSolutionTemplate.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngineProcessedTemplateResult.cs" />
-    <Compile Include="MonoDevelop.Ide.Codons/TemplateExtensionNode.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/HasReferenceFileTemplateCondition.cs" />
     <Compile Include="MonoDevelop.Ide.Projects/LanguageCellRenderer.cs" />
     <Compile Include="MonoDevelop.Components/RestartPanel.cs" />
@@ -1025,13 +1026,6 @@
     <Compile Include="MonoDevelop.Ide.BuildOutputView/BuildOutputNode.cs" />
     <Compile Include="MonoDevelop.Ide.BuildOutputView/BuildOutputTreeCellView.cs" />
     <Compile Include="MonoDevelop.Ide.BuildOutputView/IBuildOutputContextProvider.cs" />
-    <Compile Include="MonoDevelop.Ide.Codons/ItemTemplateExtensionNode.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngineItemTemplatingProvider.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/ItemTemplate.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngineItemTemplate.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngine.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/NewItemConfiguration.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/ItemTemplatePackageInstaller.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/TemplatePackageReference.cs" />
     <Compile Include="Gui/generated.cs" />
     <Compile Include="Gui/MonoDevelop.Components.FolderListSelector.cs" />
@@ -1101,7 +1095,6 @@
     <Compile Include="Gui/MonoDevelop.Ide.Projects.SelectReferenceDialog.cs" />
     <Compile Include="Gui/MonoDevelop.Ide.SelectEncodingsDialog.cs" />
     <Compile Include="Gui/MonoDevelop.Ide.StandardHeader.StandardHeaderPolicyPanelWidget.cs" />
-    <Compile Include="MonoDevelop.Ide.Templates/MicrosoftTemplateEngineImageLoader.cs" />
     <Compile Include="MonoDevelop.Ide.Editor.Extension/BlockStructureFoldingTextEditorExtension.cs" />
     <Compile Include="MonoDevelop.Ide.Tasks/CommentTasksProvider.cs" />
     <Compile Include="MonoDevelop.Ide.Tasks/CommentTasksProvider.Legacy.cs" />
@@ -6041,19 +6034,6 @@
     <EmbeddedResource Include="options/KeyBindingSchemeVisualStudio.xml" />
     <EmbeddedResource Include="options/KeyBindingSchemeVSCode-mac.xml" />
     <EmbeddedResource Include="options/KeyBindingSchemeXcode.xml" />
-    <EmbeddedResource Include="templates/AppConfigFile.xft.xml" />
-    <EmbeddedResource Include="templates/AppManifest.xft.xml" />
-    <EmbeddedResource Include="templates/BlankCombine.xpt.xml" />
-    <EmbeddedResource Include="templates/EmptyClass.xft.xml" />
-    <EmbeddedResource Include="templates/EmptyEnum.xft.xml" />
-    <EmbeddedResource Include="templates/EmptyHTMLFile.xft.xml" />
-    <EmbeddedResource Include="templates/EmptyInterface.xft.xml" />
-    <EmbeddedResource Include="templates/EmptyResourceFile.xft.xml" />
-    <EmbeddedResource Include="templates/EmptyStruct.xft.xml" />
-    <EmbeddedResource Include="templates/EmptyTextFile.xft.xml" />
-    <EmbeddedResource Include="templates/EmptyXMLFile.xft.xml" />
-    <EmbeddedResource Include="templates/GenericProject.xpt.xml" />
-    <EmbeddedResource Include="templates/Workspace.xpt.xml" />
   </ItemGroup>
 
   <ItemGroup>

@@ -620,6 +620,12 @@ namespace MonoDevelop.Ide.Projects
 			if (wizardProvider.HasWizard)
 				wizardProvider.BeforeProjectIsCreated ();
 
+			// Asked before the template runs: the dotnet new templates write the solution file themselves (T152).
+			if (projectConfiguration.CreateSolution && !ConfirmSolutionFileOverwrite ()) {
+				projectCreated.SetResult (false);
+				return;
+			}
+
 			if (!await CreateProject ()) {
 				projectCreated.SetResult (false);
 				OnProjectCreationFailed ();
@@ -668,16 +674,6 @@ namespace MonoDevelop.Ide.Projects
 					}
 					ParentFolder.AddItem (currentEntry, true);
 				}
-			} else {
-				string solutionFileName = Path.Combine (projectConfiguration.SolutionLocation, finalConfigurationPage.SolutionFileName);
-				if (File.Exists (solutionFileName)) {
-					if (!MessageService.Confirm (GettextCatalog.GetString ("File {0} already exists. Overwrite?", solutionFileName), AlertButton.OverwriteFile)) {
-						ParentFolder = null;//Reset process of creating solution
-						projectCreated.SetResult (false);
-						return;
-					}
-					File.Delete (solutionFileName);
-				}
 			}
 
 			dialog.CloseDialog ();
@@ -721,6 +717,17 @@ namespace MonoDevelop.Ide.Projects
 				projectCreated.SetException (ex);
 				throw;
 			}
+		}
+
+		bool ConfirmSolutionFileOverwrite ()
+		{
+			string solutionFileName = Path.Combine (projectConfiguration.SolutionLocation, finalConfigurationPage.SolutionFileName);
+			if (File.Exists (solutionFileName)) {
+				if (!MessageService.Confirm (GettextCatalog.GetString ("File {0} already exists. Overwrite?", solutionFileName), AlertButton.OverwriteFile))
+					return false;
+				File.Delete (solutionFileName);
+			}
+			return true;
 		}
 
 		void OnProjectCreating ()

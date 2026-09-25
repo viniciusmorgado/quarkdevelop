@@ -28,30 +28,27 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
+using System.ComponentModel;
+using System.Linq;
+using System.Threading;
+using Gtk;
+using MonoDevelop.Components;
 using MonoDevelop.Components.AtkCocoaHelper;
+using MonoDevelop.Components.AutoTest;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Templates;
 using MonoDevelop.Projects;
 
-using Gtk;
-using MonoDevelop.Ide.Gui.Components;
-using System.Linq;
-using MonoDevelop.Components;
-using MonoDevelop.Components.AutoTest;
-using System.ComponentModel;
-
 namespace MonoDevelop.Ide.Projects
 {
 	/// <summary>
-	///  This class is for creating a new "empty" file
+	///  Creates a file from an item template of <c>dotnet new</c> (T152, ADR 0026): NUnit Test Item, Razor Page, .gitignore,
+	///  global.json, Directory.Build.props… The CLI writes the file in the project folder (or the chosen folder); the
+	///  project is then re-evaluated, its SDK-style globs include the new files.
 	/// </summary>
 	internal partial class NewFileDialog : Gtk.Dialog
 	{
-		List<TemplateItem> alltemplates = new List<TemplateItem> ();
 		List<Category> categories = new List<Category> ();
-		Dictionary<string, bool> activeLangs = new Dictionary<string, bool> ();
 
 		TreeStore catStore;
 		TemplateView iconView;
@@ -59,6 +56,7 @@ namespace MonoDevelop.Ide.Projects
 		// Add To Project widgets
 		string[] projectNames;
 		Project[] projectRefs;
+		bool hasProjectChoice;
 
 		Project parentProject;
 		SolutionFolder parentSolutionFolder;
@@ -66,6 +64,7 @@ namespace MonoDevelop.Ide.Projects
 
 		string userEditedEntryText;
 		string previousDefaultEntryText;
+		bool creating;
 
 		public NewFileDialog (Project parentProject, string basePath, SolutionFolder parentSolutionFolder = null)
 		{
@@ -126,15 +125,28 @@ namespace MonoDevelop.Ide.Projects
 			projectFolderEntry.Accessible.SetLabel (GettextCatalog.GetString ("Project Folder"));
 		}
 
+		/// <summary>The project the file is added to, or null.</summary>
+		Project TargetProject => !hasProjectChoice || projectAddCheckbox.Active ? parentProject : null;
+
+		/// <summary>The folder the CLI writes to.</summary>
+		string TargetDirectory {
+			get {
+				if (hasProjectChoice && projectAddCheckbox.Active)
+					return basePath;
+				if (!string.IsNullOrEmpty (projectFolderEntry.Path))
+					return projectFolderEntry.Path;
+				return basePath;
+			}
+		}
+
 		void InitializeView ()
 		{
 			InsertCategories (TreeIter.Zero, categories);
 
 			TreeIter treeIter;
-			if (!FindCatIter (PropertyService.Get (GetCategoryPropertyKey (parentProject), "General"), out treeIter)) {
-				if (!FindCatIter ("Misc", out treeIter))
-					if (!catStore.GetIterFirst (out treeIter))
-						return;
+			if (!FindCatIter (PropertyService.Get (GetCategoryPropertyKey (parentProject), "Config"), out treeIter)) {
+				if (!catStore.GetIterFirst (out treeIter))
+					return;
 			}
 			catView.Selection.SelectIter (treeIter);
 		}
@@ -151,20 +163,14 @@ namespace MonoDevelop.Ide.Projects
 
 		Category GetCategory (string categoryname)
 		{
-			return GetCategory (categories, categoryname);
-		}
-
-		Category GetCategory (List<Category> catList, string categoryname)
-		{
-			foreach (Category category in catList) {
+			foreach (Category category in categories) {
 				if (category.Name == categoryname)
 					return category;
 			}
 
 			Category cat = new Category (categoryname);
-			catList.Add (cat);
+			categories.Add (cat);
 			return cat;
-
 		}
 
 		void CategoryChange (object sender, EventArgs e)
@@ -183,15 +189,11 @@ namespace MonoDevelop.Ide.Projects
 			}
 		}
 
-
-
 		void InitializeDialog (bool update)
 		{
 			if (update) {
-				alltemplates.Clear ();
 				categories.Clear ();
 				catStore.Clear ();
-				activeLangs.Clear ();
 			}
 
 			InitializeTemplates ();
@@ -259,20 +261,19 @@ namespace MonoDevelop.Ide.Projects
 			return path;
 		}
 
-
-
+/// <summary>Selects the template with this short name (or identity).</summary>
 		public void SelectTemplate (string id)
 		{
 			TreeIter iter;
-			catStore.GetIterFirst (out iter);
-			SelectTemplate (iter, id);
+			if (catStore.GetIterFirst (out iter))
+				SelectTemplate (iter, id);
 		}
 
 		public bool SelectTemplate (TreeIter iter, string id)
 		{
 			do {
 				foreach (TemplateItem item in (List<TemplateItem>)(catStore.GetValue (iter, 2))) {
-					if (item.Template.Id == id) {
+					if (item.Template.Identity == id || item.Template.ShortNames.Contains (id, StringComparer.OrdinalIgnoreCase)) {
 						catView.ExpandToPath (catStore.GetPath (iter));
 						catView.Selection.SelectIter (iter);
 						CategoryChange (null, null);
@@ -293,87 +294,17 @@ namespace MonoDevelop.Ide.Projects
 			return false;
 		}
 
-
-
 		void InitializeTemplates ()
 		{
-			Project project = null;
+			Project project = TargetProject;
+			var items = DotNetNewItemTemplates.GetItemTemplates (DotNetNewTemplateCatalog.Default.GetTemplates ());
+			DotNetNewTemplateCatalog.Default.RefreshInBackground ();
 
-			if (!boxProject.Visible || projectAddCheckbox.Active)
-				project = parentProject;
-			
-			var templates = FileTemplate.GetFileTemplates (project, basePath);
-
-			// stable sort, to ensure the template ordering is maintained among templates with the same name
-			templates = templates.OrderBy(t => t.Name).ToList();
-			
-			foreach (var template in templates) {
-				List<string> langs = template.GetCompatibleLanguages (project, basePath);
-				if (langs != null) {
-					foreach (string language in langs) {
-						AddTemplate (new TemplateItem (template, language), language);
-						//count the number of active languages
-						activeLangs[language] = true;
-					}
-				}
-
+			foreach (var item in items) {
+				foreach (string language in DotNetNewItemTemplates.GetLanguages (item, project))
+					GetCategory (item.Category).Templates.Add (new TemplateItem (item, language));
 			}
-		}
-
-		void AddTemplate (TemplateItem titem, string templateLanguage)
-		{
-			Project project = null;
-			Category cat = null;
-
-			if (!boxProject.Visible || projectAddCheckbox.Active)
-				project = parentProject;
-
-			if (project != null) {
-				var catName = GetCategoryForProject (titem.Template.Categories, project);
-				if ((templateLanguage != "") && (activeLangs.Count > 2)) {
-					// The template requires a language, but the project does not have a single fixed
-					// language type (plus empty match), so create a language category
-					cat = GetCategory (templateLanguage);
-					cat = GetCategory (cat.Categories, catName);
-				} else {
-					cat = GetCategory (catName);
-				}
-			} else {
-				if (templateLanguage != "") {
-					// The template requires a language, but there is no current language set, so
-					// create a category for it
-					cat = GetCategory (templateLanguage);
-					cat = GetCategory (cat.Categories, titem.Template.Categories.First ().Value);
-				} else {
-					cat = GetCategory (titem.Template.Categories.First ().Value);
-				}
-			}
-
-			cat.Templates.Add (titem);
-
-			if (cat.Selected == false && titem.Template.WizardPath == null) {
-				cat.Selected = true;
-			}
-
-			if (!cat.HasSelectedTemplate && titem.Template.Files.Count == 1) {
-				if (((FileDescriptionTemplate)titem.Template.Files[0]).Name.StartsWith ("Empty")) {
-					//titem.Selected = true;
-					cat.HasSelectedTemplate = true;
-				}
-			}
-
-			alltemplates.Add (titem);
-		}
-
-		static string GetCategoryForProject (Dictionary<string, string> categories, Project project)
-		{
-			var projectTypes = project.GetTypeTags ();
-			foreach (var type in projectTypes) {
-				if (categories.TryGetValue (type, out var value))
-					return value;
-			}
-
-			return categories.ContainsKey (FileTemplate.DefaultCategoryKey) ? categories [FileTemplate.DefaultCategoryKey] : "Misc";
+			categories.Sort ((x, y) => DotNetNewTemplateClassifier.CompareCategories (x.Name, y.Name));
 		}
 
 		//tree view event handler for double-click
@@ -391,12 +322,8 @@ namespace MonoDevelop.Ide.Projects
 		{
 			iconView.Clear ();
 			var list = (List<TemplateItem>)(catStore.GetValue (iter, 2));
-			var itemNames = new HashSet<string>();
-			foreach (TemplateItem item in list) {
-				if (itemNames.Add(item.Name)) {
-					iconView.Add(item);
-				}
-			}
+			foreach (TemplateItem item in list)
+				iconView.Add (item);
 
 			// select first template
 			var templateItem = list.FirstOrDefault ();
@@ -406,21 +333,22 @@ namespace MonoDevelop.Ide.Projects
 		
 		void SelectedTemplateChanged (object sender, EventArgs e)
 		{
-			FileTemplate template = iconView.CurrentlySelected != null ? iconView.CurrentlySelected.Template : null;
+			var titem = iconView.CurrentlySelected;
+			if (titem != null) {
+				var template = titem.Template;
+				labelTemplateTitle.Markup = "<b>" + GLib.Markup.EscapeText (template.Name) + "</b>";
+				string command = "dotnet new " + template.ShortName;
+				infoLabel.Text = string.IsNullOrEmpty (template.Description) ? command : template.Description + "\n\n" + command;
 			
-			if (template != null) {
-				labelTemplateTitle.Markup = "<b>" + template.Name + "</b>";
-				infoLabel.Text = template.Description;
-				
 				string filename = GetFileNameFromEntry ();
 				string name = null;
 				
-				// Desensitize the text entry if the name is fixed.
+				// Desensitize the text entry if the name is fixed (.gitignore, global.json…).
 				// Be careful to store user-entered text so we can replace it if they change their selection
-				if (template.IsFixedFilename) {
+				if (!template.UsesName) {
 					if (userEditedEntryText == null)
 						userEditedEntryText = filename;
-					name = template.DefaultFilename;
+					name = template.ShortName;
 					nameEntry.Sensitive = false;
 				} else {
 					if (userEditedEntryText != null) {
@@ -431,9 +359,9 @@ namespace MonoDevelop.Ide.Projects
 				}
 				
 				// Fill in a default name if text entry is empty or contains a default name
-				if (string.IsNullOrEmpty (filename) || previousDefaultEntryText == filename) {
-					previousDefaultEntryText = template.DefaultFilename;
-					name = template.DefaultFilename;
+				if (template.UsesName && (string.IsNullOrEmpty (filename) || previousDefaultEntryText == filename)) {
+					previousDefaultEntryText = GetDefaultName (template);
+					name = previousDefaultEntryText;
 				}
 				
 				if (name != null) {
@@ -449,6 +377,15 @@ namespace MonoDevelop.Ide.Projects
 			}
 		}
 
+		/// <summary>The template's own default name (e.g. Class1), else its name without spaces and punctuation.</summary>
+		static string GetDefaultName (DotNetNewTemplate template)
+		{
+			if (!string.IsNullOrEmpty (template.DefaultName))
+				return template.DefaultName;
+			var name = new string ((template.Name ?? template.ShortName).Where (char.IsLetterOrDigit).ToArray ());
+			return name.Length > 0 && !char.IsDigit (name [0]) ? name : "NewItem";
+		}
+
 		void NameChanged (object sender, EventArgs e)
 		{
 			UpdateOkStatus ();
@@ -461,124 +398,88 @@ namespace MonoDevelop.Ide.Projects
 		
 		void UpdateOkStatus ()
 		{
-			try {
-				FileTemplate template = iconView.CurrentlySelected != null ? iconView.CurrentlySelected.Template : null;
-				
-				if (template != null) {
-					string language = iconView.CurrentlySelected.Language;
-					string filename = GetFileNameFromEntry ();
-					Project project = null;
-					string path = null;
-					
-					if (!boxProject.Visible || projectAddCheckbox.Active) {
-						project = parentProject;
-						path = basePath;
-					}
-					
-					if (projectAddCheckbox.Active) {
-						okButton.Sensitive = template.IsValidName (filename, language);
-					} else {
-						if (!template.IsValidName (filename, language)) {
-							okButton.Sensitive = false;
-						} else {
-							bool sensitive = true;
-							foreach (var file in template.Files) {
-								if (!template.CanCreateUnsavedFiles (file, project, project, path, language, filename)) {
-									sensitive = false;
-									break;
-								}
-							}
-							okButton.Sensitive = sensitive;
-						}
-					}
-				} else {
-					okButton.Sensitive = false;
-				}
-			} catch (Exception ex) {
-				LoggingService.LogError (ex.ToString ());
+			var titem = iconView.CurrentlySelected;
+			if (titem == null || creating || string.IsNullOrEmpty (TargetDirectory)) {
+				okButton.Sensitive = false;
+				return;
 			}
-		}
-
-		// button events
-
-		protected void CheckedChange (object sender, EventArgs e)
-		{
-			//((ListView)ControlDictionary["templateListView"]).View = ((RadioButton)ControlDictionary["smallIconsRadioButton"]).Checked ? View.List : View.LargeIcon;
+			if (!titem.Template.UsesName) {
+				okButton.Sensitive = true;
+				return;
+			}
+			string filename = GetFileNameFromEntry ();
+			okButton.Sensitive = filename.Length > 0 && FileService.IsValidFileName (filename) && filename.IndexOf (System.IO.Path.DirectorySeparatorChar) < 0;
 		}
 
 		public event EventHandler OnOked;
 
-		async  void OpenEvent (object sender, EventArgs e)
+		async void OpenEvent (object sender, EventArgs e)
 		{
 			if (!okButton.Sensitive)
 				return;
 
-			//FIXME: we need to set this up
-			//PropertyService.Set("Dialogs.NewProjectDialog.LargeImages", ((RadioButton)ControlDictionary["largeIconsRadioButton"]).Checked);
 			TreeIter selectedIter;
 			if (catView.Selection.GetSelected (out selectedIter))
 				PropertyService.Set (GetCategoryPropertyKey (parentProject), GetCatPath (selectedIter));
 
+			var titem = iconView.CurrentlySelected;
 			string filename = GetFileNameFromEntry ();
-			if (iconView.CurrentlySelected != null && filename.Length > 0) {
-				TemplateItem titem = (TemplateItem)iconView.CurrentlySelected;
-				FileTemplate item = titem.Template;
-				Project project = null;
-				string path = null;
+			if (titem == null)
+				return;
 
-				if (!boxProject.Visible || projectAddCheckbox.Active) {
-					project = parentProject;
-					path = basePath;
-				}
-
-				try {
-					var policyParent = (SolutionFolderItem)project ?? (SolutionFolderItem)parentSolutionFolder;
-					if (!await item.Create (policyParent, project, parentSolutionFolder, path, titem.Language, filename))
-						return;
-				} catch (Exception ex) {
-					LoggingService.LogError ("Error creating file", ex);
-					MessageService.ShowError (GettextCatalog.GetString ("Error creating file"), ex);
-					return;
-				}
-
-				if (project != null)
-					IdeApp.ProjectOperations.SaveAsync (project).Ignore ();
-
-				if (parentSolutionFolder != null)
-					IdeApp.ProjectOperations.SaveAsync (parentSolutionFolder.ParentSolution).Ignore ();
-
-				if (OnOked != null)
-					OnOked (null, null);
-				Respond (Gtk.ResponseType.Ok);
-				Destroy ();
+			Project project = TargetProject;
+			string directory = TargetDirectory;
+			IReadOnlyList<FilePath> created;
+			creating = true;
+			UpdateOkStatus ();
+			try {
+				created = await DotNetNewItemTemplates.CreateAsync (titem.Template, titem.Language, directory,
+					titem.Template.UsesName ? filename : null, project, CancellationToken.None);
+			} catch (UserException ex) {
+				MessageService.ShowError (this, ex.Message, ex.Details);
+				return;
+			} catch (Exception ex) {
+				LoggingService.LogError ("Error creating file", ex);
+				MessageService.ShowError (GettextCatalog.GetString ("Error creating file"), ex);
+				return;
+			} finally {
+				creating = false;
+				UpdateOkStatus ();
 			}
+
+			if (parentSolutionFolder != null) {
+				foreach (var file in created)
+					parentSolutionFolder.Files.Add (file);
+				IdeApp.ProjectOperations.SaveAsync (parentSolutionFolder.ParentSolution).Ignore ();
+			}
+
+			foreach (var file in created)
+				IdeApp.Workbench.OpenDocument (file, project).Ignore ();
+
+			if (OnOked != null)
+				OnOked (null, null);
+			Respond (Gtk.ResponseType.Ok);
+			Destroy ();
 		}
 
 		/// <summary>
-		///  Represents a new file template
+		///  An item template in one language
 		/// </summary>
 		private class TemplateItem
 		{
-			public TemplateItem (FileTemplate template, string language)
+			public TemplateItem (DotNetNewTemplateClassification classification, string language)
 			{
-				this.template = template;
-				this.language = language;
+				Classification = classification;
+				Language = language;
 			}
 
-			private string language;
-			public string Language {
-				get { return language; }
-			}
+			public DotNetNewTemplateClassification Classification { get; }
 
-			public string Name {
-				get { return template.Name; }
-			}
+			public DotNetNewTemplate Template => Classification.Template;
 
-			private FileTemplate template;
-			public FileTemplate Template {
-				get { return template; }
-			}
+			public string Language { get; }
 
+			public string Name => Template.Name;
 		}
 
 		void cancelClicked (object o, EventArgs e)
@@ -589,10 +490,8 @@ namespace MonoDevelop.Ide.Projects
 		void AddToProjectToggled (object o, EventArgs e)
 		{
 			projectAddCombo.Sensitive = projectAddCheckbox.Active;
-			projectPathLabel.Sensitive = projectAddCheckbox.Active;
-			projectFolderEntry.Sensitive = projectAddCheckbox.Active;
 
-			TemplateItem titem = (TemplateItem)iconView.CurrentlySelected;
+			TemplateItem titem = iconView.CurrentlySelected;
 			
 			if (projectAddCheckbox.Active) {
 				AddToProjectComboChanged (null, null);
@@ -602,7 +501,7 @@ namespace MonoDevelop.Ide.Projects
 			}
 
 			if (titem != null)
-				SelectTemplate (titem.Template.Id);
+				SelectTemplate (titem.Template.Identity);
 
 			UpdateOkStatus ();
 		}
@@ -630,7 +529,9 @@ namespace MonoDevelop.Ide.Projects
 
 		void AddToProjectPathChanged (object o, EventArgs e)
 		{
-			basePath = projectFolderEntry.Path;
+			if (hasProjectChoice && projectAddCheckbox.Active)
+				basePath = projectFolderEntry.Path;
+			UpdateOkStatus ();
 		}
 
 		void InitializeComponents ()
@@ -648,7 +549,6 @@ namespace MonoDevelop.Ide.Projects
 			treeViewColumn.AddAttribute (cellRenderer, "text", 0);
 			catView.AppendColumn (treeViewColumn);
 
-			catStore.SetSortColumnId (0, SortType.Ascending);
 			catView.Model = catStore;
 			catView.SearchColumn = -1; // disable the interactive search
 
@@ -668,6 +568,7 @@ namespace MonoDevelop.Ide.Projects
 			if (projects != null && projects.Length > 0) {
 				Project curProject = IdeApp.ProjectOperations.CurrentSelectedProject;
 
+				hasProjectChoice = true;
 				boxProject.Visible = true;
 				projectAddCheckbox.Active = curProject != null;
 				projectAddCheckbox.Toggled += new EventHandler (AddToProjectToggled);
@@ -695,19 +596,23 @@ namespace MonoDevelop.Ide.Projects
 				projectAddCombo.Sensitive = projectAddCheckbox.Active;
 				projectAddCombo.Changed += new EventHandler (AddToProjectComboChanged);
 
-				projectPathLabel.Sensitive = projectAddCheckbox.Active;
-				projectFolderEntry.Sensitive = projectAddCheckbox.Active;
+				// the folder the file is written to, in the project or not
 				if (curProject != null)
 					projectFolderEntry.Path = curProject.BaseDirectory;
-				projectFolderEntry.PathChanged += new EventHandler (AddToProjectPathChanged);
 
 				if (curProject != null) {
 					basePath = curProject.BaseDirectory;
 					parentProject = curProject;
 				}
+			} else if (parentProject == null && parentSolutionFolder == null) {
+				// No project: the CLI writes the file to a folder of the user's choice.
+				boxProject.Visible = true;
+				hbox3.Visible = false;
+				projectFolderEntry.Path = !string.IsNullOrEmpty (basePath) ? basePath : (string)IdeApp.Preferences.ProjectsDefaultPath;
 			} else {
 				boxProject.Visible = false;
 			}
+			projectFolderEntry.PathChanged += new EventHandler (AddToProjectPathChanged);
 
 			catView.Selection.Changed += new EventHandler (CategoryChange);
 			catView.RowActivated += new RowActivatedHandler (CategoryActivated);
@@ -726,39 +631,18 @@ namespace MonoDevelop.Ide.Projects
 			}
 		}
 		
-		
 		class Category
 		{
-			List<Category> categories = new List<Category> ();
-			List<TemplateItem> templates = new List<TemplateItem> ();
-			string name;
-
 			public Category (string name)
 			{
-				this.name = name;
+				Name = name;
 			}
 
-			public string Name {
-				get { return name; }
-			}
-			public List<Category> Categories {
-				get { return categories; }
-			}
-			public List<TemplateItem> Templates {
-				get { return templates; }
-			}
+			public string Name { get; }
 
-			private bool selected;
-			public bool Selected {
-				get { return selected; }
-				set { selected = value; }
-			}
+			public List<Category> Categories { get; } = new List<Category> ();
 
-			private bool hasSelectedTemplate;
-			public bool HasSelectedTemplate {
-				get { return hasSelectedTemplate; }
-				set { hasSelectedTemplate = value; }
-			}
+			public List<TemplateItem> Templates { get; } = new List<TemplateItem> ();
 		}
 		
 		class TemplateView: ScrolledWindow
@@ -855,10 +739,9 @@ namespace MonoDevelop.Ide.Projects
 			public void Add (TemplateItem templateItem)
 			{
 				string name = GLib.Markup.EscapeText (templateItem.Name);
-				if (!string.IsNullOrEmpty (templateItem.Language))
-					name += "\n<span foreground='darkgrey'><small>" + templateItem.Language + "</small></span>";
-				string icon = templateItem.Template.Icon;
-				templateStore.AppendValues (string.IsNullOrEmpty (icon) ? "md-file-source" : icon, name, templateItem);
+				string detail = string.IsNullOrEmpty (templateItem.Language) ? templateItem.Template.ShortName : templateItem.Language;
+				name += "\n<span foreground='darkgrey'><small>" + GLib.Markup.EscapeText (detail) + "</small></span>";
+				templateStore.AppendValues ("md-file-source", name, templateItem);
 			}
 			
 			public void Clear ()

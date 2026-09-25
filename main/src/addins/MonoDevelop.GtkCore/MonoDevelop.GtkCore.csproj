@@ -79,16 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MonoDevelop.GtkCore.addin.xml" />
-    <EmbeddedResource Include="templates\Dialog.xft.xml" />
-    <EmbeddedResource Include="templates\Window.xft.xml" />
-    <EmbeddedResource Include="templates\Widget.xft.xml" />
-    <EmbeddedResource Include="templates\ActionGroup.xft.xml" />
     <EmbeddedResource Include="gui.glade" />
-    <EmbeddedResource Include="templates\ActionGroupPartial.xft.xml" />
-    <EmbeddedResource Include="templates\DialogPartial.xft.xml" />
-    <EmbeddedResource Include="templates\WidgetPartial.xft.xml" />
-    <EmbeddedResource Include="templates\DrawingArea.xft.xml" />
-    <EmbeddedResource Include="templates\WindowPartial.xft.xml" />
     <EmbeddedResource Include="icons\widget.png" />
     <EmbeddedResource Include="icons\actiongroup.png" />
     <EmbeddedResource Include="icons\image-x-generic.png" />

@@ -19,7 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="ProjectTemplateTests.cs" />
     <Compile Include="FileTransferTests.cs" />
     <Compile Include="MonoDevelop.Ide.Projects/NewProjectDialogTests.cs" />
     <Compile Include="MonoDevelop.Ide.Projects/TestableNewProjectDialogController.cs" />
@@ -51,6 +50,7 @@
     <Compile Include="MonoDevelop.Ide.Gui/CompletionListWindowTests.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/LogViewTests.cs" />
     <Compile Include="MonoDevelop.Ide.Gui/SearchPopupWindowTests.cs" />
+    <Compile Include="MonoDevelop.Ide.Templates/DotNetNewTemplatingTests.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/FileTemplateParserTests.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/FileTemplateSnippets.cs" />
     <Compile Include="MonoDevelop.Ide.Templates/FileTemplateTests.cs" />

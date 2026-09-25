@@ -32,7 +32,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ILAsmConsoleProject.xpt.xml" />
     <EmbeddedResource Include="ILAsmBinding.addin.xml" />
   </ItemGroup>
   <ItemGroup>

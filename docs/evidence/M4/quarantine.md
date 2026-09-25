@@ -137,13 +137,13 @@ IdeUnitTests).
 
 ## MonoDevelop.Ide.Tests
 
-Quarantined 30 test cases (26 methods) on 2026-09-24; 20 released on 2026-09-24 (T135, below). 10 cases remain, 1.1% of
-the suite's 907 cases: legacy-fixture: 5, net4x-fixture: 4, network: 1.
+Quarantined 30 test cases (26 methods) on 2026-09-24; 20 released on 2026-09-24 (T135, below); 2 removed with the XML
+project templates they tested (`ProjectTemplateTests.Bug57840` and
+`ProjectTemplateTests.NewSharedProjectAddedToExistingSolutionUsesCorrectBuildAction`, T152). 8 cases remain:
+legacy-fixture: 3, net4x-fixture: 4, network: 1.
 
 | Test | Reason | Note | First error line | Owner | Date | Task |
 |---|---|---|---|---|---|---|
-| `MonoDevelop.Ide.ProjectTemplateTests.Bug57840` | legacy-fixture | project template of an add-in outside the Linux build (shared project, portable library) | System.InvalidOperationException : Sequence contains no matching element | migration | 2026-09-24 | T134 |
-| `MonoDevelop.Ide.ProjectTemplateTests.NewSharedProjectAddedToExistingSolutionUsesCorrectBuildAction` | legacy-fixture | project template of an add-in outside the Linux build (shared project, portable library) | System.NullReferenceException : Object reference not set to an instance of an object. | migration | 2026-09-24 | T134 |
 | `MonoDevelop.Ide.Projects.PclToProjectJsonConversionTests.MigrateXamarinFormsPclProjectToProjectJson` | legacy-fixture | PCL / Xamarin / netstandard1.x fixture (retired target frameworks) | System.InvalidCastException : Unable to cast object of type 'MonoDevelop.Projects.UnknownSolutionItem' to type | migration | 2026-09-24 | T134 |
 | `MonoDevelop.Ide.TypeSystem.TypeSystemServiceTests.MultiTargetFramework` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/… | migration | 2026-09-24 | T134 |
 | `MonoDevelop.Ide.TypeSystem.TypeSystemServiceTests.MultiTargetFramework_ProjectReferences` | net4x-fixture | legacy .NET Framework fixture project | msbuild /t:Restore /p:RestoreDisableParallel=true "<repo>/… | migration | 2026-09-24 | T134 |

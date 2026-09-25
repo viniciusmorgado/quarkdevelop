@@ -41,12 +41,6 @@
 		</Condition>
 	</Extension>
 
-	<Extension path = "/MonoDevelop/Ide/FileTemplates">
-		<Condition id="Platform" value="linux">
-			<FileTemplate resource = "app.desktop.xft.xml"/>
-		</Condition>
-	</Extension>
-	
 	<Extension path = "/MonoDevelop/Ide/StartupHandlers">
 		<Condition id="Platform" value="linux">
 			<Class class="MonoDevelop.Deployment.Linux.LinuxDeploymentSetup" />

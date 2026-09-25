@@ -28,7 +28,6 @@
   <Import Project="$(CustomBeforeMicrosoftCommonTargets)" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets" />
   <Import Project="..\.paket\paket.targets" />
-  <Import Project="templates.targets" />
   <ItemGroup>
     <DownloadNupkg Include="FSharp.Core" Version="4.5.4" ExtensionDir="Packages" />
     <DownloadNupkg Include="System.ValueTuple" Version="4.5.0" ExtensionDir="Packages" />

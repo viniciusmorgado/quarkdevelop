@@ -30,23 +30,8 @@
 	<ExtensionNode name="ProjectTemplate" type="MonoDevelop.Ide.Codons.ProjectTemplateCodon"/>
 </ExtensionPoint>
 
-<ExtensionPoint path = "/MonoDevelop/Ide/Templates" name = "Microsoft Templating Engine templates">
-	<Description>Microsoft templating engine project templates to be shown in the New Project dialog.</Description>
-	<ExtensionNode name="Template" type="MonoDevelop.Ide.Codons.TemplateExtensionNode"/>
-</ExtensionPoint>
-
-<ExtensionPoint path = "/MonoDevelop/Ide/ItemTemplates" name = "Microsoft Templating Engine file templates">
-	<Description>Microsoft templating engine file templates.</Description>
-	<ExtensionNode name="Template" type="MonoDevelop.Ide.Codons.ItemTemplateExtensionNode"/>
-</ExtensionPoint>
-
 <ExtensionPoint path = "/MonoDevelop/Ide/ProjectTemplatePackageInstallers" name = "Project template package installers">
 	<Description>Installs packages defined in the project template. Must implement MonoDevelop.Ide.Templates.ProjectTemplatePackageInstaller</Description>
-	<ExtensionNode name="Class" />
-</ExtensionPoint>
-
-<ExtensionPoint path = "/MonoDevelop/Ide/ItemTemplatePackageInstallers" name = "Item template package installers">
-	<Description>Installs packages defined in the template. Must implement MonoDevelop.Ide.Templates.ItemTemplatePackageInstaller</Description>
 	<ExtensionNode name="Class" />
 </ExtensionPoint>
 
@@ -83,22 +68,6 @@
 	<ExtensionNode name="Image" type="MonoDevelop.Ide.Codons.ImageCodon" />
 </ExtensionPoint>
 
-<Extension path = "/MonoDevelop/Ide/FileTemplates">
-	<FileTemplate id = "EmptyClass" resource = "EmptyClass.xft.xml"/>
-	<FileTemplate id = "EmptyEnum" resource = "EmptyEnum.xft.xml"/>
-	<FileTemplate id = "EmptyInterface" resource = "EmptyInterface.xft.xml"/>
-	<FileTemplate id = "EmptyStruct" resource = "EmptyStruct.xft.xml"/>
-	<FileTemplate id = "EmptyHTMLFile" resource = "EmptyHTMLFile.xft.xml"/>
-	<FileTemplate id = "AppConfigFile" resource = "AppConfigFile.xft.xml"/>
-	<FileTemplate id = "EmptyResourceFile" resource = "EmptyResourceFile.xft.xml"/>
-	<FileTemplate id = "EmptyTextFile" resource = "EmptyTextFile.xft.xml"/>
-	<FileTemplate id = "EmptyXMLFile" resource = "EmptyXMLFile.xft.xml"/>
-
-	<Condition id="Platform" value="windows">
-		<FileTemplate id = "AppManifest" resource = "AppManifest.xft.xml"/>
-	</Condition>
-</Extension>
-
 <Extension path = "/MonoDevelop/Ide/FileTemplateTypes">
 	<FileTemplateType name = "File" class = "MonoDevelop.Ide.Templates.TextFileDescriptionTemplate"/>
 	<FileTemplateType name = "RawFile" class = "MonoDevelop.Ide.Templates.RawFileDescriptionTemplate"/>
@@ -119,34 +88,10 @@
 	<FileTemplateConditionType name = "Or" class = "MonoDevelop.Ide.Templates.OrFileTemplateCondition"/>
 </Extension>
 
-<Extension path = "/MonoDevelop/Ide/ProjectTemplates">
-	<ProjectTemplate id = "MonoDevelop.BlankSolution" resource = "BlankCombine.xpt.xml"/>
-	<ProjectTemplate id = "MonoDevelop.Workspace" resource = "Workspace.xpt.xml"/>
-	<ProjectTemplate id = "MonoDevelop.GenericProject" resource = "GenericProject.xpt.xml"/>
-</Extension>
-
-<Extension path="/MonoDevelop/Ide/ProjectTemplateCategories">
-	<Category id="multiplat" _name="Multiplatform" icon="md-platform-crossplatform">
-			<Category id="library" _name="Library">
-				<Category id="general" _name="General" mappedCategories="crossplat/library/general" />
-			</Category>
-		</Category>
-	<Category id="other" _name="Other" icon="md-platform-other">
-		<Category id="net" _name=".NET">
-			<Category id="general" _name="General" mappedCategories="C#" />
-			<Category id="aspnet" _name="ASP.NET" mappedCategories="C#/ASP.NET" />
-		</Category>
-		<Category id="misc" _name="Miscellaneous">
-			<Category id="generic" _name="Generic" />
-			<Category id="c" _name="C/C++" />
-			<Category id="general" _name="General" default="true" />
-		</Category>
-	</Category>
-</Extension>
-
+<!-- T152 (ADR 0026): the templates of the New Project and New File dialogs are those of `dotnet new`; the provider
+     defines their categories (.NET → Common, Web, Test, Solution…) from the templates' tags. -->
 <Extension path="/MonoDevelop/Ide/ProjectTemplatingProviders">
-	<Class id="MonoDevelop.ProjectTemplatingProvider" class="MonoDevelop.Ide.Templates.ProjectTemplatingProvider" />
-	<Class id="MonoDevelop.MicrosoftTemplateEngineProjectTemplatingProvider" class="MonoDevelop.Ide.Templates.MicrosoftTemplateEngineProjectTemplatingProvider" />
+	<Class id="MonoDevelop.DotNetNewProjectTemplatingProvider" class="MonoDevelop.Ide.Templates.DotNetNewProjectTemplatingProvider" />
 </Extension>
 
 <Extension path="/MonoDevelop/Ide/TemplateImages">

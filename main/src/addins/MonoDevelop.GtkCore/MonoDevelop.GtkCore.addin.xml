@@ -37,18 +37,6 @@
 		<NodeBuilder class = "MonoDevelop.GtkCore.NodeBuilders.StockIconsNodeBuilder"/>
 	</Extension>
 	
-	<Extension path = "/MonoDevelop/Ide/FileTemplates">
-		<FileTemplate id = "DialogFileTemplate" resource = "Dialog.xft.xml"/>
-		<FileTemplate id = "DrawingAreaFileTemplate" resource = "DrawingArea.xft.xml"/>
-		<FileTemplate id = "WindowFileTemplate" resource = "Window.xft.xml"/>
-		<FileTemplate id = "WidgetFileTemplate" resource = "Widget.xft.xml"/>
-		<FileTemplate id = "ActionGroupFileTemplate" resource = "ActionGroup.xft.xml"/>
-		<FileTemplate id = "PartialDialogFileTemplate" resource = "DialogPartial.xft.xml"/>
-		<FileTemplate id = "PartialWindowFileTemplate" resource = "WindowPartial.xft.xml"/>
-		<FileTemplate id = "PartialWidgetFileTemplate" resource = "WidgetPartial.xft.xml"/>
-		<FileTemplate id = "PartialActionGroupFileTemplate" resource = "ActionGroupPartial.xft.xml"/>
-	</Extension>
-	
 	<Extension path = "/MonoDevelop/Ide/Commands">
 		<Category _name = "Designer (Gtk#)" id = "GtkCore">
 		<Command id = "MonoDevelop.GtkCore.GtkCommands.AddNewDialog"

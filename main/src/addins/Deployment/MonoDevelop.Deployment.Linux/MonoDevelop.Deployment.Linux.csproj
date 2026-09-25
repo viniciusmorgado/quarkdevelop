@@ -46,7 +46,6 @@
   <ItemGroup>
     <EmbeddedResource Include="MonoDevelop.Deployment.Linux\DesktopInfo.xml" />
     <EmbeddedResource Include="MonoDevelop.Deployment.Linux.addin.xml" />
-    <EmbeddedResource Include="app.desktop.xft.xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MonoDevelop.Deployment.Linux\BasicOptionPanelWidget.cs" />

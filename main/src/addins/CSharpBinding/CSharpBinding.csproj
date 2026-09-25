@@ -189,19 +189,11 @@
   -->
 
   <ItemGroup>
-    <EmbeddedResource Include="templates/ConsoleProject.xpt.xml" />
-    <EmbeddedResource Include="templates/EmptyCSharpFile.xft.xml" />
-    <EmbeddedResource Include="templates/EmptyProject.xpt.xml" />
-    <EmbeddedResource Include="templates/GtkSharp2Project.xpt.xml" />
-    <EmbeddedResource Include="templates/Library.xpt.xml" />
     <EmbeddedResource Include="CSharpBinding.addin.xml" />
-    <EmbeddedResource Include="templates/AssemblyInfo.xft.xml" />
     <EmbeddedResource Include="MonoDevelop.CSharp.Formatting/policies/AllmanCSharpPolicy.xml" />
     <EmbeddedResource Include="MonoDevelop.CSharp.Formatting/policies/InvariantTextStylePolicy.xml" />
     <EmbeddedResource Include="MonoDevelop.CSharp.Formatting/policies/KRCSharpPolicy.xml" />
     <EmbeddedResource Include="MonoDevelop.CSharp.Formatting/policies/MonoCSharpPolicy.xml" />
-    <EmbeddedResource Include="templates/PortableLibrary.xpt.xml" />
-    <EmbeddedResource Include="templates/SharedAssetsProject.xpt.xml" />
     <EmbeddedResource Include="MonoDevelop.CSharp.Formatting/policies/MonoDevelopCSharpPolicy.xml" />
     <EmbeddedResource Include="MonoDevelop.CSharp.Formatting/policies/MonoTextStylePolicy.xml" />
   </ItemGroup>

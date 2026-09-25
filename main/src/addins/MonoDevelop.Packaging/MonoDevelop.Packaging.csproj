@@ -104,21 +104,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MonoDevelop.Packaging.addin.xml" />
-    <EmbeddedResource Include="Templates\Images\preview-multiplatform-library.png" />
-    <EmbeddedResource Include="Templates\Images\preview-multiplatform-library%402x.png" />
-    <EmbeddedResource Include="Templates\Images\preview-multiplatform-library~dark.png" />
-    <EmbeddedResource Include="Templates\Images\preview-multiplatform-library~dark%402x.png" />
-    <EmbeddedResource Include="Templates\Images\preview-nuget.png" />
-    <EmbeddedResource Include="Templates\Images\preview-nuget%402x.png" />
-    <EmbeddedResource Include="Templates\Images\preview-nuget~dark.png" />
-    <EmbeddedResource Include="Templates\Images\preview-nuget~dark%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <ExtensionContent Include="Targets\NuGet.Packaging.Authoring.props" />
     <ExtensionContent Include="Targets\NuGet.Packaging.Authoring.targets" />
-    <ExtensionContent Include="Templates\CrossPlatformLibrary.xpt.xml" />
-    <ExtensionContent Include="Templates\PackagingProject.xpt.xml" />
     <DownloadNupkg Include="NuGet.Build.Packaging" Version="$(_BuildPackagingVersion)" ExtensionDir="packages" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

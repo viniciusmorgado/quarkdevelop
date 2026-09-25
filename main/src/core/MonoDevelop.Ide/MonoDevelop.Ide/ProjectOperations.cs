@@ -919,6 +919,11 @@ namespace MonoDevelop.Ide
 
 		public bool CanCreateProjectFile (Project parentProject, string basePath, string selectedTemplateId)
 		{
+			// an item template of dotnet new (T152), e.g. "class"
+			var canCreate = DotNetNewItemTemplates.CanCreate (DotNetNewTemplateCatalog.Default.TryGetTemplates (), selectedTemplateId, parentProject);
+			if (canCreate.HasValue)
+				return canCreate.Value;
+
 			var projectLangs = parentProject.SupportedLanguages;
 			var template = FileTemplate.GetFileTemplateByID (selectedTemplateId);
 			if(template != null) {

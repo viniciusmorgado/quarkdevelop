@@ -69,22 +69,6 @@
 	<!-- Linux: the C# project type, the portable library flavor and the language binding are registered by the
 	     CSharpBinding.Core add-in (T053), which this add-in depends on. -->
 
-	<Extension path = "/MonoDevelop/Ide/FileTemplates">
-		<FileTemplate id = "CSharpEmptyFile" resource = "EmptyCSharpFile.xft.xml"/>
-		<FileTemplate id = "CSharpAssemblyInfo" resource = "AssemblyInfo.xft.xml"/>
-	</Extension>
-
-	<Extension path = "/MonoDevelop/Ide/ProjectTemplates">
-		<ProjectTemplate id = "MonoDevelop.CSharp.ConsoleProject" resource = "ConsoleProject.xpt.xml"/>
-		<ProjectTemplate id = "MonoDevelop.CSharp.EmptyProject" resource = "EmptyProject.xpt.xml"/>
-		<ProjectTemplate id = "MonoDevelop.CSharp.GtkSharp2Project" resource = "GtkSharp2Project.xpt.xml"/>
-		<ProjectTemplate id = "MonoDevelop.CSharp.Library" resource = "Library.xpt.xml"/>
-		<ProjectTemplate id = "MonoDevelop.CSharp.SharedProject" resource = "SharedAssetsProject.xpt.xml"/>
-		<Condition id="MSBuildTargetIsAvailable" target="$(MSBuildExtensionsPath)\Microsoft\Portable\v4.0\Microsoft.Portable.CSharp.targets">
-			<ProjectTemplate id = "MonoDevelop.CSharp.PortableLibrary" resource = "PortableLibrary.xpt.xml" />
-		</Condition>
-	</Extension>
-
 	<Extension path = "/MonoDevelop/Ide/FileFilters">
 		<FileFilter id = "CSharp"
 		            insertbefore = "Assemblies"

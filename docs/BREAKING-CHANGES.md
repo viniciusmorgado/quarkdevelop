@@ -86,8 +86,51 @@ distribution packages of MonoDevelop 8.6:
 | Assembly browser: MonoDoc documentation of the browsed members | removed (no MonoDoc) |
 | Assembly browser decompiler | ICSharpCode.Decompiler 11 (was 5): the decompiled C# and IL follow the newer ILSpy output |
 | C# test markers in the editor and source locations of tests | back with the UnitTesting add-in (T101), for NUnit, xUnit and MSTest |
-| .NET Core 1.x / 2.0 project templates shipped with the IDE (2017 packages) and the .NET Core SDKs bundled with Mono's MSBuild | removed; the `.NET` templates come from the installed SDK (.NET 10 console, library and test templates; older SDKs keep their 2.1–3.1 entries) |
+| .NET Core 1.x / 2.0 project templates shipped with the IDE (2017 packages) and the .NET Core SDKs bundled with Mono's MSBuild | removed; the templates come from `dotnet new` (T152, below) |
 | .NET Core test adapter of the DotNetCore add-in (`DotNetCoreTestPlatformAdapter`) | deferred to the `MonoDevelop.UnitTesting` port (T101) |
+
+## Project and file templates (T152)
+
+The New Project and New File dialogs list the templates of `dotnet new` for the installed .NET SDK, its workloads and
+the packages added with `dotnet new install`. The IDE creates projects, solutions and files by running the CLI
+([ADR 0026](adr/0026-dotnet-new-templates.md)):
+
+- Only C# and F# are offered (C# by default). Visual Basic variants and VB-only templates are hidden. The IDE has no F#
+  editor support yet (T154): F# projects are created and kept in the solution, but the IDE loads them as unsupported
+  projects.
+- Windows-only templates are hidden: Windows Forms and WPF (by their tags) and `webconfig` (IIS).
+- Categories are the first segment of the template tags: .NET → Common, Web, Test, Solution in New Project; Common,
+  Web, Test, Config, MSBuild in New File. The old categories (Multiplatform, Other → .NET/Miscellaneous, .NET Core →
+  App/Library/Tests) are gone.
+- New solutions are written by `dotnet new sln --format sln` and `dotnet sln add`. "Blank Solution" is the `sln`
+  template. The Workspace (`.mdw`) and Generic Project templates are removed without replacement, and so is the
+  solution filter (`slnf`), which needs an existing solution.
+- Template options other than the language (target framework, top-level statements, authentication…) are not offered;
+  the defaults of the template apply. The target framework page of the .NET Core wizard is removed.
+- New File: the files come from item templates. Empty Class/Interface/Enum/Struct become the SDK's `class`,
+  `interface`, `enum`, `struct` and `record` items, offered for C# projects only (the command Add > New Class creates
+  `class`). The Empty C# file, Empty HTML/XML/text file, resource file, `App.config`, application manifest and
+  `AssemblyInfo` templates are removed without replacement. Files are written to disk; without a project, the dialog
+  asks for a folder instead of opening an unsaved file.
+- The Gettext add-in no longer has a "Translation project" template (existing translation projects still load).
+
+Removed from the repository (339 files):
+
+| Where | Removed |
+|---|---|
+| `MonoDevelop.Ide` | 3 `*.xpt.xml` and 10 `*.xft.xml` (Blank Solution, Workspace, Generic Project; Empty Class/Enum/Interface/Struct, HTML, XML, text, resource file, App.config, AppManifest), their registrations and the static template categories; `MicrosoftTemplateEngine*` (7 files: in-process instantiation, add-in template registrations), `TemplateExtensionNode`, `ItemTemplateExtensionNode`, `ItemTemplate`, `NewItemConfiguration`, `ItemTemplatePackageInstaller`, `ProjectTemplatingProvider` |
+| `CSharpBinding` | 6 `*.xpt.xml` (console, library, empty, GTK# 2, portable library, shared project) and 2 `*.xft.xml` (empty file, AssemblyInfo) |
+| `MonoDevelop.DotNetCore` | the template registrations of SDKs 1.x–3.1 and 10.0, the template categories and wizard (`MonoDevelop.DotNetCore.Templating`, `GtkDotNetCoreProjectTemplateWizardPageWidget`) and the 84 template images |
+| `MonoDevelop.Gettext` | `TranslationProject.xpt.xml` and its 16 images |
+| `MonoDevelop.PackageManagement` | `ItemTemplateNuGetPackageInstaller` and its tests |
+| `AspNet` (excluded, ADR 0017) | 3 `*.xpt.xml`, 34 `*.xft.xml` and their Razor, ASPX, C#, TypeScript, CSS/LESS/SCSS, JSON, T4 and image assets (75 files) |
+| `MonoDevelop.AspNetCore` (excluded) | 13 `*.xft.xml` with their Razor, C# and JSON assets (27 files), the template registrations of SDKs 2.1–3.1 and the 2017 template packages (`DownloadNupkg`) |
+| `Deployment`, `Deployment.Linux`, `MonoDevelop.GtkCore`, `MonoDevelop.Packaging`, `MonoDevelop.UnitTesting.NUnit`, `TextTemplating`, `VBNetBinding`, `ILAsmBinding` (excluded) | their `*.xpt.xml` / `*.xft.xml` templates and template images (64 files) |
+| `external/fsharpbinding` (excluded) | 7 `*.xpt.xml`, 6 `*.xft.xml`, `FSharp-templates.xml` and `templates.targets` |
+| Tests | `MicrosoftTemplateEngineTests`, `ProjectTemplateTests`, `ProjectTemplateTest` (IdeUnitTests), the DotNetCore template tests and the `DotNetCoreTemplating` / `FileFormatExclude` fixtures |
+
+The add-ins excluded from the Linux build keep their code; only their template assets and registrations are removed.
+No add-in existed only for templates.
 
 ## Add-in authors
 
@@ -113,6 +156,13 @@ distribution packages of MonoDevelop 8.6:
   (done for every project by `main/msbuild/Linux/Common.targets`) and must not ship NuGet assemblies. In
   `MonoDevelop.PackageManagement`, `IPackageRestoreManager` restores without a logger are extension methods,
   `MonoDevelopPluginFactory` is gone and `BuildIntegratedInstallationContext` lists target framework aliases.
+- Templates (T152, [ADR 0026](adr/0026-dotnet-new-templates.md)): the extension points `/MonoDevelop/Ide/Templates`,
+  `/MonoDevelop/Ide/ItemTemplates` and `/MonoDevelop/Ide/ItemTemplatePackageInstallers` are removed, and so are
+  `MicrosoftTemplateEngineSolutionTemplate`, `ItemTemplate`, `NewItemConfiguration`, `ItemTemplatePackageInstaller`,
+  `TemplatingService.GetItemTemplates` and `TemplatingService.ProcessTemplate (ItemTemplate, …)`. The only project
+  templating provider is `DotNetNewProjectTemplatingProvider`. `/MonoDevelop/Ide/ProjectTemplates` and
+  `/MonoDevelop/Ide/FileTemplates` still exist, but the dialogs no longer list what is registered there. To add
+  templates, install a template package with `dotnet new install`.
 - `Mono.Addins.Gui` (GTK2) is replaced by `Mono.Addins.GuiGtk3`, which has the same classes in the
   `Mono.Addins.GuiGtk3` namespace.
 - The VS editor API assemblies keep their names. WPF-only members are not available: presenter

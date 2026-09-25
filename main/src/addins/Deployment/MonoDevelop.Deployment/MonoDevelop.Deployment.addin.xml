@@ -116,10 +116,6 @@
 		<Class class = "MonoDevelop.Deployment.Gui.PropertyProvider"/>
 	</Extension>
 
-	<Extension path = "/MonoDevelop/Ide/ProjectTemplates">
-		<ProjectTemplate id = "MonoDevelop.PackagingProject" resource = "PackagingProject.xpt.xml"/>
-	</Extension>
-
 	<Extension path = "/MonoDevelop/Ide/Pads/ProjectPad">
 		<NodeBuilder class = "MonoDevelop.Deployment.NodeBuilders.PackagingProjectNodeBuilder"/>
 		<NodeBuilder class = "MonoDevelop.Deployment.NodeBuilders.PackageNodeBuilder"/>
@@ -141,7 +137,6 @@
 	</Extension>
 
 	<Extension path = "/MonoDevelop/Core/StockIcons">
-		<StockIcon stockid = "md-package-project" resource = "package-project.png" size = "Dnd" />
 	</Extension>
 
 	<Extension path = "/MonoDevelop/ProjectModel/Gui/ItemOptionPanels">
@@ -162,7 +157,4 @@
 		<DeployPlatform id="Windows" _label="Microsoft Windows" />
 	</Extension>
 
-	<Extension path="/MonoDevelop/Ide/TemplateImages">
-		<Image id="md-package-project" resource="package-sidebar.png" />
-	</Extension>
 </ExtensionModel>

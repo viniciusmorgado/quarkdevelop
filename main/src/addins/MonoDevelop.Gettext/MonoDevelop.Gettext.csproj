@@ -59,7 +59,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="MonoDevelop.Gettext.addin.xml" />
-    <EmbeddedResource Include="templates/TranslationProject.xpt.xml" />
     <EmbeddedResource Include="icons/file-locale-16.png" />
     <EmbeddedResource Include="icons/file-locale-16%402x.png" />
     <EmbeddedResource Include="icons/file-locale-16~contrast.png" />
@@ -120,22 +119,6 @@
     <EmbeddedResource Include="icons/project-locale-16~dark~sel%402x.png" />
     <EmbeddedResource Include="icons/project-locale-16~sel.png" />
     <EmbeddedResource Include="icons/project-locale-16~sel%402x.png" />
-    <EmbeddedResource Include="templates/images/locale-project.png" />
-    <EmbeddedResource Include="templates/images/locale-project%402x.png" />
-    <EmbeddedResource Include="templates/images/locale-project~contrast.png" />
-    <EmbeddedResource Include="templates/images/locale-project~contrast%402x.png" />
-    <EmbeddedResource Include="templates/images/locale-project~contrast~dark.png" />
-    <EmbeddedResource Include="templates/images/locale-project~contrast~dark%402x.png" />
-    <EmbeddedResource Include="templates/images/locale-project~dark.png" />
-    <EmbeddedResource Include="templates/images/locale-project~dark%402x.png" />
-    <EmbeddedResource Include="templates/images/locale-project~dark~sel.png" />
-    <EmbeddedResource Include="templates/images/locale-project~dark~sel%402x.png" />
-    <EmbeddedResource Include="templates/images/locale-project~sel.png" />
-    <EmbeddedResource Include="templates/images/locale-project~sel%402x.png" />
-    <EmbeddedResource Include="templates/images/locale-sidebar.png" />
-    <EmbeddedResource Include="templates/images/locale-sidebar%402x.png" />
-    <EmbeddedResource Include="templates/images/locale-sidebar~dark.png" />
-    <EmbeddedResource Include="templates/images/locale-sidebar~dark%402x.png" />
   </ItemGroup>
 
   <ItemGroup>

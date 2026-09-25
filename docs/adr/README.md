@@ -30,3 +30,4 @@ their file and link to the replacement. Context for all of them: `specs/001-linu
 | [0023](0023-logging-and-observability.md) | Logging and observability | Accepted |
 | [0024](0024-gtksharp-toplevel-references.md) | Toplevels and GDK windows created from C# kept alive (GtkSharp toggle-reference workaround) | Accepted |
 | [0025](0025-source-generators-in-the-workspace.md) | Source generators in the IDE workspace | Accepted |
+| [0026](0026-dotnet-new-templates.md) | Project and file templates from `dotnet new` | Accepted |

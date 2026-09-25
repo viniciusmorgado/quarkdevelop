@@ -40,4 +40,9 @@
     <PackageReference Include="Microsoft.NET.StringTools" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="NuGet.Frameworks" ExcludeAssets="runtime" PrivateAssets="all" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- The output of `dotnet new list` (all columns) of SDK 10.0.401 (T152, DotNetNewTemplateTests). -->
+    <None Include="TestData/*.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

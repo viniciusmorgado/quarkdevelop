@@ -188,6 +188,22 @@ namespace MonoDevelop.Ide.Projects
 			}
 		}
 
+		/// <summary>Opens the language menu of the selected template, as a click on its language button does (smoke test).</summary>
+		internal bool ShowLanguageMenu ()
+		{
+			SolutionTemplate template = GetSelectedTemplate ();
+			if (template == null || template.AvailableLanguages.Count <= 1)
+				return false;
+			HandlePopup (template, 0);
+			return true;
+		}
+
+		/// <summary>The names of the categories shown (smoke test).</summary>
+		internal IReadOnlyList<string> GetCategoryNames ()
+		{
+			return controller.TemplateCategories.SelectMany (c => c.Categories).Select (c => c.Name).ToList ();
+		}
+
 		void ClearPopupMenuItems ()
 		{
 			popupMenu.Items.Clear ();

@@ -1,15 +1,14 @@
-     94 CA1822
-     40 CA1305
-     36 CS0612
+     88 CA1822
+     30 CA1305
      12 VSTHRD200
       8 VSTHRD110
       8 CA1806
       6 VSTHRD103
+      6 CS0612
       6 CA1863
       4 VSTHRD002
       4 CA2249
       2 VSTHRD100
-      2 CA2215
       2 CA1859
       2 CA1816
       2 CA1001

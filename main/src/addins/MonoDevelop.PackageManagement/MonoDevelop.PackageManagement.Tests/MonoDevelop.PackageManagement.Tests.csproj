@@ -112,7 +112,6 @@
     <Compile Include="MonoDevelop.PackageManagement.Tests/ImportedPackageReferenceProjectTests.cs" />
     <Compile Include="MonoDevelop.PackageManagement.Tests/ProjectSystemReferencesReaderTests.cs" />
     <Compile Include="MonoDevelop.PackageManagement.Tests/ProjectJsonBuildIntegratedNuGetProjectTests.cs" />
-    <Compile Include="MonoDevelop.PackageManagement.Tests/ItemTemplateNuGetPackageInstallerTests.cs" />
     <Compile Include="MonoDevelop.PackageManagement.Tests.Helpers/FakeNuGetAwareProject.cs" />
     <Compile Include="MonoDevelop.PackageManagement.Tests/NuGetSdkResolverTests.cs" />
     <Compile Include="MonoDevelop.PackageManagement.Tests/NuGetHttpSourceAuthenticationHandlerTests.cs" />

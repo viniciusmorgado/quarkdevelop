@@ -23,7 +23,6 @@
     <Compile Include="TestViewContent.cs" />
     <Compile Include="RoslynTestBase.cs" />
     <Compile Include="CompositionManagerTestHelpers.cs" />
-    <Compile Include="ProjectTemplateTest.cs" />
     <Compile Include="ServiceHelper.cs" />
     <Compile Include="MockShell.cs" />
     <Compile Include="MockShellWindow.cs" />

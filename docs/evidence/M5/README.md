@@ -731,3 +731,78 @@ The IDE stopped at the breakpoint, with the Locals pad showing `args`:
 Open: T144 needs its 50-run check of `MonoDevelop.Ide.Gtk3.Tests` to confirm that this was its cause. Toplevels keep
 the dispose-time repair of ADR 0024: a toplevel wrapper collected while its window is shown is still not covered, but
 the IDE keeps its toplevels in fields and no failure was seen.
+
+## T152 — templates from dotnet new
+
+The New Project and New File dialogs list the templates of `dotnet new` and create projects, solutions and files by
+running the CLI ([ADR 0026](../../adr/0026-dotnet-new-templates.md)). `DotNetNewTemplateCatalog` reads the template
+packages that the CLI uses with Microsoft.TemplateEngine, off the UI thread. For SDK 10.0.401 that is 7 packages
+from `dotnet/templates/10.0.12`, with no workload packs and no installed packages: 53 templates in 90–500 ms. The
+result is cached in `<cache>/DotNetNewTemplates/10.0.401.json` (read in 4–10 ms). `DotNetNewTemplateClassifier`
+decides what the dialogs show:
+
+- Languages: C# and F# only, C# first.
+- Platform: Linux only. Tags `WinForms`/`WPF`/`WinUI`/`UWP` or an `os` constraint without Linux hide a template;
+  the deny list is `webconfig`.
+- Categories: the first segment of the tags.
+
+Counts for SDK 10.0.401 (`DotNetNewTemplateTests.CountsPerCategory` on the `dotnet new list --columns-all` fixture,
+47 rows; `EngineListsWhatTheCliListsAsync` on the 53 templates read in process, which include the 6 items that
+`dotnet new list` shows only with a project):
+
+| Dialog | Category | Shown | Hidden (why) |
+|---|---|---|---|
+| New Project | Common | 4: Class Library, Console App, MCP Server App (`Common/AI/MCP`), Worker Service | 7 Windows only: `winforms`, `winformslib`, `winformscontrollib`, `wpf`, `wpflib`, `wpfcustomcontrollib`, `wpfusercontrollib` |
+| New Project | Web | 9: `web`, `grpc`, `webapi`, `webapiaot`, `mvc`, `webapp`, `blazor`, `blazorwasm`, `razorclasslib` | 0 |
+| New Project | Test | 5: `mstest`, `mstest-playwright`, `nunit`, `nunit-playwright`, `xunit` | 0 |
+| New Project | Solution | 1: `sln` (written with `--format sln`) | `slnf` not offered: a solution filter needs an existing solution |
+| New File | Common | 5 for C# projects: `class`, `enum`, `interface`, `record`, `struct` (`project-capability` CSharp) | 1 unsupported language: `module` (VB only) |
+| New File | Web | 8: `apicontroller`, `mvccontroller`, `viewimports`, `viewstart`, `proto`, `razorcomponent`, `page`, `view` | 0 |
+| New File | Test | 2: `mstest-class`, `nunit-test` | 0 |
+| New File | Config | 6: `gitattributes`, `gitignore`, `tool-manifest`, `editorconfig`, `globaljson`, `nugetconfig` | 1 Windows only: `webconfig` (IIS) |
+| New File | MSBuild | 3: `buildprops`, `buildtargets`, `packagesprops` | 0 |
+
+In total there are 44 visible templates: 18 project templates, 2 solution templates (only `sln` is offered) and 24
+item templates. 9 are hidden: 8 Windows-only and 1 VB-only. The Visual Basic variants of 11 templates are dropped
+(`console`, `classlib`, `mstest`, `mstest-class`, `nunit`, `nunit-test`, `xunit`, `class`, `enum`, `interface`,
+`struct`). F# is offered by 11: `console`, `classlib`, `worker`, `web`, `webapi`, `mvc`, `mstest`, `mstest-class`,
+`nunit`, `nunit-test`, `xunit`.
+
+Commands (dev container):
+
+```bash
+./scripts/pm bash -lc 'xvfb-run -a dotnet test main/tests/MonoDevelop.Ide.Gtk3.Tests/MonoDevelop.Ide.Gtk3.Tests.csproj \
+  --filter "FullyQualifiedName~DotNetNewTemplateTests"'
+./scripts/pm bash -lc 'xvfb-run -a dotnet test main/tests/Ide.Tests/MonoDevelop.Ide.Tests.csproj \
+  --settings main/tests/Ide.Tests/obj/monodevelop.runsettings --filter "FullyQualifiedName~DotNetNewTemplatingTests"'
+```
+
+Tests:
+
+- `DotNetNewTemplateTests` (MonoDevelop.Ide.Gtk3.Tests, 19): the rules on the fixture
+  (`TestData/dotnet-new-list-10.0.401.txt`), future templates (WinUI tag, `os` constraint, VB only, no tags), the
+  parser, the CLI arguments, `packages.json`, the per-SDK cache and CLI errors. They also check that the engine lists
+  the same short names, languages, tags and classification as `dotnet new list --ignore-constraints`, and as
+  `dotnet new list` once the templates that need a project are removed.
+- `DotNetNewTemplatingTests` (MonoDevelop.Ide.Tests, 5):
+  - the categories of the templating service (.NET → Common, Web, Test, Solution; no WinForms/WPF; C# and F# only);
+  - for C# and for F#, a new solution with a console project (`dotnet new console`, `dotnet new sln --format sln`,
+    `dotnet sln add`, `Program.cs`/`Program.fs` opened), then a class library added to it the way the dialog does,
+    with `dotnet sln list` showing both;
+  - a blank `.sln`;
+  - the items `gitignore` (fixed name), `nunit-test` and `class`, created in a C# project that then includes them.
+- `NewProjectDialogTests` select `Microsoft.Common.Library.CSharp` instead of the removed XML library template.
+
+Screenshots, taken by the smoke test with `MD_SMOKE_NEW_PROJECT=1 MD_SMOKE_NEW_FILE=1 MD_SMOKE_NO_BUILD=1` (off by
+default) on `main/tests/linux-smoke/Smoke.sln`:
+
+```
+Smoke test: New Project dialog categories: Common, Web, Test, Solution; selected Console App (C#, F#)
+Smoke test: saved new-project.png
+Smoke test: New File dialog shown for Hello
+Smoke test: saved new-file.png
+```
+
+![New Project: the .NET categories and the C#/F# choice of Console App](T152-new-project.png)
+
+![New File: the C# items of a C# project](T152-new-file.png)

@@ -440,12 +440,15 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 				IdeApp.Workbench.ActiveDocument.Select ();
 		}
 
+		/// <summary>The C# class item of dotnet new (T152).</summary>
+		const string EmptyClassTemplate = "class";
+
 		[CommandHandler (ProjectCommands.AddEmptyClass)]
 		protected void OnAddEmptyClass ()
 		{
 			var project = (Project)CurrentNode.GetParentDataItem (typeof (Project), true);
 			if (project != null) {
-				if (IdeApp.ProjectOperations.CreateProjectFile (project, GetFolderPath (CurrentNode.DataItem), "EmptyClass")) {
+				if (IdeApp.ProjectOperations.CreateProjectFile (project, GetFolderPath (CurrentNode.DataItem), EmptyClassTemplate)) {
 					CurrentNode.Expanded = true;
 				}
 			}
@@ -456,7 +459,7 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 		{
 			var project = (Project)CurrentNode.GetParentDataItem (typeof (Project), true);
 			if (project != null) {
-				info.Visible = IdeApp.ProjectOperations.CanCreateProjectFile (project, GetFolderPath (CurrentNode.DataItem), "EmptyClass");
+				info.Visible = IdeApp.ProjectOperations.CanCreateProjectFile (project, GetFolderPath (CurrentNode.DataItem), EmptyClassTemplate);
 			} else {
 				info.Visible = false;
 			}

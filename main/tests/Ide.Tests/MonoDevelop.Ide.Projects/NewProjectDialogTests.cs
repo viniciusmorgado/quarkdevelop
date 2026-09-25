@@ -73,7 +73,7 @@ namespace MonoDevelop.Ide.Projects
 
 		void CSharpLibraryTemplateSelectedByDefault ()
 		{
-			controller.SelectedTemplateId = "MonoDevelop.CSharp.Library";
+			controller.SelectedTemplateId = "Microsoft.Common.Library.CSharp";
 		}
 
 		void UseExistingSolution ()

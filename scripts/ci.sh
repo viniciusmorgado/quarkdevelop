@@ -66,17 +66,21 @@ screenshot_has_content() {
 gui_smoke() {
 	# The IDE's --smoke-test (contracts/smoke-test.md, T103): start under Xvfb, open a copy of the smoke
 	# solution, build it; exit 0 only when it builds with no errors and no unhandled exception was logged.
+	# T152: before the build, the New Project and New File dialogs open with the dotnet new templates.
 	local dir
 	dir="$(mktemp -d)"
 	cp -r main/tests/linux-smoke/. "$dir/"
 	# step() runs this function inside an if, where set -e does not apply: keep the exit status explicitly
 	local status=0
 	XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
-		MD_SMOKE_OUT="$ci_out/gui-smoke" \
+		MD_SMOKE_OUT="$ci_out/gui-smoke" MD_SMOKE_NEW_PROJECT=1 MD_SMOKE_NEW_FILE=1 \
 		xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln" \
 		|| status=$?
 	rm -rf "$dir"
 	screenshot_has_content "$ci_out/gui-smoke/screenshot.png" || return 1
+	grep -q "New Project dialog categories: Common, Web, Test, Solution; selected Console App (C#, F#)" "$ci_out/gui-smoke/ide.log" || return 1
+	screenshot_has_content "$ci_out/gui-smoke/new-project.png" || return 1
+	screenshot_has_content "$ci_out/gui-smoke/new-file.png" || return 1
 	return "$status"
 }
 

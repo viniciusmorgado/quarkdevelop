@@ -41,7 +41,8 @@ namespace MonoDevelop.Ide
 	/// 0 (built with no errors and no unhandled exception), 1 (build errors) or 2 (start-up/load failure or timeout).
 	/// MD_SMOKE_OPEN=&lt;file&gt; (relative to the solution's directory) opens that file in the editor before the screenshot,
 	/// and fails the run if the IDE's workspace sees errors in it or in its project. MD_SMOKE_GOTO=&lt;method&gt; then goes
-	/// to the definition of that partial method, which a source generator implements (T147). A critical of the GLib-GObject
+	/// to the definition of that partial method, which a source generator implements (T147). MD_SMOKE_NEW_PROJECT=1 and
+	/// MD_SMOKE_NEW_FILE=1 show the New Project and New File dialogs after the load (T152). A critical of the GLib-GObject
 	/// domain fails the run with 2 as well (T153).
 	/// </summary>
 	sealed class SmokeTest
@@ -139,6 +140,13 @@ namespace MonoDevelop.Ide
 					return;
 				}
 				LoggingService.LogInfo ("Smoke test: loaded {0} ({1} projects)", sln.Name, sln.GetAllProjects ().Count ());
+
+				// T152: MD_SMOKE_NEW_PROJECT=1 / MD_SMOKE_NEW_FILE=1 show the New Project / New File dialogs (dotnet new templates)
+				string dialogFailure = ShowTemplateDialogs (sln);
+				if (dialogFailure != null) {
+					Exit (ExitFailure, dialogFailure);
+					return;
+				}
 
 				if (Environment.GetEnvironmentVariable ("MD_SMOKE_NO_BUILD") == "1") {
 					string loadedOpenFailure = await OpenRequestedFileAsync (sln);
@@ -380,6 +388,99 @@ namespace MonoDevelop.Ide
 			LoggingService.LogInfo ("Smoke test: go to definition of {0} opened {1} at line {2}, read-only: {3}",
 				name, IdeApp.Workbench.ActiveDocument.FileName.FileName, line?.LineNumber ?? 0, editor.IsReadOnly);
 			return null;
+		}
+
+		/// <summary>
+		/// T152: MD_SMOKE_NEW_PROJECT=1 opens the New Project dialog on the C# console template with its language menu
+		/// open, MD_SMOKE_NEW_FILE=1 the New File dialog of the first project on the C# class item; each is saved to
+		/// new-project.png / new-file.png and closed. Returns null on success (or when neither is set), or what went wrong.
+		/// </summary>
+		string ShowTemplateDialogs (Solution sln)
+		{
+			string failure = null;
+			if (Environment.GetEnvironmentVariable ("MD_SMOKE_NEW_PROJECT") == "1") {
+				var controller = new MonoDevelop.Ide.Projects.NewProjectDialogController {
+					OpenSolution = true,
+					SelectedTemplateId = "Microsoft.Common.Console.CSharp"
+				};
+				WhenShown<MonoDevelop.Ide.Projects.GtkNewProjectDialogBackend> (dialog => {
+					var categories = dialog.GetCategoryNames ();
+					LoggingService.LogInfo ("Smoke test: New Project dialog categories: {0}; selected {1} ({2})", string.Join (", ", categories),
+						controller.SelectedTemplate?.Name, string.Join (", ", controller.SelectedTemplate?.AvailableLanguages ?? Array.Empty<string> ()));
+					if (categories.Count == 0 || controller.SelectedTemplate == null)
+						failure = "the New Project dialog lists no dotnet new templates";
+					else if (!dialog.ShowLanguageMenu ())
+						failure = "the console template has one language";
+				}, "new-project.png");
+				controller.Show ();
+			}
+			if (failure == null && Environment.GetEnvironmentVariable ("MD_SMOKE_NEW_FILE") == "1") {
+				var project = sln.GetAllProjects ().FirstOrDefault ();
+				using (var dialog = new MonoDevelop.Ide.Projects.NewFileDialog (project, project?.BaseDirectory)) {
+					dialog.SelectTemplate ("class");
+					WhenShown<MonoDevelop.Ide.Projects.NewFileDialog> (d => {
+						LoggingService.LogInfo ("Smoke test: New File dialog shown for {0}", project?.Name);
+					}, "new-file.png");
+					MessageService.ShowCustomDialog (dialog);
+				}
+			}
+			return failure;
+		}
+
+		/// <summary>
+		/// Runs <paramref name="check"/> once a visible window of type <typeparamref name="T"/> has been drawn (the modal
+		/// dialog runs a main loop of its own), saves it as <paramref name="fileName"/> and closes it.
+		/// </summary>
+		void WhenShown<T> (Action<T> check, string fileName) where T : Gtk.Window
+		{
+			int ticks = 0;
+			GLib.Timeout.Add (500, () => {
+				var window = Gtk.Window.ListToplevels ().OfType<T> ().FirstOrDefault (w => w.Visible);
+				if (window == null)
+					return ++ticks < 60;
+				if (ticks++ < 2)
+					return true; // let it draw
+				try {
+					check (window);
+				} catch (Exception e) {
+					LoggingService.LogError ("Smoke test: " + fileName, e);
+				}
+				// the check may open a menu: take the picture a moment later
+				GLib.Timeout.Add (1000, () => {
+					SaveWindowScreenshot (window, outputDirectory.Combine (fileName));
+					if (window is Gtk.Dialog dialog)
+						dialog.Respond (Gtk.ResponseType.Cancel);
+					window.Destroy ();
+					return false;
+				});
+				return false;
+			});
+		}
+
+		/// <summary>The screen area of <paramref name="window"/> (with the menus open over it on X11).</summary>
+		static void SaveWindowScreenshot (Gtk.Window window, FilePath file)
+		{
+			try {
+				var root = Gdk.Global.DefaultRootWindow;
+				if (Gdk.Display.Default?.Name?.StartsWith ("wayland", StringComparison.Ordinal) == true || root == null) {
+					using (var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, window.Allocation.Width, window.Allocation.Height))
+					using (var context = new Cairo.Context (surface)) {
+						window.Draw (context);
+						surface.Flush ();
+						surface.WriteToPng (file);
+					}
+					return;
+				}
+				window.Window.GetOrigin (out int x, out int y);
+				var pixbuf = gdk_pixbuf_get_from_window (root.Handle, x, y, window.Allocation.Width, window.Allocation.Height);
+				if (pixbuf == IntPtr.Zero)
+					throw new InvalidOperationException ("gdk_pixbuf_get_from_window returned null");
+				using (var image = new Gdk.Pixbuf (pixbuf))
+					image.Save (file, "png");
+				LoggingService.LogInfo ("Smoke test: saved {0}", file.FileName);
+			} catch (Exception e) {
+				LoggingService.LogError ("Smoke test: could not save " + file.FileName, e);
+			}
 		}
 
 		void SaveScreenshot ()

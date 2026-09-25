@@ -2,9 +2,6 @@
 
 	<Runtime>
 		<Import assembly="MonoDevelop.Packaging.dll" />
-
-		<Import file="Templates/CrossPlatformLibrary.xpt.xml" />
-		<Import file="Templates/PackagingProject.xpt.xml" />
 	</Runtime>
 
 	<ConditionType id="ProjectHasNuGetMetadata" type="MonoDevelop.Packaging.ProjectHasNuGetMetadataCondition" />
@@ -44,11 +41,6 @@
 		<Type
 			id="NuGetPackagingMSBuildPropertyProvider"
 			class="MonoDevelop.Packaging.MSBuildGlobalPropertyProvider" />
-	</Extension>
-
-	<Extension path="/MonoDevelop/Ide/ProjectTemplates">
-		<ProjectTemplate id="MonoDevelop.Packaging.Project" file="Templates/PackagingProject.xpt.xml"/>
-		<ProjectTemplate id="MonoDevelop.Packaging.CrossPlatformLibrary" file="Templates/CrossPlatformLibrary.xpt.xml"/>
 	</Extension>
 
 	<Extension path="/MonoDevelop/Ide/ProjectTemplateWizards">
