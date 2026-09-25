@@ -46,8 +46,10 @@ flowchart TB
 | Add-ins | `main/src/addins/*` | One assembly, or a few, per feature, each with a `*.addin.xml` manifest. |
 | Vendored forks | `main/vendor/*` | Forks with an `UPSTREAM.md` each ([ADR 0005](adr/0005-third-party-dependencies.md)): Xwt and its GTK 3 backend, the VS editor API subset, Mono.Debugging, and Mono.Addins.Gui on GTK 3. |
 
-Code that is not part of the Linux build (the Mac and Windows platforms, legacy add-ins, Stetic) is still in
-the repository but outside `main/MonoDevelop.Linux.sln` ([ADR 0017](adr/0017-linux-exclusions.md)).
+The Mac and Windows platforms and the legacy add-ins are removed from the repository
+([ADR 0017](adr/0017-linux-exclusions.md)). The add-ins that serve .NET on Linux but are not ported yet stay outside
+`main/MonoDevelop.Linux.sln`: `MonoDevelop.AspNetCore`, `TextTemplating`, `MonoDevelop.Packaging` and the F# binding
+(`main/external/fsharpbinding`); see [future work](future-work.md).
 
 ## Add-in model
 

@@ -98,11 +98,8 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="MonoDevelop.AspNetCore" />
-    <InternalsVisibleTo Include="DotNetCore.Debugger" />
     <InternalsVisibleTo Include="MonoDevelop.UnitTesting" />
     <InternalsVisibleTo Include="MonoDevelop.DotNetCore.Tests" />
-    <InternalsVisibleTo Include="Xamarin.Forms.Addin" />
-    <InternalsVisibleTo Include="MonoDevelop.AzureFunctions" />
   </ItemGroup>
 
   <ItemGroup>

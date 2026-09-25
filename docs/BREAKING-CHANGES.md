@@ -5,7 +5,7 @@ Compared with MonoDevelop 8.6:
 
 ## Platforms and runtime
 
-- macOS and Windows builds are no longer supported; their code is not part of the Linux build
+- macOS and Windows builds are no longer supported; their code is removed from the repository
   ([ADR 0017](adr/0017-linux-exclusions.md)).
 - The IDE runs on .NET 10 (CoreCLR), not Mono. Mono-specific options (`MONO_OPTIONS`,
   `mdtool build -r:<mono prefix>`) are ignored.
@@ -13,8 +13,8 @@ Compared with MonoDevelop 8.6:
   ([ADR 0011](adr/0011-gtk3-port-strategy.md)).
 - The repository has no git submodules (`.gitmodules` is gone): dependencies come from NuGet or from
   `main/vendor/` ([ADR 0005](adr/0005-third-party-dependencies.md)). guiunit, nrefactory, nuget-binary,
-  sharpsvn-binary, macdoc, mono-tools, mdtestharness and Xamarin.PropertyEditing were dropped; legacy projects
-  outside the Linux build that referenced them no longer build.
+  sharpsvn-binary, macdoc, mono-tools, mdtestharness and Xamarin.PropertyEditing were dropped, and so were the
+  legacy projects that referenced them.
 - The build system is `dotnet build` on `main/MonoDevelop.Linux.sln`, which replaces `main/Main.sln`
   ([ADR 0002](adr/0002-linux-solution.md)). The legacy build files are removed: `configure`, the
   `Makefile`s and `Makefile.am`s, `configure.ac`, `autogen.sh`, `profiles/`, `version-checks`,
@@ -48,7 +48,9 @@ distribution packages of MonoDevelop 8.6:
 | Autotools/Makefile integration | removed |
 | Subversion support | removed (Git remains) |
 | Mono soft debugger, GDB debugger | replaced by netcoredbg for .NET programs |
-| F#, VB.NET, IL assembler, T4 text templating | deferred |
+| F# | deferred: the upstream F# binding is to be ported ([future work](future-work.md)) |
+| VB.NET and IL assembler (`ilasm`) projects | removed: not supported |
+| T4 text templating (`TextTemplating`) | deferred: to be ported ([future work](future-work.md)) |
 | Building .NET Framework-only projects | not supported (no Mono/.NET Framework on Linux) |
 | Portable Class Library (PCL), Xamarin and netstandard1.x projects | not supported: these target frameworks are retired; such projects are not tested, and their test fixtures are quarantined (`legacy-fixture`, T134). Retarget to `netstandard2.0` or `net10.0` |
 | `mdtool run-md-tests` | replaced by `dotnet test` |
@@ -60,15 +62,15 @@ distribution packages of MonoDevelop 8.6:
 | Windows installer (`setup/WixSetup`) | removed |
 | `./configure`, `scripts/configure.*`, `winbuild*.bat`, autotools `make` targets | removed (use `scripts/*.sh`) |
 | `mdtool` tools `run-md-tests`, `update-perf-baseline`, `generate-makefiles`, `gsetup` | removed |
-| ASP.NET Core project support (`MonoDevelop.AspNetCore`) | deferred |
-| NuGet package authoring projects (`MonoDevelop.Packaging`) | deferred |
-| Deployment / packaging add-in (`Deployment`, `Deployment.Linux`) | deferred |
+| ASP.NET Core project support (`MonoDevelop.AspNetCore`: launch profiles, development certificate, publish, scaffolding) | deferred: to be ported |
+| NuGet Package options of SDK projects (`MonoDevelop.Packaging`) | deferred: to be ported; the Xamarin `.nuproj` packaging projects are removed |
+| Deployment / packaging add-in (`Deployment`, `Deployment.Linux`) | removed; use `dotnet publish` |
 | Connected Services (`MonoDevelop.ConnectedServices`) | removed |
 | NUnit 2/3 in-IDE runners (`MonoDevelop.UnitTesting.NUnit`: Mono runner processes, .NET Framework NUnit project templates, NUnit test class file template) | replaced by VSTest-based test running: NUnit, xUnit and MSTest projects run through their VSTest adapters and the `vstest.console` of the .NET SDK (T101) |
 | Test runs with the `vstest.console.exe` of the `Microsoft.TestPlatform` package (run with Mono) | replaced by the `vstest.console.dll` of the .NET SDK the IDE uses |
 | Test adapters taken from a test project's package folders (`TestAdaptersPaths`) | not passed; the test host loads the adapters next to the test assembly, as `dotnet test` does |
 | Debug Test / Debug All Tests | deferred: the test host is started as a native `dotnet exec` command until the .NET execution command of `MonoDevelop.DotNetCore` (T099) is back |
-| Add-in development tooling (`MonoDeveloperExtensions`) | deferred |
+| Add-in development tooling (`MonoDeveloperExtensions`) | removed |
 | MonoDoc documentation browser and help tree | removed (no MonoDoc on .NET 10) |
 | WS-Trust (STS) authentication for package feeds | removed (no WCF/WIF on .NET 10) |
 | Remote external-process objects (`ProcessService.CreateExternalProcessObject`) | throws `NotSupportedException` |
@@ -124,13 +126,15 @@ Removed from the repository (339 files):
 | `MonoDevelop.DotNetCore` | the template registrations of SDKs 1.x–3.1 and 10.0, the template categories and wizard (`MonoDevelop.DotNetCore.Templating`, `GtkDotNetCoreProjectTemplateWizardPageWidget`) and the 84 template images |
 | `MonoDevelop.Gettext` | `TranslationProject.xpt.xml` and its 16 images |
 | `MonoDevelop.PackageManagement` | `ItemTemplateNuGetPackageInstaller` and its tests |
-| `AspNet` (excluded, ADR 0017) | 3 `*.xpt.xml`, 34 `*.xft.xml` and their Razor, ASPX, C#, TypeScript, CSS/LESS/SCSS, JSON, T4 and image assets (75 files) |
-| `MonoDevelop.AspNetCore` (excluded) | 13 `*.xft.xml` with their Razor, C# and JSON assets (27 files), the template registrations of SDKs 2.1–3.1 and the 2017 template packages (`DownloadNupkg`) |
-| `Deployment`, `Deployment.Linux`, `MonoDevelop.GtkCore`, `MonoDevelop.Packaging`, `MonoDevelop.UnitTesting.NUnit`, `TextTemplating`, `VBNetBinding`, `ILAsmBinding` (excluded) | their `*.xpt.xml` / `*.xft.xml` templates and template images (64 files) |
-| `external/fsharpbinding` (excluded) | 7 `*.xpt.xml`, 6 `*.xft.xml`, `FSharp-templates.xml` and `templates.targets` |
+| `AspNet` (removed, ADR 0017) | 3 `*.xpt.xml`, 34 `*.xft.xml` and their Razor, ASPX, C#, TypeScript, CSS/LESS/SCSS, JSON, T4 and image assets (75 files) |
+| `MonoDevelop.AspNetCore` (to be ported) | 13 `*.xft.xml` with their Razor, C# and JSON assets (27 files), the template registrations of SDKs 2.1–3.1 and the 2017 template packages (`DownloadNupkg`) |
+| `Deployment`, `Deployment.Linux`, `MonoDevelop.GtkCore`, `MonoDevelop.Packaging`, `MonoDevelop.UnitTesting.NUnit`, `TextTemplating`, `VBNetBinding`, `ILAsmBinding` | their `*.xpt.xml` / `*.xft.xml` templates and template images (64 files) |
+| `external/fsharpbinding` (to be ported) | 7 `*.xpt.xml`, 6 `*.xft.xml`, `FSharp-templates.xml` and `templates.targets` |
 | Tests | `MicrosoftTemplateEngineTests`, `ProjectTemplateTests`, `ProjectTemplateTest` (IdeUnitTests), the DotNetCore template tests and the `DotNetCoreTemplating` / `FileFormatExclude` fixtures |
 
-The add-ins excluded from the Linux build keep their code; only their template assets and registrations are removed.
+Since 2026-09-25 the add-ins excluded from the Linux build are removed from the repository, except `MonoDevelop.AspNetCore`,
+`TextTemplating`, `MonoDevelop.Packaging` and the F# binding, which are to be ported; their templates stay removed (the
+templates come from `dotnet new`).
 No add-in existed only for templates.
 
 ## Add-in authors

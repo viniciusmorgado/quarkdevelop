@@ -123,7 +123,6 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="DotNetCore.Debugger" />
     <InternalsVisibleTo Include="MonoDevelop.AspNetCore.Tests" />
   </ItemGroup>
   <ItemGroup>

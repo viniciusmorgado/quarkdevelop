@@ -426,12 +426,8 @@
   <ItemGroup>
     <InternalsVisibleTo Include="MonoDevelop.DotNetCore" />
     <InternalsVisibleTo Include="MonoDevelop.DotNetCore.Tests" />
-    <InternalsVisibleTo Include="MonoDevelop.PackageManagement.Cmdlets" />
-    <InternalsVisibleTo Include="MonoDevelop.PackageManagement.Extensions" />
     <InternalsVisibleTo Include="MonoDevelop.PackageManagement.Tests" />
     <InternalsVisibleTo Include="MonoDevelop.Packaging" />
-    <InternalsVisibleTo Include="Xamarin.Forms.Addin" />
-    <InternalsVisibleTo Include="MonoDevelop.UnitTesting.NUnit" />
   </ItemGroup>
 
   <ItemGroup>

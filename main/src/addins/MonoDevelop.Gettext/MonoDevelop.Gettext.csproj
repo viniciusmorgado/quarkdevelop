@@ -49,9 +49,8 @@
     <Compile Include="Gui/MonoDevelop.Gettext.Translator.LanguageChooserDialog.cs" />
     <!--
       Not compiled on Linux:
-      - MonoDevelop.Gettext/MakefileHandler.cs: Makefile generation for the Autotools add-in, which is excluded from the
-        Linux build (ADR 0017); templates/Makefile*.template are only used by it and are not embedded. The
-        IDeployable part of TranslationProject.cs (Deployment add-in, deferred by ADR 0017) is behind GETTEXT_DEPLOYMENT.
+      - The IDeployable part of TranslationProject.cs (the Deployment add-in, removed by ADR 0017) is behind
+        GETTEXT_DEPLOYMENT.
       - MonoDevelop.Gettext.Editor/GtkSpell.cs: binding to the GTK 2 libgtkspell; its only callers in POEditorWidget are
         commented out upstream, and loading a GTK 2 library into the GTK 3 process aborts it.
     -->

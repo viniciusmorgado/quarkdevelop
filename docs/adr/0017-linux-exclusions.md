@@ -44,3 +44,23 @@ Deferred items may return through a new ADR. All exclusions are listed for users
 
 - Good: bounded scope; the Linux build has no dead weight.
 - Bad: feature loss for users of these add-ins.
+
+## Amendment 2026-09-25: excluded code removed
+
+Decided by the maintainer after `v0.1.0-linux`. The scope rule is now parity with the .NET SDK on Linux: the IDE
+supports every project that runs on Linux with the dotnet CLI or Rider. What goes is code for the .NET Framework,
+Windows, macOS or Mono only, and VB.NET and Subversion, which are too little used to be worth maintaining.
+
+- Removed from the repository: `MacPlatform`, `WindowsPlatform` (+ WindowsAPICodePack), `MonoDevelop.Debugger.Win32`,
+  `MonoDevelop.Debugger.Soft`, `MonoDevelop.Debugger.Gdb`, `MonoDevelop.Debugger.PerfTests`, `AspNet`,
+  `CSharpBinding/AspNet`, `CSharpBinding/Autotools`, `MonoDevelop.Autotools`, `Deployment` (+ `Deployment.Linux`),
+  `ILAsmBinding`, `VBNetBinding`, `MonoDevelop.GtkCore`, `MonoDevelop.TextEditor` (Cocoa/WPF),
+  `MonoDevelop.UnitTesting.NUnit` (+ runners), `MonoDevelop.WebReferences`, `MonoDevelop.ConnectedServices`,
+  `MonoDeveloperExtensions`, `PerformanceDiagnostics`, `VersionControl.Subversion*` (+ Win32), `tools/mdhost`,
+  `tools/mdmonitor`, `tools/ExtensionTools`, `tests/MacPlatform.Tests`, `tests/WindowsPlatform.Tests`, `tests/ui`,
+  `tests/UserInterfaceTests`, `tests/performance`, `tests/StressTest`, `tests/TestRunner` and the `main/tests/*.dll.filter`
+  files of that runner.
+- Kept outside the solution, to be ported (`docs/future-work.md`): `MonoDevelop.AspNetCore`, `TextTemplating`,
+  `MonoDevelop.Packaging`, `MonoDevelop.DesignerSupport.Tests` and the F# binding (`main/external/fsharpbinding`).
+- From `AspNet`, the web MIME types (HTML, JavaScript, TypeScript, LESS/SASS/SCSS, Razor) moved into `MonoDevelop.Ide`
+  and `xhtml1-strict.xsd` into the Xml add-in, whose tests use it. Its HTML editor is to be ported into the Xml add-in.
