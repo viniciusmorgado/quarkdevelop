@@ -27,18 +27,18 @@
 
   <launchable type="desktop-id">io.github.viniciusmorgado.MonoDevelop.desktop</launchable>
 
-  <url type="homepage">https://github.com/viniciusmorgado/monodevelop</url>
-  <url type="bugtracker">https://github.com/viniciusmorgado/monodevelop/issues</url>
-  <url type="vcs-browser">https://github.com/viniciusmorgado/monodevelop</url>
+  <url type="homepage">https://github.com/viniciusmorgado/quarkdevelop</url>
+  <url type="bugtracker">https://github.com/viniciusmorgado/quarkdevelop/issues</url>
+  <url type="vcs-browser">https://github.com/viniciusmorgado/quarkdevelop</url>
 
   <screenshots>
     <screenshot type="default">
       <caption>A C# solution open in the editor</caption>
-      <image>https://raw.githubusercontent.com/viniciusmorgado/monodevelop/main/docs/evidence/M5/T083-theme-light.png</image>
+      <image>https://raw.githubusercontent.com/viniciusmorgado/quarkdevelop/main/docs/evidence/M5/T083-theme-light.png</image>
     </screenshot>
     <screenshot>
       <caption>The dark theme</caption>
-      <image>https://raw.githubusercontent.com/viniciusmorgado/monodevelop/main/docs/evidence/M5/T083-theme-dark.png</image>
+      <image>https://raw.githubusercontent.com/viniciusmorgado/quarkdevelop/main/docs/evidence/M5/T083-theme-dark.png</image>
     </screenshot>
   </screenshots>
 
