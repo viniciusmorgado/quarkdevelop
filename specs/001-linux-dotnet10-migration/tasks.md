@@ -252,7 +252,7 @@ Every port task adds or extends tests in `main/tests/MonoDevelop.Ide.Gtk3.Tests`
 - [x] T128 [P] M8: `docs/architecture.md` (layers, add-in model, build/run flow), README refresh → markdown link check passes
 - [x] T129 M8: start-up time ≤ 10 s measured; quarantine reduced; warning baselines shrunk → `docs/evidence/M8/README.md`
 - [x] T130 M9: full regression (`./scripts/test.sh --all` informational + gate run), acceptance checklist SC-001…SC-009 → `docs/evidence/M9/acceptance.md`
-- [ ] T131 M9: final consistency analysis, release notes (BREAKING-CHANGES) → tag/release only with maintainer authorization
+- [x] T131 M9: final consistency analysis, release notes (BREAKING-CHANGES) → tag/release only with maintainer authorization — `v0.1.0-linux` on `0a08355a41`, release run 36098862848 published the pre-release (Flatpak, SHA-256, CycloneDX SBOM) on 2026-09-25
 
 ---
 
