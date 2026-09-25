@@ -48,7 +48,7 @@ distribution packages of MonoDevelop 8.6:
 | Autotools/Makefile integration | removed |
 | Subversion support | removed (Git remains) |
 | Mono soft debugger, GDB debugger | replaced by netcoredbg for .NET programs |
-| F# | deferred: the upstream F# binding is to be ported ([future work](future-work.md)) |
+| F# | partial: the F# binding runs on FSharp.Compiler.Service 31 (F# 4.7). SDK projects load and build, with highlighting but no type checking in the editor; scripts are fully checked; the F# Interactive pad is hidden ([ADR 0027](adr/0027-fsharp-binding.md), [future work](future-work.md)) |
 | VB.NET and IL assembler (`ilasm`) projects | removed: not supported |
 | T4 text templating (`TextTemplating`) | deferred: to be ported ([future work](future-work.md)) |
 | Building .NET Framework-only projects | not supported (no Mono/.NET Framework on Linux) |
@@ -98,9 +98,8 @@ The New Project and New File dialogs list the templates of `dotnet new` for the 
 the packages added with `dotnet new install`. The IDE creates projects, solutions and files by running the CLI
 ([ADR 0026](adr/0026-dotnet-new-templates.md)):
 
-- Only C# and F# are offered (C# by default). Visual Basic variants and VB-only templates are hidden. The IDE has no F#
-  editor support yet (T154): F# projects are created and kept in the solution, but the IDE loads them as unsupported
-  projects.
+- Only C# and F# are offered (C# by default). Visual Basic variants and VB-only templates are hidden. F# projects load
+  with the F# binding, within the limits of [ADR 0027](adr/0027-fsharp-binding.md).
 - Windows-only templates are hidden: Windows Forms and WPF (by their tags) and `webconfig` (IIS).
 - Categories are the first segment of the template tags: .NET → Common, Web, Test, Solution in New Project; Common,
   Web, Test, Config, MSBuild in New File. The old categories (Multiplatform, Other → .NET/Miscellaneous, .NET Core →
@@ -129,12 +128,12 @@ Removed from the repository (339 files):
 | `AspNet` (removed, ADR 0017) | 3 `*.xpt.xml`, 34 `*.xft.xml` and their Razor, ASPX, C#, TypeScript, CSS/LESS/SCSS, JSON, T4 and image assets (75 files) |
 | `MonoDevelop.AspNetCore` (to be ported) | 13 `*.xft.xml` with their Razor, C# and JSON assets (27 files), the template registrations of SDKs 2.1–3.1 and the 2017 template packages (`DownloadNupkg`) |
 | `Deployment`, `Deployment.Linux`, `MonoDevelop.GtkCore`, `MonoDevelop.Packaging`, `MonoDevelop.UnitTesting.NUnit`, `TextTemplating`, `VBNetBinding`, `ILAsmBinding` | their `*.xpt.xml` / `*.xft.xml` templates and template images (64 files) |
-| `external/fsharpbinding` (to be ported) | 7 `*.xpt.xml`, 6 `*.xft.xml`, `FSharp-templates.xml` and `templates.targets` |
+| `external/fsharpbinding` (now `src/addins/FSharpBinding`) | 7 `*.xpt.xml`, 6 `*.xft.xml`, `FSharp-templates.xml` (the F# code snippets, restored with [ADR 0027](adr/0027-fsharp-binding.md)) and `templates.targets` |
 | Tests | `MicrosoftTemplateEngineTests`, `ProjectTemplateTests`, `ProjectTemplateTest` (IdeUnitTests), the DotNetCore template tests and the `DotNetCoreTemplating` / `FileFormatExclude` fixtures |
 
 Since 2026-09-25 the add-ins excluded from the Linux build are removed from the repository, except `MonoDevelop.AspNetCore`,
-`TextTemplating`, `MonoDevelop.Packaging` and the F# binding, which are to be ported; their templates stay removed (the
-templates come from `dotnet new`).
+`TextTemplating` and `MonoDevelop.Packaging`, which are to be ported, and the F# binding, back in the Linux build
+([ADR 0027](adr/0027-fsharp-binding.md)). Their templates stay removed (the templates come from `dotnet new`).
 No add-in existed only for templates.
 
 ## Add-in authors

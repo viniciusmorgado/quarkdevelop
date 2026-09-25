@@ -12,9 +12,10 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 md_require_container "$@"
 
-[[ $# -eq 1 ]] || md_die "usage: $0 <project.csproj>"
+[[ $# -eq 1 ]] || md_die "usage: $0 <project file (.csproj, .fsproj)>"
 project="$1"
-name="$(basename "$project" .csproj)"
+name="$(basename "$project")"
+name="${name%.*}"
 out_dir="$MD_ROOT/main/msbuild/Linux/warning-baselines"
 out="$out_dir/$name.props"
 counts="$out_dir/$name.counts.txt"

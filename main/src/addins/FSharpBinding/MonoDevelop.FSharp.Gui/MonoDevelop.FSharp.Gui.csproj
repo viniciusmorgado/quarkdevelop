@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Converted from the legacy csproj (ADR 0003); GTK3 port: the GTK widgets of the F# add-in's option panels
+       (Stetic output, frozen as hand-maintained code, ADR 0011). -->
+  <PropertyGroup>
+    <AssemblyName>FSharpBinding.Gui</AssemblyName>
+    <RootNamespace>MonoDevelop.FSharp.Gui</RootNamespace>
+    <AddinBuildDir>FSharpBinding</AddinBuildDir>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="generated.cs" />
+    <Compile Include="FSharpCompilerOptionsWidget.cs" />
+    <Compile Include="FSharpSettingsWidget.cs" />
+    <Compile Include="MonoDevelop.FSharp.Gui.FSharpCompilerOptionsWidget.cs" />
+    <Compile Include="MonoDevelop.FSharp.Gui.FSharpSettingsWidget.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- GettextCatalog replaces Mono.Unix.Catalog in the Stetic code (ADR 0014). -->
+    <ProjectReference Include="../../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GtkSharp" />
+  </ItemGroup>
+</Project>

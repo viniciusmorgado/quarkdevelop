@@ -111,5 +111,15 @@
     <PackageVersion Include="coverlet.collector" Version="10.0.1" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="Castle.Core" Version="5.2.1" />
+
+    <!--
+      F# binding (src/addins/FSharpBinding): the package versions it was written for. FSharp.Compiler.Service 31 and
+      FSharp.Core 4.7 target netstandard2.0; ExtCore targets .NET Framework only (its references set NoWarn NU1701).
+    -->
+    <PackageVersion Include="FSharp.Compiler.Service" Version="31.0.0" />
+    <PackageVersion Include="FSharp.Core" Version="4.7.0" />
+    <PackageVersion Include="ExtCore" Version="0.8.46" />
+    <PackageVersion Include="Fantomas" Version="3.0.0-beta-002" />
+    <PackageVersion Include="System.Reactive" Version="4.1.5" />
   </ItemGroup>
 </Project>

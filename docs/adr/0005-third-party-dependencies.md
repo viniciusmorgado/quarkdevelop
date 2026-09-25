@@ -40,6 +40,9 @@ submodules. Projects outside the Linux build that still point into `main/externa
 Mac/Windows platform tests, the legacy `DownloadNupkg` restore in `main/msbuild/MDBuildTasks.targets`) cannot be built
 from this repository any more.
 
+Update 2026-09-25: `main/external` is removed. Its last content, the F# binding, moved to
+`main/src/addins/FSharpBinding` (ADR 0027).
+
 Code cherry-picked from DotDevelop (github.com/dotdevelop/dotdevelop) records the source commit in
 the commit message and in `specs/001-linux-dotnet10-migration/research.md`.
 

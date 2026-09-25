@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Converted from the legacy fsproj (ADR 0003): the F# Interactive process of the F# Interactive pad. The add-in
+       starts it with `dotnet exec` (InteractiveSession) and talks to it over its standard streams. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>MonoDevelop.FSharpInteractive.Service</AssemblyName>
+    <RootNamespace>MonoDevelop.FSharpi.Service</RootNamespace>
+    <AddinBuildDir>FSharpBinding</AddinBuildDir>
+    <!-- FSharp.Core comes from Directory.Packages.props (the version FSharp.Compiler.Service 31 was built with). -->
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+    <Tailcalls>true</Tailcalls>
+    <!-- A process of its own: the dotnet host loads what its deps.json lists from this directory, so its packages are
+         copied. FSharp.Core 4.7 embeds the signature and optimization data the old project copied as files. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Private: the process resolves only what its deps.json lists (same output directory, nothing is copied). -->
+    <ProjectReference Include="../MonoDevelop.FSharp.Shared/MonoDevelop.FSharp.Shared.fsproj" Private="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" />
+    <PackageReference Include="FSharp.Compiler.Service" />
+    <PackageReference Include="ExtCore" NoWarn="NU1701" />
+    <!-- Compile only: the process loads the IDE's copy (Program.fs). -->
+    <PackageReference Include="Newtonsoft.Json" ExcludeAssets="runtime" />
+  </ItemGroup>
+</Project>
