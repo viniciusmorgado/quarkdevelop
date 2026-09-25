@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # The whole Linux CI gate in one script, run the same way locally and in GitHub Actions (T115).
 # Steps (each timed; the first failure stops the run):
-#   setup, lint, build --check (Release), duplicate-assembly check, tests + coverage ratchet,
+#   setup, lint, build --check (Release), duplicate-assembly check, tests with coverage,
 #   vulnerability audit, mdtool smoke (build linux-smoke/Hello and linux-smoke/Modern and run them), GUI smoke
 #   (the IDE's --smoke-test under Xvfb and Wayland: Smoke.sln, the Broken project, the C# 8 to 14 Modern.sln, and a
 #   debug session of Smoke.sln stopped at a breakpoint).
-# Writes out/ci/summary.txt (step, status, seconds) and fails when the total exceeds the SC-007
+# Writes out/ci/summary.txt (step, status, seconds) and fails when the total exceeds the
 # budget of 15 minutes (MD_CI_BUDGET_SECONDS overrides).
 # Usage: ./scripts/pm ./scripts/ci.sh
 set -euo pipefail
@@ -190,5 +190,5 @@ step wayland-smoke wayland_smoke
 total=$((SECONDS - start_all))
 printf '%-18s      %4ds (budget %ds)\n' total "$total" "$budget" | tee -a "$summary"
 if (( total > budget )); then
-	md_die "CI took ${total}s, over the ${budget}s budget (SC-007)"
+	md_die "CI took ${total}s, over the ${budget}s budget"
 fi

@@ -68,4 +68,4 @@ Listed per commit in `git log -- main/vendor/vs-editor-api`; summary:
 - **`TextImageLoader`** throws `InvalidDataException` instead of `FileFormatException`, which moved
   to System.IO.Packaging on .NET.
 - **`WeakReferenceForDictionaryKey`** (TextDataUtil, StandaloneUndo): the formatter-serialization
-  constructor and `GetObjectData` are removed (SYSLIB0051; constitution VII).
+  constructor and `GetObjectData` are removed (SYSLIB0051).

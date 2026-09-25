@@ -18,7 +18,9 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 md_require_container "$@"
 
 app_id=io.github.viniciusmorgado.MonoDevelop
-manifest="$MD_ROOT/packaging/flatpak/$app_id.yml"
+# the Flatpak files are written to out/flatpak-files by the "Flatpak files" step of the release workflow
+files="$MD_ROOT/out/flatpak-files"
+manifest="$files/$app_id.yml"
 flathub=https://dl.flathub.org/repo/flathub.flatpakrepo
 store="${MD_FLATPAK_STORE:-/var/lib/md-flatpak}"
 export FLATPAK_USER_DIR="${FLATPAK_USER_DIR:-$store/user}"
@@ -34,6 +36,7 @@ done
 
 command -v flatpak-builder >/dev/null 2>&1 \
 	|| md_die "flatpak-builder not found; run with PM_PROFILE=flatpak ./scripts/pm $0"
+[[ -f "$manifest" ]] || md_die "$manifest not found: the release workflow writes the Flatpak files"
 [[ -d "$store" && -w "$store" ]] || md_die "$store is not a writable volume (PM_PROFILE=flatpak mounts md-flatpak)"
 
 cd "$MD_ROOT"
@@ -64,10 +67,10 @@ fi
 
 # 2. Desktop entry, AppStream metadata and MIME types
 validate() {
-	desktop-file-validate "packaging/flatpak/$app_id.desktop"
+	desktop-file-validate "$files/$app_id.desktop"
 	# --no-net: the screenshot URLs point at the default branch, which may not have them yet
-	appstreamcli validate --no-net --explain "packaging/flatpak/$app_id.metainfo.xml"
-	xmllint_mime="packaging/flatpak/$app_id.xml"
+	appstreamcli validate --no-net --explain "$files/$app_id.metainfo.xml"
+	xmllint_mime="$files/$app_id.xml"
 	python3 -c 'import sys, xml.dom.minidom; xml.dom.minidom.parse(sys.argv[1])' "$xmllint_mime"
 }
 timed validate validate 2>&1 | tee "$work/validate.log"

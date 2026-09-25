@@ -13,7 +13,6 @@ obj/
 /main/build/data/
 /main/build/locale/
 /main/build/samples/
-/main/msbuild/MDBuildTasks/bin
 /extras/*/build
 /extras/*/*/bin
 /main/src/tools/SharpCoco/SharpCoco.exe*
@@ -73,8 +72,6 @@ Thumbs.db
 *.app
 /main/build/MacOSX/render.exe
 /main/build/MacOSX/*.o
-/main/external/fsharpbinding/.paket
-/main/external/fsharpbinding/paket-files
 /main/external/Xamarin.Mac.buildinfo
 /main/external/Xamarin.Mac.registrar.full.a
 /main/external/Xamarin.Mac.dll*
@@ -184,7 +181,6 @@ Thumbs.db
 /main/tests/TestRunner/Makefile
 /main/tests/UnitTests/Makefile
 /main/tests/UserInterfaceTests/Makefile
-/main/theme-icons/Makefile
 /main/src/addins/TextTemplating/Mono.TextTemplating.Tests/Makefile
 /main/tests/MacPlatform.Tests/Makefile
 /main/tests/MonoDevelop.Core.Tests.Addin/Makefile
@@ -282,9 +278,6 @@ main/po/StripMnemonics.exe
 main/tests/StressTest/bin
 
 
-# M0 spikes build output
-/spikes/**/bin/
-/spikes/**/obj/
 
 # mdtool smoke samples build output
 /main/tests/linux-smoke/**/bin/

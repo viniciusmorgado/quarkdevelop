@@ -20,7 +20,7 @@ Listed per commit in `git log -- main/vendor/xwt`; summary:
 - `Compat/XamlCompat.cs`: internal stand-ins for the System.Xaml attributes (`ContentProperty`,
   `ValueSerializer`); `Xwt.Design/DesignerSurface.cs` (XamlServices) and the designer sample are not built.
 - `TransferDataSource.SerializeValue/DeserializeValue`: an in-process token registry replaces
-  BinaryFormatter (removed from .NET 9+; constitution VII). Object transfers only work inside one process.
+  BinaryFormatter (removed from .NET 9+). Object transfers only work inside one process.
 - GTK3 backend compiled against the GtkSharp 3.24.24 NuGet packages instead of gtk-sharp 3 from the GAC:
   - `NativeLibraryResolver.cs` replaces the `<dllmap>` of `Xwt.Gtk3.dll.config` (ADR 0013); both
     `.dll.config` files are removed.

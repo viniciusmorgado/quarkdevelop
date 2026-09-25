@@ -36,7 +36,7 @@ using MonoDevelop.Projects;
 namespace MonoDevelop.Ide
 {
 	/// <summary>
-	/// <c>--smoke-test [solution or project]</c> (task T103, specs/001-linux-dotnet10-migration/contracts/smoke-test.md): start
+	/// <c>--smoke-test [solution or project]</c>: start
 	/// the IDE, open the solution, build it, write out/smoke/{ide.log,screenshot.png} and exit with
 	/// 0 (built with no errors and no unhandled exception), 1 (build errors) or 2 (start-up/load failure or timeout).
 	/// MD_SMOKE_OPEN=&lt;file&gt; (relative to the solution's directory) opens that file in the editor before the screenshot,

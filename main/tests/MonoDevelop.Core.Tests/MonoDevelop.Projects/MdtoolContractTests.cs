@@ -31,7 +31,7 @@ using UnitTests;
 namespace MonoDevelop.Projects
 {
 	/// <summary>
-	/// Task T064: the mdtool command-line contract (specs/001-linux-dotnet10-migration/contracts/mdtool-cli.md),
+	/// The mdtool command-line contract,
 	/// exercised against the real main/build/bin/mdtool.dll and the linux-smoke sample projects.
 	/// </summary>
 	[TestFixture]

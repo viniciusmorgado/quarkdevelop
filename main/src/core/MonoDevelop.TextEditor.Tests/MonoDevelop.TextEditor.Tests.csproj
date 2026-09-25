@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003): the Mono.TextEditor unit
+    Converted from the legacy csproj (ADR 0003): the Mono.TextEditor unit
     tests (T085) on .NET 10 / GTK 3, run under Xvfb. GuiUnit is replaced by NUnit (ADR 0015). GTK, the runtime and
     Xwt come from the IDE test host (IdeUnitTests.GuiTestHost: the GLib main loop on the test thread, which is the
     runtime's main thread), the editor MEF composition from EditorTestEnvironment (shared with

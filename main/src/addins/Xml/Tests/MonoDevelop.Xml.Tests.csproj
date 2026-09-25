@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); NUnit 3 (ADR 0015, T091). -->
+  <!-- Converted from the legacy csproj (ADR 0003); NUnit 3 (ADR 0015). -->
   <PropertyGroup>
     <AssemblyName>MonoDevelop.Xml.Tests</AssemblyName>
     <RootNamespace>MonoDevelop.Xml.Tests</RootNamespace>

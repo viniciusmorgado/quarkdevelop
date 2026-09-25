@@ -14,7 +14,7 @@
 #   PM_PODMAN_ARGS extra arguments for `podman run` (word-split)
 #   PM_REBUILD=1   force a rebuild of the development image
 #   PM_PROFILE     dev (default): ./Dockerfile, image localhost/md-dev
-#                  flatpak: packaging/flatpak/Dockerfile, image localhost/md-flatpak, with the
+#                  flatpak: out/flatpak-files/Dockerfile (written by the release workflow), image localhost/md-flatpak, with the
 #                  podman options flatpak-builder and `flatpak run` need (bubblewrap sandboxes nested
 #                  in the rootless container) and the md-flatpak volume (ADR 0022)
 set -euo pipefail
@@ -38,7 +38,7 @@ case "${PM_PROFILE:-dev}" in
 		image_name=localhost/md-dev
 		;;
 	flatpak)
-		Dockerfile="$here/packaging/flatpak/Dockerfile"
+		Dockerfile="$here/out/flatpak-files/Dockerfile"
 		image_name=localhost/md-flatpak
 		# bubblewrap (flatpak-builder, flatpak run) mounts a new /proc in its sandbox; the kernel refuses
 		# that while podman masks paths under /proc, hence unmask=/proc/*. Nothing else is needed: no

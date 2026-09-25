@@ -28,7 +28,7 @@ namespace MonoDevelop.Components
 {
 	/// <summary>
 	/// Stands in for GTK2's Gdk.EventExpose inside drawing code ported to GTK3's
-	/// <c>OnDrawn (Cairo.Context)</c> by scripts/tools/gtk3-codemod.py (ADR 0011, task T071).
+	/// <c>OnDrawn (Cairo.Context)</c> (ADR 0011).
 	/// GTK2 code drew in GdkWindow coordinates (offset by the allocation for widgets without a
 	/// window); GTK3 hands a context whose origin is the widget's allocation. The contexts created
 	/// here undo that translation so ported code keeps its coordinates.
@@ -130,7 +130,7 @@ namespace MonoDevelop.Components
 		}
 	}
 
-	/// <summary>GTK2-style helpers on top of the GTK3 API, for code ported by scripts/tools/gtk3-codemod.py.</summary>
+	/// <summary>GTK2-style helpers on top of the GTK3 API, for code ported from GTK2.</summary>
 	public static class Gtk3CompatExtensions
 	{
 		/// <summary>GTK2 <c>gtk_widget_size_request</c>: the widget's natural size.</summary>

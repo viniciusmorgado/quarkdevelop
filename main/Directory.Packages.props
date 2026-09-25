@@ -1,8 +1,8 @@
 <Project>
   <!--
     Central package versions for the Linux / .NET 10 build (ADR 0004).
-    Only SDK-style projects (the ones in MonoDevelop.Linux.sln) use central package management;
-    legacy csproj files keep their own versions until they are converted.
+    Only SDK-style projects use central package management: the old-style test fixtures under
+    main/tests/test-projects keep their own package versions.
   -->
   <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>

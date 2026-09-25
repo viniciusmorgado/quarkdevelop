@@ -25,7 +25,7 @@ md_require_container() {
 
 # C# files added by this fork (relative to the upstream base commit, plus untracked files).
 # Formatting is enforced on these; legacy files are reformatted per project in dedicated commits
-# (constitution V, ADR 0018).
+# (ADR 0018).
 md_new_cs_files() {
 	local base
 	# Upstream mono/monodevelop commit this fork starts from (pinned so the check works in fresh
@@ -39,15 +39,5 @@ md_new_cs_files() {
 			git -C "$MD_ROOT" diff --diff-filter=A --name-only "$base" -- '*.cs'
 		fi
 		git -C "$MD_ROOT" ls-files --others --exclude-standard -- '*.cs'
-	} | grep -vE '^(spikes|main/external|main/vendor)/' | sort -u || true
-}
-
-# Coverage ratchet (constitution V, SC-003). Compares two "assembly percent" files and prints, one line each,
-# "assembly current baseline" for every assembly of <baseline> whose value in <current> is lower or missing.
-# Returns 1 when it printed anything.
-md_coverage_lower() {
-	local current="$1" baseline="$2"
-	awk 'NR == FNR { cur[$1] = $2; next }
-		!($1 in cur) || cur[$1] + 0 < $2 + 0 { print $1, ($1 in cur ? cur[$1] : "missing"), $2; lower = 1 }
-		END { exit lower }' "$current" "$baseline"
+	} | grep -vE '^(main/external|main/vendor)/' | sort -u || true
 }

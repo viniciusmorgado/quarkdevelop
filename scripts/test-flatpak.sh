@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install test of the Flatpak bundle in a clean flatpak installation (M7, T124, SC-008).
+# Install test of the Flatpak bundle in a clean flatpak installation (ADR 0022).
 # Usage: PM_PROFILE=flatpak ./scripts/pm ./scripts/test-flatpak.sh [bundle]   (default out/monodevelop.flatpak)
 # Steps (timed, first failure stops the run; results in out/flatpak-test/summary.txt):
 #   checksum, install (fresh user installation; the GNOME runtime comes from Flathub), desktop

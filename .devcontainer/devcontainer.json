@@ -1,5 +1,5 @@
 {
-  // Same image as ./scripts/pm (ADR constitution I). Works with VS Code Dev Containers
+  // Same image as ./scripts/pm. Works with VS Code Dev Containers
   // (set "dev.containers.dockerPath": "podman") and JetBrains Rider.
   "name": "MonoDevelop (.NET 10 / GTK3)",
   "build": { "dockerfile": "../Dockerfile", "context": ".." },

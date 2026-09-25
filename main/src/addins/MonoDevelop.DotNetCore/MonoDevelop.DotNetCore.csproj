@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); GTK3 / .NET 10 port (T099). -->
+  <!-- Converted from the legacy csproj (ADR 0003); GTK3 / .NET 10 port. -->
   <PropertyGroup>
     <AssemblyName>MonoDevelop.DotNetCore</AssemblyName>
     <RootNamespace>MonoDevelop.DotNetCore</RootNamespace>

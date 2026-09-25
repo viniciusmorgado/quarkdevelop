@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); GTK3 and NuGet 7.9 port (T100, ADR 0020). -->
+  <!-- Converted from the legacy csproj (ADR 0003); GTK3 and NuGet 7.9 port (ADR 0020). -->
   <PropertyGroup>
     <AssemblyName>MonoDevelop.PackageManagement</AssemblyName>
     <RootNamespace>MonoDevelop.PackageManagement</RootNamespace>
