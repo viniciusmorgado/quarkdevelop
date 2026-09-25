@@ -81,6 +81,11 @@ jobs:
           {
             echo "MonoDevelop for Linux on .NET 10, version $VERSION (commit ${GITHUB_SHA::12})."
             echo
+            # the hand-written notes of this version, when there are any (docs/release-notes/v<version>.md)
+            if [[ -f "docs/release-notes/v$VERSION.md" ]]; then
+              sed '1d' "docs/release-notes/v$VERSION.md"
+              echo
+            fi
             echo '```'
             cat out/ci/summary.txt
             echo '```'
