@@ -17,7 +17,9 @@ concurrency:
 env:
   CI: "true"
   ContinuousIntegrationBuild: "true"
-  PM_PODMAN_ARGS: -v /home/runner/.nuget/packages:/home/dev/.nuget/packages -e CI -e ContinuousIntegrationBuild
+  # The runner's NuGet cache is mounted outside the container home: a mount inside /home/dev made podman create
+  # /home/dev/.nuget as root on a fresh runner, and dotnet could not read its NuGet.Config.
+  PM_PODMAN_ARGS: -v /home/runner/.nuget/packages:/nuget-packages -e NUGET_PACKAGES=/nuget-packages -e CI -e ContinuousIntegrationBuild
 
 jobs:
   build:
