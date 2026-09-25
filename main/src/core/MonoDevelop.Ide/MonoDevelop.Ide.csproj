@@ -6048,18 +6048,14 @@
     <InternalsVisibleTo Include="FSharpBinding" />
     <InternalsVisibleTo Include="IdeUnitTests" />
     <InternalsVisibleTo Include="MonoDevelop.Ide.Gtk3.Tests" />
-    <InternalsVisibleTo Include="MacPlatform" />
-    <InternalsVisibleTo Include="MonoDevelop.AspNet" />
     <InternalsVisibleTo Include="MonoDevelop.AspNetCore.Tests" />
     <InternalsVisibleTo Include="MonoDevelop.AssemblyBrowser" />
     <InternalsVisibleTo Include="MonoDevelop.CSharpBinding" />
-    <InternalsVisibleTo Include="MonoDevelop.CSharpBinding.AspNet" />
     <InternalsVisibleTo Include="MonoDevelop.CSharpBinding.Tests" />
     <InternalsVisibleTo Include="MonoDevelop.Debugger" />
     <InternalsVisibleTo Include="MonoDevelop.DesignerSupport" />
     <InternalsVisibleTo Include="MonoDevelop.DotNetCore.Tests" />
     <InternalsVisibleTo Include="MonoDevelop.FSharp.Tests" />
-    <InternalsVisibleTo Include="MonoDevelop.GtkCore" />
     <InternalsVisibleTo Include="MonoDevelop.Ide.Tests" />
     <InternalsVisibleTo Include="MonoDevelop.PackageManagement" />
     <InternalsVisibleTo Include="MonoDevelop.Packaging" />
@@ -6067,25 +6063,11 @@
     <InternalsVisibleTo Include="MonoDevelop.Refactoring" />
     <InternalsVisibleTo Include="MonoDevelop.Refactoring.Tests" />
     <InternalsVisibleTo Include="MonoDevelop.SourceEditor" />
-    <InternalsVisibleTo Include="MonoDevelop.SourceEditor2" />
-    <InternalsVisibleTo Include="MonoDevelop.TextEditor" />
-    <InternalsVisibleTo Include="MonoDevelop.TextEditor.Cocoa" />
-    <InternalsVisibleTo Include="MonoDevelop.TextEditor.Wpf" />
     <InternalsVisibleTo Include="MonoDevelop.TextEditor.Tests" />
     <InternalsVisibleTo Include="MonoDevelop.UnitTesting" />
-    <InternalsVisibleTo Include="MonoDevelop.VBNetBinding" />
     <InternalsVisibleTo Include="MonoDevelop.Xml" />
     <InternalsVisibleTo Include="MonoDevelop.Xml.Tests" />
-    <InternalsVisibleTo Include="MonoDevelop.UserInterfaceTesting" />
     <InternalsVisibleTo Include="MonoDevelop.VersionControl" />
-    <InternalsVisibleTo Include="WebToolingAddin" />
-    <InternalsVisibleTo Include="TypeScriptAddin" />
-    <InternalsVisibleTo Include="WindowsPlatform" />
-    <InternalsVisibleTo Include="Xamarin.Forms.Addin" />
-    <InternalsVisibleTo Include="Xamarin.Forms.Addin.Tests" />
-    <InternalsVisibleTo Include="Xamarin.Ide" />
-    <InternalsVisibleTo Include="Xamarin.OSXEditor" />
-    <InternalsVisibleTo Include="Xamarin.Sketches" />
   </ItemGroup>
 
   <ItemGroup>

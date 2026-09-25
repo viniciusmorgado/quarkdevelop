@@ -25,3 +25,10 @@ schema-for-xslt20.xsd
 W3C XSLT Schema
 https://www.w3.org/2007/schema-for-xslt20.xsd
 W3C Software License (http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231) - A copy of this license can be found in W3C-License.html
+
+xhtml1-strict.xsd
+-----------------
+
+W3C XHTML 1.0 Strict Schema (used by the Xml add-in tests).
+http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd
+W3C Software License (http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231) - A copy of this license can be found in W3C-License.html

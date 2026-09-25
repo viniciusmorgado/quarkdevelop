@@ -80,7 +80,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="../schemas/XMLSchema.xsd" />
-    <EmbeddedResource Include="../../AspNet/Html/Schemas/xhtml1-strict.xsd" />
+    <EmbeddedResource Include="../schemas/xhtml1-strict.xsd" />
   </ItemGroup>
 
   <ItemGroup>

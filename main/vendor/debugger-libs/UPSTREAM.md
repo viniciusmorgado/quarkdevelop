@@ -14,7 +14,7 @@ Only `Mono.Debugging` is vendored: the debugger-independent client API (`Debugge
 Not vendored:
 
 - `Mono.Debugger.Soft` and `Mono.Debugging.Soft`: the Mono soft debugger, used only by the
-  `MonoDevelop.Debugger.Soft` add-in, which is excluded from the Linux build (ADR 0017).
+  `MonoDevelop.Debugger.Soft` add-in, which is removed (ADR 0017).
 - `Mono.Debugging.Win32`, `CorApi`, `CorApi2` (and `eula.rtf`, which covers them): Windows only (ADR 0017).
 - `UnitTests`, solutions, `Mono.Debugging.settings`, `Makefile.am`, `ChangeLog`, `Mono.Debugging.nuspec`.
 - The NRefactory 5 expression evaluator (`Mono.Debugging.Evaluation/NRefactoryExpressionEvaluator.cs`,
@@ -24,8 +24,7 @@ Not vendored:
   Mono.Debugging based evaluator is needed again.
 
 Because nothing else in the Linux build uses the other debugger-libs projects, the
-`main/external/debugger-libs` submodule is removed. The legacy `Main.sln` and the excluded add-ins
-(`MonoDevelop.Debugger.Soft`, `MonoDevelop.Debugger.Win32`) still point to the old path.
+`main/external/debugger-libs` submodule is removed.
 
 ## Local patches
 

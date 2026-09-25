@@ -89,11 +89,6 @@
 		<Class class = "MonoDevelop.Gettext.PropertyProvider"/>
 	</Extension>
 
-	<!-- The Autotools add-in is excluded from the Linux build (ADR 0017).
-	<Extension path = "/MonoDevelop/Autotools/MakefileHandlers">
-		<Class class = "MonoDevelop.Gettext.MakefileHandler"/>
-	</Extension> -->
-	
 	<Extension path = "/MonoDevelop/Gettext/FileScanners">
 		<XmlRegexScanner extension="glade">
 			<Include regex='translatable\s*=\s*"yes"\s*&gt;([^&lt;]*)&lt;' escapeMode="Xml" />
