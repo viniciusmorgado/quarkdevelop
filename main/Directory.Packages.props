@@ -10,7 +10,7 @@
     <!-- Roslyn internals are consumed through Krafs.Publicizer: pin exactly (ADR 0010). -->
     <RoslynVersion>5.9.0</RoslynVersion>
     <!-- Must not exceed the MSBuild shipped with the pinned SDK (18.9.x in SDK 10.0.4xx). -->
-    <MSBuildPackageVersion>18.9.6</MSBuildPackageVersion>
+    <MSBuildPackageVersion>18.10.1</MSBuildPackageVersion>
     <!--
       NuGet client (ADR 0020): the version the pinned SDK ships (SDK 10.0.4xx: NuGet 7.9). The assemblies the SDK
       carries are compile-only and load from the SDK at run time, like MSBuild (ADR 0008); only NuGet.PackageManagement,
