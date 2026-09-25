@@ -38,6 +38,8 @@ Listed per commit in `git log -- main/vendor/xwt`; summary:
   - `WindowFrameBackend.Dispose` disposes the GTK window instead of calling `Widget.Destroy`: GtkSharp 3.24's
     `Destroy` lets GTK free a toplevel whose wrapper still holds a toggle reference, which the wrapper released again
     when disposed or finalized (GLib-GObject-CRITICAL `g_object_remove_toggle_ref`, random crashes; T107).
+- `Application.TimeoutInvoke`: disposing a timer whose action already returned false (the toolkit removed it) does
+  not remove it again, which made GLib log "Source ID ... was not found" (MonoDevelop's focus-lost timeout).
 - `TestApps/Samples/upstream-resources/`: images the upstream sample project linked from `Testing/`
   and `Xwt.XamMac/` (not vendored).
 
