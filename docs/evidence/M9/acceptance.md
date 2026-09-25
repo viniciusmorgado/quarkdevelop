@@ -10,7 +10,7 @@ workstation (x86-64, 12 cores).
 | **SC-003:** coverage: core ≥ 60% and a ratchet; no global target since 2026-09-25 | **Met** as amended | Details below |
 | **SC-004:** CLI build of the sample project and solution succeeds, the broken sample fails, in every pipeline run | **Met** | Details below |
 | **SC-005:** GUI smoke on X11 and Wayland; start-up ≤ 10 s | **Met** | Details below |
-| **SC-006:** automated debug scenario (breakpoint, locals, step, exit) | **Met** (DAP level); GUI debugging open (T153) | Details below |
+| **SC-006:** automated debug scenario (breakpoint, locals, step, exit) | **Met** (DAP tests and the IDE's Debug layout) | Details below |
 | **SC-007:** full pipeline ≤ 15 min with a warm cache | **Met** | Details below |
 | **SC-008:** Flatpak installs cleanly; version and headless build checks | **Met** | Details below |
 | **SC-009:** zero High/Critical vulnerabilities | **Met** | Details below |
@@ -66,8 +66,10 @@ Sources: [M5 T109](../M5/README.md) and [M8/startup.md](../M8/startup.md).
 with netcoredbg through the IDE's `NetCoreDbgSession`. They cover a breakpoint hit, locals, step over, continue to
 exit code 3, and an unhandled exception. They pass in every gate run.
 
-GUI debugging through the Debug layout reaches the breakpoint, but the Locals/Watch pads hit a GtkSharp
-toggle-reference crash in 2 of 3 runs. That is being fixed in T153, together with a `gui-smoke-debug` CI step.
+GUI debugging used to crash or log GLib-GObject toggle-reference criticals in 11 of 15 runs. The cause was a
+GdkWindow reference lost in the source editor (ADR 0024 amendment). T153 fixed it, with 0 failures in 50 runs.
+The `gui-smoke-debug` CI step now debugs Hello with netcoredbg to a breakpoint through the Debug layout, with the
+Locals pad in front. Any GLib-GObject critical fails the run.
 
 **SC-007.** The full `scripts/ci.sh` run takes 515–645 s of wall-clock time with a warm cache (budget 900 s). It
 covers setup, lint, the Release build with format check, the assembly check, tests with coverage in two lanes, the
@@ -88,6 +90,6 @@ None of these is part of an SC.
 - T144: an intermittent GTK test-host crash (about 1 in 20 runs).
 - T147 remainder T149: source generators from project references, generated files under Dependencies.
 - T150: the ADR 0011 port helpers, 344 uses, still to be removed.
-- T152: New Project/New File dialogs driven by `dotnet new`, C# and F# only, Linux-only templates (in progress).
-- T154: an F# language binding. F# projects can be created and built, but have no editor support yet.
+- T154: an F# language binding. F# projects can be created from the `dotnet new` templates (T152) and built
+  with the CLI, but they load as unsupported projects in the IDE for now.
 - Test and infrastructure debt: T134, T140–T143, T151.
