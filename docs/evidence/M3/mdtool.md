@@ -1,6 +1,6 @@
 # M3 evidence — mdtool on .NET 10 (quickstart § M3)
 
-Generated inside the dev container: SDK 10.0.401, runtime 10.0.12, mono: absent, base commit c7835700d1.
+Generated inside the dev container: SDK 10.0.401, runtime 10.0.12, mono: absent, base commit b61597c405.
 
 ```text
 $ dotnet main/build/bin/mdtool.dll -q

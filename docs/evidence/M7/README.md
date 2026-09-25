@@ -1,6 +1,6 @@
 # M7 evidence — Flatpak (US5, FR-013, SC-008)
 
-Decision record: [ADR 0022](../../adr/0022-flatpak.md). Date: 2026-09-24, commit base `980c69061b`
+Decision record: [ADR 0022](../../adr/0022-flatpak.md). Date: 2026-09-24, commit base `58ded065da`
 (+ M7 changes), maintainer workstation (x86-64, rootless podman).
 
 ## T121 — packaging container

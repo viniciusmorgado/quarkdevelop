@@ -25,7 +25,7 @@ UPSTREAM.md "Known gaps").
 
 ## M5b: MonoDevelop.Ide compiles on GTK3 (2026-09-23)
 
-At commit `65392553f7` the whole `MonoDevelop.Ide` project compiles against GtkSharp 3, Roslyn 5.9
+At commit `ac361dcbe2` the whole `MonoDevelop.Ide` project compiles against GtkSharp 3, Roslyn 5.9
 and .NET 10 with no excluded sources: `Gtk3PortPending.props` (900 of 1242 files at its peak) is gone.
 The strict solution build (`dotnet build main/MonoDevelop.Linux.sln`, warnings as errors with the
 per-project baselines) has 0 errors. `./scripts/test.sh`: MonoDevelop.Core.Tests 1065 passed /
@@ -218,7 +218,7 @@ Tests (`MonoDevelop.Ide.Gtk3.Tests`, 64 passed): `AssemblyBrowserTests` (System.
 links, and disassembled to IL), `GettextTests` (a PO catalog read, changed and written back; the CSS base color of an
 entry), `TextEditorOverviewTests` (an embedded editor redraws its overview after an options change),
 `EditorResourcesTests` (the string resources of the 11 vs-editor-api assemblies are found). `./scripts/ci.sh`: every
-step passes except `gui-smoke`, which fails the same way on an unmodified build of `1fefbbab95` (the IDE reports one
+step passes except `gui-smoke`, which fails the same way on an unmodified build of `71235648eb` (the IDE reports one
 build error for Smoke.sln with no message while `mdtool build` and `dotnet build` succeed).
 
 ![System.Console in the assembly browser](T093-assembly-browser.png)

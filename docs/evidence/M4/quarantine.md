@@ -97,8 +97,8 @@ Quarantined 78 test cases (77 methods; 80 at first run) on 2026-09-23 (+1 on 202
   - 4: `project-with-wildcard-links` was a PCL project (retired project type, loaded as an unknown item); the tests
     are about wildcard links, so the fixture is now a plain C# library: `LoadProjectWithWildcardLinks*` (4).
   - 13: already fixed by earlier commits and passing 3 runs in a row. `ProxyCache` dereferenced the null that .NET's
-    `GetProxy` returns for an unproxied URI (23da988aa3): `HttpSourceAuthenticationHandlerTests` (7). One add-in
-    registry per test host (763695990b); a shared registry made C# projects load as unknown items:
+    `GetProxy` returns for an unproxied URI (03c1d8bef6): `HttpSourceAuthenticationHandlerTests` (7). One add-in
+    registry per test host (c5829b6be6); a shared registry made C# projects load as unknown items:
     `ProjectLoadSaveTests` `CreateConsoleProject`, `FrameworkAssemblyVersionNotStored`,
     `LoadSaveBuildConsoleProject`, `SetCustomPropertiesInNewProject`, `LoadSaveConsoleProjectWithEmptyGroup`,
     `ProjectTests.AddReference`.

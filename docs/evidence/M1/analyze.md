@@ -3,14 +3,14 @@
 - **Date**: 2026-09-23
 - **Inputs**: the constitution 1.2.1 (now `docs/constitution.md`), `specs/001-linux-dotnet10-migration/{spec,plan,research,data-model,quickstart,tasks}.md`,
   `contracts/*.md`, `docs/adr/0001–0019`, `docs/BREAKING-CHANGES.md`, `docs/evidence/M0–M6`, and revision 4 of this file.
-- **Repository state**: HEAD `d61af9e5b2` ("MonoDevelop.Ide.Gtk3.Tests: tests for the M5b behaviour changes, run under Xvfb").
-  Since revision 4 (`82da01c728`) there are 6 commits:
-  - `dc4ece0a56`: CI gate, T115 and T116.
-  - `e0dbd904a2`: `WorkspaceObject.Dispose`, T135.
-  - `534e664f05`: format-only change to new tests, `Tasks: none`.
-  - `e289c26bc2`: restores the line endings of 5 legacy files, `Format-only`.
-  - `1f70505bf3`: the revision-4 process fixes, T016.
-  - `d61af9e5b2`: the Ide port tests, T016 and T136.
+- **Repository state**: HEAD `531aba2910` ("MonoDevelop.Ide.Gtk3.Tests: tests for the M5b behaviour changes, run under Xvfb").
+  Since revision 4 (`2d4e47abfa`) there are 6 commits:
+  - `d5dbc51358`: CI gate, T115 and T116.
+  - `1fa2ef7072`: `WorkspaceObject.Dispose`, T135.
+  - `5d575b5045`: format-only change to new tests, `Tasks: none`.
+  - `af8781f969`: restores the line endings of 5 legacy files, `Format-only`.
+  - `9ca4038e63`: the revision-4 process fixes, T016.
+  - `531aba2910`: the Ide port tests, T016 and T136.
 
   The working tree holds uncommitted work from other sessions: Core coverage tests, GTK3 ports of Ide widget files,
   `scripts/tools/gtk3-codemod.py`, and **revision 4 of this file, which was never committed** (see H1). That work is out of
@@ -37,14 +37,14 @@ IDs are kept from revision 4. Resolved IDs are retired, and new findings get new
 
 | Rev-4 | Status in HEAD | Evidence / remainder |
 |---|---|---|
-| C1: multi-task commits not recorded | **Resolved** | Complexity Tracking row 3 lists the 7 multi-task commits made under 1.2.0 (`d9c227a5c0` … `826fdc40a4`). Constitution 1.2.1 IV and `scripts/git-commit:38-41` require a `Coupled:` line. The 4 commits that were plausibly coupled (`37b97d3037`, `d7eafe962b`, `33b3edceb6`, `c379e20b7f`) are still not named (L15) |
-| C2: M5b without tests | **Resolved** | T136 adds `main/tests/MonoDevelop.Ide.Gtk3.Tests` to the Linux sln. It has 7 tests: 2 for `SyncContext.AsyncDispatch` (the handler runs on another thread and does not block the caller) and 5 for `Gtk3ExposeEvent`/`SizeRequest` (with and without a window, context restore, natural size). `test.sh` uses `xvfb-run` when there is no display. The M5b preamble in tasks.md:147-148 requires every port task to extend these tests. Complexity Tracking records that `d7eafe962b` shipped behaviour before its tests |
-| C3: line-ending rewrites | **Resolved** | `e289c26bc2` restored all 5 files, and the whole-tree scan above finds none left. `mdedit.py` keeps each line's ending (`restore_line_endings`). `git-commit:43-53` rejects such rewrites outside `Format-only:` commits. There is a Complexity Tracking row |
-| H1: implementing during CRITICAL | **Partial** | Row 4 now covers everything up to `82da01c728`. `git-commit:55-62` refuses task commits other than T016 while analyze reports CRITICAL. The remainder is now H1 (below) |
+| C1: multi-task commits not recorded | **Resolved** | Complexity Tracking row 3 lists the 7 multi-task commits made under 1.2.0 (`b36f903e0a` … `9d75bd1e2b`). Constitution 1.2.1 IV and `scripts/git-commit:38-41` require a `Coupled:` line. The 4 commits that were plausibly coupled (`363d852fe8`, `edb27fd4fa`, `0fb033d42b`, `aa8fbbd316`) are still not named (L15) |
+| C2: M5b without tests | **Resolved** | T136 adds `main/tests/MonoDevelop.Ide.Gtk3.Tests` to the Linux sln. It has 7 tests: 2 for `SyncContext.AsyncDispatch` (the handler runs on another thread and does not block the caller) and 5 for `Gtk3ExposeEvent`/`SizeRequest` (with and without a window, context restore, natural size). `test.sh` uses `xvfb-run` when there is no display. The M5b preamble in tasks.md:147-148 requires every port task to extend these tests. Complexity Tracking records that `edb27fd4fa` shipped behaviour before its tests |
+| C3: line-ending rewrites | **Resolved** | `af8781f969` restored all 5 files, and the whole-tree scan above finds none left. `mdedit.py` keeps each line's ending (`restore_line_endings`). `git-commit:43-53` rejects such rewrites outside `Format-only:` commits. There is a Complexity Tracking row |
+| H1: implementing during CRITICAL | **Partial** | Row 4 now covers everything up to `2d4e47abfa`. `git-commit:55-62` refuses task commits other than T016 while analyze reports CRITICAL. The remainder is now H1 (below) |
 | H2: governance amendments | **Resolved** | ADR 0001 § "Amendments to the constitution" covers 1.1.0, 1.2.0 and 1.2.1, with the motivation, the impact and why each is MINOR or PATCH. T016's text now says 1.2.0. The PATCH category of 1.2.1 is debatable (L17) |
 | H3: ADR 0011 vs shim | **Resolved** | The ADR 0011 amendment allows thin, stateless helpers, names them, requires tests (T136), and sets the removal metric `grep -rlE 'Gtk3ExposeEvent\|…' main/src` → 0 by the end of M5c. T109 reports it |
 | H4: SC-003 measure and M4/M5 overlap | **Partial** | SC-003 (spec.md:247-252) now defines "whole Linux solution". The coverlet `<Exclude>` in `Test.targets` drops vendored code and tests, and `test.sh` writes a `total` line. There is a Complexity Tracking row for the overlap. The remainder is now H4 (below) |
-| M1–M18 | **Open** | None of the files involved changed. M6 has grown (T136 is in no milestone row), and so have M1 (the `git-commit` rules and `ci.sh` behaviour are missing from the contract) and M16 (see H1 on `d61af9e5b2`) |
+| M1–M18 | **Open** | None of the files involved changed. M6 has grown (T136 is in no milestone row), and so have M1 (the `git-commit` rules and `ci.sh` behaviour are missing from the contract) and M16 (see H1 on `531aba2910`) |
 | M19 (T041 gate evidence) | **Partial** | `docs/evidence/M6/README.md` now stores the gate result (850/0/9, Core 57.8%). `docs/evidence/M4/README.md` still does not exist, and `M3/README.md:42` still links to it |
 | M20 | **Open** | |
 | L1–L12, L14 | **Open** | L1 has grown: T136 was also created and checked in the commit that implements it. L3 has grown: Complexity Tracking now has 10 rows |
@@ -54,7 +54,7 @@ IDs are kept from revision 4. Resolved IDs are retired, and new findings get new
 
 | ID | Category | Severity | Location(s) | Summary | Recommendation |
 |----|----------|----------|-------------|---------|----------------|
-| H1 | Constitution (Workflow, IV) / gate integrity | HIGH | constitution.md:44-48, 101-103; plan.md Complexity Tracking row 4 ("up to 82da01c728"); `scripts/git-commit:55-62`; commits `dc4ece0a56`, `e0dbd904a2`, `d61af9e5b2`; `git show HEAD:docs/evidence/M1/analyze.md` = revision 3 | (a) `dc4ece0a56` (T115, T116) and `e0dbd904a2` (T135) were committed at 18:21, after revision 4 had reported 3 CRITICAL (18:17) and before the gate existed. Row 4 stops at `82da01c728`. (b) The gate passes any commit whose trailer contains T016. `d61af9e5b2` lists "T016, T136", with `Coupled: T136 is the remediation of … C2 (T016)`. That is a traceability reason, not the "cannot build independently" condition of IV; the two tasks build separately. (c) The gate reads the working-tree `analyze.md`, but revision 4 was never committed: HEAD still holds revision 3 ("CRITICAL issues: 2"). A fresh clone therefore gates on stale data, and T016's evidence for revision 4 is lost. | Extend row 4 to "… up to `e0dbd904a2`". In `git-commit`, accept `Analyze-fix: <finding IDs>` (checked against the IDs in `analyze.md`) for remediation commits, instead of adding T016 to the trailer. Make the gate read `git show HEAD:docs/evidence/M1/analyze.md`. Commit this revision alone as T016. |
+| H1 | Constitution (Workflow, IV) / gate integrity | HIGH | constitution.md:44-48, 101-103; plan.md Complexity Tracking row 4 ("up to 2d4e47abfa"); `scripts/git-commit:55-62`; commits `d5dbc51358`, `1fa2ef7072`, `531aba2910`; `git show HEAD:docs/evidence/M1/analyze.md` = revision 3 | (a) `d5dbc51358` (T115, T116) and `1fa2ef7072` (T135) were committed at 18:21, after revision 4 had reported 3 CRITICAL (18:17) and before the gate existed. Row 4 stops at `2d4e47abfa`. (b) The gate passes any commit whose trailer contains T016. `531aba2910` lists "T016, T136", with `Coupled: T136 is the remediation of … C2 (T016)`. That is a traceability reason, not the "cannot build independently" condition of IV; the two tasks build separately. (c) The gate reads the working-tree `analyze.md`, but revision 4 was never committed: HEAD still holds revision 3 ("CRITICAL issues: 2"). A fresh clone therefore gates on stale data, and T016's evidence for revision 4 is lost. | Extend row 4 to "… up to `1fa2ef7072`". In `git-commit`, accept `Analyze-fix: <finding IDs>` (checked against the IDs in `analyze.md`) for remediation commits, instead of adding T016 to the trailer. Make the gate read `git show HEAD:docs/evidence/M1/analyze.md`. Commit this revision alone as T016. |
 | H4 | Inconsistency / coverage (SC-003, M4 gate) | HIGH | plan.md Complexity Tracking row "M5a/M5b started while M4 was open"; `docs/evidence/M4/coverage-baseline.txt` (HEAD: `MonoDevelop.Core 57.6` only); `docs/evidence/M6/README.md` (Core 57.8%); tasks.md:108 (T056 open) | The deviation row justifies the M4/M5 overlap with "T056 is met (Core 62.8%, product total 52.4%)". HEAD does not support this: T056 is unchecked, the committed evidence says 57.6% and 57.8%, and the tests behind 62.8% are uncommitted. The ratchet file also has no `total` line, so the solution-wide half of SC-003 is still not enforced, even though `test.sh` now computes it. | Commit the coverage work together with `./scripts/test.sh --update-baseline` output (Core and `total`) and check T056 with that evidence. Otherwise, reword the row to "T056 open (57.6%); in progress". |
 | M1 | Inconsistency (contracts) | MEDIUM | contracts/scripts.md | Unchanged. It is also missing the `git-commit` rules (`Coupled:`, `Format-only:`, the analyze gate, `Analyze-override:`), the `test.sh` Xvfb fallback and `total` line, and the steps of `ci.sh`. | Update the rows (see revision 4). |
 | M2 | Coverage gap (constitution V) | MEDIUM | constitution.md:57-58; tasks.md | No task schedules the per-project legacy reformatting, although the `Format-only:` mechanism now exists. | Add the task: one format-only commit per converted project. |
@@ -71,7 +71,7 @@ IDs are kept from revision 4. Resolved IDs are retired, and new findings get new
 | M13 | Underspecification | MEDIUM | T124; quickstart.md:78 | There is no clean-install environment. | Add a clean-install profile. |
 | M14 | Proof missing | MEDIUM | tasks.md:32 (T011), 220 (T120) | Neither task has a "→" proof. | Add proofs. |
 | M15 | Ambiguity | MEDIUM | constitution.md:64 | "Shrinks over time" conflicts with "never increases per suite". | PATCH, recorded in ADR 0001. |
-| M16 | Traceability | MEDIUM | `cab48e1cc3`, `82da01c728` (T071); `d5b2fe8b70` | Cross-area codemod commits are tagged with one area's task. | Add a cross-cutting M5b codemod task. |
+| M16 | Traceability | MEDIUM | `af2ba58514`, `2d4e47abfa` (T071); `5a813532f6` | Cross-area codemod commits are tagged with one area's task. | Add a cross-cutting M5b codemod task. |
 | M17 | Coverage / terminology (VI) | MEDIUM | quarantine.md (13 `legacy-fixture` → T134); data-model.md:35-36 | PCL, Xamarin and netstandard1.x fixtures have no owning decision and are not in BREAKING-CHANGES. | Decide on support or retirement; add the category to data-model. |
 | M18 | Constitution (V ratchet) | MEDIUM | `scripts/test.sh` (`--update-baseline`) | It still overwrites the baseline even when the value drops. | Refuse decreases without an explicit override. |
 | M19 | Evidence (DoD) | MEDIUM | tasks.md:109 (T057); `docs/evidence/M3/README.md:42` | Partial: the gate result is stored in M6. `M4/README.md` is missing, and the link to it is broken. | Finish T057. |
@@ -90,8 +90,8 @@ IDs are kept from revision 4. Resolved IDs are retired, and new findings get new
 | L11 | Traceability | LOW | tasks.md:92 (T046) | The proof still lists "`AsyncLocal` delayed initialization". | Remove it. |
 | L12 | Quality gate precision | LOW | `scripts/lib.sh:30-39` | `--diff-filter=A`; duplicate `local base`. | Use `AR`; drop the duplicate. |
 | L14 | Inconsistency | LOW | quickstart.md:60 | This M5a command differs from the verified one, which `ci.sh` `gui_smoke` also uses (`dotnet main/build/samples/xwt/Gtk3Test.dll`). | Use the verified command. |
-| L15 | Traceability (C1 residual) | LOW | plan.md Complexity Tracking row 3 | `37b97d3037`, `d7eafe962b`, `33b3edceb6` and `c379e20b7f` list several tasks and predate the `Coupled:` rule. They are not named in the row. | Add them, with "coupled: builder/runtime, walking skeleton, contract tests + translations, fixtures + quarantine". |
-| L16 | Tooling | LOW | `scripts/git-commit:8-10, 44`; commits `dc4ece0a56`, `e289c26bc2`, `d61af9e5b2` | (a) The header says a `Format-only:` commit "changes nothing else", but nothing enforces it. (b) `Coupled:` and `Format-only:` are written in a paragraph after `Tasks:`, so git sees only the last block as trailers. `git log --format='%(trailers:key=Tasks)'` returns nothing for those 3 commits. | (a) With `Format-only:`, require every staged file to have 0 changes under `-w`. (b) Require `Tasks:`, `Coupled:` and `Format-only:` to sit in one final trailer block (check with `git interpret-trailers --parse`). |
+| L15 | Traceability (C1 residual) | LOW | plan.md Complexity Tracking row 3 | `363d852fe8`, `edb27fd4fa`, `0fb033d42b` and `aa8fbbd316` list several tasks and predate the `Coupled:` rule. They are not named in the row. | Add them, with "coupled: builder/runtime, walking skeleton, contract tests + translations, fixtures + quarantine". |
+| L16 | Tooling | LOW | `scripts/git-commit:8-10, 44`; commits `d5dbc51358`, `af8781f969`, `531aba2910` | (a) The header says a `Format-only:` commit "changes nothing else", but nothing enforces it. (b) `Coupled:` and `Format-only:` are written in a paragraph after `Tasks:`, so git sees only the last block as trailers. `git log --format='%(trailers:key=Tasks)'` returns nothing for those 3 commits. | (a) With `Format-only:`, require every staged file to have 0 changes under `-w`. (b) Require `Tasks:`, `Coupled:` and `Format-only:` to sit in one final trailer block (check with `git interpret-trailers --parse`). |
 | L17 | Governance (SemVer) | LOW | ADR 0001 amendments table (1.2.1 PATCH); constitution.md:47-48 | 1.2.1 adds a new obligation (a `Coupled:` line). By the Governance rule, that is closer to "materially expanding guidance" (MINOR) than to a clarification. | Record 1.2.1 as MINOR (1.3.0), or give the reason it counts as PATCH in the ADR row. |
 
 **Overflow**: none. There are 39 findings, under the limit of 50.
@@ -133,7 +133,7 @@ and a large solution (T106). Two are partial: build cancellation (M12) and a leg
 
 ## Constitution Alignment Issues
 
-- **IV**: multi-task commits are enforced and recorded. One `Coupled:` reason (`d61af9e5b2`) does not meet the "cannot build
+- **IV**: multi-task commits are enforced and recorded. One `Coupled:` reason (`531aba2910`) does not meet the "cannot build
   independently" condition, because the analyze gate pushes remediation work under T016 (H1). Trailer placement defeats
   git's trailer parsing (L16).
 - **V (NON-NEGOTIABLE)**: no open violation. The M5b test harness exists and is mandatory for every port task. Line endings
@@ -164,7 +164,7 @@ T083, T126, T128 and T133. T134 and T135 map to SC-002. T136 maps to FR-006 and 
   this file is committed**. HEAD still holds revision 3, and `scripts/git-commit` reads this file to decide whether task
   commits are allowed.
   1. Commit this file alone: `Tasks: T016`. Then check T016 in tasks.md.
-  2. H1: extend Complexity Tracking row 4 to `e0dbd904a2`. Add `Analyze-fix: <IDs>` to `git-commit`, and make the gate read
+  2. H1: extend Complexity Tracking row 4 to `1fa2ef7072`. Add `Analyze-fix: <IDs>` to `git-commit`, and make the gate read
      `HEAD:docs/evidence/M1/analyze.md`.
   3. H4: commit the coverage work with the updated ratchet file (Core and `total`) and check T056, or reword the Complexity
      Tracking row.

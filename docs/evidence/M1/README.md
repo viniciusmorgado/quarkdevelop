@@ -1,6 +1,6 @@
 # M1 evidence — specification review
 
-Three independent reviews of revision 1 of the specification artifacts (commit `b66afd6`), each
+Three independent reviews of revision 1 of the specification artifacts (commit `cf873df`), each
 read-only, with commands inside the container:
 
 | Review | Scope | Result | Summary |

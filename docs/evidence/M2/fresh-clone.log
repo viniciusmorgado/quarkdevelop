@@ -1,4 +1,4 @@
-$ git clone . ~/fc  (commit d7eafe962b)
+$ git clone . ~/fc  (commit edb27fd4fa)
 $ ./scripts/setup.sh
 ==> toolchain
 dotnet SDK 10.0.401

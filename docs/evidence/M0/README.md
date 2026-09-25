@@ -5,7 +5,7 @@ All commands ran inside the dev container (`./scripts/pm`, image built from `Con
 
 | Task | Evidence | Result |
 |---|---|---|
-| T001–T003 container + specification layout | commit `f3064b6182` | `dotnet --version` 10.0.401, `git status` works in container |
+| T001–T003 container + specification layout | commit `eab706b582` | `dotnet --version` 10.0.401, `git status` works in container |
 | T004 submodules | [inventory.md](inventory.md) § Submodules | 15/15 initialized |
 | T005 inventory | [inventory.md](inventory.md) | static blocker counts |
 | T006 GtkSharp 3 | [T006-gtk3-hello.png](T006-gtk3-hello.png), `spikes/gtk3-hello` | OK (window + Cairo under Xvfb) |
