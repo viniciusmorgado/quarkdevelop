@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See LICENSES/Apache-2.0.txt in the repository root for license information.
 
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ namespace MonoDevelop.AspNet.Razor.Generator
 {
 	// based on System.Web.Razor.Parser.MarkupRewriter
 	// Copyright (c) Microsoft Open Technologies, Inc.
-	// Licensed under the Apache License, Version 2.0
+	// Licensed under the Apache License, Version 2.0 (LICENSES/Apache-2.0.txt in the repository root)
 	//
 	// VisitBlock has been rewritten so it actually visits the children of rewritten blocks
 	//

@@ -61,6 +61,8 @@ keeps the upstream history. The code keeps the MonoDevelop names for now: assemb
 
 QuarkDevelop is licensed under the [MIT license](LICENSE), like almost all of the MonoDevelop sources. Each source file
 carries its own license header, and a few keep another license, whose text is in [`LICENSES/`](LICENSES/):
-[LGPL 2.1](LICENSES/LGPL-2.1.txt) for some workbench shell files and [Apache 2.0](LICENSES/Apache-2.0.txt) for code
-taken from NuGet and other .NET projects. Vendored components record their licenses in `main/vendor/*/UPSTREAM.md`.
+[LGPL 2.1](LICENSES/LGPL-2.1.txt) for some workbench shell files, [GPL 2.0](LICENSES/GPL-2.0.txt) for two XML schemas of
+the Xml add-in (`appconfig.xsd`, `manifest.xsd`) and [Apache 2.0](LICENSES/Apache-2.0.txt) for code taken from NuGet and
+other .NET projects. Each of these files points to its license text. Vendored components record their licenses in
+`main/vendor/*/UPSTREAM.md`.
 Authors are listed in [`docs/monodevelop/AUTHORS`](docs/monodevelop/AUTHORS).

@@ -265,7 +265,7 @@ jobs:
           <component type="desktop-application">
             <id>io.github.viniciusmorgado.MonoDevelop</id>
             <metadata_license>CC0-1.0</metadata_license>
-            <project_license>MIT AND LGPL-2.1-only AND Apache-2.0</project_license>
+            <project_license>MIT AND LGPL-2.1-or-later AND GPL-2.0-or-later AND Apache-2.0</project_license>
 
             <name>QuarkDevelop</name>
             <summary>Integrated development environment for C# and .NET</summary>
