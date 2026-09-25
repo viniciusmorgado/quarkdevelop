@@ -87,6 +87,8 @@ gui_smoke() {
 	rm -rf "$dir"
 	screenshot_has_content "$ci_out/gui-smoke/screenshot.png" || return 1
 	grep -q "New Project dialog categories: Common, Web, Test, Solution; selected Console App (C#, F#)" "$ci_out/gui-smoke/ide.log" || return 1
+	# the main menus measure themselves (their size request used to overflow the stack on the first click)
+	grep -q "main menus measured: File " "$ci_out/gui-smoke/ide.log" || return 1
 	screenshot_has_content "$ci_out/gui-smoke/new-project.png" || return 1
 	screenshot_has_content "$ci_out/gui-smoke/new-file.png" || return 1
 	return "$status"
@@ -167,6 +169,7 @@ wayland_smoke() {
 	kill "$wpid"
 	rm -rf "$dir" "$runtime"
 	grep -q "GDK display wayland-md" "$ci_out/wayland-smoke/ide.log" || return 1
+	grep -q "main menus measured: File " "$ci_out/wayland-smoke/ide.log" || return 1
 	screenshot_has_content "$ci_out/wayland-smoke/screenshot.png" || return 1
 	return "$status"
 }

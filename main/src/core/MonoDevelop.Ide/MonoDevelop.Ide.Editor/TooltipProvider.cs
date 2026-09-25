@@ -170,8 +170,11 @@ namespace MonoDevelop.Ide.Editor
 			xwtWindow.Location = CalculateWindowLocation (editor, item, xwtWindow, mouseX, mouseY, origin);
 
 			var gtkWindow = Xwt.Toolkit.Load (Xwt.ToolkitType.Gtk3).GetNativeWindow (xwtWindow) as Gtk.Window;
-			if (gtkWindow != null)
+			if (gtkWindow != null) {
+				// Without a transient parent, GTK on Wayland maps the popup as a separate top-level window
+				gtkWindow.TransientFor = ((Gtk.Widget)editor).Toplevel as Gtk.Window;
 				gtkWindow.ShowAll ();
+			}
 			else
 				xwtWindow.Show ();
 		}
