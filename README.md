@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="#history-and-license"><img src="https://img.shields.io/badge/license-MIT%20%2F%20LGPL--2.1-blue" alt="license: MIT / LGPL-2.1"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="license: MIT"></a>
 </p>
 
 ---
@@ -59,6 +59,8 @@ upstream repository (`mono/monodevelop`) was archived. This repository starts fr
 keeps the upstream history. The code keeps the MonoDevelop names for now: assemblies, namespaces, the solution
 `main/MonoDevelop.Linux.sln` and the Flatpak id.
 
-Source files carry their own license headers (MIT X11 for the MonoDevelop sources). `main/COPYING` is the LGPL 2.1
-text shipped with the upstream sources, and vendored components record theirs in `main/vendor/*/UPSTREAM.md`. Authors
-are listed in [`docs/monodevelop/AUTHORS`](docs/monodevelop/AUTHORS).
+QuarkDevelop is licensed under the [MIT license](LICENSE), like almost all of the MonoDevelop sources. Each source file
+carries its own license header, and a few keep another license, whose text is in [`LICENSES/`](LICENSES/):
+[LGPL 2.1](LICENSES/LGPL-2.1.txt) for some workbench shell files and [Apache 2.0](LICENSES/Apache-2.0.txt) for code
+taken from NuGet and other .NET projects. Vendored components record their licenses in `main/vendor/*/UPSTREAM.md`.
+Authors are listed in [`docs/monodevelop/AUTHORS`](docs/monodevelop/AUTHORS).

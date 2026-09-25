@@ -198,7 +198,10 @@ jobs:
                   path: ../../assets/icons
                   dest: icons
                 - type: file
-                  path: ../../main/COPYING
+                  path: ../../LICENSE
+                - type: dir
+                  path: ../../LICENSES
+                  dest: LICENSES
                 - type: file
                   path: monodevelop.sh
                 - type: file
@@ -227,7 +230,7 @@ jobs:
                 - install -Dm644 io.github.viniciusmorgado.MonoDevelop.desktop -t /app/share/applications
                 - install -Dm644 io.github.viniciusmorgado.MonoDevelop.metainfo.xml -t /app/share/metainfo
                 - install -Dm644 io.github.viniciusmorgado.MonoDevelop.xml -t /app/share/mime/packages
-                - install -Dm644 COPYING -t /app/share/licenses/io.github.viniciusmorgado.MonoDevelop
+                - install -Dm644 LICENSE LICENSES/* -t /app/share/licenses/io.github.viniciusmorgado.MonoDevelop
                 # The QuarkDevelop logo (assets/quark_logo.png) scaled to the hicolor PNG sizes.
                 - |
                   for size in 16 22 24 32 48 64 128 256 512; do
@@ -262,7 +265,7 @@ jobs:
           <component type="desktop-application">
             <id>io.github.viniciusmorgado.MonoDevelop</id>
             <metadata_license>CC0-1.0</metadata_license>
-            <project_license>LGPL-2.1-only AND MIT</project_license>
+            <project_license>MIT AND LGPL-2.1-only AND Apache-2.0</project_license>
 
             <name>QuarkDevelop</name>
             <summary>Integrated development environment for C# and .NET</summary>
