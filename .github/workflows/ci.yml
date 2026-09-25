@@ -53,7 +53,12 @@ jobs:
       - name: Job summary
         if: always()
         run: |
-          { echo '### CI gate'; echo '```'; cat out/ci/summary.txt 2>/dev/null || echo 'no summary'; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo '### CI gate'; echo '```'; cat out/ci/summary.txt 2>/dev/null || echo 'no summary'; echo '```'
+            if [[ -s out/ci/failures.txt ]]; then
+              echo '### Failures'; echo '```'; cat out/ci/failures.txt; echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Version
         if: always()

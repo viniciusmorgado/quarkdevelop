@@ -30,6 +30,14 @@ step() {
 		printf '%-18s ok   %4ds\n' "$name" $((SECONDS - start)) | tee -a "$summary"
 	else
 		printf '%-18s FAIL %4ds\n' "$name" $((SECONDS - start)) | tee -a "$summary"
+		# The failing tests (name, message, first stack lines) and crashed test hosts, so the job log and the job
+		# summary show the cause without downloading out/ci as an artifact.
+		grep -aE -A8 '^ +Failed [^!]|Test host process crashed|Test Run Aborted|The active test run was aborted' \
+			"$ci_out/$name.log" | head -200 > "$ci_out/failures.txt" || true
+		if [[ -s "$ci_out/failures.txt" ]]; then
+			echo "---- failures ($name) ----" >&2
+			cat "$ci_out/failures.txt" >&2
+		fi
 		tail -40 "$ci_out/$name.log" >&2
 		md_die "ci step '$name' failed (log: out/ci/$name.log)"
 	fi
