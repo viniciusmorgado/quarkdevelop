@@ -141,6 +141,12 @@ namespace MonoDevelop.Ide
 				}
 				LoggingService.LogInfo ("Smoke test: loaded {0} ({1} projects)", sln.Name, sln.GetAllProjects ().Count ());
 
+				string menuFailure = MeasureMainMenus ();
+				if (menuFailure != null) {
+					Exit (ExitFailure, menuFailure);
+					return;
+				}
+
 				// T152: MD_SMOKE_NEW_PROJECT=1 / MD_SMOKE_NEW_FILE=1 show the New Project / New File dialogs (dotnet new templates)
 				string dialogFailure = ShowTemplateDialogs (sln);
 				if (dialogFailure != null) {
@@ -388,6 +394,31 @@ namespace MonoDevelop.Ide
 			LoggingService.LogInfo ("Smoke test: go to definition of {0} opened {1} at line {2}, read-only: {3}",
 				name, IdeApp.Workbench.ActiveDocument.FileName.FileName, line?.LineNumber ?? 0, editor.IsReadOnly);
 			return null;
+		}
+
+		/// <summary>
+		/// Measures every menu of the main menu bar, as GTK does before showing one: the size request of the command
+		/// menus recursed until the stack overflowed, which closed the IDE on the first click on File, Edit, View...
+		/// Returns null on success, or what went wrong.
+		/// </summary>
+		string MeasureMainMenus ()
+		{
+			var menuBar = (IdeApp.Workbench.RootWindow as MonoDevelop.Ide.Gui.DefaultWorkbench)?.TopMenu;
+			if (menuBar == null)
+				return "the main window has no menu bar";
+			var measured = new System.Collections.Generic.List<string> ();
+			foreach (var item in menuBar.Children.OfType<Gtk.MenuItem> ()) {
+				if (!(item.Submenu is Gtk.Menu menu))
+					continue;
+				// GTK measures only visible widgets; the menu's popup window stays unmapped
+				menu.Show ();
+				menu.GetPreferredWidth (out _, out int width);
+				menu.GetPreferredHeight (out _, out int height);
+				menu.Hide ();
+				measured.Add ($"{(item.Child as Gtk.Label)?.Text} {width}x{height}");
+			}
+			LoggingService.LogInfo ("Smoke test: main menus measured: {0}", string.Join (", ", measured));
+			return measured.Count == 0 ? "the main menu bar has no menus" : null;
 		}
 
 		/// <summary>
