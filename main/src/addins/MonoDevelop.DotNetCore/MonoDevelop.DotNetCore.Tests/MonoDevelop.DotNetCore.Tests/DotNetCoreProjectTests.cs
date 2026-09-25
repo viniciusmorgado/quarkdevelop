@@ -263,7 +263,6 @@ namespace MonoDevelop.DotNetCore.Tests
 		/// tests that the correct build actions are used for different folders.
 		/// </summary>
 		[Test]
-		[Category ("Quarantine")]
 		public async Task AspNetCoreProject_DefaultBuildActions ()
 		{
 			string projectFileName = Util.GetSampleProject ("aspnetcore", "aspnetcore.csproj");
@@ -297,9 +296,10 @@ namespace MonoDevelop.DotNetCore.Tests
 				File.WriteAllText (fileName, string.Empty);
 				Assert.AreEqual ("EmbeddedResource", project.GetDefaultBuildAction (fileName));
 
+				// The .NET 10 Web SDK defines no TypeScriptCompile items (the TypeScript build is a NuGet package).
 				fileName = project.BaseDirectory.Combine ("sample.ts");
 				File.WriteAllText (fileName, string.Empty);
-				Assert.AreEqual ("TypeScriptCompile", project.GetDefaultBuildAction (fileName));
+				Assert.AreEqual ("None", project.GetDefaultBuildAction (fileName));
 
 				fileName = project.BaseDirectory.Combine ("wwwroot", "MyPage.html");
 				Directory.CreateDirectory (fileName.ParentDirectory);

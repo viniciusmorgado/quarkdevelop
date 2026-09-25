@@ -78,6 +78,10 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			if (initialized)
 				return;
 			InitializeRuntime ();
+			// Services the editor uses, initialized here, on the main thread (the text area reads the platform
+			// telemetry of the desktop service; the editor fonts come from the font service).
+			InitializeService<DesktopService> ();
+			InitializeService<MonoDevelop.Ide.Fonts.FontService> ();
 			ComposeEditorPlatform ();
 			initialized = true;
 		}
@@ -115,7 +119,8 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 
 		/// <summary>
 		/// The editor uses the MonoDevelop runtime (add-in extension points, properties, logging). It is initialized
-		/// as the IDE does, on this thread (the GTK one), with an isolated profile as UnitTests.TestHost uses.
+		/// as the IDE does, on this thread (the GTK one), with an isolated profile as UnitTests.TestHost uses, unless a
+		/// test host (IdeUnitTests.GuiTestHost) initialized it already.
 		/// </summary>
 		static void InitializeRuntime ()
 		{
@@ -142,10 +147,6 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			System.Threading.SynchronizationContext.SetSynchronizationContext (testContext);
 			// Margins and markers use Xwt images and fonts, on the GTK 3 backend as in the IDE (IdeStartup).
 			Xwt.Application.InitializeAsGuest (Xwt.ToolkitType.Gtk3);
-			// Services the editor uses, initialized here, on the main thread (the text area reads the platform
-			// telemetry of the desktop service; the editor fonts come from the font service).
-			InitializeService<DesktopService> ();
-			InitializeService<MonoDevelop.Ide.Fonts.FontService> ();
 		}
 
 		static void InitializeService<T> () where T : MonoDevelop.Core.Service

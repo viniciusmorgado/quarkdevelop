@@ -27,6 +27,7 @@
 using System;
 using System.Composition;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
@@ -65,6 +66,13 @@ namespace MonoDevelop.Ide.TypeSystem
 				if (assemblyFile != null) {
 					//if (string.IsNullOrEmpty(fullyQualifiedName) || CanResolveType(ResolveAssembly (projectId, assemblyName), fullyQualifiedName))
 					return assemblyFile;
+				}
+
+				// Roslyn asks for a simple name ("System"). The assembly context only matches full names; on Mono the GAC
+				// matched partial names, .NET has no GAC: look for the simple name among the framework's assemblies.
+				if (!assemblyName.Contains (',')) {
+					return monoProject.AssemblyContext.GetAssemblies (monoProject.TargetFramework)
+						.FirstOrDefault (a => a.Package.IsFrameworkPackage && string.Equals (a.Name, assemblyName, StringComparison.OrdinalIgnoreCase))?.Location;
 				}
 
 				return null;

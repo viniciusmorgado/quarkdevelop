@@ -38,7 +38,6 @@ namespace MonoDevelop.Ide.Gui
 	public class GLibLoggingTests
 	{
 		[Test]
-		[Category ("Quarantine")]
 		public void ValidateCrashIsSentForGLibExceptions ()
 		{
 			var old = GLibLogging.Enabled;
@@ -67,7 +66,6 @@ namespace MonoDevelop.Ide.Gui
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public void GLibLoggingHaveFullStacktracesInLog ()
 		{
 			var old = GLibLogging.Enabled;
@@ -99,10 +97,12 @@ namespace MonoDevelop.Ide.Gui
 			}
 		}
 
+		// The stack trace goes through the native g_log call back to the test: Mono's mixed-mode traces also showed the native
+		// frame (GLib.Log.g_log) and the entry point of the legacy test host (MonoDevelopProcessHost.Main); .NET shows the
+		// managed caller of the native function.
 		static void AssertGLibStackTrace(string stacktrace)
 		{
-			Assert.That (stacktrace, Contains.Substring ("at MonoDevelopProcessHost.Main"));
-			Assert.That (stacktrace, Contains.Substring ("at GLib.Log.g_log"));
+			Assert.That (stacktrace, Contains.Substring ("at GLib.Log.WriteLog"));
 			Assert.That (stacktrace, Contains.Substring ("at MonoDevelop.Ide.Gui.GLibLogging.LoggerMethod"));
 			Assert.That (stacktrace, Contains.Substring ("at MonoDevelop.Ide.Gui.GLibLoggingTests"));
 		}

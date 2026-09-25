@@ -46,7 +46,6 @@ namespace MonoDevelop.CSharpBinding
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestExpandSelection ()
 		{
 			await CheckAutoBracket (@"
@@ -57,11 +56,10 @@ class FooBar
 	{
 		var i = 5 +@ 6;
 	}
-}", doc => {
-				ExpandSelectionHandler.Run (doc);
+}", async doc => {
+				await ExpandSelectionHandler.RunAsync (doc);
 				Assert.AreEqual (74, doc.Editor.SelectionRange.Offset);
 				Assert.AreEqual (5, doc.Editor.SelectionRange.Length);
-				return Task.CompletedTask;
 			});
 		}
 
@@ -78,9 +76,9 @@ class FooBar
 		var i = 5 +@ 6;
 	}
 }", async doc => {
-				ExpandSelectionHandler.Run (doc);
+				await ExpandSelectionHandler.RunAsync (doc);
 				var selection = doc.Editor.SelectionRange;
-				ExpandSelectionHandler.Run (doc);
+				await ExpandSelectionHandler.RunAsync (doc);
 				await ShrinkSelectionHandler.Run (doc);
 				Assert.AreEqual (selection, doc.Editor.SelectionRange);
 
@@ -100,7 +98,7 @@ class FooBar
 		var i = 5 +@ 6;
 	}
 }", async doc => {
-				ExpandSelectionHandler.Run (doc);
+				await ExpandSelectionHandler.RunAsync (doc);
 				await ShrinkSelectionHandler.Run (doc);
 				await ShrinkSelectionHandler.Run (doc);
 

@@ -57,9 +57,23 @@ namespace MonoDevelop.Ide.Tasks
 			CommentTasksProvider.ResetCachedContents (null);
 		}
 
+		int taskListDelay;
+
+		[OneTimeSetUp]
+		public void ShortenTaskListDelay ()
+		{
+			taskListDelay = TypeSystem.MonoDevelopTaskListProvider.DelayMilliseconds;
+			TypeSystem.MonoDevelopTaskListProvider.DelayMilliseconds = 100;
+		}
+
+		[OneTimeTearDown]
+		public void RestoreTaskListDelay ()
+		{
+			TypeSystem.MonoDevelopTaskListProvider.DelayMilliseconds = taskListDelay;
+		}
+
 		[TestCase(false)]
 		[TestCase(true)]
-		[Category ("Quarantine")]
 		public async Task TestToDoCommentsAreReported (bool withToDos)
 		{
 			await RunTest (async helper => {
@@ -69,7 +83,6 @@ namespace MonoDevelop.Ide.Tasks
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestToDoCommentsOnFileAdded ()
 		{
 			await RunTest (async helper => {
@@ -86,7 +99,6 @@ namespace MonoDevelop.Ide.Tasks
 
 		[TestCase(false)]
 		[TestCase(true)]
-		[Category ("Quarantine")]
 		public async Task TestToDoCommentsOnWorkspaceReopen(bool withToDos)
 		{
 			await RunTest (async helper => {
@@ -100,7 +112,6 @@ namespace MonoDevelop.Ide.Tasks
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestToDoCommentsTagsChanged ()
 		{
 			await RunTest (async helper => {
@@ -132,7 +143,6 @@ namespace MonoDevelop.Ide.Tasks
 
 		[TestCase (true)]
 		[TestCase (false)]
-		[Category ("Quarantine")]
 		public async Task TestBatchedBehaviourWorks (bool withToDos)
 		{
 			await RunTest (async helper => {
@@ -149,7 +159,6 @@ namespace MonoDevelop.Ide.Tasks
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestFileChangeTriggersNotification ()
 		{
 			await RunTest (async helper => {
@@ -170,7 +179,6 @@ namespace MonoDevelop.Ide.Tasks
 
 		[TestCase(true)]
 		[TestCase(false)]
-		[Category ("Quarantine")]
 		public async Task TestCachedContentsAreReleasedIfNotQueried (bool withToDos)
 		{
 			// Simulates the use-case where the Tasks pad is not constructed.

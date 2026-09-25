@@ -122,9 +122,19 @@ namespace MonoDevelop.CSharp.Project
 		public static Func<DotNetProject, MetadataReferenceResolver> MetadataReferenceResolverProvider { get; set; }
 
 		/// <summary>
-		/// Returns the global code-analysis rule set of the IDE (set by the GUI C# binding, task T089).
+		/// Returns the global code-analysis rule set of the IDE. When it is not set, the global rule set file of the
+		/// user profile (RuleSet.global, written by MonoDevelopRuleSetManager) is read.
 		/// </summary>
 		public static Func<RuleSet> GlobalRuleSetProvider { get; set; }
+
+		static RuleSet GetGlobalRuleSet ()
+		{
+			if (GlobalRuleSetProvider != null)
+				return GlobalRuleSetProvider ();
+			// Nothing in the IDE sets the provider (the GUI binding has no start-up code on the project model path):
+			// read the file that the IDE's rule set manager keeps, as its GetGlobalRuleSet does.
+			return GetRuleSet (UserProfile.Current.ConfigDir.Combine ("RuleSet.global"));
+		}
 
 		public override CompilationOptions CreateCompilationOptions ()
 		{
@@ -196,7 +206,7 @@ namespace MonoDevelop.CSharp.Project
 		{
 			var result = new Dictionary<string, ReportDiagnostic> ();
 
-			var globalRuleSet = GlobalRuleSetProvider?.Invoke ();
+			var globalRuleSet = GetGlobalRuleSet ();
 			if (globalRuleSet != null) {
 				AddSpecificDiagnosticOptions (result, globalRuleSet);
 			}

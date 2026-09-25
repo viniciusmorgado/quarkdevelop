@@ -24,5 +24,5 @@ static MetadataReferenceResolver CreateMetadataReferenceResolver (IMetadataServi
 		}
 ```
 
-The GUI binding must also set `CSharpCompilerParameters.GlobalRuleSetProvider` to
-`IdeApp.TypeSystemService.RuleSetManager.GetGlobalRuleSet`.
+`CSharpCompilerParameters.GlobalRuleSetProvider` replaces `IdeApp.TypeSystemService.RuleSetManager.GetGlobalRuleSet`.
+When it is not set, the headless binding reads the same file (`RuleSet.global` in the profile's config folder, T135).

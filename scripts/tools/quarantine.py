@@ -49,6 +49,9 @@ RULES = [
     (r"MSB382[23]|ProjectTests\.Resources", False,
      "SDK-change", "MSBuild on .NET needs System.Resources.Extensions and GenerateResourceUsePreserializedResources for "
      "the non-string .resx resources of a .NET Framework project (MSB3822/MSB3823)", "T143"),
+    (r"MultiTargetFramework_ReloadProject_TargetFrameworksChanged", False,
+     "network", "restores netcoreapp1.1/netstandard1.0 packages from nuget.org (NU1100 under the package source mapping; "
+     "no network in tests)", "T151"),
     (r"start process 'msbuild'|Should_pack_multi_target_project", False,
      "network", "restores packages from nuget.org (msbuild /t:Restore, netstandard1.x packages; no network in tests); "
      "DependenciesNodeSdkProjectTests restores from a local feed", "T099"),

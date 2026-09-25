@@ -166,7 +166,10 @@ namespace MonoDevelop.Ide
 
 			var project = Services.ProjectService.CreateDotNetProject (data.Language);
 			project.Name = Path.GetFileNameWithoutExtension (data.ProjectFileName);
-			project.FileName = data.ProjectFileName;
+			// A relative project file name in the tests' tmp folder, whose Directory.Build.props points .NET Framework
+			// projects at the reference assemblies (Util.cs); relative to the test folder it was evaluated under main/,
+			// without them, and mscorlib and System were not resolved.
+			project.FileName = Path.IsPathRooted (data.ProjectFileName) ? data.ProjectFileName : Util.GetTmpProjectFileName (data.ProjectFileName);
 			project.Files.Add (new ProjectFile (content.FilePath, BuildAction.Compile));
 			foreach (var reference in data.References)
 				project.References.Add (ProjectReference.CreateAssemblyReference (reference));

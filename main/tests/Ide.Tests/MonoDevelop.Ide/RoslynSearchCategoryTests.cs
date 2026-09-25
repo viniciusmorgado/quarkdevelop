@@ -49,7 +49,6 @@ namespace MonoDevelop.Ide
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestConsoleProjectWorks ()
 		{
 			string solFile = Util.GetSampleProject ("console-with-libs", "console-with-libs.sln");
@@ -67,8 +66,8 @@ namespace MonoDevelop.Ide
 					Assert.AreEqual (3, results.Count);
 
 					results = await Search ("My");
-					// Should be 4: https://github.com/dotnet/roslyn/issues/29031
-					Assert.AreEqual (2, results.Count);
+					// 2 before Roslyn fixed https://github.com/dotnet/roslyn/issues/29031
+					Assert.AreEqual (4, results.Count);
 
 					results = await Search ("MC");
 					Assert.AreEqual (5, results.Count);

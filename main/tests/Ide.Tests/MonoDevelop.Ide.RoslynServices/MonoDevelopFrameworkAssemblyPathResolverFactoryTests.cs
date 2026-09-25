@@ -51,7 +51,6 @@ namespace MonoDevelop.Ide.RoslynServices
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestSimpleCase ()
 		{
 			using (var testCase = await SetupTestCase ("class MyTest {}")) {

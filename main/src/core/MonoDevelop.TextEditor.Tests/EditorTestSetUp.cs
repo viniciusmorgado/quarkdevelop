@@ -23,12 +23,15 @@
 
 using NUnit.Framework;
 
+[assembly: IdeUnitTests.GuiTestContext]
+
 namespace Mono.TextEditor
 {
 	/// <summary>
-	/// Initializes GTK, the MonoDevelop runtime, Xwt and the editor MEF composition once for the tests of the
-	/// Mono.TextEditor namespaces, on the test thread (the legacy suite ran under GuiUnit inside a full IDE
-	/// environment). Run under Xvfb.
+	/// Initializes GTK, the MonoDevelop runtime and Xwt (the IDE test host, IdeUnitTests.GuiTestHost) and the editor MEF
+	/// composition once for the tests of the Mono.TextEditor namespaces, on the test thread, which is the main thread
+	/// of the runtime and runs the GLib main loop while NUnit waits for async tests (the legacy suite ran under GuiUnit
+	/// inside a full IDE environment). Run under Xvfb.
 	/// </summary>
 	[SetUpFixture]
 	public class EditorTestSetUp
@@ -36,6 +39,7 @@ namespace Mono.TextEditor
 		[OneTimeSetUp]
 		public void InitializeEditorEnvironment ()
 		{
+			IdeUnitTests.GuiTestHost.EnsureInitialized ();
 			MonoDevelop.Ide.Gtk3.Tests.EditorTestEnvironment.EnsureInitialized ();
 		}
 	}

@@ -90,7 +90,6 @@ namespace console61
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestImportCompletionExtensionMethods ()
 		{
 			IdeApp.Preferences.AddImportedItemsToCompletionList.Value = true;
@@ -112,7 +111,6 @@ namespace console61
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestImportCompletionTypes ()
 		{
 			IdeApp.Preferences.AddImportedItemsToCompletionList.Value = true;
@@ -196,7 +194,6 @@ namespace console61
 		/// Bug 568065: Multiple identical entries for Tuple in completion list
 		/// </summary>
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestVSTSBug568065 ()
 		{
 			IdeApp.Preferences.AddImportedItemsToCompletionList.Value = true;
@@ -218,6 +215,7 @@ namespace console61
 		/// Bug 564610: code completion is broken
 		/// </summary>
 		[Test]
+		[Ignore ("Apple protocol member completion: ProtocolMemberCompletionProvider is not compiled on Linux (CSharpBinding.csproj); the test passed only while the test project had no mscorlib")]
 		public async Task TestVSTSBug564610 ()
 		{
 			IdeApp.Preferences.AddImportedItemsToCompletionList.Value = true;

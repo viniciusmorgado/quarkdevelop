@@ -56,11 +56,13 @@ namespace MonoDevelop.Ide.TypeSystem
 	/// Roslyn 5.9 removed the push-based TODO comment service (ITodoListProvider/TodoItemsUpdatedArgs, part of
 	/// EditorFeatures and driven by the solution crawler). This provider computes the items with the language's
 	/// ITaskListService for the documents of the registered workspaces when they change, and raises
-	/// <see cref="TaskListUpdated"/>.
+	/// <see cref="TaskListUpdated"/> the first time a document is computed and whenever its items change, as the
+	/// Roslyn service did (the comment tasks provider tracks every document of the workspace, with or without items).
 	/// </summary>
 	static class MonoDevelopTaskListProvider
 	{
-		const int DelayMilliseconds = 1000;
+		// How long changes are collected before the items are computed (shorter in the tests).
+		internal static int DelayMilliseconds { get; set; } = 1000;
 
 		static readonly object gate = new object ();
 		static readonly Dictionary<Workspace, WorkspaceState> workspaces = new Dictionary<Workspace, WorkspaceState> ();
@@ -125,7 +127,7 @@ namespace MonoDevelop.Ide.TypeSystem
 					if (workspaces.TryGetValue (workspace, out var state)) {
 						state.Pending.Clear ();
 						state.Versions.Clear ();
-						state.WithItems.Clear ();
+						state.Reported.Clear ();
 					}
 				}
 				break;
@@ -170,17 +172,31 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		static async Task ProcessAsync (Workspace workspace, CancellationToken token)
 		{
+			WorkspaceState state;
 			try {
 				await Task.Delay (DelayMilliseconds, token).ConfigureAwait (false);
+				lock (gate) {
+					if (!workspaces.TryGetValue (workspace, out state))
+						return;
+				}
+				// One pass at a time per workspace: a pass scheduled while another runs must not report older items.
+				await state.Processing.WaitAsync (token).ConfigureAwait (false);
 			} catch (OperationCanceledException) {
 				return;
 			}
+			try {
+				await ProcessPendingAsync (workspace, state, token).ConfigureAwait (false);
+			} finally {
+				state.Processing.Release ();
+			}
+		}
 
+		static async Task ProcessPendingAsync (Workspace workspace, WorkspaceState state, CancellationToken token)
+		{
 			DocumentId[] ids;
 			ImmutableArray<TaskListItemDescriptor> currentDescriptors;
-			WorkspaceState state;
 			lock (gate) {
-				if (!workspaces.TryGetValue (workspace, out state))
+				if (!workspaces.ContainsKey (workspace))
 					return;
 				ids = state.Pending.ToArray ();
 				state.Pending.Clear ();
@@ -198,7 +214,7 @@ namespace MonoDevelop.Ide.TypeSystem
 						bool hadItems;
 						lock (gate) {
 							state.Versions.Remove (id);
-							hadItems = state.WithItems.Remove (id);
+							hadItems = state.Reported.Remove (id, out var reported) && reported.Length > 0;
 						}
 						if (hadItems)
 							TaskListUpdated?.Invoke (null, new TaskListUpdatedEventArgs (workspace, solution, id, ImmutableArray<TaskListItem>.Empty));
@@ -222,12 +238,8 @@ namespace MonoDevelop.Ide.TypeSystem
 					bool raise;
 					lock (gate) {
 						state.Versions[id] = version;
-						if (items.Length > 0) {
-							state.WithItems.Add (id);
-							raise = true;
-						} else {
-							raise = state.WithItems.Remove (id);
-						}
+						raise = !state.Reported.TryGetValue (id, out var reported) || !reported.SequenceEqual (items);
+						state.Reported[id] = items;
 					}
 					if (raise)
 						TaskListUpdated?.Invoke (null, new TaskListUpdatedEventArgs (workspace, solution, id, items));
@@ -243,7 +255,9 @@ namespace MonoDevelop.Ide.TypeSystem
 		{
 			public readonly HashSet<DocumentId> Pending = new HashSet<DocumentId> ();
 			public readonly Dictionary<DocumentId, VersionStamp> Versions = new Dictionary<DocumentId, VersionStamp> ();
-			public readonly HashSet<DocumentId> WithItems = new HashSet<DocumentId> ();
+			// The items last reported per document (TaskListUpdated).
+			public readonly Dictionary<DocumentId, ImmutableArray<TaskListItem>> Reported = new Dictionary<DocumentId, ImmutableArray<TaskListItem>> ();
+			public readonly SemaphoreSlim Processing = new SemaphoreSlim (1, 1);
 			public readonly CancellationTokenSource CancellationTokenSource = new CancellationTokenSource ();
 			public bool Scheduled;
 

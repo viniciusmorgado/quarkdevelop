@@ -30,14 +30,15 @@ using NUnit.Framework;
 using System.Linq;
 using MonoDevelop.Ide.Editor.Extension;
 using MonoDevelop.Ide.Editor;
+using UnitTests;
 
 namespace Mono.TextEditor.Tests.Actions
 {
 	[TestFixture]
+	[RequireService (typeof (MonoDevelop.Ide.Gui.Documents.DocumentManager))]
 	sealed class NavigationExtensionTests : TextEditorTestBase
 	{
 		[Test]
-		[Category ("Quarantine")]
 		public void TestBug294858 () // [Feedback] Do NOT go to definition if Ctrl/Cmd is pressed AFTER mouse down.
 		{
 			var editor = TextEditorFactory.CreateNewEditor ();

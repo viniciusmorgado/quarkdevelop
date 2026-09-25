@@ -29,6 +29,7 @@ using MonoDevelop.Ide;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using System.Threading.Tasks;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.CSharp
 {
@@ -75,10 +76,11 @@ namespace MonoDevelop.CSharp
 			var doc = IdeApp.Workbench.ActiveDocument;
 			if (doc == null)
 				return;
-			Run (doc);
+			RunAsync (doc).Ignore ();
 		}
 
-		internal static async void Run (Ide.Gui.Document doc)
+		// A task: the selection is set after the semantic model is available.
+		internal static async Task RunAsync (Ide.Gui.Document doc)
 		{
 			var selectionRange = doc.Editor.SelectionRange;
 			var analysisDocument = doc.DocumentContext.AnalysisDocument;

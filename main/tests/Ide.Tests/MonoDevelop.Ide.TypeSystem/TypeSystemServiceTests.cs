@@ -608,7 +608,6 @@ namespace MonoDevelop.Ide.TypeSystem
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task EditorConfigFile_ModifiedInTextEditor ()
 		{
 			FilePath solFile = Util.GetSampleProject ("additional-files", "additional-files.sln");
@@ -654,7 +653,9 @@ namespace MonoDevelop.Ide.TypeSystem
 						textFileModel.SetText (contents);
 						await textFileModel.Save ();
 
-						action = () => analyzerConfigDocumentChangedCount == 2;
+						// The text change raises the event, and the save raises it once more (the file change of the open
+						// document): polling for exactly 2 missed both when they came within one interval.
+						action = () => analyzerConfigDocumentChangedCount >= 2;
 						await AssertIsTrueWithTimeout (action, "Timed out waiting for analyzer config file changed event", 100000);
 					}
 					// After the file registration is disposed the document should be closed.

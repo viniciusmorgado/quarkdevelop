@@ -61,7 +61,6 @@ namespace MonoDevelop.CSharpBinding.Tests
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task CustomCodeAnalysisRuleSetFile ()
 		{
 			FilePath solutionFileName = Util.GetSampleProject ("ruleset", "ruleset.sln");

@@ -377,6 +377,11 @@
           "Microsoft.VisualStudio.Validation": "17.13.22"
         }
       },
+      "Microsoft.Web.Xdt": {
+        "type": "Transitive",
+        "resolved": "3.2.0",
+        "contentHash": "jxdgphbXQgdrd8hid3ndsM2PnyNeMAoluYnoJqvN2lex3uyF2o2cqwJOOWoYQ6ErwgPjH0HI2ig+970izoDOTQ=="
+      },
       "Nerdbank.MessagePack": {
         "type": "Transitive",
         "resolved": "1.2.4",
@@ -486,10 +491,48 @@
         "resolved": "10.0.12",
         "contentHash": "wO0W8VDMeRJZakRySOmemAnrBZMwEFRlbfBtATxUiLf2I3IhSRnCp1Vt157NWptdE4IJ7eftd5n8q9LtaKHFTQ=="
       },
+      "ideunittests": {
+        "type": "Project",
+        "dependencies": {
+          "GtkSharp": "[3.24.24.95, )",
+          "Microsoft.VisualStudio.CoreUtilityImplementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Language.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Logic.Text.BufferUndoManager.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Logic.Text.Classification.Aggregator.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Logic.Text.Classification.LookUp.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Logic.Text.Find.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Logic.Text.Navigation.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Logic.Text.Tagging.Aggregator.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Differencing.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.EditorOptions.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Implementation.StandaloneUndo": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Model.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.MultiCaret.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Outlining.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.PatternMatching.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.UI.Text.Commanding.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.UI.Text.EditorOperations.Implementation": "[1.0.0, )",
+          "Microsoft.VisualStudio.UI.Text.EditorPrimitives.Implementation": "[1.0.0, )",
+          "Mono.Addins": "[1.4.1, )",
+          "Mono.Addins.CecilReflector": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "NUnit": "[3.14.0, )",
+          "UnitTests": "[1.0.0, )"
+        }
+      },
       "Microsoft.VisualStudio.CoreUtility": {
         "type": "Project",
         "dependencies": {
           "Microsoft.VisualStudio.Threading": "[18.7.23, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.CoreUtilityImplementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
           "System.ComponentModel.Composition": "[10.0.12, )"
         }
       },
@@ -502,6 +545,18 @@
           "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
           "Newtonsoft.Json": "[13.0.4, )",
           "StreamJsonRpc": "[2.25.29, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Language.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.Language": "[1.0.0, )",
+          "Microsoft.VisualStudio.Language.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Threading": "[18.7.23, )",
           "System.ComponentModel.Composition": "[10.0.12, )"
         }
       },
@@ -535,6 +590,73 @@
           "System.ComponentModel.Composition": "[10.0.12, )"
         }
       },
+      "Microsoft.VisualStudio.Logic.Text.BufferUndoManager.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic.Utilities": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Logic.Text.Classification.Aggregator.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Logic.Text.Classification.LookUp.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Logic.Text.Find.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Logic.Text.Navigation.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Logic.Text.Tagging.Aggregator.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
+          "Microsoft.VisualStudio.Threading": "[18.7.23, )",
+          "Microsoft.VisualStudio.Validation": "[17.13.22, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
       "Microsoft.VisualStudio.Text.Data": {
         "type": "Project",
         "dependencies": {
@@ -550,6 +672,37 @@
           "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
           "Microsoft.VisualStudio.Threading": "[18.7.23, )",
           "Microsoft.VisualStudio.Validation": "[17.13.22, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Text.Differencing.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Text.EditorOptions.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Text.Implementation.StandaloneUndo": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
           "System.ComponentModel.Composition": "[10.0.12, )"
         }
       },
@@ -585,6 +738,48 @@
           "System.ComponentModel.Composition": "[10.0.12, )"
         }
       },
+      "Microsoft.VisualStudio.Text.Model.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "Microsoft.VisualStudio.Threading": "[18.7.23, )",
+          "Microsoft.VisualStudio.Validation": "[17.13.22, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Text.MultiCaret.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI.Utilities": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Text.Outlining.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
+          "Microsoft.VisualStudio.Threading": "[18.7.23, )",
+          "Microsoft.VisualStudio.Validation": "[17.13.22, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.Text.PatternMatching.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
       "Microsoft.VisualStudio.Text.UI": {
         "type": "Project",
         "dependencies": {
@@ -601,6 +796,41 @@
           "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
           "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
           "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.UI.Text.Commanding.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI.Utilities": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.UI.Text.EditorOperations.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Logic.Utilities": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.UI.Utilities": "[1.0.0, )",
+          "System.ComponentModel.Composition": "[10.0.12, )"
+        }
+      },
+      "Microsoft.VisualStudio.UI.Text.EditorPrimitives.Implementation": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.VisualStudio.CoreUtility": "[1.0.0, )",
+          "Microsoft.VisualStudio.Text.Data": "[1.0.0, )",
           "Microsoft.VisualStudio.Text.Internal": "[1.0.0, )",
           "Microsoft.VisualStudio.Text.Logic": "[1.0.0, )",
           "Microsoft.VisualStudio.Text.UI": "[1.0.0, )",
@@ -632,6 +862,32 @@
           "Newtonsoft.Json": "[13.0.4, )",
           "System.CodeDom": "[10.0.12, )",
           "System.Configuration.ConfigurationManager": "[10.0.12, )"
+        }
+      },
+      "MonoDevelop.CSharpBinding": {
+        "type": "Project",
+        "dependencies": {
+          "Mono.Addins": "[1.4.1, )",
+          "Mono.Debugging": "[1.0.0, )",
+          "MonoDevelop.CSharpBinding.Core": "[1.0.0, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Debugger": "[1.0.0, )",
+          "MonoDevelop.DesignerSupport": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "MonoDevelop.Refactoring": "[1.0.0, )",
+          "MonoDevelop.SourceEditor": "[1.0.0, )",
+          "MonoDevelop.UnitTesting": "[1.0.0, )",
+          "Xwt": "[1.0.0, )",
+          "Xwt.Gtk3": "[1.0.0, )"
+        }
+      },
+      "monodevelop.csharpbinding.core": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "[5.9.0, 5.9.0]",
+          "Mono.Addins": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "System.CodeDom": "[10.0.12, )"
         }
       },
       "monodevelop.debugger": {
@@ -688,6 +944,41 @@
           "YamlDotNet": "[18.1.0, )"
         }
       },
+      "monodevelop.packagemanagement": {
+        "type": "Project",
+        "dependencies": {
+          "Mono.Addins": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.DesignerSupport": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "MonoDevelop.Refactoring": "[1.0.0, )",
+          "NuGet.PackageManagement": "[7.9.0, )",
+          "NuGet.Resolver": "[7.9.0, )",
+          "Xwt": "[1.0.0, )"
+        }
+      },
+      "monodevelop.refactoring": {
+        "type": "Project",
+        "dependencies": {
+          "Mono.Addins": "[1.4.1, )",
+          "Mono.Debugging": "[1.0.0, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Debugger": "[1.0.0, )",
+          "MonoDevelop.DesignerSupport": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "MonoDevelop.SourceEditor": "[1.0.0, )",
+          "Xwt": "[1.0.0, )",
+          "Xwt.Gtk3": "[1.0.0, )"
+        }
+      },
+      "monodevelop.regextoolkit": {
+        "type": "Project",
+        "dependencies": {
+          "Mono.Addins": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )"
+        }
+      },
       "monodevelop.sourceeditor": {
         "type": "Project",
         "dependencies": {
@@ -705,6 +996,17 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Build.Locator": "[1.11.2, )"
+        }
+      },
+      "monodevelop.unittesting": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.TestPlatform.TranslationLayer": "[18.10.1, )",
+          "Mono.Addins": "[1.4.1, )",
+          "MonoDevelop.Core": "[1.0.0, )",
+          "MonoDevelop.Ide": "[1.0.0, )",
+          "MonoDevelop.PackageManagement": "[1.0.0, )",
+          "Xwt": "[1.0.0, )"
         }
       },
       "MonoDevelop.Wpf.Primitives": {
@@ -853,6 +1155,15 @@
           "Newtonsoft.Json": "13.0.3"
         }
       },
+      "Microsoft.TestPlatform.TranslationLayer": {
+        "type": "CentralTransitive",
+        "requested": "[18.10.1, )",
+        "resolved": "18.10.1",
+        "contentHash": "mq0LDPGl00dPI6Qd8HK29Yv31jb0eHR729tsNRyZl6rPJMJy6kJVFmhy05wW1IZdsDnFkWi5FkyFVpaLbkunFg==",
+        "dependencies": {
+          "Microsoft.TestPlatform.ObjectModel": "18.10.1"
+        }
+      },
       "Microsoft.VisualStudio.Composition": {
         "type": "CentralTransitive",
         "requested": "[17.13.41, )",
@@ -939,6 +1250,27 @@
         "requested": "[0.6.7, )",
         "resolved": "0.6.7",
         "contentHash": "gT6bf5PVayvTuEIuM2XSNqthrtn9W+LlCX4RD//Nb4hrT3agohHvPdjpROgNGgyXDkjwE74F+EwDwqUgJCJG8A=="
+      },
+      "NuGet.PackageManagement": {
+        "type": "CentralTransitive",
+        "requested": "[7.9.0, )",
+        "resolved": "7.9.0",
+        "contentHash": "nqU1j+5EkwGnXEaOx3hvPRDJN7Fx+NKkAjBtDoiDtpSQGTQSxmwo+txfn2QQTvRlITTWdOMh0SE2mdmFryLmjg==",
+        "dependencies": {
+          "Microsoft.Web.Xdt": "3.2.0",
+          "NuGet.Commands": "7.9.0",
+          "NuGet.Resolver": "7.9.0",
+          "System.ComponentModel.Composition": "4.5.0"
+        }
+      },
+      "NuGet.Resolver": {
+        "type": "CentralTransitive",
+        "requested": "[7.9.0, )",
+        "resolved": "7.9.0",
+        "contentHash": "AeambHAB0Cq/BFR84mQvV92kPJAglFt8eVQTAYey58wEfgQaajk/RysHJVX3wP9Hr7/NfpDLIIsJdVH4Yub+og==",
+        "dependencies": {
+          "NuGet.Protocol": "7.9.0"
+        }
       },
       "SharpZipLib": {
         "type": "CentralTransitive",

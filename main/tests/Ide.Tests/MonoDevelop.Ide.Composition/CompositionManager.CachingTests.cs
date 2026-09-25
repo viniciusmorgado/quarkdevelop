@@ -33,9 +33,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Composition;
 using NUnit.Framework;
 using UnitTests;
-using System.CodeDom.Compiler;
 using System.Diagnostics;
-using Microsoft.CSharp;
+using System.Reflection.Emit;
 
 namespace MonoDevelop.Ide.Composition
 {
@@ -259,7 +258,6 @@ namespace MonoDevelop.Ide.Composition
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task TestCacheControlDataIntegrity ()
 		{
 			var caching = GetCaching ();
@@ -270,8 +268,10 @@ namespace MonoDevelop.Ide.Composition
 			Assert.That (caching.MefAssemblies, Contains.Item (typeof (CompositionManager).Assembly));
 			Assert.That (inputAssemblies, Contains.Item (typeof (CompositionManager).Assembly.GetName ().ToString ()));
 
-			Assert.That (caching.MefAssemblies, Is.Not.Contains (typeof (Console).Assembly));
-			Assert.That (inputAssemblies, Contains.Item (typeof (Console).Assembly.GetName ().ToString ()));
+			// A framework assembly that every part depends on, and no MEF assembly: mscorlib on .NET Framework (where
+			// System.Console was), System.Private.CoreLib on .NET.
+			Assert.That (caching.MefAssemblies, Is.Not.Contains (typeof (object).Assembly));
+			Assert.That (inputAssemblies, Contains.Item (typeof (object).Assembly.GetName ().ToString ()));
 		}
 
 		[TestCase (typeof (LocationCachingFaultInjector))]
@@ -286,7 +286,6 @@ namespace MonoDevelop.Ide.Composition
 		}
 
 		[Test]
-		[Category ("Quarantine")]
 		public void TestCacheWithDynamicAssembly ()
 		{
 			var asm = GenerateAssembly ();
@@ -298,15 +297,13 @@ namespace MonoDevelop.Ide.Composition
 			Assert.IsFalse (caching.CanUse (handleExceptions: true));
 		}
 
-		static Assembly GenerateAssembly()
+		static AssemblyBuilder GenerateAssembly()
 		{
-			var codeProvider = new CSharpCodeProvider ();
-			var parameters = new CompilerParameters {
-				GenerateExecutable = false,
-				GenerateInMemory = true
-			};
-			var results = codeProvider.CompileAssemblyFromSource (parameters, "public class GeneratedClass {}");
-			return results.CompiledAssembly;
+			// A dynamic assembly (no Location), as CodeDOM's in-memory compilation made on Mono; .NET has no CodeDOM
+			// compiler.
+			var assembly = AssemblyBuilder.DefineDynamicAssembly (new AssemblyName ("GeneratedAssembly"), AssemblyBuilderAccess.Run);
+			assembly.DefineDynamicModule ("GeneratedAssembly").DefineType ("GeneratedClass", TypeAttributes.Public).CreateType ();
+			return assembly;
 		}
 
 		[Test]

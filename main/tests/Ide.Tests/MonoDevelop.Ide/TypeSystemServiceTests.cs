@@ -432,7 +432,6 @@ namespace MonoDevelop.Ide
 		/// added to its parent solution.
 		/// </summary>
 		[Test]
-		[Category ("Quarantine")]
 		public async Task ProjectModifiedWhilstBeingAddedToSolution ()
 		{
 			string solFile = Util.GetSampleProject ("console-project", "ConsoleProject.sln");
@@ -445,6 +444,7 @@ namespace MonoDevelop.Ide
 					await project.SaveAsync (Util.GetMonitor ());
 					var reference = ProjectReference.CreateCustomReference (ReferenceType.Package, "System.ComponentModel.Composition");
 
+					// On .NET, XName is in System.Private.Xml.Linq.dll (System.Xml.Linq.dll only forwards the types).
 					var assemblyFileName = typeof (System.Xml.Linq.XName).Assembly.Location;
 					project.AddExtraReference (new AssemblyReference (assemblyFileName));
 
@@ -464,9 +464,9 @@ namespace MonoDevelop.Ide
 					var projectInfo = workspace.CurrentSolution.GetProject (projectId);
 					var metadataReference = projectInfo.MetadataReferences
 						.OfType<Microsoft.CodeAnalysis.PortableExecutableReference> ()
-						.FirstOrDefault (r => r.FilePath.EndsWith ("System.Xml.Linq.dll", StringComparison.Ordinal));
+						.FirstOrDefault (r => r.FilePath == assemblyFileName);
 
-					Assert.IsNotNull (metadataReference, "System.Xml.Linq reference missing from type system information");
+					Assert.IsNotNull (metadataReference, "XName assembly reference missing from type system information");
 				} finally {
 					TypeSystemServiceTestExtensions.UnloadSolution (sol);
 				}

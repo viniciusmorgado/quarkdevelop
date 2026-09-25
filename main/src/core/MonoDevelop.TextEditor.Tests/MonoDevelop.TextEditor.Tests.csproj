@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
     Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003): the Mono.TextEditor unit
-    tests (T085) on .NET 10 / GTK 3, run under Xvfb. GuiUnit is replaced by NUnit (ADR 0015). The editor runtime,
-    Xwt and the editor MEF composition come from EditorTestEnvironment (shared with MonoDevelop.Ide.Gtk3.Tests).
+    tests (T085) on .NET 10 / GTK 3, run under Xvfb. GuiUnit is replaced by NUnit (ADR 0015). GTK, the runtime and
+    Xwt come from the IDE test host (IdeUnitTests.GuiTestHost: the GLib main loop on the test thread, which is the
+    runtime's main thread), the editor MEF composition from EditorTestEnvironment (shared with
+    MonoDevelop.Ide.Gtk3.Tests).
     Output: main/build/tests/MonoDevelop.TextEditor.Tests/ (not the shared tests folder, whose add-in registry
     only has headless add-ins).
   -->
@@ -61,9 +63,14 @@
 
   <ItemGroup>
     <ProjectReference Include="../../addins/MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" />
+    <!-- The C# MIME type (text/x-csharp) of the highlighting tests is registered by the C# binding add-in; RegexToolkit
+         only so that its add-in dependencies (Refactoring -> RegexToolkit) resolve in the test registry. -->
+    <ProjectReference Include="../../addins/CSharpBinding/CSharpBinding.csproj" />
+    <ProjectReference Include="../../addins/MonoDevelop.RegexToolkit/MonoDevelop.RegexToolkit.csproj" />
     <ProjectReference Include="../MonoDevelop.Core/MonoDevelop.Core.csproj" />
     <ProjectReference Include="../MonoDevelop.Ide/MonoDevelop.Ide.csproj" />
     <ProjectReference Include="../../../tests/UnitTests/UnitTests.csproj" />
+    <ProjectReference Include="../../../tests/IdeUnitTests/IdeUnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

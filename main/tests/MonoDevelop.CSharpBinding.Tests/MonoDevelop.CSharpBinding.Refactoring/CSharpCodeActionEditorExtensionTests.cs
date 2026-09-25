@@ -44,7 +44,6 @@ namespace MonoDevelop.CSharpBinding.Refactoring
 		// These tests can hang if we don't get enough updates (i.e. code changes)
 		// So to not break CI, add a timeout to the test. These tests should take around 20s.
 		[Test]
-		[Category ("Quarantine")]
 		public async Task FixesAreReportedByExtension ()
 		{
 			var diagnostic = new ExpectedDiagnostic [] {
@@ -58,6 +57,7 @@ namespace MonoDevelop.CSharpBinding.Refactoring
 				CodeRefactoringData = new CodeActionData [] {
 					// NOTE: This will return when we implement UI for it
 					//new CodeActionData { Message = "Move to namespace..." },
+					new CodeActionData { Message = "Add 'DebuggerDisplay' attribute" },
 					new CodeActionData { Message = "Generate overrides..." },
 					new CodeActionData { Message = "Generate constructor 'MyClass()'" },
 					new CodeActionData { Message = "Rename file to MyClass.cs" },
@@ -78,7 +78,6 @@ namespace MonoDevelop.CSharpBinding.Refactoring
 		const string IDisposableImplement = "class MyClass : System.IDisposable {}";
 
 		[Test]
-		[Category ("Quarantine")]
 		public async Task FixesAreReportedForCompilerErrors ()
 		{
 			var diagnostics = new ExpectedDiagnostic [] {
@@ -91,7 +90,8 @@ namespace MonoDevelop.CSharpBinding.Refactoring
 				CodeFixData = new CodeActionData [] {
 					new CodeActionData { Message = "Implement interface" },
 					new CodeActionData { Message = "Implement interface with Dispose pattern" },
-					new CodeActionData { Message = "Implement interface explicitly" },
+					// Roslyn 5.9 (was "Implement interface explicitly").
+					new CodeActionData { Message = "Implement all members explicitly" },
 					new CodeActionData { Message = "Implement interface explicitly with Dispose pattern" },
 					new CodeActionData { Message = "Add accessibility modifiers" },
 					new CodeActionData { Message = "Fix formatting" },
@@ -99,12 +99,14 @@ namespace MonoDevelop.CSharpBinding.Refactoring
 				CodeRefactoringData = new CodeActionData [] {
 					// NOTE: This will return when we implement UI for it
 					//new CodeActionData { Message = "Move to namespace..." },
+					new CodeActionData { Message = "Add 'DebuggerDisplay' attribute" },
 					new CodeActionData { Message = "Rename file to MyClass.cs" },
 					new CodeActionData { Message = "Rename type to a" },
-				},
+				}.OrderBy (d => d.Message).ToArray (),
 			};
 
-			await RunTest (3, IDisposableImplement, async (remainingUpdates, doc) => {
+			// One update: the diagnostics are pulled (T090), see CSharpResultsEditorExtensionTests.
+			await RunTest (1, IDisposableImplement, async (remainingUpdates, doc) => {
 				if (remainingUpdates == 0) {
 					AssertExpectedDiagnostics (diagnostics, doc);
 
