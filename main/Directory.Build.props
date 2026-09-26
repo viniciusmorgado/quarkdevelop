@@ -1,3 +1,14 @@
 <Project>
+  <!--
+    The product version the code depends on (ADR 0021): msbuild/Linux/BuildVariables.targets writes it to
+    MonoDevelop.BuildInfo, which gives the add-ins their version and compatibility. Releases take their version from
+    the git tag.
+  -->
+  <PropertyGroup>
+    <MonoDevelopVersion>8.6</MonoDevelopVersion>
+    <MonoDevelopVersionLabel>8.6 Preview</MonoDevelopVersionLabel>
+    <MonoDevelopCompatVersion>8.0</MonoDevelopCompatVersion>
+  </PropertyGroup>
+
   <Import Project="$(MSBuildThisFileDirectory)msbuild/Linux/Common.props" Condition="'$(UsingMicrosoftNETSdk)' == 'true'" />
 </Project>

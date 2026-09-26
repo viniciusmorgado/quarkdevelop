@@ -108,7 +108,7 @@ Options 1 and A.
   build and IDE smoke checks (T124, `docs/evidence/M7/`). Both run in the flatpak profile; the IDE build
   they use comes from the dev profile (or is built by `package-flatpak.sh` with the same SDK when
   missing).
-- **SBOM**: CycloneDX .NET tool 6.2.0 (local tool, `dotnet-tools.json`) over
+- **SBOM**: CycloneDX .NET tool 6.2.0 (local tool, `.config/dotnet-tools.json`) over
   `main/MonoDevelop.Linux.sln` with test projects and development-only packages excluded (the NuGet
   packages whose assemblies ship in the bundle), plus the bundled .NET SDK as a component.
 

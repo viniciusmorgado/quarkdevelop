@@ -24,12 +24,12 @@ cd monodevelop
 dotnet scripts/setup.cs
 ```
 
-`setup.cs` checks the .NET SDK and GTK, restores the local dotnet tools (`dotnet-tools.json`) and installs the .NET
-Framework reference assemblies that the legacy test fixtures build against (`~/.cache/monodevelop/netfx-refasm`). It
-also installs pinned, checksum-verified releases of netcoredbg and actionlint in `~/.cache/monodevelop/tools`, linked
-from `~/.local/bin` (x64 builds; on another architecture, install them yourself). Finally, it lists the system
-packages from section 1 that are missing. It is idempotent: run it again after a pull. Add `~/.local/bin` to `PATH`
-so that the IDE finds netcoredbg; the scripts look there anyway.
+`setup.cs` checks the .NET SDK and GTK, restores the local dotnet tools (`.config/dotnet-tools.json`) and installs
+the .NET Framework reference assemblies that the legacy test fixtures build against
+(`~/.cache/monodevelop/netfx-refasm`). It also installs pinned, checksum-verified releases of netcoredbg and
+actionlint in `~/.cache/monodevelop/tools`, linked from `~/.local/bin` (x64 builds; on another architecture, install
+them yourself). Finally, it lists the system packages from section 1 that are missing. It is idempotent: run it again
+after a pull. Add `~/.local/bin` to `PATH` so that the IDE finds netcoredbg; the scripts look there anyway.
 
 ## 3. Build, test, run
 

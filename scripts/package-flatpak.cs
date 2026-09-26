@@ -226,17 +226,11 @@ static void Die (string message)
 	Environment.Exit (1);
 }
 
-// The product version (MonoDevelopVersion of main/Directory.Build.props, formerly Version= of version.config).
+// The product version: MonoDevelopVersion of main/Directory.Build.props (ADR 0021).
 static string ProductVersion (string root)
 {
-	var props = Path.Combine (root, "main", "Directory.Build.props");
-	var match = File.Exists (props) ? Regex.Match (File.ReadAllText (props), "<MonoDevelopVersion>([^<]+)</MonoDevelopVersion>") : Match.Empty;
-	if (match.Success)
-		return match.Groups[1].Value.Trim ();
-	var config = Path.Combine (root, "version.config");
-	return File.Exists (config)
-		? File.ReadLines (config).Where (line => line.StartsWith ("Version=", StringComparison.Ordinal)).Select (line => line["Version=".Length..]).FirstOrDefault () ?? ""
-		: "";
+	var match = Regex.Match (File.ReadAllText (Path.Combine (root, "main", "Directory.Build.props")), "<MonoDevelopVersion>([^<]+)</MonoDevelopVersion>");
+	return match.Success ? match.Groups[1].Value.Trim () : throw new InvalidDataException ("no MonoDevelopVersion in main/Directory.Build.props");
 }
 
 static bool WellFormed (string xml, TextWriter log)

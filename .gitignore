@@ -3,16 +3,7 @@
 
 # build outputs
 obj/
-/main/build/bin
-/main/build/AddIns
-/main/build/data/
-/main/build/locale/
-/main/build/samples/
-/main/build/tests
-/main/tests/Ide.Tests/bin
-/main/tests/MonoDevelop.Core.Tests.Addin/bin/
-/main/src/addins/MonoDevelop.Debugger/MonoDevelop.Debugger.Tests.NonUserCodeTestLib/bin
-/main/src/core/MonoDevelop.Core/BuildVariables.cs
+/main/build/
 *.binlog
 *.ProjectImports.zip
 
@@ -20,7 +11,6 @@ obj/
 /main/tests/linux-smoke/**/bin/
 
 # test outputs
-/TestResult_LoggingService.log
 /main/tests/tmp
 /main/tests/config
 test-results/
@@ -30,16 +20,11 @@ test-results/
 
 # editors and tools
 .vs
-main/.vs/
-*.suo
+.idea/
+.vscode/
 *.user
 *.userprefs
 *.usertasks
-*.pidb
-*.sln.cache
-*_Resharper.*
-*.Resharper
-*.dotCover
 *.DS_Store
 Thumbs.db
 
