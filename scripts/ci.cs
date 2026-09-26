@@ -1,4 +1,5 @@
-// The whole Linux CI gate in one script, run locally (T115); the ci workflow runs the same steps inline.
+// The whole Linux CI gate in one script, run locally (T115); the ci workflow runs the same steps inline, except the
+// smoke tests, which run only here.
 // Steps (each timed; the first failure stops the run): setup, lint, build --check (Release), duplicate-assembly check,
 // tests with coverage, vulnerability audit, mdtool smoke (build linux-smoke/Hello and linux-smoke/Modern and run them),
 // GUI smoke (the IDE's --smoke-test under Xvfb and Wayland: Smoke.sln, the Broken project, the C# 8 to 14 Modern.sln and a
