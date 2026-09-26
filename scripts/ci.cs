@@ -198,12 +198,14 @@ bool GuiSmokeModern (StreamWriter log)
 	// T146: the workspace also compiles the project with no errors (implicit usings: Console, ReadOnlySpan).
 	// T147: with the documents of the source generators ([GeneratedRegex] and System.Text.Json in Generators.cs), and go
 	// to definition of the [GeneratedRegex] method opens the generated file, read-only (the screenshot shows it).
+	// Then Return and Tab typed in Typing.cs (MD_SMOKE_TYPING) put the caret at the indentation of the code, on its line.
 	var copy = SmokeCopy ();
 	int status;
 	try {
 		var environment = SmokeEnvironment (copy, "gui-smoke-modern");
 		environment["MD_SMOKE_OPEN"] = "Modern/Patterns.cs";
 		environment["MD_SMOKE_GOTO"] = "Word";
+		environment["MD_SMOKE_TYPING"] = "Modern/Typing.cs";
 		status = RunToWriter ([.. xvfb, "dotnet", ide, "--smoke-test", "-no-redirect", Path.Combine (copy, "Modern.sln")], log, environment);
 	} finally {
 		Directory.Delete (copy, true);
@@ -213,6 +215,7 @@ bool GuiSmokeModern (StreamWriter log)
 		&& ideLog.Contains ("Patterns.cs parses as C# 14.0 with 0 syntax errors")
 		&& Regex.IsMatch (ideLog, @"Modern compiles in the workspace with 0 errors, .*\([1-9][0-9]* source-generated documents")
 		&& Regex.IsMatch (ideLog, "go to definition of Word opened RegexGenerator.g.cs at line [0-9]+, read-only: True")
+		&& ideLog.Contains ("Smoke test: typing in Typing.cs")
 		&& status == 0;
 }
 

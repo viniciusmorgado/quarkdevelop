@@ -49,3 +49,15 @@ Publicizer caveats met while porting: internal types that exist in two assemblie
 `Microsoft.CodeAnalysis.ParsedDocument` clashes with MonoDevelop's (`DoNotPublicize` in Refactoring, a `using` alias in
 CSharpBinding); events whose backing field is publicized under the same name are subscribed through reflection; internal
 abstract or sealed members of Roslyn base classes (`CommonCompletionProvider`) cannot be implemented outside Roslyn.
+
+**Amendment (2026-09-26): smart indentation and formatting while typing.** Two services of EditorFeatures had no
+replacement. The C# smart indent (the `ISmartIndentProvider` that EditorFeatures registered for the `CSharp` content
+type): `CSharpIndentationTracker` asked `ISmartIndentationService` and got nothing, so a new line started at the
+indentation of the empty line itself, column 0. The tracker now computes the indentation with Roslyn's
+`IIndentationService` (Workspaces) on the document of the buffer, with the formatting policy of the document and the
+indentation settings of the editor. And the check of the characters that format while typing
+(`SupportsFormattingOnTypedCharacter`): `EditorFormattingServiceTextEditorExtension` formatted on every key, so a letter
+or Tab reformatted the enclosing statement with the Roslyn options of the document and moved the caret, e.g. to the next
+lines. It formats again only on `;{}#nte:)`, following the format-on-typing preferences, as EditorFeatures did. The C#
+indentation tests that upstream disabled with the Cocoa editor (`CSharpTextEditorIndentationTests`) run again, and the
+GUI smoke test types Return and Tab in the IDE (`MD_SMOKE_TYPING`).
