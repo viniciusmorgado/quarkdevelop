@@ -308,6 +308,33 @@ namespace MonoDevelop.DotNetCore.Tests
 			}
 		}
 
+		/// <summary>
+		/// Each file of an ASP.NET Core project is listed once. The Web SDK includes the JSON files as Content twice, under
+		/// opposite conditions, and removes Properties/launchSettings.json from Content with Remove="@(...)": the Solution
+		/// pad showed appsettings.json twice and launchSettings.json three times.
+		/// </summary>
+		static readonly string [] AspNetCoreEmptyFiles = {
+			"Program.cs Compile",
+			"Startup.cs Compile",
+			"appsettings.json Content",
+			"appsettings.Development.json Content",
+			"Properties/launchSettings.json None",
+		};
+
+		[Test]
+		public async Task AspNetCoreProject_FilesListedOnce ()
+		{
+			string solutionFileName = Util.GetSampleProject ("aspnetcore-empty-30", "aspnetcore-empty-30.sln");
+			solution = (Solution) await Services.ProjectService.ReadWorkspaceItem (Util.GetMonitor (), solutionFileName);
+			var project = solution.GetAllProjects ().Single ();
+
+			var files = project.Files.Select (f => f.FilePath.ToRelative (project.BaseDirectory) + " " + f.BuildAction);
+			Assert.That (files, Is.EquivalentTo (AspNetCoreEmptyFiles));
+			// the Content item whose condition holds: ExcludeConfigFilesFromBuildOutput is not set
+			var appSettings = project.Files.Single (f => f.FilePath.FileName == "appsettings.json");
+			Assert.AreEqual (FileCopyMode.PreserveNewest, appSettings.CopyToOutputDirectory);
+		}
+
 		[Test]
 		public async Task DotNetCoreProject_DefaultBuildActions ()
 		{

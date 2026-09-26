@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Content Include="a.json;b.json;Properties\launchSettings.json" />
+    <None Include="a.txt;b.txt" />
+    <Excluded Include="b.txt" />
+    <Published Include="a.json" />
+    <Content Update="@(Published)" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+  <!-- As in the Web SDK: an import removes items of the importing project with item references -->
+  <Import Project="item-references.targets" />
+</Project>
