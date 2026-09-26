@@ -4,8 +4,6 @@
     <Content Include="a.json;b.json;Properties\launchSettings.json" />
     <None Include="a.txt;b.txt" />
     <Excluded Include="b.txt" />
-    <Published Include="a.json" />
-    <Content Update="@(Published)" CopyToPublishDirectory="Never" />
   </ItemGroup>
   <!-- As in the Web SDK: an import removes items of the importing project with item references -->
   <Import Project="item-references.targets" />

@@ -308,31 +308,32 @@ namespace MonoDevelop.DotNetCore.Tests
 			}
 		}
 
-		/// <summary>
-		/// Each file of an ASP.NET Core project is listed once. The Web SDK includes the JSON files as Content twice, under
-		/// opposite conditions, and removes Properties/launchSettings.json from Content with Remove="@(...)": the Solution
-		/// pad showed appsettings.json twice and launchSettings.json three times.
-		/// </summary>
-		static readonly string [] AspNetCoreEmptyFiles = {
+		static readonly string [] AspNetCoreWebFiles = {
 			"Program.cs Compile",
-			"Startup.cs Compile",
 			"appsettings.json Content",
 			"appsettings.Development.json Content",
 			"Properties/launchSettings.json None",
+			"aspnetcore-web.http None",
 		};
 
+		/// <summary>
+		/// Each file of a project of the ASP.NET Core Empty template (dotnet new web) is listed once, in its folder. The Web
+		/// SDK includes the JSON files as Content twice, under opposite conditions, and removes Properties/launchSettings.json
+		/// from Content with Remove="@(...)": the Solution pad showed appsettings.json twice and launchSettings.json three
+		/// times. The folder is the virtual path: a Link metadata, as the SDK's Update="@(Content)" sets for files outside
+		/// the project directory, would move the file.
+		/// </summary>
 		[Test]
 		public async Task AspNetCoreProject_FilesListedOnce ()
 		{
-			string solutionFileName = Util.GetSampleProject ("aspnetcore-empty-30", "aspnetcore-empty-30.sln");
-			solution = (Solution) await Services.ProjectService.ReadWorkspaceItem (Util.GetMonitor (), solutionFileName);
-			var project = solution.GetAllProjects ().Single ();
-
-			var files = project.Files.Select (f => f.FilePath.ToRelative (project.BaseDirectory) + " " + f.BuildAction);
-			Assert.That (files, Is.EquivalentTo (AspNetCoreEmptyFiles));
-			// the Content item whose condition holds: ExcludeConfigFilesFromBuildOutput is not set
-			var appSettings = project.Files.Single (f => f.FilePath.FileName == "appsettings.json");
-			Assert.AreEqual (FileCopyMode.PreserveNewest, appSettings.CopyToOutputDirectory);
+			string projectFileName = Util.GetSampleProject ("aspnetcore-web", "aspnetcore-web.csproj");
+			using (var project = (DotNetProject) await Services.ProjectService.ReadSolutionItem (Util.GetMonitor (), projectFileName)) {
+				var files = project.Files.Select (f => f.ProjectVirtualPath + " " + f.BuildAction);
+				Assert.That (files, Is.EquivalentTo (AspNetCoreWebFiles));
+				// the Content item whose condition holds: ExcludeConfigFilesFromBuildOutput is not set
+				var appSettings = project.Files.Single (f => f.FilePath.FileName == "appsettings.json");
+				Assert.AreEqual (FileCopyMode.PreserveNewest, appSettings.CopyToOutputDirectory);
+			}
 		}
 
 		[Test]
