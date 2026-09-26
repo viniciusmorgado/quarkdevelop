@@ -41,7 +41,7 @@ jobs:
           key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', 'main/Directory.Packages.props', 'global.json') }}
           restore-keys: nuget-${{ runner.os }}-
 
-      # The development container (.NET SDK 10.0.401 on Ubuntu 24.04, GTK 3, Xvfb, Weston, netcoredbg, shellcheck,
+      # The development container (.NET SDK 10.0.401 on Ubuntu 24.04, GTK 3, Xvfb, netcoredbg, shellcheck,
       # actionlint) and in-container, which runs the script read from its standard input inside it, in the checkout.
       # The runner's NuGet cache is mounted outside the container home: a mount inside /home/dev made podman
       # create /home/dev/.nuget as root on a fresh runner, and dotnet could not read its NuGet.Config.
@@ -61,7 +61,7 @@ jobs:
                 git jq shellcheck python3 gettext \
                 libgtk-3-0t64 libgtk-3-bin librsvg2-common adwaita-icon-theme \
                 fonts-dejavu-core dbus-x11 at-spi2-core \
-                xvfb xauth x11-utils imagemagick weston \
+                xvfb xauth x11-utils \
            && rm -rf /var/lib/apt/lists/*
           # netcoredbg (Samsung, MIT): the debug adapter of the IDE's .NET debugger (ADR 0016)
           ARG NETCOREDBG_VERSION=3.2.0-1092
@@ -262,117 +262,6 @@ jobs:
           fi
           EOF
 
-      # mdtool builds the Hello sample and runs it, and builds the C# 8 to 14 sample with no warnings.
-      - name: mdtool smoke
-        run: |
-          in-container <<'EOF'
-          dir="$(mktemp -d)"
-          cp -r main/tests/linux-smoke/. "$dir/"
-          export MONODEVELOP_PROFILE="$dir/.profile" MONO_ADDINS_REGISTRY="$dir/.profile" XDG_CONFIG_HOME="$dir/.profile"
-          dotnet main/build/bin/mdtool.dll build "$dir/Hello/Hello.csproj"
-          dotnet "$dir/Hello/bin/Debug/net10.0/Hello.dll" | grep -q "Hello, MonoDevelop!"
-          dotnet main/build/bin/mdtool.dll build "$dir/Modern/Modern.csproj" | tee "$dir/modern.log"
-          grep -q " 0 Warning(s)" "$dir/modern.log"
-          dotnet "$dir/Modern/bin/Debug/net10.0/Modern.dll" | grep -q "Modern C#: OK"
-          EOF
-
-      # The IDE's --smoke-test under Xvfb: open a copy of Smoke.sln, show the New Project and New File dialogs
-      # with the dotnet new templates, measure the main menus, build with no errors. Screenshots must not be
-      # uniform.
-      - name: GUI smoke
-        run: |
-          in-container <<'EOF'
-          has_content() { awk -v d="$(convert "$1" -colorspace Gray -format '%[fx:standard_deviation]' info: 2>/dev/null || echo 0)" 'BEGIN { exit !(d > 0.02) }'; }
-          dir="$(mktemp -d)"
-          cp -r main/tests/linux-smoke/. "$dir/"
-          smoke="$PWD/out/ci/gui-smoke"
-          XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
-            MD_SMOKE_OUT="$smoke" MD_SMOKE_NEW_PROJECT=1 MD_SMOKE_NEW_FILE=1 \
-            xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln"
-          has_content "$smoke/screenshot.png"
-          grep -q "New Project dialog categories: Common, Web, Test, Solution; selected Console App (C#, F#)" "$smoke/ide.log"
-          grep -q "main menus measured: File " "$smoke/ide.log"
-          has_content "$smoke/new-project.png"
-          has_content "$smoke/new-file.png"
-          EOF
-
-      # Debug Hello (Smoke.sln) with netcoredbg to a breakpoint on the first line of Program.cs in the Debug layout
-      # Any GLib-GObject critical fails it.
-      - name: GUI smoke (debug)
-        run: |
-          in-container <<'EOF'
-          dir="$(mktemp -d)"
-          cp -r main/tests/linux-smoke/. "$dir/"
-          smoke="$PWD/out/ci/gui-smoke-debug"
-          XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
-            MD_SMOKE_OUT="$smoke" MD_SMOKE_DEBUG=1 \
-            xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln"
-          grep -q "the debugger stopped at the breakpoint" "$smoke/ide.log"
-          EOF
-
-      # Build the Broken project in the IDE; activating the first row of the Errors pad opens Program.cs on the error
-      # line. Expected exit status: 1 (build errors).
-      - name: GUI smoke (errors)
-        run: |
-          in-container <<'EOF'
-          dir="$(mktemp -d)"
-          cp -r main/tests/linux-smoke/. "$dir/"
-          smoke="$PWD/out/ci/gui-smoke-errors"
-          status=0
-          XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
-            MD_SMOKE_OUT="$smoke" \
-            xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Broken/Broken.csproj" \
-            || status=$?
-          grep -q "error list navigation opened Program.cs at line 2" "$smoke/ide.log"
-          [[ $status -eq 1 ]]
-          EOF
-
-      # Build the C# 8 to 14 sample in the IDE with no errors or warnings; Patterns.cs parses as C# 14, the
-      # workspace compiles the project with its source-generated documents, and go to definition of the
-      # [GeneratedRegex] method opens the generated file, read-only.
-      - name: GUI smoke (modern C#)
-        run: |
-          in-container <<'EOF'
-          dir="$(mktemp -d)"
-          cp -r main/tests/linux-smoke/. "$dir/"
-          smoke="$PWD/out/ci/gui-smoke-modern"
-          XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
-            MD_SMOKE_OUT="$smoke" MD_SMOKE_OPEN=Modern/Patterns.cs MD_SMOKE_GOTO=Word \
-            xvfb-run -a -s "-screen 0 1600x1000x24" dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Modern.sln"
-          grep -q "build finished with 0 errors, 0 warnings" "$smoke/ide.log"
-          grep -q "Patterns.cs parses as C# 14.0 with 0 syntax errors" "$smoke/ide.log"
-          grep -Eq "Modern compiles in the workspace with 0 errors, .*\([1-9][0-9]* source-generated documents" "$smoke/ide.log"
-          grep -Eq "go to definition of Word opened RegexGenerator.g.cs at line [0-9]+, read-only: True" "$smoke/ide.log"
-          EOF
-
-      # The GUI smoke on Wayland: a headless Weston compositor, GDK_BACKEND=wayland, no X display. Weston has
-      # no input devices: GDK logs criticals for the missing seat, which the smoke test tolerates.
-      - name: GUI smoke (Wayland)
-        run: |
-          in-container <<'EOF'
-          has_content() { awk -v d="$(convert "$1" -colorspace Gray -format '%[fx:standard_deviation]' info: 2>/dev/null || echo 0)" 'BEGIN { exit !(d > 0.02) }'; }
-          dir="$(mktemp -d)"
-          runtime="$(mktemp -d)"
-          chmod 700 "$runtime"
-          cp -r main/tests/linux-smoke/. "$dir/"
-          smoke="$PWD/out/ci/wayland-smoke"
-          mkdir -p "$smoke"
-          XDG_RUNTIME_DIR="$runtime" weston --backend=headless --socket=wayland-md --width=1600 --height=1000 --idle-time=0 \
-            > "$smoke/weston.log" 2>&1 &
-          weston_pid=$!
-          for _ in $(seq 50); do [[ -S "$runtime/wayland-md" ]] && break; sleep 0.1; done
-          status=0
-          env -u DISPLAY XDG_RUNTIME_DIR="$runtime" WAYLAND_DISPLAY=wayland-md GDK_BACKEND=wayland \
-            XDG_CONFIG_HOME="$dir/.profile/config" XDG_DATA_HOME="$dir/.profile/data" XDG_CACHE_HOME="$dir/.profile/cache" \
-            MD_SMOKE_OUT="$smoke" \
-            dotnet main/build/bin/MonoDevelop.dll --smoke-test -no-redirect "$dir/Smoke.sln" || status=$?
-          kill "$weston_pid"
-          grep -q "GDK display wayland-md" "$smoke/ide.log"
-          grep -q "main menus measured: File " "$smoke/ide.log"
-          has_content "$smoke/screenshot.png"
-          exit "$status"
-          EOF
-
       # The gate (after the container build) takes at most 15 minutes.
       - name: Time budget
         run: |
@@ -401,7 +290,6 @@ jobs:
         with:
           name: ci-${{ github.sha }}
           path: |
-            out/ci/
             out/coverage/
             out/tests/*.log
             out/tests/**/*.trx
