@@ -141,3 +141,12 @@ Options 1 and A.
 - Option 2 rejected: MSBuild and NuGet cannot be loaded in process from the host through
   `flatpak-spawn`; it would need `org.freedesktop.Flatpak` (a sandbox escape) and a host SDK of the
   right version. Option 3 rejected: an IDE that cannot build out of the box fails US5.
+
+**Amendment (2026-09-25): packaging on the host.** The development container and the `flatpak` profile of `scripts/pm`
+are gone ([ADR 0028](0028-csharp-developer-scripts.md)). Local bundles are built on the host by
+`dotnet scripts/package-flatpak.cs`, and checked by `dotnet scripts/test-flatpak.cs`. The Flathub runtimes, the
+flatpak-builder state and the test installation live in `~/.cache/monodevelop/flatpak` (`MD_FLATPAK_STORE`) instead of
+the `md-flatpak` volume. The test runs in its own D-Bus session (`dbus-run-session`, with the system bus address
+exported to the activation environment as before) and gives the app a home directory of its own. The host's flatpak
+installation, its session bus and the data of an installed IDE are never used. The release workflow is unchanged:
+it builds its own Flatpak image with `--security-opt unmask=/proc/*`.

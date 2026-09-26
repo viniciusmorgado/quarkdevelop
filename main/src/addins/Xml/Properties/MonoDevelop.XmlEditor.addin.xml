@@ -4,7 +4,7 @@
 		<Import file="schemas/appconfig.xsd" />
 		<Import file="schemas/readme.txt" />
 		<Import file="schemas/XMLSchema.xsd" />
-		<Import file="schemas/W3C-License.html" />
+		<Import file="schemas/W3C-License.txt" />
 		<Import file="schemas/schema-for-xslt20.xsd" />
 		<Import file="schemas/manifest.xsd" />
 		<Import file="schemas/xml.xsd" />

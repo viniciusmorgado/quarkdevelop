@@ -82,7 +82,7 @@ namespace MonoDevelop.Debugger.Tests
 		public async Task BuildFixtureAsync ()
 		{
 			debugAdapter = NetCoreDbgLocator.FindDebugAdapter ();
-			Assert.IsNotNull (debugAdapter, "netcoredbg is not on PATH (it is installed in the development container)");
+			Assert.IsNotNull (debugAdapter, "netcoredbg is not on PATH (dotnet scripts/setup.cs installs it in ~/.local/bin)");
 
 			fixtureDirectory = Path.Combine (Path.GetTempPath (), "md-netcoredbg-tests-" + Guid.NewGuid ().ToString ("N"));
 			Directory.CreateDirectory (fixtureDirectory);

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
     The IDE executable (task T086): main/build/bin/MonoDevelop.dll, started with `dotnet MonoDevelop.dll`
-    (scripts/run.sh). net10.0, Linux only; the Windows icon, manifest and LargeAddressAware are gone.
+    (scripts/run.cs). net10.0, Linux only; the Windows icon, manifest and LargeAddressAware are gone.
   -->
   <PropertyGroup>
     <AssemblyName>MonoDevelop</AssemblyName>

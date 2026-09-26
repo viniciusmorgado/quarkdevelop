@@ -84,7 +84,7 @@ namespace MonoDevelop.Core.Assemblies
 
 		/// <summary>
 		/// Frameworks found in the reference assemblies folder (e.g. .NET Framework ones installed by
-		/// scripts/netfx-refasm.sh) get a backend: without one, the runtime initialization failed with a
+		/// scripts/netfx-refasm.cs) get a backend: without one, the runtime initialization failed with a
 		/// NullReferenceException and stopped creating frameworks.
 		/// </summary>
 		[Test]

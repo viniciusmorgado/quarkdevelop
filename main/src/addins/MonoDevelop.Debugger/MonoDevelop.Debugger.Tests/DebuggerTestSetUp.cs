@@ -42,7 +42,7 @@ namespace MonoDevelop.Debugger.Tests
 		[OneTimeSetUp]
 		public void InitializeRuntime ()
 		{
-			// DebuggingService's static state creates GTK objects (IdeApp): scripts/test.sh runs the tests under Xvfb.
+			// DebuggingService's static state creates GTK objects (IdeApp): scripts/test.cs runs the tests under Xvfb.
 			if (!string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("DISPLAY")) ||
 				!string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("WAYLAND_DISPLAY"))) {
 				Gtk.Application.Init ();

@@ -19,23 +19,24 @@ supported.
 - Removed and changed features: [`docs/BREAKING-CHANGES.md`](docs/BREAKING-CHANGES.md).
 - Decisions: [`docs/adr/`](docs/adr/); what is left to do: [`docs/future-work.md`](docs/future-work.md).
 
-Build requirements on the host: **podman** and **git** only. Everything runs in the dev container:
+Build requirements: the **.NET 10 SDK** (10.0.400 or later), **git**, gettext and GTK 3. The developer scripts are C#
+files that the .NET SDK runs directly:
 
 ```bash
-./scripts/pm ./scripts/setup.sh
-./scripts/pm ./scripts/build.sh
-./scripts/pm ./scripts/test.sh
+dotnet scripts/setup.cs
+dotnet scripts/build.cs
+dotnet scripts/test.cs
 ```
 
 Full guide: [`docs/linux/setup.md`](docs/linux/setup.md). The Flatpak bundle is built with
-`PM_PROFILE=flatpak ./scripts/pm ./scripts/package-flatpak.sh`.
+`dotnet scripts/package-flatpak.cs`.
 
 Directory organization
 ----------------------
 
  * `main`: the QuarkDevelop assemblies and add-ins. `main/MonoDevelop.Linux.sln` is the solution;
    `main/vendor` holds the forked dependencies (Xwt, vs-editor-api, …).
- * `scripts`: build, test, run and CI scripts, run inside the dev container with `./scripts/pm`.
+ * `scripts`: build, test, run and CI scripts, in C# (`dotnet scripts/<name>.cs`).
  * `docs`: documentation ([architecture](docs/architecture.md)), architecture decisions and
    [future work](docs/future-work.md).
 
@@ -43,13 +44,14 @@ Building, running and debugging
 -------------------------------
 
 ```bash
-./scripts/pm ./scripts/build.sh                 # main/build/bin and main/build/AddIns
-./scripts/pm ./scripts/test.sh                  # unit tests and coverage
-./scripts/pm ./scripts/run.sh                   # the IDE (see setup.md to show it on your desktop)
-./scripts/pm ./scripts/debug.sh ide             # the IDE under netcoredbg
+dotnet scripts/build.cs                 # main/build/bin and main/build/AddIns
+dotnet scripts/test.cs                  # unit tests and coverage
+dotnet scripts/run.cs                   # the IDE
+dotnet scripts/debug.cs -- ide          # the IDE under netcoredbg
 ```
 
-`./scripts/pm dotnet main/build/bin/mdtool.dll build <solution or project>` builds from the command line.
+Arguments for a script go after `--` (`dotnet scripts/build.cs -- -c Release`).
+`dotnet main/build/bin/mdtool.dll build <solution or project>` builds from the command line.
 Problems and their fixes: [`docs/linux/troubleshooting.md`](docs/linux/troubleshooting.md).
 
 History and license

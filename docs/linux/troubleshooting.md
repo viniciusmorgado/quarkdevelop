@@ -2,13 +2,15 @@
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `pm: building localhost/md-dev:…` on every call | `Dockerfile` changed (image tag = file hash) | expected once per change; old images can be removed with `podman image prune` |
-| `run this inside the dev container` | a `scripts/*.sh` script was started on the host | prefix with `./scripts/pm` |
-| `NU1301`/restore cannot reach a feed | only nuget.org is configured (ADR 0004) | check network/proxy inside the container: `./scripts/pm curl -I https://api.nuget.org/v3/index.json` |
+| `dotnet scripts/<name>.cs -c Release` builds in Debug, or the script stops with `unknown argument` | `dotnet` read the options itself | put the script's arguments after `--`: `dotnet scripts/build.cs -- -c Release` |
+| `A compatible .NET SDK was not found` | the .NET 10 SDK is not installed | install it: `global.json` asks for 10.0.100 or a later 10.0 feature band |
+| Package management fails in the IDE (`MissingMethodException`, `TypeLoadException` in NuGet) | the .NET SDK is older than 10.0.400 and its NuGet older than 7.9 ([ADR 0020](../adr/0020-nuget-client-version.md)) | install SDK 10.0.400 or later; `dotnet scripts/setup.cs` warns about it |
+| `msgfmt: not found` in `MonoDevelop.Translations` | gettext is not installed | install `gettext` (`dotnet scripts/setup.cs` lists the missing packages) |
+| `NU1301`/restore cannot reach a feed | only nuget.org is configured (ADR 0004) | check the network or proxy: `curl -I https://api.nuget.org/v3/index.json` |
 | `NU1902/NU1903/NU1904` errors | a package has a known vulnerability | upgrade it in `main/Directory.Packages.props` |
-| Files owned by another uid after a container run | podman without `--userns=keep-id` | use `./scripts/pm`, which sets it |
-| `git` "dubious ownership" inside the container | repository mounted with a different uid | the image sets `safe.directory '*'`; rebuild with `PM_REBUILD=1 ./scripts/pm true` |
-| GTK: `cannot open display` | no display forwarded | use `./scripts/run.sh --headless` or see setup.md §4 |
+| `The IDE tests need a display`, or GTK tests ignored with `no display` | no display and no Xvfb | install `xvfb` and `xauth`; `dotnet scripts/test.cs` then runs them under Xvfb |
+| GTK: `cannot open display` | the IDE was started without a display (e.g. over SSH) | `dotnet scripts/run.cs -- --headless` |
+| `The .NET debugger (netcoredbg) was not found`, or `netcoredbg is not installed` from `debug.cs` | netcoredbg is not installed, or not on the IDE's `PATH` | `dotnet scripts/setup.cs` installs it in `~/.local/bin`; add that directory to `PATH` |
 
 ## Logs
 
@@ -21,7 +23,7 @@
 Every host starts with a record like the one below, which names the runtime and the .NET SDK in use:
 
 ```bash
-MD_LOG_FORMAT=json MD_LOG_LEVEL=info ./scripts/pm dotnet main/build/bin/mdtool.dll -q | jq -cR 'fromjson? | select(.event == "startup")'
+MD_LOG_FORMAT=json MD_LOG_LEVEL=info dotnet main/build/bin/mdtool.dll -q | jq -cR 'fromjson? | select(.event == "startup")'
 # {"timestamp":"…","level":"info","message":"mdtool 8.6 Preview on .NET 10.0.12, .NET SDK 10.0.401, …","event":"startup","host":"mdtool","version":"8.6",…}
 ```
 

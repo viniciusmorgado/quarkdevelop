@@ -61,3 +61,9 @@ code, unhandled exception, over a net10.0 console program built by the test) and
 `MonoDevelop.DotNetCore.Tests` (`NetCoreDbgEngineTests`: a .NET SDK project's execution command is debugged
 with this engine). Debugging MonoDevelop itself: `scripts/debug.sh` and `.vscode/launch.json` (netcoredbg
 through `pipeTransport`), see `docs/linux/setup.md`.
+
+**Amendment (2026-09-25): netcoredbg on the host.** The development container is gone
+([ADR 0028](0028-csharp-developer-scripts.md)). `dotnet scripts/setup.cs` installs the same pinned release in
+`~/.cache/monodevelop/tools`, linked from `~/.local/bin`; the IDE still takes it from the property or from `PATH`.
+MonoDevelop itself is debugged with `dotnet scripts/debug.cs -- ide|mdtool`. The repository has no
+`.vscode/launch.json`; `docs/linux/setup.md` describes a `pipeTransport` configuration.

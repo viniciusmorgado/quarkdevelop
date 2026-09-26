@@ -60,7 +60,7 @@ add-in loaded in the default `AssemblyLoadContext` ([ADR 0006](adr/0006-mono-add
   `/MonoDevelop/Core/Runtimes`, `/MonoDevelop/ProjectModel/MSBuildItemTypes`, `/MonoDevelop/Ide/Pads`,
   `/MonoDevelop/Ide/Commands` and `/MonoDevelop/Ide/Composition` (the assemblies scanned for MEF parts).
 - Each add-in builds into `main/build/AddIns/<AddinBuildDir>`. References between add-ins are
-  `Private=false`, so each assembly is shipped once. `scripts/check-assemblies.sh` rejects duplicates.
+  `Private=false`, so each assembly is shipped once. `scripts/check-assemblies.cs` rejects duplicates.
 - A host finds its add-ins through a `*.addins` file next to it. The IDE scans all of `main/build/AddIns`.
   The headless hosts (`mdtool`, the Core test host) scan only `AddIns/MonoDevelop.CSharpBinding.Core`,
   which registers the C# project type without any GUI.
@@ -113,18 +113,20 @@ add-in loaded in the default `AssemblyLoadContext` ([ADR 0006](adr/0006-mono-add
 
 ## Build, test and CI
 
-Everything runs inside the dev container through `./scripts/pm`. The container is built from
-`Dockerfile`: .NET SDK 10, GTK 3, Xvfb, Weston, netcoredbg.
+Everything builds and runs on the host with the .NET 10 SDK. The developer scripts are C# file-based apps, run with
+`dotnet scripts/<name>.cs` ([ADR 0028](adr/0028-csharp-developer-scripts.md)). The headless tests and smoke tests
+also need Xvfb, Weston and ImageMagick; `dotnet scripts/setup.cs` installs netcoredbg and lists what is missing.
 
 | Script | What it does |
 |---|---|
-| `scripts/build.sh` | Runs `dotnet build main/MonoDevelop.Linux.sln`. Warnings are errors, with per-project baselines ([ADR 0018](adr/0018-warning-policy.md)); `--check` also verifies the formatting of files this fork added. |
-| `scripts/test.sh` | Runs `dotnet test`, one test assembly at a time, with `Category!=Quarantine`, coverlet coverage ([ADR 0015](adr/0015-test-framework.md)). GTK tests run under Xvfb. |
-| `scripts/run.sh`, `scripts/debug.sh` | Run the IDE (or `mdtool`), optionally under netcoredbg. |
-| `scripts/ci.sh` | The gate: setup, lint, build `--check`, duplicate-assembly check, tests, `NuGetAudit`, the mdtool smoke, and the GUI smoke tests on X11 (including Errors pad navigation) and Wayland. The budget is 900 s. |
+| `scripts/build.cs` | Runs `dotnet build main/MonoDevelop.Linux.sln`. Warnings are errors, with per-project baselines ([ADR 0018](adr/0018-warning-policy.md)); `--check` also verifies the formatting of files this fork added. |
+| `scripts/test.cs` | Runs `dotnet test`, one test assembly at a time, with `Category!=Quarantine`, coverlet coverage ([ADR 0015](adr/0015-test-framework.md)). GTK tests run under Xvfb. |
+| `scripts/run.cs`, `scripts/debug.cs` | Run the IDE (or `mdtool`), optionally under netcoredbg. |
+| `scripts/ci.cs` | The gate: setup, lint, build `--check`, duplicate-assembly check, tests, `NuGetAudit`, the mdtool smoke, and the GUI smoke tests on X11 (including Errors pad navigation) and Wayland. The budget is 900 s. |
 
-`.github/workflows/ci.yml` runs `scripts/ci.sh` in the same image, and `release.yml` publishes a release from
-`main` (ADR 0021). Dependencies are updated by hand; `NuGetAudit` and `scripts/audit.sh` flag vulnerable packages.
+`.github/workflows/ci.yml` runs the same steps inline, in a container built from the Dockerfile written in the
+workflow, and `release.yml` publishes a release from `main` (ADR 0021). Neither uses the scripts. Dependencies are
+updated by hand; `NuGetAudit` and `scripts/audit.cs` flag vulnerable packages.
 
 The IDE's `--smoke-test [sln|csproj]` option starts the IDE, opens and builds the solution, checks
 Errors pad navigation when the build fails, and writes `ide.log` and `screenshot.png`.

@@ -37,7 +37,7 @@ namespace IdeUnitTests
 	/// thread of the runtime and runs the GLib main loop while NUnit waits for async tests
 	/// (<see cref="System.Windows.Forms.WindowsFormsSynchronizationContext"/>).
 	/// Call it from a <c>[SetUpFixture]</c> in the global namespace of the test assembly; the tests must run on that
-	/// thread (<c>MDTestSingleThread</c>, main/msbuild/Linux/Test.targets). Needs a display (Xvfb in scripts/test.sh).
+	/// thread (<c>MDTestSingleThread</c>, main/msbuild/Linux/Test.targets). Needs a display (Xvfb in scripts/test.cs).
 	/// </summary>
 	public static class GuiTestHost
 	{
@@ -50,7 +50,7 @@ namespace IdeUnitTests
 				return;
 			if (string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("DISPLAY")) &&
 				string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("WAYLAND_DISPLAY")))
-				throw new InvalidOperationException ("The IDE tests need a display: run them under Xvfb (./scripts/pm ./scripts/test.sh)");
+				throw new InvalidOperationException ("The IDE tests need a display: run them under Xvfb (dotnet scripts/test.cs)");
 
 			// One profile and add-in registry per test host (output folder), as UnitTests.TestHost does.
 			var host = Path.GetFileName (Path.TrimEndingDirectorySeparator (AppContext.BaseDirectory));

@@ -67,3 +67,7 @@ the upstream README moves to `docs/monodevelop/FSharpBinding.README.md`.
   Scripts run in F# Interactive have no `fsi` object.
 - Bad: FCS 31, FSharp.Core 4.7, ExtCore and the Fantomas 3 beta are unmaintained. The move to the current FCS is future
   work (T154).
+
+**Amendment (2026-09-25):** the quarantined `Template tests.Can build netcoreapp11 MVC web app` is removed together
+with its netcoreapp1.1 fixture ([ADR 0028](0028-csharp-developer-scripts.md)). Three tests (six cases) stay
+quarantined.
