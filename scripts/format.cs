@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 var root = RepoRoot ();
@@ -15,7 +14,10 @@ if (files.Count == 0) {
 Log ($"dotnet format whitespace ({files.Count} files)");
 return Run ("dotnet", ["format", "whitespace", ".", "--folder", "--include", .. files], root);
 
-static string RepoRoot ([CallerFilePath] string script = "") => Path.GetFullPath (Path.Combine (Path.GetDirectoryName (script)!, ".."));
+// The repository root, above scripts/. dotnet gives a file-based app the directory of its file; [CallerFilePath] would be
+// /_/... when the script is compiled with ContinuousIntegrationBuild=true (package-flatpak.cs sets it for build.cs).
+static string RepoRoot () => Path.GetFullPath (Path.Combine (AppContext.GetData ("EntryPointFileDirectoryPath") as string
+	?? throw new InvalidOperationException ("run the script as a file-based app: dotnet scripts/<name>.cs"), ".."));
 
 static void Log (string message) => Console.Error.WriteLine ($"\u001b[1;34m==>\u001b[0m {message}");
 
