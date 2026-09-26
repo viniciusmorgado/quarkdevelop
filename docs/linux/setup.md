@@ -55,7 +55,7 @@ works from any directory. `dotnet` reads options such as `-c` itself, so argumen
 The solution for Linux is `main/MonoDevelop.Linux.sln`; build output goes to `main/build/bin` and
 `main/build/AddIns`. `dotnet main/build/bin/mdtool.dll build <solution or project>` builds from the command line.
 
-When `xvfb-run` is installed, the GTK tests and the GUI smoke tests run under Xvfb, as in CI, also on a desktop: no
+When `xvfb-run` is installed, the GTK tests (as in CI) and the GUI smoke tests run under Xvfb, also on a desktop: no
 test window opens there. The IDE started by `run.cs` (without `--headless`) or `debug.cs` opens on your desktop, on
 Wayland or X11.
 

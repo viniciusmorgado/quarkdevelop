@@ -124,9 +124,10 @@ also need Xvfb, Weston and ImageMagick; `dotnet scripts/setup.cs` installs netco
 | `scripts/run.cs`, `scripts/debug.cs` | Run the IDE (or `mdtool`), optionally under netcoredbg. |
 | `scripts/ci.cs` | The gate: setup, lint, build `--check`, duplicate-assembly check, tests, `NuGetAudit`, the mdtool smoke, and the GUI smoke tests on X11 (including Errors pad navigation) and Wayland. The budget is 900 s. |
 
-`.github/workflows/ci.yml` runs the same steps inline, in a container built from the Dockerfile written in the
-workflow, and `release.yml` publishes a release from `main` (ADR 0021). Neither uses the scripts. Dependencies are
-updated by hand; `NuGetAudit` and `scripts/audit.cs` flag vulnerable packages.
+`.github/workflows/ci.yml` runs the same steps inline, except the smoke tests, which run only locally, in a container
+built from the Dockerfile written in the workflow, and `release.yml` publishes a release from `main` (ADR 0021).
+Neither uses the scripts. Dependencies are updated by hand; `NuGetAudit` and `scripts/audit.cs` flag vulnerable
+packages.
 
 The IDE's `--smoke-test [sln|csproj]` option starts the IDE, opens and builds the solution, checks
 Errors pad navigation when the build fails, and writes `ide.log` and `screenshot.png`.
