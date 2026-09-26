@@ -59,9 +59,33 @@ namespace MonoDevelop.Ide.Editor.Extension
 			if (formattingService == null)
 				return result;
 
-			if (descriptor.SpecialKey != SpecialKey.Return)
+			if (descriptor.SpecialKey == SpecialKey.None && SupportsFormattingOnTypedCharacter (doc.Project.Language, descriptor.KeyChar))
 				TryFormat (formattingService, descriptor.KeyChar, Editor.CaretOffset, default (CancellationToken));
 			return result;
+		}
+
+		// The characters whose typing formats what they end, as the formatting service of Roslyn EditorFeatures offered them
+		// (CSharpFormattingInteractionService.SupportsFormattingOnTypedCharacter), which the port to Workspaces had dropped:
+		// every other key (letters, Tab, Backspace) formatted the enclosing statement too, with the caret moved away, e.g.
+		// to the next lines when Tab was pressed on a new line.
+		const string TriggerCharacters = ";{}#nte:)";
+
+		bool SupportsFormattingOnTypedCharacter (string language, char ch)
+		{
+			var preferences = IdeApp.Preferences.Roslyn.For (language);
+			bool smartIndent = Editor.Options.IndentStyle == IndentStyle.Smart || Editor.Options.IndentStyle == IndentStyle.Virtual;
+			// a brace typed at the start of a line goes to its place with smart indentation, even without formatting on typing
+			if (smartIndent && (ch == '{' || ch == '}'))
+				return true;
+			if (!preferences.AutoFormattingOnTyping)
+				return false;
+			if (ch == '}' && !preferences.AutoFormattingOnCloseBrace)
+				return false;
+			if (ch == ';' && !preferences.AutoFormattingOnSemicolon)
+				return false;
+			if ((ch == '#' || ch == 'n') && !smartIndent)
+				return false;
+			return TriggerCharacters.IndexOf (ch) >= 0;
 		}
 
 		bool TryFormat (ISyntaxFormattingService formattingService, char typedChar, int position, CancellationToken cancellationToken)

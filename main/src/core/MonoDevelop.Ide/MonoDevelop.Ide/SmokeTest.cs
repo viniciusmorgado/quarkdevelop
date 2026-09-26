@@ -42,7 +42,8 @@ namespace MonoDevelop.Ide
 	/// MD_SMOKE_OPEN=&lt;file&gt; (relative to the solution's directory) opens that file in the editor before the screenshot,
 	/// and fails the run if the IDE's workspace sees errors in it or in its project. MD_SMOKE_GOTO=&lt;method&gt; then goes
 	/// to the definition of that partial method, which a source generator implements (T147). MD_SMOKE_NEW_PROJECT=1 and
-	/// MD_SMOKE_NEW_FILE=1 show the New Project and New File dialogs after the load (T152). A critical of the GLib-GObject
+	/// MD_SMOKE_NEW_FILE=1 show the New Project and New File dialogs after the load (T152). MD_SMOKE_TYPING=&lt;file&gt; types
+	/// Return and Tab into that C# file and checks where the caret goes. A critical of the GLib-GObject
 	/// domain fails the run with 2 as well (T153).
 	/// </summary>
 	sealed class SmokeTest
@@ -184,11 +185,15 @@ namespace MonoDevelop.Ide
 				// T138: MD_SMOKE_OPEN=<file> shows that file of the solution in the editor
 				string openFailure = navigationFailure == null && debugFailure == null ? await OpenRequestedFileAsync (sln) : null;
 				SaveScreenshot ();
+				// MD_SMOKE_TYPING=<file>: Return and Tab typed in a C# file put the caret at the indentation of the code
+				string typingFailure = navigationFailure == null && debugFailure == null && openFailure == null ? await CheckTypingAsync (sln) : null;
 
 				if (navigationFailure != null)
 					Exit (ExitFailure, "error list navigation: " + navigationFailure);
 				else if (openFailure != null)
 					Exit (ExitFailure, "MD_SMOKE_OPEN: " + openFailure);
+				else if (typingFailure != null)
+					Exit (ExitFailure, "MD_SMOKE_TYPING: " + typingFailure);
 				else if (debugFailure != null)
 					Exit (ExitFailure, "debugging: " + debugFailure);
 				else if (GObjectCriticalsFailure != null)
@@ -331,6 +336,94 @@ namespace MonoDevelop.Ide
 			// let the editor draw the document and the C# binding classify it before the screenshot
 			await Task.Delay (3000);
 			return null;
+		}
+
+		/// <summary>
+		/// MD_SMOKE_TYPING=&lt;file&gt; (relative to the solution's directory, off when unset) types into that C# file as the
+		/// keyboard does: key events in the event queue of the IDE window, which reach the editor with the focus through the
+		/// input method, the extensions of the editor and its key bindings. Return at the end of the statement
+		/// <c>Console.WriteLine ("development");</c>, and at the end of a line that is only an opening parenthesis, must put
+		/// the caret at the indentation of that statement or of the first argument (Roslyn's indentation service; without it
+		/// a new line started at column 0), and Tab must then move the caret to the next tab stop of the same line. The text
+		/// is restored afterwards. Returns null on success (or when MD_SMOKE_TYPING is not set), or what went wrong.
+		/// </summary>
+		async Task<string> CheckTypingAsync (Solution sln)
+		{
+			var requested = Environment.GetEnvironmentVariable ("MD_SMOKE_TYPING");
+			if (string.IsNullOrEmpty (requested))
+				return null;
+			var file = sln.BaseDirectory.Combine (requested).FullPath;
+			if (!File.Exists (file))
+				return file + " does not exist";
+			var project = sln.GetAllProjects ().FirstOrDefault (p => p.Files.GetFile (file) != null);
+			await IdeApp.Workbench.OpenDocument (file, project, 1, 1);
+			var deadline = clock.Elapsed + TimeSpan.FromSeconds (30);
+			while (IdeApp.Workbench.ActiveDocument?.FileName != file || IdeApp.Workbench.ActiveDocument.Editor == null) {
+				if (clock.Elapsed > deadline)
+					return "could not open " + file;
+				await Task.Delay (100);
+			}
+			var editor = IdeApp.Workbench.ActiveDocument.Editor;
+			// the C# binding attaches its indentation extension, and the workspace parses the document
+			await Task.Delay (3000);
+			editor.GrabFocus ();
+			LoggingService.LogInfo ("Smoke test: typing in {0}, indented with {1}", file.FileName, editor.Options.TabsToSpaces ? editor.Options.IndentationSize + " spaces" : "tabs");
+			var text = editor.Text;
+			try {
+				return await TypeNewLineAsync (editor, line => line == "Console.WriteLine (\"development\");", 0)
+					?? await TypeNewLineAsync (editor, line => line == "(", 1);
+			} finally {
+				if (editor.Text != text)
+					editor.ReplaceText (0, editor.Length, text);
+			}
+		}
+
+		/// <summary>
+		/// Presses Return at the end of the first line whose trimmed text <paramref name="isLine"/> accepts, then Tab. The
+		/// caret must be on the new line at the indentation of the line <paramref name="alignedWith"/> lines below the
+		/// accepted one (before the new line), then at the next tab stop. Both keys are typed before the check, so that the
+		/// log shows where Tab goes even when Return went wrong.
+		/// </summary>
+		static async Task<string> TypeNewLineAsync (Editor.TextEditor editor, Func<string, bool> isLine, int alignedWith)
+		{
+			int line = Enumerable.Range (1, editor.LineCount).FirstOrDefault (n => isLine (editor.GetLineText (n).Trim ()));
+			if (line == 0)
+				return "no line to type at";
+			var typedAt = editor.GetLineText (line).Trim ();
+			// the indentation of the aligned line as the editor writes it: spaces, or tabs and then spaces
+			var aligned = editor.GetLineText (line + alignedWith);
+			int tabSize = Math.Max (1, editor.Options.TabSize);
+			int width = 0;
+			foreach (var c in aligned.Substring (0, aligned.Length - aligned.TrimStart ().Length))
+				width = c == '\t' ? width + tabSize - width % tabSize : width + 1;
+			bool spaces = editor.Options.TabsToSpaces;
+			int column = 1 + (spaces ? width : width / tabSize + width % tabSize);
+			int tabStop = spaces ? 1 + (width / tabSize + 1) * tabSize : column + 1;
+
+			editor.CaretLocation = new Editor.DocumentLocation (line, editor.GetLine (line).Length + 1);
+			await TypeKeyAsync (Gdk.Key.Return);
+			var afterReturn = editor.CaretLocation;
+			await TypeKeyAsync (Gdk.Key.Tab);
+			var afterTab = editor.CaretLocation;
+			LoggingService.LogInfo ("Smoke test: Return after {0} put the caret at {1}:{2} (expected {3}:{4}), then Tab at {5}:{6} (expected {3}:{7})",
+				typedAt, afterReturn.Line, afterReturn.Column, line + 1, column, afterTab.Line, afterTab.Column, tabStop);
+			if (afterReturn.Line != line + 1 || afterReturn.Column != column)
+				return $"Return after {typedAt} put the caret at {afterReturn.Line}:{afterReturn.Column}, not {line + 1}:{column}";
+			if (afterTab.Line != line + 1 || afterTab.Column != tabStop)
+				return $"Tab after that put the caret at {afterTab.Line}:{afterTab.Column}, not {line + 1}:{tabStop}";
+			return null;
+		}
+
+		/// <summary>
+		/// A key typed as the keyboard does: a press and a release event in the event queue of the IDE window, which the main
+		/// loop delivers to the widget with the focus.
+		/// </summary>
+		static async Task TypeKeyAsync (Gdk.Key key)
+		{
+			var window = IdeApp.Workbench.RootWindow.GdkWindow;
+			foreach (var type in new[] { Gdk.EventType.KeyPress, Gdk.EventType.KeyRelease })
+				Gdk.EventHelper.Put (Components.GtkUtil.CreateKeyEvent ((uint)key, Gdk.ModifierType.None, type, window));
+			await Task.Delay (500);
 		}
 
 		/// <summary>
