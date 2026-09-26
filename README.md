@@ -4,13 +4,14 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="license: MIT"></a>
+  <a href="https://github.com/viniciusmorgado/quarkdevelop/actions/workflows/ci.yml?query=branch%3Adevelop"><img src="https://img.shields.io/github/actions/workflow/status/viniciusmorgado/quarkdevelop/ci.yml?branch=develop&amp;label=CI" alt="CI"></a>
 </p>
 
 ---
 
-**An IDE for C# and .NET on Linux, running on .NET 10 LTS and GTK 3**
+**An IDE for C# and F# on Linux, running on .NET 10 LTS and GTK 3**
 
-QuarkDevelop is an integrated development environment for C# and .NET. It is a Linux-only continuation of
+QuarkDevelop is an integrated development environment for C# and F#. It is a Linux-only continuation of
 MonoDevelop 8.6: it runs on **.NET 10 LTS** (CoreCLR, no Mono) with a **GTK 3** interface on X11 and Wayland, and it
 builds and debugs SDK-style .NET projects with the installed .NET SDK and netcoredbg. macOS and Windows are not
 supported.
@@ -35,8 +36,8 @@ Directory organization
  * `main`: the QuarkDevelop assemblies and add-ins. `main/MonoDevelop.Linux.sln` is the solution;
    `main/vendor` holds the forked dependencies (Xwt, vs-editor-api, …).
  * `scripts`: build, test, run and CI scripts, run inside the dev container with `./scripts/pm`.
- * `docs`, `specs`: documentation ([architecture](docs/architecture.md)), architecture decisions, the
-   migration plan and [future work](docs/future-work.md).
+ * `docs`: documentation ([architecture](docs/architecture.md)), architecture decisions and
+   [future work](docs/future-work.md).
 
 Building, running and debugging
 -------------------------------

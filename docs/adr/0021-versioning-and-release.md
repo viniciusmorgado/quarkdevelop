@@ -68,3 +68,10 @@ Decided by the maintainer after `v0.1.0-linux`, on the model of the rusteal repo
 - CodeQL and Dependabot are removed; dependencies and actions are updated by hand, and `NuGetAudit` with
   `scripts/audit.sh` still flags vulnerable packages.
 - Merging the pull request into `main` is the maintainer's authorization to release.
+
+## Amendment 2026-09-25: product version in MSBuild
+
+The product version moves from `version.config` to `main/Directory.Build.props`, next to the build that uses it:
+`MonoDevelopVersion` (8.6), `MonoDevelopVersionLabel` (8.6 Preview) and `MonoDevelopCompatVersion` (8.0). The values
+are unchanged. `IsPreview` and `IsMajorPreview`, which nothing read, are dropped. Since the file is under `main/`, a
+change to it now counts as a change that goes into the Flatpak.
