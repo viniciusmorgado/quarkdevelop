@@ -70,6 +70,8 @@ namespace MonoDevelop.AnalysisCore.Gui
 				Add (fr);
 				ext.FixesMenuClosed += Ext_FixesMenuClosed;
 
+				// Without a transient parent, GTK on Wayland maps the popup as a separate top-level window
+				TransientFor = sourceEditorView.TextEditor.Toplevel as Gtk.Window;
 				ShowAll ();
 			}
 
