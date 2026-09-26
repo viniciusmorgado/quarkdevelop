@@ -67,7 +67,7 @@
       Missing XML doc comments are not tracked (the legacy code base never enforced them).
     -->
     <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
-    <!-- New warnings are errors; legacy IDs are listed per project in warning-baselines/ (see scripts/warnings-baseline.sh). -->
+    <!-- New warnings are errors; legacy IDs are listed per project in warning-baselines/ (see scripts/warnings-baseline.cs). -->
     <TreatWarningsAsErrors Condition="'$(TreatWarningsAsErrors)' == ''">true</TreatWarningsAsErrors>
   </PropertyGroup>
 

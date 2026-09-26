@@ -109,7 +109,7 @@
     <None Include="schemas/appconfig.xsd" CopyToOutputDirectory="PreserveNewest" />
     <None Include="schemas/manifest.xsd" CopyToOutputDirectory="PreserveNewest" />
     <None Include="schemas/readme.txt" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="schemas/W3C-License.html" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="schemas/W3C-License.txt" CopyToOutputDirectory="PreserveNewest" />
     <None Include="schemas/XMLSchema.xsd" CopyToOutputDirectory="PreserveNewest" />
     <None Include="schemas/schema-for-xslt20.xsd" CopyToOutputDirectory="PreserveNewest" />
     <None Include="schemas/xml.xsd" CopyToOutputDirectory="PreserveNewest" />

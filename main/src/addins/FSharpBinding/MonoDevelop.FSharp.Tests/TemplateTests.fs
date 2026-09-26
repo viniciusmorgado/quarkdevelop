@@ -165,47 +165,6 @@ type ``Template tests``() =
             proj.IsPortableLibrary |> should equal true
         } |> toTask
 
-    [<Test;AsyncStateMachine(typeof<Task>)>]
-    // Quarantine (T134): a netcoreapp1.1 fixture, a retired target framework
-    [<Category("Quarantine")>]
-    member x.``Can build netcoreapp11 MVC web app``()=
-        async {
-            let projectPath = UnitTests.Util.GetSampleProject ("fsharp-aspnetcoremvc11", "aspnetcoremvc11.sln")
-
-            let! w = Services.ProjectService.ReadWorkspaceItem (monitor, FilePath(projectPath)) |> Async.AwaitTask
-
-            use solution = w :?> Solution
-
-            let project =
-                solution.Items
-                |> Seq.ofType<DotNetProject>
-                |> Seq.head
-
-            let! res = project.RunTarget(monitor, "Restore", ConfigurationSelector.Default)
-            do! project.ReevaluateProject (monitor)
-
-            let fsharpFiles =
-                project.Files
-                |> Seq.filter(fun f -> f.FilePath.Extension = ".fs")
-                |> Seq.map(fun f -> f.IsImported)
-
-            fsharpFiles |> Seq.length |> should equal 3
-            fsharpFiles |> Seq.iter(fun imported -> imported |> should equal false)
-
-            let wwwrootFiles =
-                project.Files
-                |> Seq.filter(fun f -> f.FilePath.ToString().Contains("wwwroot"))
-                |> Seq.map(fun f -> f.IsImported)
-
-            wwwrootFiles |> Seq.length |> should equal 41
-            wwwrootFiles |> Seq.iter(fun imported -> imported |> should equal true)
-
-            for error in getErrorsForProject solution do
-                Assert.Fail (sprintf "%A" error)
-
-            Assert.Pass()
-        } |> toTask
-
     [<Ignore("Currently not testable as SDK project is dependent on wizard being ran");AsyncStateMachine(typeof<Task>)>]member x.``Xamarin Forms FSharp FormsApp``()= testWithParameters "Xamarin.Forms.FSharp.FormsApp" "Xamarin.Forms.FSharp.FormsApp" "SafeUserDefinedProjectName=Xamarin_Forms_FSharp_FormsApp_Shared"
     [<Test;AsyncStateMachine(typeof<Task>)>]member x.``FSharpPortableLibrary``()= test "FSharpPortableLibrary"
     [<Test;AsyncStateMachine(typeof<Task>)>]member x.``Xamarin Forms FSharp ClassLibrary``()= test "Xamarin.Forms.FSharp.ClassLibrary"

@@ -44,3 +44,8 @@ behaviour-free commits (`scripts/format.sh <files>`).
 - Good: any new kind of warning fails the build immediately; legacy warnings stay visible.
 - Bad: new *instances* of an already-baselined ID are not caught — mitigated by the per-ID counts
   reviewed at each milestone.
+
+**Amendment (2026-09-25): C# scripts.** The scripts are C# since [ADR 0028](0028-csharp-developer-scripts.md):
+`dotnet scripts/warnings-baseline.cs -- <project>` writes the baseline, `dotnet scripts/build.cs -- --check`
+verifies the formatting of the files that `NewCSharpFiles` lists (in `build.cs` and `format.cs`), and
+`dotnet scripts/format.cs -- <files>` reformats them. The rules are unchanged.

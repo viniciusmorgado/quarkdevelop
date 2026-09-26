@@ -63,9 +63,9 @@
   <!--
     Not compiled: CredentialsDialog.cs and Gui/MonoDevelop.VersionControl.Git.CredentialsDialog.cs (the old Stetic dialog;
     nothing creates it since XwtCredentialsDialog replaced it, and it used the fork's SSH credential types).
-    Not used on Linux: MonoDevelop.VersionControl.Git.Win32.addin.xml (Windows-only manifest importing git2-*.dll),
-    build_libgit2.sh (built libgit2 from the removed main/external/libgit2 submodule) and the libgit-binary
-    license files (that submodule is removed too; the LibGit2Sharp.NativeBinaries package carries its own notices).
+    Not used on Linux: MonoDevelop.VersionControl.Git.Win32.addin.xml (Windows-only manifest importing git2-*.dll) and
+    the libgit-binary license files (the submodule is removed; the LibGit2Sharp.NativeBinaries package carries its own
+    notices).
   -->
 
   <ItemGroup>

@@ -18,7 +18,7 @@ Compared with MonoDevelop 8.6:
 - The build system is `dotnet build` on `main/MonoDevelop.Linux.sln`, which replaces `main/Main.sln`
   ([ADR 0002](adr/0002-linux-solution.md)). The legacy build files are removed: `configure`, the
   `Makefile`s and `Makefile.am`s, `configure.ac`, `autogen.sh`, `profiles/`, `version-checks`,
-  `winbuild*.bat`, `main/mdtool.in`/`main/monodevelop.in` launchers (use `scripts/run.sh`), the macOS
+  `winbuild*.bat`, `main/mdtool.in`/`main/monodevelop.in` launchers (use `dotnet scripts/run.cs`), the macOS
   app bundle files (`main/build/MacOSX`) and `setup/` (Windows installer, Mono libraries).
 - Translations: `main/po/MonoDevelop.Translations.csproj` compiles the `.po` catalogs into
   `main/build/locale` (T048). It replaces the autotools `po/Makefile.am`, including its `gettext-update`
@@ -60,7 +60,7 @@ distribution packages of MonoDevelop 8.6:
 | Property editor (Xamarin.PropertyEditing) | removed (Mac-only UI) |
 | New Cocoa/WPF text editor (`MonoDevelop.TextEditor`) | removed; the GTK source editor remains |
 | Windows installer (`setup/WixSetup`) | removed |
-| `./configure`, `scripts/configure.*`, `winbuild*.bat`, autotools `make` targets | removed (use `scripts/*.sh`) |
+| `./configure`, `scripts/configure.*`, `winbuild*.bat`, autotools `make` targets | removed (use `dotnet scripts/<name>.cs`) |
 | `mdtool` tools `run-md-tests`, `update-perf-baseline`, `generate-makefiles`, `gsetup` | removed |
 | ASP.NET Core project support (`MonoDevelop.AspNetCore`: launch profiles, development certificate, publish, scaffolding) | deferred: to be ported |
 | NuGet Package options of SDK projects (`MonoDevelop.Packaging`) | deferred: to be ported; the Xamarin `.nuproj` packaging projects are removed |

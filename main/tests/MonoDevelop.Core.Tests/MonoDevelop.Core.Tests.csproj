@@ -27,7 +27,6 @@
     <Compile Include="MonoDevelop.Projects/GetSourceFilesAsyncTests.cs" />
     <Compile Include="MonoDevelop.Projects/ItemMetadataTests.cs" />
     <Compile Include="MonoDevelop.Projects/LocalCopyTests.cs" />
-    <Compile Include="MonoDevelop.Projects/MakefileTests.cs" />
     <Compile Include="MonoDevelop.Projects/MSBuildGlobTests.cs" />
     <Compile Include="MonoDevelop.Projects/MSBuildLoggerTests.cs" />
     <Compile Include="MonoDevelop.Projects/MSBuildProjectServiceTests.cs" />

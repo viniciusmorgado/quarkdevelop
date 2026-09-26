@@ -45,7 +45,7 @@ Listed per commit in `git log -- main/vendor/vs-editor-api`; summary:
   - `System.Windows.Media`: `ImageSource`, `Geometry`, `RectangleGeometry`, `GeometryGroup`.
 
   It is deliberately not called `WindowsBase`, because .NET ships a `WindowsBase` facade.
-  `scripts/check-assemblies.sh` fails if a built assembly shadows a framework assembly.
+  `scripts/check-assemblies.cs` fails if a built assembly shadows a framework assembly.
 - **WPF-only files are not built:**
   - the Intellisense presenter styles and `ITextFormattable` (brushes and text formatting);
   - `Internal/Language/CompletionPresenterStylePrivate.cs`,

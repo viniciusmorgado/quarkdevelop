@@ -66,5 +66,5 @@ Decided by the maintainer after `v0.1.0-linux`, on the model of the rusteal repo
     then fast-forwards `develop` to `main`. A merge that changes nothing that goes into the Flatpak
     (`main/`, `packaging/`, `global.json`, `NuGet.config`) releases nothing.
 - CodeQL and Dependabot are removed; dependencies and actions are updated by hand, and `NuGetAudit` with
-  `scripts/audit.sh` still flags vulnerable packages.
+  `scripts/audit.cs` still flags vulnerable packages.
 - Merging the pull request into `main` is the maintainer's authorization to release.
