@@ -16,7 +16,6 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -198,7 +197,10 @@ Dictionary<string, string?> FlatpakEnvironment () => new () { ["FLATPAK_USER_DIR
 
 int Flatpak (IReadOnlyList<string> command) => Run (command, FlatpakEnvironment ());
 
-static string RepoRoot ([CallerFilePath] string script = "") => Path.GetFullPath (Path.Combine (Path.GetDirectoryName (script)!, ".."));
+// The repository root, above scripts/. dotnet gives a file-based app the directory of its file; [CallerFilePath] would be
+// /_/... when the script is compiled with ContinuousIntegrationBuild=true (package-flatpak.cs sets it for build.cs).
+static string RepoRoot () => Path.GetFullPath (Path.Combine (AppContext.GetData ("EntryPointFileDirectoryPath") as string
+	?? throw new InvalidOperationException ("run the script as a file-based app: dotnet scripts/<name>.cs"), ".."));
 
 // An environment variable, unset when empty (as ${NAME:-default} in a shell).
 static string? Env (string name) => Environment.GetEnvironmentVariable (name) is { Length: > 0 } value ? value : null;
