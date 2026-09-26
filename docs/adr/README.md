@@ -1,7 +1,9 @@
 # Architecture Decision Records
 
 Format: [MADR](https://adr.github.io/madr/). New ADRs take the next number; superseded ADRs keep
-their file and link to the replacement. Context for all of them: `specs/001-linux-dotnet10-migration/`.
+their file and link to the replacement. ADRs are records of their time: some of the earlier ones cite
+migration documents that were later removed from the repository (`specs/`, `docs/constitution.md`,
+`docs/evidence/`).
 
 | # | Title | Status |
 |---|---|---|

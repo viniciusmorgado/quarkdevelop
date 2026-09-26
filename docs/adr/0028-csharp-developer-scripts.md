@@ -34,8 +34,10 @@ Option 1, chosen by the maintainer.
 - Each `scripts/<name>.sh` becomes `scripts/<name>.cs` with the same name, options and outputs: `setup`, `restore`,
   `build`, `format`, `lint`, `test`, `audit`, `check-assemblies`, `run`, `debug`, `ci`, `netfx-refasm`,
   `warnings-baseline`, `package-flatpak` and `test-flatpak`. `lib.sh` is gone. Each script carries the few helpers it
-  uses (the repository root from `[CallerFilePath]`, logging, running a process), so every script stays one file.
-  The list of C# files added by this fork (`md_new_cs_files`) is `NewCSharpFiles` in `build.cs` and `format.cs`.
+  uses (the repository root from `EntryPointFileDirectoryPath`, logging, running a process), so every script stays one
+  file. `[CallerFilePath]` is not used for the root: a script compiled with `ContinuousIntegrationBuild=true` (as
+  `package-flatpak.cs` runs `build.cs`) gets `/_/` source paths, and `dotnet` keeps that build when the variable is
+  gone. The list of C# files added by this fork (`md_new_cs_files`) is `NewCSharpFiles` in `build.cs` and `format.cs`.
 - Arguments for a script go after `--`, as in `dotnet scripts/build.cs -- -c Release --check`: before it, `dotnet`
   reads options such as `-c`, `-v` or `--no-build` itself. Scripts that call other scripts pass `--` too.
 - `dotnet` runs a script as a child process, and a script cannot `exec` the program it starts. `run.cs` and
