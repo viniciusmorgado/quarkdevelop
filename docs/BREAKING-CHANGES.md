@@ -62,7 +62,7 @@ distribution packages of MonoDevelop 8.6:
 | Windows installer (`setup/WixSetup`) | removed |
 | `./configure`, `scripts/configure.*`, `winbuild*.bat`, autotools `make` targets | removed (use `dotnet scripts/<name>.cs`) |
 | `mdtool` tools `run-md-tests`, `update-perf-baseline`, `generate-makefiles`, `gsetup` | removed |
-| ASP.NET Core project support (`MonoDevelop.AspNetCore`: launch profiles, development certificate, publish, scaffolding) | deferred: to be ported |
+| ASP.NET Core development certificate check and installer (`MonoDevelop.AspNetCore.DevCertInstaller`) | macOS only: on Linux, set up the HTTPS certificate with `dotnet dev-certs https` ([ADR 0029](adr/0029-aspnetcore-addin.md)) |
 | NuGet Package options of SDK projects (`MonoDevelop.Packaging`) | deferred: to be ported; the Xamarin `.nuproj` packaging projects are removed |
 | Deployment / packaging add-in (`Deployment`, `Deployment.Linux`) | removed; use `dotnet publish` |
 | Connected Services (`MonoDevelop.ConnectedServices`) | removed |
@@ -126,14 +126,14 @@ Removed from the repository (339 files):
 | `MonoDevelop.Gettext` | `TranslationProject.xpt.xml` and its 16 images |
 | `MonoDevelop.PackageManagement` | `ItemTemplateNuGetPackageInstaller` and its tests |
 | `AspNet` (removed, ADR 0017) | 3 `*.xpt.xml`, 34 `*.xft.xml` and their Razor, ASPX, C#, TypeScript, CSS/LESS/SCSS, JSON, T4 and image assets (75 files) |
-| `MonoDevelop.AspNetCore` (to be ported) | 13 `*.xft.xml` with their Razor, C# and JSON assets (27 files), the template registrations of SDKs 2.1–3.1 and the 2017 template packages (`DownloadNupkg`) |
+| `MonoDevelop.AspNetCore` | 13 `*.xft.xml` with their Razor, C# and JSON assets (27 files), the template registrations of SDKs 2.1–3.1, the 2017 template packages (`DownloadNupkg`), the project template wizard and the template conditions |
 | `Deployment`, `Deployment.Linux`, `MonoDevelop.GtkCore`, `MonoDevelop.Packaging`, `MonoDevelop.UnitTesting.NUnit`, `TextTemplating`, `VBNetBinding`, `ILAsmBinding` | their `*.xpt.xml` / `*.xft.xml` templates and template images (64 files) |
 | `external/fsharpbinding` (now `src/addins/FSharpBinding`) | 7 `*.xpt.xml`, 6 `*.xft.xml`, `FSharp-templates.xml` (the F# code snippets, restored with [ADR 0027](adr/0027-fsharp-binding.md)) and `templates.targets` |
 | Tests | `MicrosoftTemplateEngineTests`, `ProjectTemplateTests`, `ProjectTemplateTest` (IdeUnitTests), the DotNetCore template tests and the `DotNetCoreTemplating` / `FileFormatExclude` fixtures |
 
-Since 2026-09-25 the add-ins excluded from the Linux build are removed from the repository, except `MonoDevelop.AspNetCore`,
-`TextTemplating` and `MonoDevelop.Packaging`, which are to be ported, and the F# binding, back in the Linux build
-([ADR 0027](adr/0027-fsharp-binding.md)). Their templates stay removed (the templates come from `dotnet new`).
+Since 2026-09-25 the add-ins excluded from the Linux build are removed from the repository, except `TextTemplating` and
+`MonoDevelop.Packaging`, which are to be ported, and the F# binding and `MonoDevelop.AspNetCore`, back in the Linux
+build ([ADR 0027](adr/0027-fsharp-binding.md), [ADR 0029](adr/0029-aspnetcore-addin.md)). Their templates stay removed (the templates come from `dotnet new`).
 No add-in existed only for templates.
 
 ## Add-in authors

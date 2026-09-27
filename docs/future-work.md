@@ -61,9 +61,6 @@ These add-ins serve projects that run on Linux with the .NET SDK, so they stay i
 `main/MonoDevelop.Linux.sln`, until they are ported like the add-ins of the solution (SDK-style `net10.0` project,
 GTK 3, tests in the gate).
 
-- **`MonoDevelop.AspNetCore`**: running through the `launchSettings.json` profiles, the HTTPS development certificate
-  (`dotnet dev-certs`), Publish to Folder, scaffolding and file nesting. `MonoDevelop.AspNetCore.DevCertInstaller` is
-  the macOS certificate installer and is not ported.
 - **`TextTemplating`**: T4 templates (custom tools `TextTemplatingFileGenerator` and `TextTemplatingFilePreprocessor`)
   on the `Mono.TextTemplating` package.
 - **`MonoDevelop.Packaging`**: the NuGet Package options of SDK projects (metadata, `GeneratePackageOnBuild`) and the
@@ -89,6 +86,17 @@ What the minimal port of [ADR 0027](adr/0027-fsharp-binding.md) left, besides th
   - `CompilerArgumentsTests.Only mscorlib referenced`: Mono and .NET Framework reference resolution.
   - `Template tests.FSharp portable project`: portable class libraries.
   - `Interactive send references uses real assemblies #43307`: a .NET Framework 4.5.1 fixture.
+
+## ASP.NET Core
+
+What the port of [ADR 0029](adr/0029-aspnetcore-addin.md) left:
+
+- **HTTPS development certificate:** the add-in checks and trusts it on macOS only (`AspNetCoreCertificateManager`;
+  `MonoDevelop.AspNetCore.DevCertInstaller` is not ported). On Linux the `https` profiles need a certificate created
+  with `dotnet dev-certs https`, and the browser opens only once the IDE reaches the application over HTTPS.
+- **External console:** the run configurations of ASP.NET Core projects ignore "Run on external console", as upstream:
+  `DotNetCoreProjectExtension` reads the option from `DotNetCoreExecutionCommand` only.
+- **Publish to Folder and scaffolding** build and keep their upstream tests, but have no GUI test on Linux.
 
 ## Parity with the .NET SDK on Linux
 

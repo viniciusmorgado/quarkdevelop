@@ -177,6 +177,38 @@ namespace MonoDevelop.AspNetCore.Tests
 			}
 		}
 
+		static readonly string [] WebTemplateRunConfigurations = { "Default", "http", "https" };
+
+		/// <summary>
+		/// A project of the ASP.NET Core Empty template (dotnet new web) runs as with `dotnet run`: the Default run
+		/// configuration takes the first profile of launchSettings.json ("http"), and the command runs the .dll of the
+		/// project (the IDE ran bin/Debug/net10.0/aspnetcore-web.exe, which does not exist, when the add-in was not built).
+		/// </summary>
+		[Test]
+		public async Task WebTemplate_RunsWithTheFirstLaunchProfile ()
+		{
+			string projectFileName = Util.GetSampleProject ("aspnetcore-web", "aspnetcore-web.csproj");
+			var launchSettings = Path.Combine (Path.GetDirectoryName (projectFileName), "Properties", "launchSettings.json");
+			var launchSettingsText = File.ReadAllText (launchSettings);
+			using (var project = (DotNetProject)await Services.ProjectService.ReadSolutionItem (Util.GetMonitor (), projectFileName)) {
+				Assert.IsNotNull (project.GetFlavor<AspNetCoreProjectExtension> ());
+				Assert.That (project.RunConfigurations.Select (c => c.Name), Is.EqualTo (WebTemplateRunConfigurations));
+
+				var configuration = (DotNetProjectConfiguration)project.Configurations [0];
+				var runConfiguration = (ProjectRunConfiguration)project.GetDefaultRunConfiguration ();
+				var command = (AspNetCoreExecutionCommand)project.CreateExecutionCommand (configuration.Selector, configuration, runConfiguration);
+
+				Assert.AreEqual (project.BaseDirectory.Combine ("bin", "Debug", "net10.0", "aspnetcore-web.dll").ToString (), command.OutputPath);
+				Assert.AreEqual ("dotnet", Path.GetFileNameWithoutExtension (command.Command));
+				Assert.AreEqual (project.BaseDirectory.ToString (), command.WorkingDirectory);
+				Assert.AreEqual ("Development", command.EnvironmentVariables ["ASPNETCORE_ENVIRONMENT"]);
+				// in the environment of the command, for the debugger too
+				Assert.AreEqual ("http://localhost:5081", command.EnvironmentVariables ["ASPNETCORE_URLS"]);
+				Assert.IsTrue (command.LaunchBrowser);
+			}
+			Assert.AreEqual (launchSettingsText, File.ReadAllText (launchSettings), "launchSettings.json changed");
+		}
+
 		[Test]
 		public async Task RazorClassLib_Supports_FileNesting ()
 		{
@@ -189,6 +221,10 @@ namespace MonoDevelop.AspNetCore.Tests
 		[Test]
 		public async Task MultiTargetFrameworks_ExecutionTargets ()
 		{
+			// The test checks the browsers of macOS; it is ignored before the restore, which runs Mono's msbuild
+			if (!Directory.Exists ("/Applications/Safari.app") && !Directory.Exists ("/Applications/Google Chrome.app"))
+				Assert.Ignore ("No browsers found to run test");
+
 			string solutionFileName = Util.GetSampleProject ("aspnetcore-multi-target-execution", "aspnetcore-multi-target.sln");
 			RestoreNuGetPackages (solutionFileName);
 

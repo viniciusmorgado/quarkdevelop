@@ -47,18 +47,13 @@ namespace MonoDevelop.AspNetCore
 			if (!envVariables.ContainsKey ("ASPNETCORE_URLS"))
 				envVariables ["ASPNETCORE_URLS"] = dotNetCoreCommand.ApplicationURLs;
 
-			var process = Runtime.ProcessService.StartConsoleProcess (
+			// The browser is opened by AspNetCoreProjectExtension.OnExecuteCommand, also when the debugger runs the command
+			return Runtime.ProcessService.StartConsoleProcess (
 				dotNetCoreCommand.Command,
 				dotNetCoreCommand.Arguments,
 				dotNetCoreCommand.WorkingDirectory,
 				console,
 				envVariables);
-
-			if (dotNetCoreCommand.LaunchBrowser) {
-				LaunchBrowserAsync (dotNetCoreCommand.ApplicationURL, dotNetCoreCommand.LaunchURL, dotNetCoreCommand.Target, process.Task).Ignore ();
-			}
-
-			return process;
 		}
 
 		public static async Task LaunchBrowserAsync (string appUrl, string launchUrl, ExecutionTarget target, Task processTask)
