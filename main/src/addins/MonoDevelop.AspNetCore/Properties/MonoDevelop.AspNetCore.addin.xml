@@ -12,11 +12,6 @@
 		<Class class="MonoDevelop.AspNetCore.AspNetCoreRunConfigurationEditor" runConfigurationType="MonoDevelop.AspNetCore.AspNetCoreRunConfiguration" />
 	</Extension>
 
-	<ConditionType id="AspNetCoreSdkInstalled" type="MonoDevelop.AspNetCore.AspNetCoreSdkInstalledCondition" />
-
-	<Extension path = "/MonoDevelop/Ide/FileTemplateConditionTypes">
-		<FileTemplateConditionType name = "AspNetCore" class = "MonoDevelop.AspNetCore.Templating.AspNetCoreFileTemplateCondition" />
-	</Extension>
 	
 	<Extension path="/MonoDevelop/Ide/Pads/ProjectPad">
 		<NodeBuilder id = "AspNetCoreScaffolder" class = "MonoDevelop.AspNetCore.Commands.ScaffoldNodeExtension"/>
@@ -60,9 +55,5 @@
 		<CommandItem id = "MonoDevelop.AspNetCore.Commands.PublishToFolder" insertbefore="MonoDevelop.DotNetCore.Commands.PackSeparator" />
 		<SeparatorItem id = "ProfilesSeparator" />
 		<CommandItem id = "MonoDevelop.AspNetCore.Commands.PublishToFolderProfiles" />
-	</Extension>
-
-	<Extension path="/MonoDevelop/Ide/ProjectTemplateWizards">
-		<Class id="MonoDevelop.AspNetCore.ProjectTemplateWizard" class="MonoDevelop.AspNetCore.ProjectTemplateWizard" />
 	</Extension>
 </ExtensionModel>

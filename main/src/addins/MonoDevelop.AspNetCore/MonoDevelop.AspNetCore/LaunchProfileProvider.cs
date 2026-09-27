@@ -48,6 +48,8 @@ namespace MonoDevelop.AspNetCore
 		public IDictionary<string, JToken> GlobalSettings { get; private set; }
 		internal JObject ProfilesObject { get; private set; }
 		public ConcurrentDictionary<string, LaunchProfileData> Profiles { get; private set; }
+		// The names of the profiles in the order of launchSettings.json: Profiles has no order
+		List<string> profileOrder = new List<string> ();
 		internal string LaunchSettingsJsonPath => Path.Combine (baseDirectory, "Properties", "launchSettings.json");
 		const string DefaultGlobalSettings = @"{
     						""windowsAuthentication"": false,
@@ -99,12 +101,15 @@ namespace MonoDevelop.AspNetCore
 			if (testSocket != null) {
 				var endPoint = new IPEndPoint (testSocket.AddressFamily == AddressFamily.InterNetworkV6 ? IPAddress.IPv6Any : IPAddress.Any, testPort);
 
-				try {
-					testSocket.Bind (endPoint);
-					return true;
-				} catch {
-					testSocket?.Dispose ();
-					return false;
+				// The socket does not keep the port: on Linux another socket binds a port bound but not listened on
+				// (SO_REUSEADDR), so GetNextFreePort excludes the port it chose already
+				using (testSocket) {
+					try {
+						testSocket.Bind (endPoint);
+						return true;
+					} catch {
+						return false;
+					}
 				}
 			}
 
@@ -130,13 +135,27 @@ namespace MonoDevelop.AspNetCore
 			}
 
 			Profiles = new ConcurrentDictionary<string, LaunchProfileData> (LaunchProfileData.DeserializeProfiles (ProfilesObject));
+			profileOrder = ProfilesObject?.Properties ().Select (p => p.Name).ToList () ?? new List<string> ();
+		}
+
+		/// <summary>
+		/// The profiles in the order of launchSettings.json, then the ones the IDE added: the order of Profiles, a
+		/// dictionary, changes from one process to the next on .NET (the hash codes of strings are randomized).
+		/// </summary>
+		internal List<KeyValuePair<string, LaunchProfileData>> GetOrderedProfiles ()
+		{
+			return Profiles
+				.OrderBy (p => profileOrder.IndexOf (p.Key) is int index && index >= 0 ? index : int.MaxValue)
+				.ThenBy (p => p.Key, StringComparer.Ordinal)
+				.ToList ();
 		}
 
 		/// <summary>
 		/// Gets the next free port taking into account which ports are in use by other projects
 		/// </summary>
 		/// <returns>The next free port.</returns>
-		int GetNextFreePort ()
+		/// <param name="excludedPort">A port chosen already, such as the HTTP one when choosing the HTTPS one.</param>
+		int GetNextFreePort (int excludedPort = 0)
 		{
 			var projects = Enumerable.Empty<Project> ();
 
@@ -151,7 +170,7 @@ namespace MonoDevelop.AspNetCore
 
 			var portsInUse = applicationUrls.Select (url => new Uri (url).Port);
 			var validPortRange = Enumerable.Range (5000, 100);
-			int port = validPortRange.Except (portsInUse).First (TryAllocatePort);
+			int port = validPortRange.Except (portsInUse).Where (p => p != excludedPort).First (TryAllocatePort);
 			return port;
 		}
 
@@ -182,8 +201,9 @@ namespace MonoDevelop.AspNetCore
 				var applicationUrl = DefaultProfile.OtherSettings ["applicationUrl"] as string;
 
 				if (ShouldGenerateNewPort(applicationUrl)) {
-					applicationUrl = applicationUrl.Replace (defaultHttpUrl, "http://localhost:" + GetNextFreePort ());
-					applicationUrl = applicationUrl.Replace (defaultHttpsUrl, "https://localhost:" + GetNextFreePort ());
+					var httpPort = GetNextFreePort ();
+					applicationUrl = applicationUrl.Replace (defaultHttpUrl, "http://localhost:" + httpPort);
+					applicationUrl = applicationUrl.Replace (defaultHttpsUrl, "https://localhost:" + GetNextFreePort (httpPort));
 					DefaultProfile.OtherSettings ["applicationUrl"] = applicationUrl;
 					SaveLaunchSettings ();
 				}
@@ -204,7 +224,9 @@ namespace MonoDevelop.AspNetCore
 			var doc = new JObject ();
 			var settings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
-			var profilesData = Profiles.ToSerializableForm ();
+			var profiles = GetOrderedProfiles ();
+			var profilesData = profiles.ToSerializableForm ();
+			profileOrder = profiles.Select (p => p.Key).ToList ();
 
 			ProfilesObject = JObject.Parse (JsonConvert.SerializeObject (profilesData, Formatting.Indented, settings));
 
@@ -249,6 +271,14 @@ namespace MonoDevelop.AspNetCore
 
 		LaunchProfileData CreateProfile (string name)
 		{
+			// Without a profile of its own, the Default run configuration runs the project as `dotnet run` does: with the
+			// first Project profile of launchSettings.json (the templates of .NET 7 and later have "http" and "https")
+			if (name == defaultNamespace) {
+				var firstProfile = GetOrderedProfiles ().FirstOrDefault (p => p.Key != name && p.Value.CommandName == "Project").Value;
+				if (firstProfile != null)
+					return CopyProfile (firstProfile, name);
+			}
+
 			var defaultProfile = new LaunchProfileData {
 				Name = name,
 				CommandName = "Project",
@@ -269,7 +299,7 @@ namespace MonoDevelop.AspNetCore
 			string applicationUrl;
 
 			var httpPort = GetNextFreePort ();
-			var httpsPort = GetNextFreePort ();
+			var httpsPort = GetNextFreePort (httpPort);
 			if (anyConfigurationUsesHttps)
 				applicationUrl = $"https://localhost:{httpsPort};http://localhost:{httpPort}";
 			else
@@ -278,6 +308,21 @@ namespace MonoDevelop.AspNetCore
 			defaultProfile.OtherSettings.Add ("applicationUrl", applicationUrl);
 
 			return defaultProfile;
+		}
+
+		static LaunchProfileData CopyProfile (LaunchProfileData profile, string name)
+		{
+			return new LaunchProfileData {
+				Name = name,
+				CommandName = profile.CommandName,
+				ExecutablePath = profile.ExecutablePath,
+				CommandLineArgs = profile.CommandLineArgs,
+				WorkingDirectory = profile.WorkingDirectory,
+				LaunchBrowser = profile.LaunchBrowser,
+				LaunchUrl = profile.LaunchUrl,
+				EnvironmentVariables = new Dictionary<string, string> (profile.EnvironmentVariables ?? new Dictionary<string, string> (), StringComparer.Ordinal),
+				OtherSettings = new Dictionary<string, object> (profile.OtherSettings ?? new Dictionary<string, object> (), StringComparer.Ordinal)
+			};
 		}
 
 		void CreateAndAddDefaultLaunchSettings ()
@@ -293,7 +338,7 @@ namespace MonoDevelop.AspNetCore
 		/// </summary>
 		internal void SyncRunConfigurations ()
 		{
-			foreach (var profile in this.Profiles) {
+			foreach (var profile in GetOrderedProfiles ()) {
 
 				if (profile.Value.CommandName != "Project")
 					continue;

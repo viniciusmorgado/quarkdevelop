@@ -48,7 +48,7 @@ flowchart TB
 
 The Mac and Windows platforms and the legacy add-ins are removed from the repository
 ([ADR 0017](adr/0017-linux-exclusions.md)). The add-ins that serve .NET on Linux but are not ported yet stay outside
-`main/MonoDevelop.Linux.sln`: `MonoDevelop.AspNetCore`, `TextTemplating` and `MonoDevelop.Packaging`; see
+`main/MonoDevelop.Linux.sln`: `TextTemplating` and `MonoDevelop.Packaging`; see
 [future work](future-work.md).
 
 ## Add-in model

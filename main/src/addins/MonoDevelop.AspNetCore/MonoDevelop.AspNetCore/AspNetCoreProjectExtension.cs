@@ -125,12 +125,18 @@ namespace MonoDevelop.AspNetCore
 
 			var applicationUrl = aspnetCoreRunConfiguration.CurrentProfile.TryGetApplicationUrl ();
 
+			// The URLs of the profile are in the environment of the command, as with `dotnet run`: the debugger (netcoredbg)
+			// starts the program with it, not through AspNetCoreExecutionHandler, which sets ASPNETCORE_URLS itself
+			var environmentVariables = new Dictionary<string, string> (aspnetCoreRunConfiguration.EnvironmentVariables);
+			if (!environmentVariables.ContainsKey ("ASPNETCORE_URLS") && !string.IsNullOrEmpty (applicationUrl))
+				environmentVariables ["ASPNETCORE_URLS"] = applicationUrl;
+
 			return new AspNetCoreExecutionCommand (
 				string.IsNullOrWhiteSpace (aspnetCoreRunConfiguration.StartWorkingDirectory) ? Project.BaseDirectory : aspnetCoreRunConfiguration.StartWorkingDirectory,
 				outputFileName,
 				aspnetCoreRunConfiguration.StartArguments
 			) {
-				EnvironmentVariables = aspnetCoreRunConfiguration.EnvironmentVariables,
+				EnvironmentVariables = environmentVariables,
 				PauseConsoleOutput = aspnetCoreRunConfiguration.PauseConsoleOutput,
 				ExternalConsole = aspnetCoreRunConfiguration.ExternalConsole,
 				LaunchBrowser = aspnetCoreRunConfiguration.CurrentProfile.LaunchBrowser ?? false,
@@ -174,6 +180,15 @@ namespace MonoDevelop.AspNetCore
 				return CheckCertificateThenExecute (monitor, context, configuration, framework, runConfiguration);
 			}
 			return base.OnExecute (monitor, context, configuration, framework, runConfiguration);
+		}
+
+		protected override Task OnExecuteCommand (ProgressMonitor monitor, ExecutionContext context, ConfigurationSelector configuration, ExecutionCommand executionCommand)
+		{
+			var execution = base.OnExecuteCommand (monitor, context, configuration, executionCommand);
+			// The browser opens when the app answers, with the debugger (the Run button) or without it
+			if (executionCommand is AspNetCoreExecutionCommand command && command.LaunchBrowser)
+				AspNetCoreExecutionHandler.LaunchBrowserAsync (command.ApplicationURL, command.LaunchURL, command.Target, execution).Ignore ();
+			return execution;
 		}
 
 		protected override IEnumerable<ExecutionTarget> OnGetExecutionTargets (OperationContext ctx, ConfigurationSelector configuration, SolutionItemRunConfiguration runConfig)

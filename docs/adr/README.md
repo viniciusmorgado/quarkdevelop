@@ -35,3 +35,4 @@ migration documents that were later removed from the repository (`specs/`, `docs
 | [0026](0026-dotnet-new-templates.md) | Project and file templates from `dotnet new` | Accepted |
 | [0027](0027-fsharp-binding.md) | F# binding on FSharp.Compiler.Service 31 | Accepted |
 | [0028](0028-csharp-developer-scripts.md) | Developer scripts in C# on the host | Accepted |
+| [0029](0029-aspnetcore-addin.md) | ASP.NET Core add-in in the Linux build | Accepted |

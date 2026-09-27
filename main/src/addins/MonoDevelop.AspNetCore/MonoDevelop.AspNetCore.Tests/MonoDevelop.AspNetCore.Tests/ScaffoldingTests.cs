@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Microsoft.WebTools.Scaffolding.Core.Config;
@@ -202,8 +203,8 @@ namespace MonoDevelop.AspNetCore.Tests
 		}
 
 		[Test]
-		[Ignore]
-		public async void CanDeserializeConfig ()
+		[Ignore ("Downloads the scaffolding package versions from the network (ignored upstream since 2019)")]
+		public async Task CanDeserializeConfig ()
 		{
 			var config = await ScaffoldingConfig.LoadFromJsonAsync ();
 			Assert.IsTrue (config.NetStandard20Packages.Any ());

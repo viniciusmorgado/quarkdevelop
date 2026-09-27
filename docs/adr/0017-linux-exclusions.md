@@ -69,3 +69,8 @@ Windows, macOS or Mono only, and VB.NET and Subversion, which are too little use
 
 The F# binding returns through [ADR 0027](0027-fsharp-binding.md). It moves from `main/external/fsharpbinding` to
 `main/src/addins/FSharpBinding` and joins `main/MonoDevelop.Linux.sln`. `main/external` no longer exists.
+
+## Amendment 2026-09-26: ASP.NET Core add-in in the Linux build
+
+`MonoDevelop.AspNetCore` and its tests return through [ADR 0029](0029-aspnetcore-addin.md) and join
+`main/MonoDevelop.Linux.sln`. `MonoDevelop.AspNetCore.DevCertInstaller`, the macOS certificate installer, stays out.
