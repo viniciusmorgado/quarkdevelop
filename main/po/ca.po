@@ -16,7 +16,7 @@
 #
 # 5) Traduïm "sub-word" per sota-paraula
 #
-# 6) Pad per 'Panell' 
+# 6) Pad per 'Panell'
 #
 # 7) Pin per fixa
 #

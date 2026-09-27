@@ -198,10 +198,11 @@ namespace MonoDevelop.AspNetCore.Tests
 			launchProfileProvider.LoadLaunchSettings ();
 			launchProfileProvider.SyncRunConfigurations ();
 
+			// In the order of launchSettings.json (the expected order was the one of Mono's ConcurrentDictionary)
 			Assert.That (project.RunConfigurations, Has.Count.EqualTo (2));
-			Assert.That (project.RunConfigurations [0].Name, Is.EqualTo ("Kestrel Staging"));
+			Assert.That (project.RunConfigurations [0].Name, Is.EqualTo ("EnvironmentsSample"));
 			Assert.False (project.RunConfigurations [0].StoreInUserFile);
-			Assert.That (project.RunConfigurations [1].Name, Is.EqualTo ("EnvironmentsSample"));
+			Assert.That (project.RunConfigurations [1].Name, Is.EqualTo ("Kestrel Staging"));
 			Assert.False (project.RunConfigurations [1].StoreInUserFile);
 		}
 

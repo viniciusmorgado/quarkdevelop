@@ -26,6 +26,9 @@ Several pinned packages have known vulnerabilities (Newtonsoft.Json 12.0.x, Shar
 - Removed: myget/appveyor/dotnetfeed feeds, `external/nuget-binary/nuget.exe` restore, paket for
   fsharpbinding (F# deferred).
 
+Update 2026-09-25: the packages of the F# binding are in `main/Directory.Packages.props`, and Paket is removed with the
+binding's build files (ADR 0027).
+
 ### Consequences
 
 - Good: reproducible restores, one-line upgrades, vulnerability audit.

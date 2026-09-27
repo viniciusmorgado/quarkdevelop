@@ -26,7 +26,7 @@ using NUnit.Framework;
 
 namespace MonoDevelop.Ide.Gtk3.Tests
 {
-	/// <summary>Initializes GTK once for the assembly; the tests run under Xvfb (scripts/test.sh).</summary>
+	/// <summary>Initializes GTK once for the assembly; the tests run under Xvfb (scripts/test.cs).</summary>
 	[SetUpFixture]
 	public class GtkFixture
 	{
@@ -46,7 +46,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 		public static void Require ()
 		{
 			if (!Available)
-				Assert.Ignore ("no display (run under Xvfb: ./scripts/pm ./scripts/test.sh)");
+				Assert.Ignore ("no display (run under Xvfb: dotnet scripts/test.cs)");
 		}
 	}
 }

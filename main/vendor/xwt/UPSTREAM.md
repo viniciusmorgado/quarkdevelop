@@ -20,7 +20,7 @@ Listed per commit in `git log -- main/vendor/xwt`; summary:
 - `Compat/XamlCompat.cs`: internal stand-ins for the System.Xaml attributes (`ContentProperty`,
   `ValueSerializer`); `Xwt.Design/DesignerSurface.cs` (XamlServices) and the designer sample are not built.
 - `TransferDataSource.SerializeValue/DeserializeValue`: an in-process token registry replaces
-  BinaryFormatter (removed from .NET 9+; constitution VII). Object transfers only work inside one process.
+  BinaryFormatter (removed from .NET 9+). Object transfers only work inside one process.
 - GTK3 backend compiled against the GtkSharp 3.24.24 NuGet packages instead of gtk-sharp 3 from the GAC:
   - `NativeLibraryResolver.cs` replaces the `<dllmap>` of `Xwt.Gtk3.dll.config` (ADR 0013); both
     `.dll.config` files are removed.
@@ -38,6 +38,8 @@ Listed per commit in `git log -- main/vendor/xwt`; summary:
   - `WindowFrameBackend.Dispose` disposes the GTK window instead of calling `Widget.Destroy`: GtkSharp 3.24's
     `Destroy` lets GTK free a toplevel whose wrapper still holds a toggle reference, which the wrapper released again
     when disposed or finalized (GLib-GObject-CRITICAL `g_object_remove_toggle_ref`, random crashes; T107).
+- `Application.TimeoutInvoke`: disposing a timer whose action already returned false (the toolkit removed it) does
+  not remove it again, which made GLib log "Source ID ... was not found" (MonoDevelop's focus-lost timeout).
 - `TestApps/Samples/upstream-resources/`: images the upstream sample project linked from `Testing/`
   and `Xwt.XamMac/` (not vendored).
 

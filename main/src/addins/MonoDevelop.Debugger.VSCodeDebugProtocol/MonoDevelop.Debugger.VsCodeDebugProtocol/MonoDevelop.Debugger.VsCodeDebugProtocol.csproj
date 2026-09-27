@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003).
+    Converted from the legacy csproj (ADR 0003).
     Debug Adapter Protocol client (VSCodeDebuggerSession); engines such as netcoredbg build on it (ADR 0016).
   -->
   <PropertyGroup>

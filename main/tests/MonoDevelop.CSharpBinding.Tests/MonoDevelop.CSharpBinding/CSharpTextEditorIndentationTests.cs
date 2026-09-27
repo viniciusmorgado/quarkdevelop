@@ -23,7 +23,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-#if false
 using System;
 using NUnit.Framework;
 
@@ -145,7 +144,7 @@ namespace MonoDevelop.CSharpBinding
 			return testCase;
 		}
 
-		ICSharpCode.NRefactory6.CSharp.IStateMachineIndentEngine CreateTracker (TextEditor data)
+		ICSharpCode.NRefactory6.CSharp.CacheIndentEngine CreateTracker (TextEditor data)
 		{
 			var textStylePolicy = PolicyService.InvariantPolicies.Get<TextStylePolicy> ("text/x-csharp");
 			var policy = PolicyService.InvariantPolicies.Get<CSharpFormattingPolicy> ("text/x-csharp").CreateOptions (textStylePolicy);
@@ -163,7 +162,7 @@ namespace MonoDevelop.CSharpBinding
 			engine.FixLineStart (data, CreateTracker (data), data.CaretLine);
 			int idx = output.IndexOf ('$');
 			if (idx > 0)
-				output = output.Substring (0, idx) + output.Substring (idx + 1);
+				output = output.Remove (idx, 1);
 			if (output != data.Text) {
 				Console.WriteLine ("expected:");
 				Console.WriteLine (output.Replace ("\t", "\\t").Replace (" ", "."));
@@ -642,6 +641,148 @@ $
 				Assert.AreEqual ("", indent);
 			}
 		}
+
+		// The indentation of new lines comes from Roslyn's indentation service (CSharpIndentationTracker). The cases below
+		// were reported on an ASP.NET Core minimal API: top-level statements indented with 4 spaces. With trailing whitespace
+		// removal, the default, the source editor indents virtually (StyledSourceEditorOptions): empty lines stay empty and the
+		// caret stands at their indentation.
+
+		const string minimalApi = @"var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();$
+}
+
+app.Run();
+";
+
+		const string argumentList = @"var app = WebApplication.Create();
+app.MapGet(""/weatherforecast"", () =>
+{
+    var forecast = Enumerable.Range(1, 5).Select(index =>
+        new WeatherForecast
+        ($
+            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+            Random.Shared.Next(-20, 55)
+        ))
+        .ToArray();
+    return forecast;
+});
+";
+
+		static CustomEditorOptions FourSpaces (bool virtualIndentation) => new CustomEditorOptions {
+			DefaultEolMarker = eolMarker,
+			IndentStyle = IndentStyle.Smart,
+			RemoveTrailingWhitespaces = virtualIndentation,
+			TabsToSpaces = true,
+			TabSize = 4,
+			IndentationSize = 4,
+		};
+
+		// Keys typed in the editor: the C# indentation extension, then the key bindings of the source editor, as in the IDE
+		// (the last extension of ExtensibleTextEditor).
+		static CSharpTextEditorIndentation TypeIn (TextEditorExtensionTestCase testCase)
+		{
+			var editor = testCase.Document.Editor;
+			var indent = new CSharpTextEditorIndentation ();
+			indent.Initialize (editor, testCase.Document.DocumentContext);
+			indent.Next = new SourceEditorKeyBindings (editor.GetContent<MonoDevelop.SourceEditor.SourceEditorView> ().TextEditor);
+			return indent;
+		}
+
+		static void Press (CSharpTextEditorIndentation indent, Gdk.Key key, char keyChar)
+		{
+			indent.KeyPress (KeyDescriptor.FromGtk (key, keyChar, Gdk.ModifierType.None));
+		}
+
+		sealed class SourceEditorKeyBindings : TextEditorExtension
+		{
+			readonly MonoDevelop.SourceEditor.ExtensibleTextEditor textEditor;
+
+			public SourceEditorKeyBindings (MonoDevelop.SourceEditor.ExtensibleTextEditor textEditor)
+			{
+				this.textEditor = textEditor;
+			}
+
+			public override bool KeyPress (KeyDescriptor descriptor)
+			{
+				var native = (Tuple<Gdk.Key, Gdk.ModifierType>)descriptor.NativeKeyChar;
+				textEditor.SimulateKeyPress (native.Item1, (uint)descriptor.KeyChar, native.Item2);
+				return false;
+			}
+		}
+
+		[TestCase (false)]
+		[TestCase (true)]
+		public async Task TestReturnInBlockOfTopLevelStatements (bool virtualIndentation)
+		{
+			using (var data = await Create (minimalApi, FourSpaces (virtualIndentation), createWithProject: true)) {
+				var editor = data.Document.Editor;
+				Press (TypeIn (data), Gdk.Key.Return, '\n');
+				Assert.AreEqual (8, editor.CaretLine);
+				Assert.AreEqual (5, editor.CaretColumn, "the caret stands at the indentation of the block");
+				Assert.AreEqual (virtualIndentation ? "" : "    ", editor.GetLineText (8));
+				Assert.AreEqual ("}", editor.GetLineText (9));
+			}
+		}
+
+		[TestCase (false)]
+		[TestCase (true)]
+		public async Task TestReturnAfterOpenParenthesisOfArgumentList (bool virtualIndentation)
+		{
+			using (var data = await Create (argumentList, FourSpaces (virtualIndentation), createWithProject: true)) {
+				var editor = data.Document.Editor;
+				Press (TypeIn (data), Gdk.Key.Return, '\n');
+				Assert.AreEqual (7, editor.CaretLine);
+				Assert.AreEqual (13, editor.CaretColumn, "the arguments are indented from the parenthesis line");
+				Assert.AreEqual ("            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),", editor.GetLineText (8));
+			}
+		}
+
+		[TestCase (false)]
+		[TestCase (true)]
+		public async Task TestTabAfterReturnStaysOnTheLine (bool virtualIndentation)
+		{
+			using (var data = await Create (minimalApi, FourSpaces (virtualIndentation), createWithProject: true)) {
+				var editor = data.Document.Editor;
+				var indent = TypeIn (data);
+				Press (indent, Gdk.Key.Return, '\n');
+				Press (indent, Gdk.Key.Tab, '\t');
+				Assert.AreEqual (8, editor.CaretLine, "Tab must not move the caret to the next line");
+				Assert.AreEqual (9, editor.CaretColumn);
+				Assert.AreEqual ("}", editor.GetLineText (9));
+			}
+		}
+
+		[TestCase (false)]
+		[TestCase (true)]
+		public async Task TestTabAtStartOfEmptyLineInBlock (bool virtualIndentation)
+		{
+			var input = minimalApi.Replace ("app.MapOpenApi();$\n", "app.MapOpenApi();\n$\n");
+			using (var data = await Create (input, FourSpaces (virtualIndentation), createWithProject: true)) {
+				var editor = data.Document.Editor;
+				Press (TypeIn (data), Gdk.Key.Tab, '\t');
+				Assert.AreEqual (8, editor.CaretLine, "Tab must not move the caret to the next line");
+				Assert.AreEqual (5, editor.CaretColumn);
+				Assert.AreEqual ("}", editor.GetLineText (9));
+			}
+		}
+
+		[TestCase (false)]
+		[TestCase (true)]
+		public async Task TestTabOnEmptyTopLevelLine (bool virtualIndentation)
+		{
+			using (var data = await Create ("var app = WebApplication.Create();\n$\napp.Run();\n", FourSpaces (virtualIndentation), createWithProject: true)) {
+				var editor = data.Document.Editor;
+				Press (TypeIn (data), Gdk.Key.Tab, '\t');
+				Assert.AreEqual (2, editor.CaretLine, "Tab must not move the caret to the next line");
+				Assert.AreEqual (5, editor.CaretColumn);
+				Assert.AreEqual ("    ", editor.GetLineText (2));
+				Assert.AreEqual ("app.Run();", editor.GetLineText (3));
+			}
+		}
 	}
 }
-#endif

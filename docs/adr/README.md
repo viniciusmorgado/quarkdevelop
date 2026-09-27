@@ -1,7 +1,9 @@
 # Architecture Decision Records
 
 Format: [MADR](https://adr.github.io/madr/). New ADRs take the next number; superseded ADRs keep
-their file and link to the replacement. Context for all of them: `specs/001-linux-dotnet10-migration/`.
+their file and link to the replacement. ADRs are records of their time: some of the earlier ones cite
+migration documents that were later removed from the repository (`specs/`, `docs/constitution.md`,
+`docs/evidence/`).
 
 | # | Title | Status |
 |---|---|---|
@@ -31,3 +33,6 @@ their file and link to the replacement. Context for all of them: `specs/001-linu
 | [0024](0024-gtksharp-toplevel-references.md) | Toplevels and GDK windows created from C# kept alive (GtkSharp toggle-reference workaround) | Accepted |
 | [0025](0025-source-generators-in-the-workspace.md) | Source generators in the IDE workspace | Accepted |
 | [0026](0026-dotnet-new-templates.md) | Project and file templates from `dotnet new` | Accepted |
+| [0027](0027-fsharp-binding.md) | F# binding on FSharp.Compiler.Service 31 | Accepted |
+| [0028](0028-csharp-developer-scripts.md) | Developer scripts in C# on the host | Accepted |
+| [0029](0029-aspnetcore-addin.md) | ASP.NET Core add-in in the Linux build | Accepted |

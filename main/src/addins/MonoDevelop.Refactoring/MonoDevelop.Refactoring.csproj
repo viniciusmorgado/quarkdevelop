@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003); GTK3 port (T090). -->
+  <!-- Converted from the legacy csproj (ADR 0003); GTK3 port. -->
   <PropertyGroup>
     <AssemblyName>MonoDevelop.Refactoring</AssemblyName>
     <RootNamespace>MonoDevelop.Refactoring</RootNamespace>
@@ -128,7 +128,6 @@
     <InternalsVisibleTo Include="FSharpBinding" />
     <InternalsVisibleTo Include="MonoDevelop.CSharpBinding" />
     <InternalsVisibleTo Include="MonoDevelop.PackageManagement" />
-    <InternalsVisibleTo Include="MonoDevelop.MonoDroid" />
     <InternalsVisibleTo Include="MonoDevelop.CSharpBinding.Tests" />
     <InternalsVisibleTo Include="MonoDevelop.Refactoring.Tests" />
   </ItemGroup>

@@ -447,6 +447,19 @@ namespace MonoDevelop.Projects
 			p.Dispose ();
 		}
 
+		static readonly string [] ItemReferencesContent = { "a.json", "b.json" };
+		static readonly string [] ItemReferencesNone = { "a.txt", "Properties\\launchSettings.json" };
+
+		[Test]
+		public void ItemReferencesInRemove ()
+		{
+			// Remove expands @(...), also for the items of the importing project
+			var p = LoadAndEvaluate ("msbuild-tests", "item-references.csproj");
+			Assert.That (p.EvaluatedItems.Where (i => i.Name == "Content").Select (i => i.Include), Is.EquivalentTo (ItemReferencesContent));
+			Assert.That (p.EvaluatedItems.Where (i => i.Name == "None").Select (i => i.Include), Is.EquivalentTo (ItemReferencesNone));
+			p.Dispose ();
+		}
+
 		[Test]
 		public void FunctionProperties ()
 		{

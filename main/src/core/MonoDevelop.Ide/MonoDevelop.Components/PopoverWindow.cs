@@ -172,6 +172,9 @@ namespace MonoDevelop.Components
 		void ShowPopup (Gtk.Widget parent, Gdk.EventButton evt, Gdk.Rectangle caret, PopupPosition position)
 		{
 			this.parent = parent;
+			// Without a transient parent, GTK on Wayland maps the popup as a separate top-level window
+			if (TransientFor == null)
+				TransientFor = parent.Toplevel as Gtk.Window;
 			this.currentCaret = caret;
 			Theme.TargetPosition = position;
 			Gdk.Window targetWindow;

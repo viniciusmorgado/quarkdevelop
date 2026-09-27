@@ -1,137 +1,101 @@
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\MonoDevelop.props" />
-  <Import Project="$(ReferencesGtk)" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Converted from the legacy csproj (ADR 0003); GTK3 / .NET 10 port. -->
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B3E73DE7-8AFC-429A-9B68-5699B1E63A02}</ProjectGuid>
-    <TargetFrameworkVersion>$(MDFrameworkVersion)</TargetFrameworkVersion>
-    <OutputPath>..\..\..\build\AddIns\AspNetCore</OutputPath>
+    <AssemblyName>MonoDevelop.AspNetCore</AssemblyName>
+    <RootNamespace>MonoDevelop.AspNetCore</RootNamespace>
+    <AddinBuildDir>MonoDevelop.AspNetCore</AddinBuildDir>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <Compile Include="Properties/AddinInfo.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/AspNetCoreProjectExtension.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/AspNetCoreRunConfiguration.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/AspNetCoreExecutionCommand.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/AspNetCoreRunConfigurationEditor.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/AspNetCoreExecutionHandler.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/AspNetCoreCertificateManager.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/DotNetCoreDevCertsTool.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/CertificateCheckResult.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Commands/PublishCommandItem.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Commands/ProjectPublishProfile.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Dialogs/PublishToFolderDialog.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/ProjectExtensions.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Commands/PublishToFolderCommandHandler.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Commands/PublishToFolderProfilesCommandHandler.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Commands/PublishToFolderBaseCommandHandler.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/Counters.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/LaunchProfileData.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/LaunchProfile.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/ILaunchProfile.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/LaunchProfileDataExtensions.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/LaunchProfileProvider.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/AspNetCoreNestingRulesProvider.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/AspNetCoreExecutionTarget.cs" />
+    <Compile Include="MonoDevelop.AspNetCore/AspNetCoreTargetFrameworkExecutionTarget.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Commands/ScaffoldCommandHandler.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/ScaffolderArgs.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/ModelVisitor.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/ScaffolderWizard.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/ScaffolderDialogController.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/ScaffolderTemplateSelectPage.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/ScaffolderTemplateConfigurePage.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/CommandLineArg.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/ScaffolderWizardPageBase.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/ApiControllerEntityFrameworkScaffolder.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/ApiControllerWithActionsScaffolder.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/ControllerScaffolder.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/EmptyApiControllerScaffolder.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/EmptyMvcControllerScaffolder.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/ScaffolderBase.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/MvcControllerWithActionsScaffolder.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/RazorPageEntityFrameworkCrudScaffolder.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/RazorPageEntityFrameworkScaffolder.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/RazorPageScaffolder.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Fields/BoolField.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Fields/BoolFieldList.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Fields/ComboField.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Fields/ScaffolderField.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Fields/StringField.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Fields/FileField.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Scaffolders/RazorPageScaffolderBase.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Fields/ArgumentField.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Configuration/PackageDescription.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Configuration/ScaffoldingConfig.cs" />
+    <Compile Include="MonoDevelop.AspNetCore.Scaffolding/Configuration/SupportPolicyVersion.cs" />
   </ItemGroup>
+
+  <!--
+    Removed with the project templates of the add-in (as in MonoDevelop.DotNetCore): the New Project and New File
+    dialogs list the templates of `dotnet new` and create projects with the CLI (T152, ADR 0026):
+    - MonoDevelop.AspNetCore/AspNetCoreProjectTemplateWizard.cs: the template wizard, based on the removed
+      DotNetCoreProjectTemplateWizard.
+    - MonoDevelop.AspNetCore.Templating/AspNetCoreFileTemplateCondition.cs and AspNetCoreSdkInstalledCondition.cs: the
+      conditions of the removed .xft.xml templates.
+    Not built: MonoDevelop.AspNetCore.DevCertInstaller, the macOS helper that trusts the development certificate
+    (ADR 0017).
+  -->
+
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="$(NuGetVersionNewtonsoftJson)" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
+    <EmbeddedResource Include="Properties/MonoDevelop.AspNetCore.addin.xml" />
+    <EmbeddedResource Include="Resources/aspnet-wizard-page.png" />
+    <EmbeddedResource Include="MonoDevelop.AspNetCore.Scaffolding/Configuration/ScaffoldingPackageVersions.json" />
+    <None Include="Resources/AspNetCore.filenesting.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="MonoDevelop.AspNetCore.Templating\AspNetCoreFileTemplateCondition.cs" />
-    <Compile Include="Properties\AddinInfo.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Templating\AspNetCoreSdkInstalledCondition.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreProjectExtension.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreRunConfiguration.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreExecutionCommand.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreRunConfigurationEditor.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreExecutionHandler.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreCertificateManager.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\DotNetCoreDevCertsTool.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\CertificateCheckResult.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Commands\PublishCommandItem.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Commands\ProjectPublishProfile.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Dialogs\PublishToFolderDialog.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\ProjectExtensions.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Commands\PublishToFolderCommandHandler.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Commands\PublishToFolderProfilesCommandHandler.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Commands\PublishToFolderBaseCommandHandler.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\Counters.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\LaunchProfileData.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\LaunchProfile.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\ILaunchProfile.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\LaunchProfileDataExtensions.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\LaunchProfileProvider.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreNestingRulesProvider.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreExecutionTarget.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreTargetFrameworkExecutionTarget.cs" />
-    <Compile Include="MonoDevelop.AspNetCore\AspNetCoreProjectTemplateWizard.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Commands\ScaffoldCommandHandler.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\ScaffolderArgs.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\ModelVisitor.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\ScaffolderWizard.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\ScaffolderDialogController.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\ScaffolderTemplateSelectPage.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\ScaffolderTemplateConfigurePage.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\CommandLineArg.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\ScaffolderWizardPageBase.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\ApiControllerEntityFrameworkScaffolder.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\ApiControllerWithActionsScaffolder.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\ControllerScaffolder.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\EmptyApiControllerScaffolder.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\EmptyMvcControllerScaffolder.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\ScaffolderBase.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\MvcControllerWithActionsScaffolder.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\RazorPageEntityFrameworkCrudScaffolder.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\RazorPageEntityFrameworkScaffolder.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\RazorPageScaffolder.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Fields\BoolField.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Fields\BoolFieldList.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Fields\ComboField.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Fields\ScaffolderField.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Fields\StringField.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Fields\FileField.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\RazorPageScaffolderBase.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Fields\ArgumentField.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Configuration\PackageDescription.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Configuration\ScaffoldingConfig.cs" />
-    <Compile Include="MonoDevelop.AspNetCore.Scaffolding\Configuration\SupportPolicyVersion.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\MonoDevelop.AspNetCore.addin.xml" />
-    <EmbeddedResource Include="Resources\aspnet-wizard-page.png" />
-    <EmbeddedResource Include="MonoDevelop.AspNetCore.Scaffolding\Configuration\ScaffoldingPackageVersions.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\AspNetCore.filenesting.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\core\MonoDevelop.Ide\MonoDevelop.Ide.csproj">
-      <Project>{27096E7F-C91C-4AC6-B289-6897A701DF21}</Project>
-      <Name>MonoDevelop.Ide</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\core\MonoDevelop.Core\MonoDevelop.Core.csproj">
-      <Project>{7525BB88-6142-4A26-93B9-A30C6983390A}</Project>
-      <Name>MonoDevelop.Core</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\external\xwt\Xwt\Xwt.csproj">
-      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
-      <Name>Xwt</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\MonoDevelop.DotNetCore\MonoDevelop.DotNetCore.csproj">
-      <Project>{6868153E-41EA-43A4-A81A-C1E7256373F7}</Project>
-      <Name>MonoDevelop.DotNetCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\external\mono-addins\Mono.Addins\Mono.Addins.csproj">
-      <Project>{91DD5A2D-9FE3-4C3C-9253-876141874DAD}</Project>
-      <Name>Mono.Addins</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\MonoDevelop.PackageManagement\MonoDevelop.PackageManagement.csproj">
-      <Project>{F218643D-2E74-4309-820E-206A54B7133F}</Project>
-      <Name>MonoDevelop.PackageManagement</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
-    <InternalsVisibleTo Include="DotNetCore.Debugger" />
     <InternalsVisibleTo Include="MonoDevelop.AspNetCore.Tests" />
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="Resources\" />
-    <Folder Include="MonoDevelop.AspNetCore.Scaffolding\" />
-    <Folder Include="MonoDevelop.AspNetCore.Scaffolding\Scaffolders\" />
-    <Folder Include="MonoDevelop.AspNetCore.Scaffolding\Fields\" />
-    <Folder Include="MonoDevelop.AspNetCore.Scaffolding\Configuration\" />
+    <ProjectReference Include="../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" Private="false" />
+    <ProjectReference Include="../../core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" Private="false" />
+    <ProjectReference Include="../MonoDevelop.DotNetCore/MonoDevelop.DotNetCore.csproj" Private="false" />
+    <ProjectReference Include="../MonoDevelop.PackageManagement/MonoDevelop.PackageManagement.csproj" Private="false" />
+    <ProjectReference Include="../../../vendor/xwt/Xwt/Xwt.csproj" Private="false" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <!-- GtkSharp and Newtonsoft.Json come transitively from MonoDevelop.Ide: the add-in ships none. -->
+    <PackageReference Include="Mono.Addins" />
+  </ItemGroup>
 </Project>

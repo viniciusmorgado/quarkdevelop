@@ -142,10 +142,7 @@
 		<StockIcon stockid = "nunit-pad-icon" resource = "pad-unit-test-16.png" size="Menu" />
 	</Extension>
 
-	<!--
-		Linux: the test markers of the C# editor for the frameworks VSTest runs (T101). The NUnit markers come from the
-		MonoDevelop.UnitTesting.NUnit add-in, which is not built (its legacy NUnit runner needs Mono).
-	-->
+	<!-- The test markers of the C# editor for the frameworks VSTest runs: NUnit, xUnit and MSTest. -->
 	<Extension path = "/MonoDevelop/UnitTesting/UnitTestMarkers">
 		<TestMarkers
 				testMethodAttributeMarker="NUnit.Framework.TestAttribute"

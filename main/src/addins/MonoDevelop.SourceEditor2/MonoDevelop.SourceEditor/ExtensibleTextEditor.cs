@@ -544,7 +544,7 @@ namespace MonoDevelop.SourceEditor
 
 		public bool DoInsertTemplate ()
 		{
-			var doc = view.DocumentController?.Document ?? IdeApp.Workbench.ActiveDocument;
+			var doc = view.DocumentController?.Document ?? IdeApp.Workbench?.ActiveDocument;
 			if (doc == null) {
 				LoggingService.LogError ("DoInsertTemplate(): Can't find valid document");
 				return false;

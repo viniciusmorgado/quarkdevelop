@@ -134,7 +134,7 @@ namespace MonoDevelop.Ide.WelcomePage
 					Pad.MediumTitleColor = fgColor;
 					Pad.SmallTitleColor = secColor;
 
-					Pad.News.Item.TitleHoverColor = "#3496d9";
+					Pad.News.Item.TitleHoverColor = "#7b41f6";
 
 					Pad.Solutions.SolutionTile.HoverBackgroundColor = hoverColor;
 					Pad.Solutions.SolutionTile.HoverBorderColor = hoverColor;
@@ -154,10 +154,10 @@ namespace MonoDevelop.Ide.WelcomePage
 					Pad.MediumTitleColor = fgColor;
 					Pad.SmallTitleColor = secColor;
 
-					Pad.News.Item.TitleHoverColor = "#5babed";
+					Pad.News.Item.TitleHoverColor = "#a279f9";
 
-					Pad.Solutions.SolutionTile.HoverBackgroundColor = "#2b3e50";
-					Pad.Solutions.SolutionTile.HoverBorderColor = "#2b3e50";
+					Pad.Solutions.SolutionTile.HoverBackgroundColor = "#372b50";
+					Pad.Solutions.SolutionTile.HoverBorderColor = "#372b50";
 				}
 			}
 		}

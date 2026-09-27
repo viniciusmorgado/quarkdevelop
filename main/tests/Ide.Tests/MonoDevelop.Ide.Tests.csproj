@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003): the MonoDevelop.Ide tests on
+    Converted from the legacy csproj (ADR 0003): the MonoDevelop.Ide tests on
     NUnit 3 (ADR 0015, T107), run under Xvfb. GuiUnit and mdtool run-md-tests are replaced by IdeUnitTests.GuiTestHost
     (IdeTestsSetUp.cs): GTK, the runtime and the add-ins of this output folder, with the GLib main loop on the test thread.
   -->

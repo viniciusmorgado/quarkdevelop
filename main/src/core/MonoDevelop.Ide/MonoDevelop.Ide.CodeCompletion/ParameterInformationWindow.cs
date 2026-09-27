@@ -254,6 +254,9 @@ namespace MonoDevelop.Ide.CodeCompletion
 			}
 			descriptionBox.ShowAll ();
 			Content.QueueForReallocate ();
+			// Without a transient parent, GTK on Wayland maps the popup as a separate top-level window
+			if (TransientFor == null && Ext?.Editor != null && ((Gtk.Widget)Ext.Editor).Toplevel is Gtk.Window editorWindow)
+				TransientFor = Xwt.Toolkit.Load (Xwt.ToolkitType.Gtk3).WrapWindow (editorWindow);
 			Show ();
 		}
 

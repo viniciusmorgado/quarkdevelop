@@ -28,8 +28,13 @@ using Gdk;
 
 namespace MonoDevelop.Components
 {
+	/// <summary>
+	/// Shows an Xwt image, which this class sizes and draws. It is a GtkImage with no content of its own because GTK 3
+	/// wants one as the image of a menu item: gtk_image_menu_item_set_image sets its pixel size, and logged a critical for
+	/// every menu icon while ImageView was a GtkMisc.
+	/// </summary>
 	[System.ComponentModel.ToolboxItem (true)]
-	public class ImageView: Gtk.Misc
+	public class ImageView: Gtk.Image
 	{
 		Xwt.Drawing.Image image;
 		string iconId;
@@ -70,7 +75,8 @@ namespace MonoDevelop.Components
 			Image = MonoDevelop.Ide.ImageService.GetIcon (iconId, size);
 		}
 
-		public Gtk.IconSize IconSize {
+		// The size of the ImageService icon; it hides GtkImage's icon-size, which ImageView does not use
+		public new Gtk.IconSize IconSize {
 			get {
 				return size.HasValue ? size.Value : Gtk.IconSize.Invalid;
 			}

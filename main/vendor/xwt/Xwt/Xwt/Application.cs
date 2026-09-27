@@ -301,7 +301,11 @@ namespace Xwt
 
 			Timer t = new Timer ();
 			t.Id = engine.TimerInvoke (delegate {
-				return targetToolkit.Invoke (action);
+				bool again = targetToolkit.Invoke (action);
+				// the toolkit removes a timer that stops: disposing it afterwards must not remove it again
+				if (!again)
+					t.Finished = true;
+				return again;
 			}, timeSpan);
 			return t;
 		}
@@ -325,8 +329,13 @@ namespace Xwt
 		sealed class Timer: IDisposable
 		{
 			public object Id;
+			public bool Finished;
 			public void Dispose ()
 			{
+				// GLib logs a critical for a source that is already gone ("Source ID ... was not found")
+				if (Finished)
+					return;
+				Finished = true;
 				Application.engine.CancelTimerInvoke (Id);
 			}
 		}

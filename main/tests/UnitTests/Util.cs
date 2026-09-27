@@ -123,7 +123,7 @@ namespace UnitTests
 			WriteEmptyProjectFile (Path.Combine (TmpDir, "Directory.Packages.props"));
 
 			// Legacy .NET Framework fixtures resolve their reference assemblies from the directory
-			// installed by scripts/netfx-refasm.sh (task T134); Linux has no .NETFramework directory.
+			// installed by scripts/netfx-refasm.cs (task T134); Linux has no .NETFramework directory.
 			static void WriteFrameworkReferenceProps (string fileName)
 			{
 				if (File.Exists (fileName))

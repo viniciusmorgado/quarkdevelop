@@ -90,7 +90,7 @@ Options 1 and A.
   `packaging/flatpak/icons/quarkdevelop-<size>.png`, the QuarkDevelop logo (`Assets/quark_logo.png`)
   scaled to the hicolor PNG sizes (2026-09-25; before, `main/theme-icons/GNOME/monodevelop-<size>.png`).
   The menu and AppStream name is QuarkDevelop; the app id stays `io.github.viniciusmorgado.MonoDevelop`.
-- **Packaging container**: `PM_PROFILE=flatpak ./scripts/pm …` builds `packaging/flatpak/Containerfile`
+- **Packaging container**: `PM_PROFILE=flatpak ./scripts/pm …` builds `packaging/flatpak/Dockerfile`
   (the dev image's pinned .NET SDK base + flatpak 1.14, flatpak-builder 1.4, appstream,
   desktop-file-utils, Xvfb). The only extra podman option is `--security-opt unmask=/proc/*`:
   bubblewrap mounts a new `/proc` for each sandbox, which the kernel refuses while podman masks
@@ -108,14 +108,14 @@ Options 1 and A.
   build and IDE smoke checks (T124, `docs/evidence/M7/`). Both run in the flatpak profile; the IDE build
   they use comes from the dev profile (or is built by `package-flatpak.sh` with the same SDK when
   missing).
-- **SBOM**: CycloneDX .NET tool 6.2.0 (local tool, `dotnet-tools.json`) over
+- **SBOM**: CycloneDX .NET tool 6.2.0 (local tool, `.config/dotnet-tools.json`) over
   `main/MonoDevelop.Linux.sln` with test projects and development-only packages excluded (the NuGet
   packages whose assemblies ship in the bundle), plus the bundled .NET SDK as a component.
 
 ### Not included
 
 - netcoredbg: the IDE's netcoredbg engine is not in the build yet (T112); when it is, the adapter can
-  be added to the manifest as a pinned, checksummed archive source (as in the `Containerfile`).
+  be added to the manifest as a pinned, checksummed archive source (as in the `Dockerfile`).
 - An external terminal for "Run in external console" (no host terminal in the sandbox).
 - Compiled translations (`main/po` is not compiled yet; the IDE runs in English).
 - Flathub submission: `flatpak-builder-lint` reports `finish-args-home-filesystem-access` (needs a
@@ -141,3 +141,12 @@ Options 1 and A.
 - Option 2 rejected: MSBuild and NuGet cannot be loaded in process from the host through
   `flatpak-spawn`; it would need `org.freedesktop.Flatpak` (a sandbox escape) and a host SDK of the
   right version. Option 3 rejected: an IDE that cannot build out of the box fails US5.
+
+**Amendment (2026-09-25): packaging on the host.** The development container and the `flatpak` profile of `scripts/pm`
+are gone ([ADR 0028](0028-csharp-developer-scripts.md)). Local bundles are built on the host by
+`dotnet scripts/package-flatpak.cs`, and checked by `dotnet scripts/test-flatpak.cs`. The Flathub runtimes, the
+flatpak-builder state and the test installation live in `~/.cache/monodevelop/flatpak` (`MD_FLATPAK_STORE`) instead of
+the `md-flatpak` volume. The test runs in its own D-Bus session (`dbus-run-session`, with the system bus address
+exported to the activation environment as before) and gives the app a home directory of its own. The host's flatpak
+installation, its session bus and the data of an installed IDE are never used. The release workflow is unchanged:
+it builds its own Flatpak image with `--security-opt unmask=/proc/*`.

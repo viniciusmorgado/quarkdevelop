@@ -39,7 +39,7 @@ namespace MonoDevelop.Projects
 	[ExportProjectModelExtension]
 	public class SdkProjectExtension : DotNetProjectExtension
 	{
-		HashSet<(string Name, string Include)> evaluatedItems;
+		HashSet<IMSBuildItemEvaluated> evaluatedItems;
 
 		MSBuildSdkProject msbuildSdkProject = new MSBuildSdkProject ();
 		string[] cachedBuildActions;
@@ -85,6 +85,9 @@ namespace MonoDevelop.Projects
 		internal protected override void OnReadProject (ProgressMonitor monitor, MSBuildProject msproject)
 		{
 			msbuildSdkProject.AddKnownItemAttributes (Project.MSBuildProject);
+
+			// OnGetSupportsImportedItem compares the items of this evaluation by reference
+			evaluatedItems = null;
 
 			base.OnReadProject (monitor, msproject);
 
@@ -189,14 +192,18 @@ namespace MonoDevelop.Projects
 			if (IsFromSharedProject (buildItem))
 				return false;
 
+			// Only the imported items whose condition is true, compared by reference: an SDK can include a file twice under
+			// opposite conditions (the Web SDK has Content Include="**\*.json" for ExcludeConfigFilesFromBuildOutput 'true' and
+			// not 'true'), and the item of the false condition, which is only in EvaluatedItemsIgnoringCondition, listed the
+			// file a second time.
 			evaluatedItems ??= CreateEvaluatedItemsCache (Project.MSBuildProject);
-			return evaluatedItems.Contains ((buildItem.Name, buildItem.Include));
+			return evaluatedItems.Contains (buildItem);
 
-			static HashSet<(string, string)> CreateEvaluatedItemsCache (MSBuildProject project)
-				=> new HashSet<(string Name, string Include)> (
+			static HashSet<IMSBuildItemEvaluated> CreateEvaluatedItemsCache (MSBuildProject project)
+				=> new HashSet<IMSBuildItemEvaluated> (
 					project.EvaluatedItems
-					.Where (x => x.IsImported)
-					.Select (x => (x.Name, x.Include))
+					.Where (x => x.IsImported),
+					ReferenceEqualityComparer.Instance
 				);
 		}
 

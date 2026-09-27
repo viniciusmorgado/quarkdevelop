@@ -1,7 +1,0 @@
-checksum       exit 0      0s
-install        exit 0     59s
-desktop        exit 0      0s
-version        exit 0      1s
-mdtool-build   exit 0      6s
-ide-smoke      exit 0     14s
-total                     80s

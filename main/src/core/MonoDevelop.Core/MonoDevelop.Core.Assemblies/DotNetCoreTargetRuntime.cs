@@ -90,7 +90,7 @@ namespace MonoDevelop.Core.Assemblies
 		{
 			// Old-style .NET Framework projects resolve framework references from reference assemblies
 			// (<root>/.NETFramework/vX/RedistList/FrameworkList.xml); Linux has none unless they were
-			// installed, e.g. by scripts/netfx-refasm.sh (task T134).
+			// installed, e.g. by scripts/netfx-refasm.cs (task T134).
 			var netfx = NetFrameworkReferenceAssembliesDirectory;
 			if (!netfx.IsNull)
 				yield return netfx;

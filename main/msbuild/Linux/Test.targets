@@ -44,7 +44,7 @@
     <DataCollectors>
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
-          <!-- Coverage counts MonoDevelop product assemblies only (SC-003): vendored third-party code,
+          <!-- Coverage counts MonoDevelop product assemblies only: vendored third-party code,
                tests and test helpers are not measured. -->
           <Exclude>[Xwt]*,[Xwt.*]*,[Microsoft.VisualStudio.*]*,[Mono.Addins.GuiGtk3]*,[MonoDevelop.Wpf.Primitives]*,[Mono.Debugging]*,[UnitTests]*,[*.Tests]*,[*.Tests.*]*,[MonoDevelop.TestStartupHook]*</Exclude>
         </Configuration>

@@ -101,29 +101,18 @@ namespace MonoDevelop.Components.Commands
 			EnsurePopulated ();
 		}
 		
-		Gtk.Requisition Gtk3SizeRequest ()
-		{
-			var requisition = new Gtk.Requisition ();
-			EnsurePopulated ();
-			requisition = Gtk3BaseSizeRequest ();
-			return requisition;
-		}
-
+		// Each axis asks the base class for that axis only: GtkMenu computes its height from
+		// gtk_widget_get_preferred_width, so asking for both here recursed until the stack overflowed.
 		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
 		{
-			minimum_width = natural_width = Gtk3SizeRequest ().Width;
+			EnsurePopulated ();
+			base.OnGetPreferredWidth (out minimum_width, out natural_width);
 		}
 
 		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
 		{
-			minimum_height = natural_height = Gtk3SizeRequest ().Height;
-		}
-
-		Gtk.Requisition Gtk3BaseSizeRequest ()
-		{
-			base.OnGetPreferredWidth (out _, out int width);
-			base.OnGetPreferredHeight (out _, out int height);
-			return new Gtk.Requisition { Width = width, Height = height };
+			EnsurePopulated ();
+			base.OnGetPreferredHeight (out minimum_height, out natural_height);
 		}
 
 		internal void Update ()

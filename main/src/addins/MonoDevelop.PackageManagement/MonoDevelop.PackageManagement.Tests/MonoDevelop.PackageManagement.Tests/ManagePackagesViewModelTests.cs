@@ -313,6 +313,9 @@ namespace MonoDevelop.PackageManagement.Tests
 			AddOnePackageSourceToRegisteredSources ();
 			CreateViewModel ();
 			viewModel.IncludePrerelease = true;
+			// Changing IncludePrerelease reads the packages, with no search text yet. Canceling that read does not stop its
+			// query, which can reach the feed after the next one, and the feed keeps the last search text: wait for it first.
+			await viewModel.ReadPackagesTask;
 			viewModel.SearchTerms = "Test";
 			viewModel.PackageFeed.AddPackage ("Test", "1.1.0-alpha");
 			viewModel.ReadPackages ();

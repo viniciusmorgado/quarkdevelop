@@ -110,7 +110,8 @@ provider. The Welcome page has no template list of its own.
 - Bad: template options other than the language (framework, `--use-program-main`, authentication…) are not offered
   in the dialog; the defaults of the template apply.
 - Bad: F# projects are created and kept in the solution, but the IDE has no F# language binding yet: they are loaded
-  as unsupported projects (T154).
+  as unsupported projects (T154). Update 2026-09-25: the F# binding is back ([ADR 0027](0027-fsharp-binding.md)), and
+  F# projects load as F# projects.
 - Open: the XML template engine classes (`ProjectTemplate`, `FileTemplate` and their descriptors) remain in
   MonoDevelop.Ide for API compatibility (`FileTemplate` by id, TextTemplating), with nothing registered on
   `/MonoDevelop/Ide/ProjectTemplates` or `/MonoDevelop/Ide/FileTemplates` in the Linux build.

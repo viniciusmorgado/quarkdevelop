@@ -362,7 +362,7 @@ namespace MonoDevelop.Projects.MSBuild
 							UpdateItem (project, updateContext, item, inc, trueCond, it);
 					}
 				} else if (!string.IsNullOrEmpty (item.Remove)) {
-					var remove = context.EvaluateString (item.Remove);
+					var remove = EvaluateRemove (project, context, item.Remove);
 
 					if (remove.IndexOf (';') == -1)
 						RemoveItem (project, item, remove, trueCond);
@@ -394,6 +394,23 @@ namespace MonoDevelop.Projects.MSBuild
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Evaluates the Remove attribute of an item. Item references in it, such as Content Remove="@(_WebToolingArtifacts)"
+		/// in the Web SDK, expand to the items evaluated so far: those of this project and of the projects that import it
+		/// (the items of an import join its parent only when the import ends). Update does not expand them: its metadata
+		/// would have to be evaluated for each item, and the SDK's Update="@(Content)" computes Link from %(FullPath).
+		/// </summary>
+		static string EvaluateRemove (ProjectInfo project, MSBuildEvaluationContext context, string spec)
+		{
+			if (spec.IndexOf ("@(", StringComparison.Ordinal) == -1)
+				return context.EvaluateString (spec);
+
+			var items = new List<MSBuildItemEvaluated> ();
+			for (var p = project; p != null; p = p.Parent)
+				items.AddRange (p.EvaluatedItems);
+			return context.EvaluateWithItems (spec, items);
 		}
 
 		void UpdateItem (ProjectInfo project, MSBuildEvaluationContext context, MSBuildItem item, string update, bool trueCond, MSBuildItemEvaluated it)

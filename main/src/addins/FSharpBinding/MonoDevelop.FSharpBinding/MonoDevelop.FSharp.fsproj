@@ -1,0 +1,108 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Converted from the legacy fsproj (ADR 0003): the F# language binding (project type, editor, F# Interactive). -->
+  <PropertyGroup>
+    <AssemblyName>FSharpBinding</AssemblyName>
+    <RootNamespace>FSharp.MonoDevelop</RootNamespace>
+    <AddinBuildDir>FSharpBinding</AddinBuildDir>
+    <!-- FSharp.Core comes from Directory.Packages.props (the version FSharp.Compiler.Service 31 was built with). -->
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Services/Extensions.fs" />
+    <Compile Include="Services/CompilerLocationUtils.fs" />
+    <Compile Include="Services/OrderAssemblyReferences.fs" />
+    <Compile Include="Services/Parameters.fs" />
+    <Compile Include="Services/TooltipHelpers.fs" />
+    <Compile Include="Services/FileService.fs" />
+    <Compile Include="Services/CompilerArguments.fs" />
+    <Compile Include="Services/LanguageService.fs" />
+    <Compile Include="Services/MDLanguageService.fs" />
+    <Compile Include="Services/CompilerService.fs" />
+    <Compile Include="Services/InteractiveSession.fs" />
+    <Compile Include="Services/RoslynHelpers.fs" />
+    <Compile Include="FSharpParsedDocument.fs" />
+    <Compile Include="FSharpTokens.fs" />
+    <Compile Include="FSharpSymbolHelper.fs" />
+    <Compile Include="ProjectSearchCategory.fs" />
+    <Compile Include="FSharpProject.fs" />
+    <Compile Include="FSharpInteractivePad.fs" />
+    <Compile Include="FSharpOptionsPanels.fs" />
+    <Compile Include="PortableFSharpProjectFlavor.fs" />
+    <Compile Include="FSharpFoldingParser.fs" />
+    <Compile Include="FSharpParser.fs" />
+    <Compile Include="FSharpOutlineTextEditorExtension.fs" />
+    <Compile Include="FSharpIndentationTracker.fs" />
+    <Compile Include="TypeSignatureHelp.fs" />
+    <Compile Include="FSharpTextEditorCompletion.fs" />
+    <Compile Include="FSharpPathExtension.fs" />
+    <Compile Include="FSharpUnitTestTextEditorExtension.fs" />
+    <Compile Include="FSharpProjectFileNodeExtension.fs" />
+    <Compile Include="FSharpTooltipProvider.fs" />
+    <Compile Include="FSharpResolverProvider.fs" />
+    <Compile Include="VS/ServiceAssemblyContent.fs" />
+    <Compile Include="VS/Pervasive.fs" />
+    <Compile Include="VS/AssemblyContentProvider.fs" />
+    <Compile Include="VS/CommonRoslynHelpers.fs" />
+    <Compile Include="CodeFix/AddOpenCodeFixProvider.fs" />
+    <Compile Include="RefactoringOperationsHandler.fs" />
+    <Compile Include="FSharpFormattingPolicy.fs" />
+    <Compile Include="FSharpFormatter.fs" />
+    <Compile Include="FSharpFormattingPanelWidget.fs" />
+    <Compile Include="FSharpFormattingPolicyPanel.fs" />
+    <Compile Include="FSharpSyntaxMode.fs" />
+    <Compile Include="FSharpHighlightUsagesExtension.fs" />
+    <Compile Include="FakeSearchCategory.fs" />
+    <Compile Include="FSharpNavigationTextEditorExtension.fs" />
+    <Compile Include="FSharpBraceMatcher.fs" />
+    <Compile Include="FSharpDebuggerExpressionResolver.fs" />
+    <Compile Include="FSharpSelection.fs" />
+    <Compile Include="Properties/AddinInfo.fs" />
+    <Compile Include="HighlightUnusedCode.fs" />
+    <Compile Include="ScriptDebugging.fs" />
+    <Compile Include="FSharpProjectCompilerOptions.fs" />
+    <Compile Include="FindReferenceUsages.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="FSharpSyntaxMode.xml" />
+    <EmbeddedResource Include="FSharpFormattingPolicy.xml" />
+    <EmbeddedResource Include="FSharpStylePolicy.xml" />
+    <EmbeddedResource Include="FSharpBinding.addin.xml" />
+    <!-- The F# code templates (editor snippets) of /MonoDevelop/Ide/CodeTemplates, next to the add-in as before -->
+    <None Include="Templates/FSharp-templates.xml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../MonoDevelop.FSharp.Shared/MonoDevelop.FSharp.Shared.fsproj" />
+    <ProjectReference Include="../MonoDevelop.FSharp.Gui/MonoDevelop.FSharp.Gui.csproj" />
+    <ProjectReference Include="../../../core/MonoDevelop.Core/MonoDevelop.Core.csproj" Private="false" />
+    <ProjectReference Include="../../../core/MonoDevelop.Ide/MonoDevelop.Ide.csproj" Private="false" />
+    <ProjectReference Include="../../MonoDevelop.Debugger/MonoDevelop.Debugger.csproj" Private="false" />
+    <ProjectReference Include="../../MonoDevelop.DesignerSupport/MonoDevelop.DesignerSupport.csproj" Private="false" />
+    <ProjectReference Include="../../MonoDevelop.Refactoring/MonoDevelop.Refactoring.csproj" Private="false" />
+    <ProjectReference Include="../../MonoDevelop.SourceEditor2/MonoDevelop.SourceEditor.csproj" Private="false" />
+    <ProjectReference Include="../../MonoDevelop.UnitTesting/MonoDevelop.UnitTesting.csproj" Private="false" />
+    <ProjectReference Include="../../../../vendor/xwt/Xwt/Xwt.csproj" Private="false" />
+    <ProjectReference Include="../../../../vendor/xwt/Xwt.Gtk/Xwt.Gtk3.csproj" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" />
+    <PackageReference Include="FSharp.Compiler.Service" />
+    <PackageReference Include="ExtCore" NoWarn="NU1701" />
+    <PackageReference Include="Fantomas" />
+    <PackageReference Include="System.Reactive" />
+    <PackageReference Include="Mono.Addins" />
+    <PackageReference Include="Mono.Cecil" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+
+  <!-- Add-ins do not copy their NuGet closure (Common.targets): copy the F# packages the IDE does not have. -->
+  <Target Name="CopyFSharpPackages" AfterTargets="ResolvePackageAssets">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)' == 'FSharp.Core' or '%(RuntimeCopyLocalItems.NuGetPackageId)' == 'FSharp.Compiler.Service' or '%(RuntimeCopyLocalItems.NuGetPackageId)' == 'ExtCore' or '%(RuntimeCopyLocalItems.NuGetPackageId)' == 'Fantomas' or '%(RuntimeCopyLocalItems.NuGetPackageId)' == 'System.Reactive'" />
+    </ItemGroup>
+  </Target>
+</Project>

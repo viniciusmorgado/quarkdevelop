@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003). Linux-only: GTK 3 UI. -->
+  <!-- Converted from the legacy csproj (ADR 0003). Linux-only: GTK 3 UI. -->
   <PropertyGroup>
     <AssemblyName>MonoDevelop.Debugger</AssemblyName>
     <RootNamespace>MonoDevelop.Debugger</RootNamespace>

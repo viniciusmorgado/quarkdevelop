@@ -1,0 +1,6 @@
+<Project>
+  <!-- The developer scripts (dotnet scripts/<name>.cs): new warnings are errors, as in the rest of the repository. -->
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

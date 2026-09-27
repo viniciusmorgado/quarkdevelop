@@ -143,8 +143,9 @@ namespace MonoDevelop.Ide.Gui
 		
 		protected override void ForAll (bool include_internals, Gtk.Callback callback)
 		{
-			if (Child != null)
-				callback (Child);
+			// The base class passes the child and, with include_internals, GTK's own title bar
+			// (client-side decorations on Wayland): skipping it left the title bar unmapped and undrawn.
+			base.ForAll (include_internals, callback);
 			foreach (TopLevelChild child in topLevels)
 				callback (child.Child);
 		}

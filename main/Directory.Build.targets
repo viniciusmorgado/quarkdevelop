@@ -1,27 +1,3 @@
 <Project>
-
   <Import Project="$(MSBuildThisFileDirectory)msbuild/Linux/Common.targets" Condition="'$(UsingMicrosoftNETSdk)' == 'true'" />
-
-  <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' != 'true'">
-    <RARCoverity Condition="$(COVERITY_GTK) != ''">$(MSBuildThisFileDirectory)\$(COVERITY_GTK)</RARCoverity>
-    <RARResolveFromGAC Condition="$(RARResolveFromGAC) == ''">true</RARResolveFromGAC>
-    <RARCandidateAssemblyFiles Condition="$(RARResolveFromCandidateAssemblyFiles) == 'true'">{CandidateAssemblyFiles};</RARCandidateAssemblyFiles>
-    <RAROutputDirectory Condition="$(RARResolveFromOutputDirectory) == 'true'">$(OutDir)</RAROutputDirectory>
-    <RARGAC Condition="$(RARResolveFromGAC) == 'true'">{GAC}</RARGAC>
-    <AssemblySearchPaths>{RawFileName};{HintPathFromItem};{TargetFrameworkDirectory};$(RARGAC);$(RAROutputDirectory);$(RARCandidateAssemblyFiles);$(RARCoverity)</AssemblySearchPaths>
-    <AllowedReferenceAssemblyFileExtensions>.dll</AllowedReferenceAssemblyFileExtensions>
-    <!-- we do have .dll.mdb for Gtk# assemblies, but they're all in the GAC anyway, so effectively we only need .pdb. We don't have .exe.mdb. -->
-    <AllowedReferenceRelatedDebugFileExtensions>.pdb</AllowedReferenceRelatedDebugFileExtensions>
-    <AllowedReferenceRelatedFileExtensions>.pdb;.xml;.dll.config;.exe.config</AllowedReferenceRelatedFileExtensions>
-  </PropertyGroup>
-
-  <Target Name="FixWindowsAccessibilityReference"
-    AfterTargets="ResolveAssemblyReference"
-    BeforeTargets="CoreCompile;FindReferenceAssembliesForReferences"
-    Condition="'$(OS)' == 'Windows_NT'">
-    <ItemGroup>
-      <ReferencePath Remove="@(ReferencePath)" Condition="%(ReferencePath.OriginalItemSpec) == 'Accessibility'" />
-    </ItemGroup>
-  </Target>
-
 </Project>

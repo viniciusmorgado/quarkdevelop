@@ -53,7 +53,7 @@ namespace MonoDevelop.AspNetCore
 			return urls.Split (';').FirstOrDefault ();
 		}
 
-		public static IDictionary<string, Dictionary<string, object>> ToSerializableForm (this IDictionary<string, LaunchProfileData> profiles)
+		public static IDictionary<string, Dictionary<string, object>> ToSerializableForm (this IEnumerable<KeyValuePair<string, LaunchProfileData>> profiles)
 		{
 			var profileData = new Dictionary<string, Dictionary<string, object>> (StringComparer.Ordinal);
 			foreach (var profile in profiles) {

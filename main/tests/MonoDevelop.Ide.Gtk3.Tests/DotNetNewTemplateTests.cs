@@ -187,7 +187,7 @@ namespace MonoDevelop.Ide.Gtk3.Tests
 			CollectionAssert.AreEqual (SortedCategories, order);
 		}
 
-		/// <summary>The counts of docs/evidence/M5/README.md (T152), per kind and category: shown / hidden (reason).</summary>
+		/// <summary>The expected counts, per kind and category: shown / hidden (reason).</summary>
 		[Test]
 		public void CountsPerCategory ()
 		{

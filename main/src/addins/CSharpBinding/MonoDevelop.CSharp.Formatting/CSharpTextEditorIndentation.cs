@@ -137,7 +137,7 @@ namespace MonoDevelop.CSharp.Formatting
 					if (DefaultSourceEditorOptions.Instance.IndentStyle == IndentStyle.Auto) {
 						editor.IndentationTracker = null;
 					} else {
-						editor.IndentationTracker = new CSharpIndentationTracker (editor, DocumentContext);
+						editor.IndentationTracker = new CSharpIndentationTracker (editor, DocumentContext, optionSet);
 					}
 
 					indentationDisabled = DefaultSourceEditorOptions.Instance.IndentStyle == IndentStyle.Auto || DefaultSourceEditorOptions.Instance.IndentStyle == IndentStyle.None;

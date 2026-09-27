@@ -32,7 +32,7 @@ namespace MonoDevelop.VersionControl
 	/// <summary>
 	/// The repository tests use the MonoDevelop runtime (add-in extension points of the version control add-ins,
 	/// the main thread, file services). GuiUnit and mdtool run-md-tests initialized it, and GTK, before NUnit 3
-	/// (ADR 0015). The diff color tests read the IDE styles, which need GTK and a display (Xvfb in scripts/test.sh).
+	/// (ADR 0015). The diff color tests read the IDE styles, which need GTK and a display (Xvfb in scripts/test.cs).
 	/// </summary>
 	[SetUpFixture]
 	public class GitTestSetUp
@@ -65,7 +65,7 @@ namespace MonoDevelop.VersionControl
 		public static void RequireGtk ()
 		{
 			if (!GtkAvailable)
-				Assert.Ignore ("no display (run under Xvfb: ./scripts/pm ./scripts/test.sh)");
+				Assert.Ignore ("no display (run under Xvfb: dotnet scripts/test.cs)");
 		}
 	}
 }

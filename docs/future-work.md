@@ -1,7 +1,7 @@
 # Future work
 
-These items are decided but belong after the Linux / .NET 10 migration. They are not scheduled in
-`specs/001-linux-dotnet10-migration/tasks.md`, and each one starts only when its precondition holds.
+What is left after the Linux / .NET 10 migration: studies that start only when their precondition holds, and the
+tasks of the migration that were not done.
 
 ## UI framework study: coupling of the GTK UI and a possible move to Avalonia
 
@@ -12,8 +12,7 @@ These items are decided but belong after the Linux / .NET 10 migration. They are
 
 **Scope of the study.** Map how tightly the UI code is coupled to the rest of the IDE:
 - Which assemblies and namespaces reference `Gtk`, `Gdk`, `Pango`, `Cairo`, `GLib`, `Atk` or Xwt directly, and how
-  much code that is. The inventory in `scripts/inventory.sh` and `scripts/tools/compiled-files.sh` gives a starting
-  count.
+  much code that is.
 - Which IDE services and add-in extension points expose GTK or Xwt types in their public API. Some pass
   `Gtk.Widget`, `Control`, `Xwt.Widget` or GTK events through interfaces used by add-ins, for example pads,
   document views, option panels, commands and the text editor extension points.
@@ -41,3 +40,73 @@ These items are decided but belong after the Linux / .NET 10 migration. They are
   evaluation follows SDK 10 semantics exactly (SDK resolution, `global.json`, property functions).
 - **Expected outputs:** an ADR amending ADR 0008, the evaluator behind the project model's evaluation interface,
   and the evaluation-diff and SDK tests green with it.
+
+## Open tasks from the migration
+
+- **T134.** legacy .NET Framework fixtures in `main/tests/test-projects` resolve reference assemblies on Linux (Microsoft.NETFramework.ReferenceAssemblies via `TargetFrameworkRootPath`; `CodeTaskFactory` → `RoslynCodeTaskFactory`) → `net4x-fixture` quarantine entries removed
+- **T140.** the out-of-process .NET builder ignores the MSBuild import search paths and SDK folders that add-ins register (`MSBuildProjectService.RegisterProjectImportSearchPath`): the Mono builder got them from the `MSBuild.exe.config` toolset it patched, which the .NET builder no longer writes (ADR 0008; `RemoteBuildEngineManager.GetExeLocation`, `main/src/core/MonoDevelop.Core/MonoDevelop.Projects.MSBuild/`, `MonoDevelop.MSBuildBuilder`) → send the paths to the builder (fallback `MSBuildExtensionsPath` imports, an SDK resolver over the registered `MSBuildSDKsPath` folders, refreshed on `ImportSearchPathsChanged`); the 6 `MSBuildSearchPathTests` leave quarantine: `dotnet build main/tests/MonoDevelop.Core.Tests/MonoDevelop.Core.Tests.csproj -v q && dotnet test main/tests/MonoDevelop.Core.Tests/MonoDevelop.Core.Tests.csproj --no-build --filter "FullyQualifiedName~MSBuildSearchPathTests"`
+- **T141.** MonoDevelop's evaluator does not run the .NET SDK resolver: `SdkResolution.LoadResolvers` only loads `<sdk>/SdkResolvers/*`, and SDK 10 ships `Microsoft.DotNet.SdkResolver.dll` at the SDK root (MSBuild loads it in-box), so SDK lookup skips the global.json rules of `dotnet msbuild` (`main/src/core/MonoDevelop.Core/MonoDevelop.Projects.MSBuild/SdkResolution.cs`) → load it from `MSBuildBinPath`, keep `SdkEvaluationTests` green, check the expected message of `SdkResolverTests.UnknownSdk_DotNetMSBuildSdkResolverDoesNotFatalReportError` against SDK 10: `dotnet build main/tests/MonoDevelop.Core.Tests/MonoDevelop.Core.Tests.csproj -v q && dotnet test main/tests/MonoDevelop.Core.Tests/MonoDevelop.Core.Tests.csproj --no-build --filter "FullyQualifiedName~SdkResolverTests|FullyQualifiedName~SdkEvaluationTests"`
+- **T142.** Core test of a Mono feature that Linux/.NET does not have: `ProjectTests.RefreshReferences` expects a missing local `gtk-sharp.dll` to fall back to the Mono GAC package (no GAC, ADR 0007) → rewrite it on an assembly of the framework packages (fixture `main/tests/test-projects/reference-refresh`); `MakefileTests` and `console-project-with-makefile` are removed (ADR 0028): `dotnet build main/tests/MonoDevelop.Core.Tests/MonoDevelop.Core.Tests.csproj -v q && dotnet test main/tests/MonoDevelop.Core.Tests/MonoDevelop.Core.Tests.csproj --no-build --filter "FullyQualifiedName~ProjectTests.RefreshReferences"`
+- **T143.** Core fixtures that need NuGet packages (no network in tests; the repository `NuGet.config` and its package source mapping apply under `main/tests/tmp`): `ProjectTests.UnknownNuGetPackageReferenceId_DesignTimeBuilds` (`nuget restore` from nuget.org, and no `nuget` executable), `DotNetCoreProjectTests.BuildMultiTargetProject` (netcoreapp1.1/netstandard1.0 packages), `ProjectTests.Resources` (with MSBuild on .NET, the non-string `.resx` resources of a .NET Framework project need `System.Resources.Extensions` and `GenerateResourceUsePreserializedResources`: MSB3822/MSB3823) → restore with `dotnet restore` from a local feed of pinned packages (as `DependenciesNodeSdkProjectTests` does), retarget `multi-target2` to supported frameworks: `dotnet build main/tests/MonoDevelop.Core.Tests/MonoDevelop.Core.Tests.csproj -v q && dotnet test main/tests/MonoDevelop.Core.Tests/MonoDevelop.Core.Tests.csproj --no-build --filter "FullyQualifiedName~UnknownNuGetPackageReferenceId_DesignTimeBuilds|FullyQualifiedName~BuildMultiTargetProject|FullyQualifiedName~ProjectTests.Resources"`
+- **T144.** intermittent crash of the GTK test host ("Gdk-WARNING: losing last reference to undestroyed window", 1 in ~20 runs of MonoDevelop.Ide.Gtk3.Tests, never caught by `--blame-crash`; seen before and after the toggle-reference workaround, ADR 0024) → root cause found and fixed, 50 consecutive runs green. T153 found a probable cause (a GdkWindow freed while its widget was realized, reproduced with an offscreen window in `ToplevelReferenceTests`); the 50-run check is still open
+- **T149.** source generators, remaining gaps of T147 (ADR 0025): generators from project references (`OutputItemType="Analyzer"`), generated files under the Dependencies node, live (not snapshot) generated documents → a project-reference generator sample has 0 editor errors
+- **T150.** ADR 0011 port helpers to 0 (344 uses of `Gtk3SizeRequest`/`Gtk3ExposeEvent`/`Gtk3BaseSizeRequest`/`Gtk3BaseGetSize`/`Gtk3CompatExtensions` in 93 compiled files on 2026-09-24): native `OnGetPreferredWidth/Height` and `OnDrawn` per widget, with screenshot checks → no ADR 0011 helper left in the compiled files
+- **T151.** Ide.Tests multi-target fixture that needs NuGet packages: `TypeSystemServiceTests.MultiTargetFramework_ReloadProject_TargetFrameworksChanged` restores `main/tests/test-projects/multi-target` (netcoreapp1.1;netstandard1.0 plus Newtonsoft.Json 10.0.1: Microsoft.NETCore.App 1.1 and the netstandard1.x package graph) from nuget.org, which fails with NU1100 under the repository package source mapping and without network in tests → restore it from a local feed of pinned packages (as `DependenciesNodeSdkProjectTests` does; see T143 for the Core fixtures) or retarget the fixture to supported frameworks keeping the target-frameworks change the test makes; the entry leaves quarantine: `dotnet build main/tests/Ide.Tests/MonoDevelop.Ide.Tests.csproj -v q && GDK_BACKEND=x11 xvfb-run -a dotnet test main/tests/Ide.Tests/MonoDevelop.Ide.Tests.csproj --no-build --filter "FullyQualifiedName~MultiTargetFramework_ReloadProject_TargetFrameworksChanged"`
+- **T154.** F# binding on the current FSharp.Compiler.Service. The binding runs on FCS 31 ([ADR 0027](adr/0027-fsharp-binding.md)): a `dotnet new console --language F#` project opens with F# highlighting and builds from the IDE, but FCS 31 cannot read the F# metadata of FSharp.Core 8 and later, so SDK projects get no type checking in the editor, and syntax after F# 4.7 is not understood → the binding on FCS 43+ and FSharp.Core 10 (which also drops ExtCore and the Fantomas 3 beta); the same project shows completion, tooltips and errors in the editor. The other gaps are listed under "F# binding" below
+- **T155.** formatting while typing (`;`, `}`, `{`, `#region`…, `EditorFormattingServiceTextEditorExtension`) and on paste use the Roslyn options of the document (`.editorconfig` and Roslyn's defaults, the Visual Studio style), while Format Document and the indentation of new lines use the C# formatting policy of the project: MonoDevelop policies no longer reach Roslyn's document options (ADR 0010, T089) → one source of C# formatting options in the editor (the policy, or `.editorconfig` when the project has one), so that typing `;` in a file of another style does not reformat the statement in the Visual Studio style
+
+## Add-ins to port
+
+These add-ins serve projects that run on Linux with the .NET SDK, so they stay in the repository, outside
+`main/MonoDevelop.Linux.sln`, until they are ported like the add-ins of the solution (SDK-style `net10.0` project,
+GTK 3, tests in the gate).
+
+- **`TextTemplating`**: T4 templates (custom tools `TextTemplatingFileGenerator` and `TextTemplatingFilePreprocessor`)
+  on the `Mono.TextTemplating` package.
+- **`MonoDevelop.Packaging`**: the NuGet Package options of SDK projects (metadata, `GeneratePackageOnBuild`) and the
+  NuGet file properties. The Xamarin `.nuproj` packaging project and "Add Platform Implementation" are not ported.
+- **`MonoDevelop.DesignerSupport.Tests`**: the tests of the Properties pad and Toolbox add-in.
+- **HTML editor**: the HTML completion (tags, attributes, doctypes) of the removed `AspNet` add-in
+  (`main/src/addins/AspNet/Html` in the history before 2026-09-25) moves into the Xml add-in, with the XHTML schemas.
+
+## F# binding
+
+What the minimal port of [ADR 0027](adr/0027-fsharp-binding.md) left, besides the move to the current FCS (T154):
+
+- **F# Interactive pad and commands** are hidden. Their conditions in `FSharpBinding.addin.xml` look for the Mono F# SDK
+  targets (`Microsoft SDKs/F#/<version>/Framework/v4.0/Microsoft.FSharp.Targets`). Scripts run in F# Interactive have no
+  `fsi` object (`FSharp.Compiler.Interactive.Settings`), and values of type System.Drawing.Image are not shown as
+  images.
+- **CodeDOM:** the F# language binding has no CodeDOM provider, so the New Project dialog does not check F# project
+  names against F# keywords, and `ResXFileCodeGenerator` cannot generate `.resx` designer files for F# projects.
+- **Mono-era code** that is dead on Linux: `Environment.runningOnMono`/`getMonoPath`, the .NET Framework compiler
+  locations in `CompilerLocationUtils`, and the portable F# project flavor.
+- **Tests:** `MonoDevelop.FSharp.Tests` runs in `scripts/test.cs`, but the CI test lanes and `scripts/test.cs --parallel`
+  select `*.Tests.csproj` only. Quarantined:
+  - `CompilerArgumentsTests.Only mscorlib referenced`: Mono and .NET Framework reference resolution.
+  - `Template tests.FSharp portable project`: portable class libraries.
+  - `Interactive send references uses real assemblies #43307`: a .NET Framework 4.5.1 fixture.
+
+## ASP.NET Core
+
+What the port of [ADR 0029](adr/0029-aspnetcore-addin.md) left:
+
+- **HTTPS development certificate:** the add-in checks and trusts it on macOS only (`AspNetCoreCertificateManager`;
+  `MonoDevelop.AspNetCore.DevCertInstaller` is not ported). On Linux the `https` profiles need a certificate created
+  with `dotnet dev-certs https`, and the browser opens only once the IDE reaches the application over HTTPS.
+- **External console:** the run configurations of ASP.NET Core projects ignore "Run on external console", as upstream:
+  `DotNetCoreProjectExtension` reads the option from `DotNetCoreExecutionCommand` only.
+- **Publish to Folder and scaffolding** build and keep their upstream tests, but have no GUI test on Linux.
+
+## Parity with the .NET SDK on Linux
+
+The IDE must open, build, run and debug every project that runs on Linux with the dotnet CLI or Rider, except VB.NET
+and Subversion, which are not supported by decision. Gaps found on 2026-09-25:
+
+- `.slnx` solutions, the default format of `dotnet new sln` in SDK 10 (the New Project dialog passes `--format sln`).
+- File-based apps (`dotnet run app.cs`).
+- Test projects on Microsoft.Testing.Platform (the test runner uses VSTest).
+- Razor and Blazor editing (`.cshtml`, `.razor`).
+- Publishing projects that are not web projects (self-contained, single file).
+- Central package management (`Directory.Packages.props`) when adding packages: not tested.
+- `.ilproj` projects of `Microsoft.NET.Sdk.IL`.

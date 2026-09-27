@@ -29,7 +29,7 @@ namespace MonoDevelop.Debugger.NetCoreDbg
 {
 	/// <summary>
 	/// Finds the netcoredbg executable: the path set in the <see cref="PathPropertyName"/> property (MonoDevelop
-	/// preferences), else <c>netcoredbg</c> on PATH (the development container and the Flatpak install it there).
+	/// preferences), else <c>netcoredbg</c> on PATH (dotnet scripts/setup.cs installs it in ~/.local/bin).
 	/// </summary>
 	public static class NetCoreDbgLocator
 	{

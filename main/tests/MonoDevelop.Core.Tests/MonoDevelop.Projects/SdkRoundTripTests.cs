@@ -32,7 +32,7 @@ using UnitTests;
 namespace MonoDevelop.Projects
 {
 	/// <summary>
-	/// Task T051 (constitution VI, compatibility): loading and saving an SDK-style net10.0 solution
+	/// Compatibility: loading and saving an SDK-style net10.0 solution
 	/// leaves the .sln and .csproj files byte-for-byte unchanged.
 	/// </summary>
 	[TestFixture]

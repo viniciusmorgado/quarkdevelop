@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    Converted from the legacy csproj by scripts/convert-legacy-csproj.py (ADR 0003): the C# binding tests on NUnit 3
+    Converted from the legacy csproj (ADR 0003): the C# binding tests on NUnit 3
     (ADR 0015, T107), run under Xvfb in the IDE test host (IdeUnitTests.GuiTestHost, CSharpBindingTestsSetUp.cs).
   -->
   <PropertyGroup>

@@ -29,3 +29,6 @@ autotools rules of `main/po/Makefile.am`; `gettext` is part of the development i
 
 - Good: no native libintl dependency; works in Flatpak and tests.
 - Bad: mechanical rewrite of generated code as it is ported.
+
+**Amendment (2026-09-25): no development image.** The build runs on the host ([ADR 0028](0028-csharp-developer-scripts.md)):
+`gettext` is a build requirement there, which `dotnet scripts/setup.cs` checks.
