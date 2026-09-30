@@ -102,9 +102,9 @@ jobs:
           cat > "$dir/Dockerfile" <<'EOF'
           # Flatpak packaging container (ADR 0022), built by the release workflow.
           # Same pinned .NET SDK base as the development image (so the SBOM tool and a Release build can run here
-          # too) plus flatpak, flatpak-builder and the desktop/AppStream validators. The Flathub runtimes, the
-          # flatpak-builder state and the test installation live in the podman volume md-flatpak, never in the
-          # host's flatpak installation.
+          # too) plus gettext (msgfmt compiles the translations of that build), flatpak, flatpak-builder and the
+          # desktop/AppStream validators. The Flathub runtimes, the flatpak-builder state and the test installation
+          # live in the podman volume md-flatpak, never in the host's flatpak installation.
 
           ARG DOTNET_SDK_IMAGE=mcr.microsoft.com/dotnet/sdk:10.0.401-noble@sha256:35d40304542c8689331f8cab17c65926cdf48fe711e289321d71924b230a7d29
 
@@ -117,7 +117,7 @@ jobs:
 
           RUN apt-get update \
            && apt-get install -y --no-install-recommends \
-                ca-certificates curl xz-utils zstd file git jq python3 shellcheck \
+                ca-certificates curl xz-utils zstd file git jq python3 shellcheck gettext \
                 flatpak flatpak-builder bubblewrap elfutils \
                 appstream desktop-file-utils shared-mime-info \
                 dbus dbus-x11 xvfb xauth x11-utils imagemagick \
